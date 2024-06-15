@@ -1,0 +1,283 @@
+<?php
+
+namespace App\Livewire\Empresa;
+
+// use Afip;
+use Livewire\Component;
+
+use App\Events\GenerarCertificadoEvent;
+use Afip;
+
+use Illuminate\Support\Carbon;
+
+
+use Livewire\Attributes\Validate;
+use Livewire\WithPagination;
+
+use App\Models\Empresa;
+use App\Models\Deposito;
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
+
+class VerEmpresa extends Component
+{
+
+    public $datoBuscado;
+    public $modal = 'close';
+    public $preloader = 'close';
+
+
+
+    #[Validate('required', message: 'Requerido')]
+    #[Validate('min:1', message: 'Minimo 1 caracter')]
+    #[Validate('max:250', message: 'Maximo 250 caracter')]
+    public $razonSocial='';
+    #[Validate('required', message: 'Requerido')]
+    #[Validate('min:1', message: 'Minimo 1 caracter')]
+    #[Validate('max:250', message: 'Maximo 250 caracter')]
+    public $titular='';
+    #[Validate('required', message: 'Requerido')]
+    #[Validate('min:1', message: 'Minimo 1 caracter')]
+
+    #[Validate('numeric', message: 'Solo Numeros')]
+    public $cuit='';
+    #[Validate('required', message: 'Requerido')]
+    public $claveFiscal='';
+    public $fe = 'si';
+    public $iva='ME';
+    #[Validate('required', message: 'Requerido')]
+    #[Validate('min:1', message: 'Minimo 1 caracter')]
+    #[Validate('numeric', message: 'Solo Numeros')]
+    public $ivaDefecto=21;
+    #[Validate('required', message: 'Requerido')]
+    public $inicioActividades ;
+
+    #[Validate('required', message: 'Requerido')]
+    #[Validate('min:1', message: 'Minimo 1 caracter')]
+    #[Validate('numeric', message: 'Solo Numeros')]
+    public $precio2=50;
+    #[Validate('required', message: 'Requerido')]
+    #[Validate('min:1', message: 'Minimo 1 caracter')]
+    #[Validate('numeric', message: 'Solo Numeros')]
+    public $precio3=100;
+    public $domicilio='';
+    #[Validate('numeric', message: 'Solo Numeros')]
+    public $telefono;
+    public $correo='';
+    public $logo='';
+
+    public $generarCertificado='no';
+
+
+
+    public function datosEmpresa($idEmpresa){
+
+        $empresa = Empresa::find($idEmpresa);
+
+        $afip = $this->objetoAfip($empresa);
+
+        $sales_points = $afip->ElectronicBilling->GetSalesPoints();
+
+        dump($sales_points);
+
+        $concept_types = $afip->ElectronicBilling->GetConceptTypes();
+
+        dump($concept_types);
+
+
+
+    }
+
+    function objetoAfip($empresa){
+        // // Certificado (Puede estar guardado en archivos, DB, etc)
+        // $cert = file_get_contents('./certificado.crt');
+
+        // // Key (Puede estar guardado en archivos, DB, etc)
+        // $key = file_get_contents('./key.key');
+
+        // dd(Storage::disk('local')->exists('public/'.$this->empresa->cuit.'/ert.crt') );
+
+
+        if (Storage::disk('local')->exists('public/'.$empresa->cuit.'/cert.crt') ) {
+            // ...
+            $cert = Storage::get('public/'.$empresa->cuit.'/cert.crt');
+
+            // return response()->json($cert, 200);
+            
+        }else
+        {
+            dd('No existe certificado');
+        }
+
+        if ( Storage::disk('local')->exists('public/'.$empresa->cuit.'/key.key')) {
+            // ...
+
+            $key = Storage::get('public/'.$empresa->cuit.'/key.key');
+
+            // return response()->json($key, 200);
+            
+        }else
+        {
+            dd('No existe key');
+        }
+
+
+
+        $afip = new Afip(array(
+            'CUIT' => $empresa->cuit,
+            'cert' => $cert,
+            'key' => $key,
+            'access_token' => env('tokenAFIPsdk'),
+            'production' => TRUE
+        ));
+
+        return $afip;
+    }
+
+    public function guardarEmpresa(){
+
+        $this->preloader = 'open';
+
+        $this->validate();
+
+        $nuevaEmpresa = Empresa::updateOrCreate(
+            ['cuit' => $this->cuit, 'razonSocial' => $this->razonSocial],
+            [
+                'claveFiscal'=> $this->claveFiscal,
+                'domicilio'=> $this->domicilio,
+                'fe'=> $this->fe,
+                'iva'=> $this->iva,
+                'ivaDefecto'=> $this->ivaDefecto,
+                'precio2'=> round($this->precio2,2),
+                'precio3'=> round($this->precio3,2),
+                'inicioActividades'=> $this->inicioActividades,
+                'telefono'=> $this->telefono,
+                'titular'=> $this->titular,
+                'logo'=> $this->logo,
+                'correo'=> $this->correo,
+            ]
+        );
+
+        $despositoEmpresa = Deposito::updateOrCreate(
+            ['nombre' => 'General', 'empresa_id' => $nuevaEmpresa->id],
+            [
+                'Comentario'=> 'Nuevo Deposito',
+
+            ]
+        );
+
+
+        if( $this->generarCertificado == 'si'){
+
+            GenerarCertificadoEvent::dispatch($this->cuit,$this->claveFiscal);
+        }
+
+        $this->razonSocial='';
+        $this->titular='';
+        $this->cuit='';
+        $this->claveFiscal='';
+        $this->fe = 'si';
+        $this->iva='ME';
+        $this->ivaDefecto=21;
+        $this->inicioActividades;
+        $this->precio2=50;
+        $this->precio3=100;
+        $this->domicilio='';
+        $this->telefono='';
+        $this->logo='';
+        $this->correo='';
+
+        $this->datoBuscado= $nuevaEmpresa->razonSocial;
+        $this->modal='close';
+        $this->preloader = 'close';
+    }
+
+    public function editarId(Empresa $empresa){
+        // dd($articulo);
+        // array:15 [▼
+        //     "id" => 2
+        //     "codigo" => "50733354"
+        //     "detalle" => "maiores"
+        //     "costo" => 979.36
+        //     "precio1" => 99.67
+        //     "precio2" => 71.53
+        //     "precio3" => 138.17
+        //     "iva" => 21.0
+        //     "rubro" => "General"
+        //     "proveedor" => "MAUSE"
+        //     "pesable" => "si"
+        //     "imagen" => null
+        //     "empresa_id" => 1
+        //     "created_at" => "2024-05-20 17:19:06"
+        //     "updated_at" => "2024-05-20 17:19:06"
+        // ]
+
+        $this->razonSocial= $empresa->razonSocial;
+        $this->titular= $empresa->titular;
+        $this->cuit= $empresa->cuit;
+        $this->claveFiscal= $empresa->claveFiscal;
+        $this->fe = $empresa->fe;
+        $this->iva= $empresa->iva;
+        $this->ivaDefecto= $empresa->ivaDefecto;
+        $this->inicioActividades= $empresa->inicioActividades;
+        $this->precio2= $empresa->precio2;
+        $this->precio3= $empresa->precio3;
+        $this->domicilio= $empresa->domicilio;
+        $this->telefono= $empresa->telefono;
+        $this->logo= $empresa->logo;
+        $this->correo= $empresa->correo;
+
+
+        $this->modal="open";
+    }
+
+    public function cambiarModal(){
+
+        if($this->modal == 'close'){
+            $this->modal = 'open';
+        }else{
+            $this->modal = 'close';
+
+            $this->razonSocial='';
+            $this->titular='';
+            $this->cuit='';
+            $this->claveFiscal='';
+            $this->fe = 'si';
+            $this->iva='ME';
+            $this->ivaDefecto=21;
+            $this->inicioActividades;
+            $this->precio2=50;
+            $this->precio3=100;
+            $this->domicilio='';
+            $this->telefono='';
+            $this->logo='';
+            $this->correo='';
+            
+        }
+    }
+
+    public function mount()
+    {
+        $this->inicioActividades = Carbon::now()->format('Y-m-d');
+        // $now = Carbon::now();
+ 
+
+    }
+
+    public function render()
+    {
+        return view('livewire.empresa.ver-empresa',
+        [
+            'empresas'=> Empresa::whereAny([
+                                'razonSocial',
+                                'titular',
+                                'cuit',
+                                'correo'
+                            ], 'LIKE', "%$this->datoBuscado%")                                
+                            ->paginate(30),
+        ])
+        ->extends('layouts.app')
+        ->section('main');
+    }
+}
