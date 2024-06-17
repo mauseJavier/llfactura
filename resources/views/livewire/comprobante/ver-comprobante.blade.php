@@ -2,43 +2,40 @@
   {{-- ESN ESTE COMPONENTE UTILIZO ALPINE JS PARA LOS MODALES ABRIR Y CERRAR  --}}
     <div class="container" x-data="{ modalFiltro: false }">
 
-        <article>
-            <h3>Ver Comprobantes</h3>
-        </article>    
+
+        <h3>Ver Comprobantes</h3>
+
 
         <div class="grid">
           <div class="col">
             <article>
-              @foreach ($totales as $item)                
-                <p>{{$item->nombre}}: ${{$item->sumTotal}}</p>                
+              @foreach ($totales as $item)  
+                <label for="">{{$item->nombre}}: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>                           
               @endforeach   
-
             </article>
              
           </div>
           <div class="col">
             <article>
-
               @foreach ($sumComprobantes as $item)
 
                 @switch($item->tipoComp)
                   @case(1)
-                    <label for="">Factura A: ${{$item->sumTotal}}</label>
+                    <label for="">Factura A: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
                   @break
                   @case(6)
-                    <label for="">Factura B: ${{$item->sumTotal}}</label>
+                    <label for="">Factura B: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
                   @break
                   @case(11)
-                    <label for="">Factura C: ${{$item->sumTotal}}</label>
+                    <label for="">Factura C: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
                   @break
                   @case('remito')
-                    <label for="">Remito: ${{$item->sumTotal}}</label>
+                    <label for="">Remito: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
                   @break
                 @default
 
                 @endswitch
               @endforeach
-
             </article>
 
           </div>
@@ -46,7 +43,7 @@
 
         <article>
 
-          <label for="">Total: {{$sumTotal}}</label>
+          <label for="">Total: ${{number_format($sumTotal, 2, ',', '.')}}</label>
         </article>
           
           <hr />

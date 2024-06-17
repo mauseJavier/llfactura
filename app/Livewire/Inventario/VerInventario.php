@@ -18,6 +18,7 @@ use App\Models\Rubro;
 use App\Models\Proveedor;
 use App\Models\Deposito;
 use App\Models\Stock;
+use App\Models\Marca;
 
 class VerInventario extends Component
 {
@@ -29,6 +30,7 @@ class VerInventario extends Component
     public $depositos;
     public $datoBuscado ='' ;
     public $modal = 'close';
+    public $masDatos = false;
     public $modalStock = 'close';
 
 
@@ -69,6 +71,8 @@ class VerInventario extends Component
     public $rubro='General';
     #[Validate('required', message: 'Requerido')]
     public $proveedor='General';
+    #[Validate('required', message: 'Requerido')]
+    public $marca='General';
     public $pesable = 'no';
     public $controlStock = 'no';
     public $imagen;
@@ -80,6 +84,7 @@ class VerInventario extends Component
     // GUARDAR RUBRO
     public $nuevoRubro = '';
     public $nuevoProveedor = '';
+    public $nuevaMarca = '';
 
     //MODIFICAR EL STOCK
 
@@ -136,19 +141,47 @@ class VerInventario extends Component
 
     }
     
+    public function guardarMarca(){
+
+        $validated = $this->validate([ 
+            'nuevaMarca' => 'required|min:3',
+        ]);
+
+        $nuevaMarca = Marca::create([
+            'nombre'=> $this->nuevaMarca,
+            'comentario'=> $this->nuevaMarca,
+            'empresa_id'=>$this->empresa->id,
+        ]);
+
+        if($nuevaMarca){
+
+            session()->flash('marcaGuardar', 'Marca '.$nuevaMarca->nombre.' Guardado.');
+        }else{
+
+            session()->flash('marcaGuardar', 'Ocurrio un Error');
+        }
+
+
+        $this->nuevaMarca = '';
+    }
+
     public function guardarProveedor(){
 
         $validated = $this->validate([ 
             'nuevoProveedor' => 'required|min:3',
         ]);
 
-        Proveedor::create([
+        $nuevoProveedor = Proveedor::create([
             'nombre'=> $this->nuevoProveedor,
             'empresa_id'=>$this->empresa->id,
         ]);
 
-        session()->flash('proveedorGuardado', 'Proveedor '.$this->nuevoProveedor.' Guardado.');
+        if($nuevoProveedor){
 
+            session()->flash('proveedorGuardado', 'Proveedor '.$nuevoProveedor->nombre.' Guardado.');
+        }else{
+            session()->flash('proveedorGuardado', 'Ocurrio un error');
+        }
         $this->nuevoProveedor = '';
     }
 
@@ -158,12 +191,18 @@ class VerInventario extends Component
             'nuevoRubro' => 'required|min:3',
         ]);
 
-        Rubro::create([
+        $nuevoRubro = Rubro::create([
             'nombre'=> $this->nuevoRubro,
             'empresa_id'=>$this->empresa->id,
         ]);
 
-        session()->flash('rubroGuardado', 'Rubro '.$this->nuevoRubro.' Guardado.');
+        if($nuevoRubro){
+
+            session()->flash('rubroGuardado', 'Rubro '.$this->nuevoRubro.' Guardado.');
+        }else{
+            session()->flash('rubroGuardado', 'Ocurrio un error');
+
+        }
 
         $this->nuevoRubro = '';
     }
@@ -192,6 +231,8 @@ class VerInventario extends Component
         }else{
             $costo_mas_iva = round($this->costo +($this->costo * doubleval($this->iva) / 100),2);
         }
+
+        // dump($costo_mas_iva);
 
 
         $this->precio1 = round( $costo_mas_iva + ($costo_mas_iva * $this->porcentaje1 /100) ,2);
@@ -253,6 +294,7 @@ class VerInventario extends Component
                 'iva'=> round($this->iva,2),
                 'rubro'=> $this->rubro,
                 'proveedor'=> $this->proveedor,
+                'marca'=> $this->marca,
                 'pesable'=> $this->pesable,
                 'controlStock'=> $this->controlStock,
                 'imagen'=> $this->imagen,
@@ -285,6 +327,7 @@ class VerInventario extends Component
         $this->iva = $this->empresa->ivaDefecto;
         $this->rubro='General';
         $this->proveedor='General';
+        $this->marca='General';
         $this->pesable = 'no';
         $this->controlStock = 'no';
         $this->imagen='';
@@ -307,13 +350,15 @@ class VerInventario extends Component
                                     'codigo',
                                     'detalle',
                                     'rubro',
-                                    'proveedor'
+                                    'proveedor',
+                                    'marca'
                                 ], 'LIKE', "%$this->datoBuscado%")                                
                                 ->paginate(30),
 
             'listaPrecios' => ListaPrecio::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
             'listaRubros' => Rubro::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
             'listaProveedores' => Proveedor::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
+            'listaMarcas' => Marca::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
         ])        
         ->extends('layouts.app')
         ->section('main'); 
@@ -342,4 +387,5 @@ class VerInventario extends Component
             
         }
     }
+
 }

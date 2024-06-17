@@ -14,6 +14,7 @@ use App\Livewire\Usuarios\Usuarios;
 use App\Livewire\Usuarios\Update;
 use App\Livewire\Inventario\VerInventario;
 use App\Livewire\Inventario\ImportarInventario;
+use App\Livewire\Inventario\EdicionMultiple;
 use App\Livewire\Empresa\VerEmpresa;
 use App\Livewire\Stock\VerStock;
 use App\Livewire\Stock\MovimientoStock;
@@ -77,6 +78,7 @@ use Illuminate\Http\Request;
 
             Route::get('/inventario', VerInventario::class)->name('inventario');
             Route::get('/importarInventario', ImportarInventario::class)->name('importarInventario');
+            Route::get('/edicionMultiple', EdicionMultiple::class)->name('edicionMultiple');
         
 
         });

@@ -1,10 +1,11 @@
-<div x-data="{ isOpenRubro: false, isOpenProveedor: false }">
+<div x-data="{ isOpenRubro: false, isOpenProveedor: false, isOpenMarca: false}">
     {{-- If you look to others for fulfillment, you will never truly be fulfilled. --}}
 
-    {{-- @dump($listaPrecios)
-    @dump($listaRubros)
-    @dump($listaProveedores) --}}
+    {{-- @dump($inventario) --}}
+    {{-- @dump($listaRubros) --}}
+    {{-- @dump($listaProveedores) --}}
     {{-- @dump($empresa) --}}
+    {{-- @dump($listaMarcas) --}}
     <div class="container"   >
         <h1>Inventario</h1>
         <article>
@@ -27,6 +28,12 @@
                                         <a role="button" class="outline"  @click="isOpenProveedor = !isOpenProveedor">Proveedor</a>
                                     </li>
                                     <li>
+                                        <a role="button" class="outline"  @click="isOpenMarca = !isOpenProveedor">Marca</a>
+                                    </li>
+                                    <li>
+                                        <a role="button" class="outline" wire:navigate href="{{route('edicionMultiple')}}">Edicion Multiple</a>
+                                    </li>
+                                    <li>
                                         <a role="button" class="outline" wire:navigate href="{{route('importarInventario')}}">Importar</a>
                                     </li>
                                 </ul>
@@ -44,7 +51,7 @@
                 </div>
 
                 <div class="col">
-                    <form role="search"  wire:submit="">        
+                    <form role="search"  wire:submit="">      
                         
                         <input wire:model.live="datoBuscado" name="search" type="search" placeholder="Buscar en Inventario" class="seleccionarTodo" />
                         {{-- <input type="submit" value="Buscar" /> --}}
@@ -54,26 +61,12 @@
                 
         </article>
      
-
-   
-
-        {{-- 0 => {#1584 ▼
-            +"id": 1
-            +"codigo": "06323325"
-            +"detalle": "iva 105"
-            +"costo": 754.75
-            +"precio1": 65.67
-            +"precio2": 90.03
-            +"precio3": 274.32
-            +"iva": 10.5
-            +"rubro": "Electrónica"
-            +"proveedor": 3
-            +"pesable": "si"
-            +"imagen": null
-            +"empresa_id": 1
-            +"created_at": "2024-05-12 00:51:46"
-            +"updated_at": "2024-05-12 00:51:46"
-          } --}}
+        <fieldset>
+            <label>
+              <input wire:model.live="masDatos" name="detalles" type="checkbox" role="switch" />
+              Ver mas Datos
+            </label>
+        </fieldset>
 
         <div class="overflow-auto">
             <table class="striped">
@@ -83,15 +76,18 @@
                     <th scope="col">Codigo</th>
                     <th scope="col">Detalle</th>
                     <th scope="col">Precio</th>
-                    <th scope="col">Costo</th>
-                    <th scope="col">Iva</th>
-                    <th scope="col">Rubro</th>
-                    <th scope="col">Proveedor</th>
-                    <th scope="col">Control Stock</th>
-                    <th scope="col">Pesable</th>
-                    <th scope="col">Imagen</th>
-                    <th scope="col">Creado</th>
-                    <th scope="col">Actualizado</th>
+                    @if ($masDatos)                        
+                        <th scope="col">Costo</th>
+                        <th scope="col">Iva</th>
+                        <th scope="col">Rubro</th>
+                        <th scope="col">Proveedor</th>
+                        <th scope="col">Marca</th>
+                        <th scope="col">Control Stock</th>
+                        <th scope="col">Pesable</th>
+                        <th scope="col">Imagen</th>
+                        <th scope="col">Creado</th>
+                        <th scope="col">Actualizado</th>
+                    @endif
                   </tr>
                 </thead>
                 <tbody>
@@ -113,19 +109,22 @@
                                 </ul>
                             </details>
                         </td>
-                        <td>{{$i->costo}}</td>
-                        <td>{{$i->iva}}</td>
-                        <td>{{$i->rubro}}</td>
-                        <td>{{$i->proveedor}}</td>
-                        @if ($i->controlStock == 'si')
-                            <td><button wire:click="cambiarModalStock('{{$i->codigo}}','{{$i->detalle}}')" ><i class="fa fa-plus" aria-hidden="true"></i></button></td>
-                        @else                            
-                            <td>{{$i->controlStock}}</td>
+                        @if ($masDatos)                            
+                            <td>{{$i->costo}}</td>
+                            <td>{{$i->iva}}</td>
+                            <td>{{$i->rubro}}</td>
+                            <td>{{$i->proveedor}}</td>
+                            <td>{{$i->marca}}</td>
+                            @if ($i->controlStock == 'si')
+                                <td><button wire:click="cambiarModalStock('{{$i->codigo}}','{{$i->detalle}}')" ><i class="fa fa-plus" aria-hidden="true"></i></button></td>
+                            @else                            
+                                <td>{{$i->controlStock}}</td>
+                            @endif
+                            <td>{{$i->pesable}}</td>
+                            <td>{{$i->imagen}}</td>
+                            <td>{{$i->created_at}}</td>
+                            <td>{{$i->updated_at}}</td>
                         @endif
-                        <td>{{$i->pesable}}</td>
-                        <td>{{$i->imagen}}</td>
-                        <td>{{$i->created_at}}</td>
-                        <td>{{$i->updated_at}}</td>
                         </tr>
                     @endforeach
 
@@ -183,154 +182,170 @@
               </label>
             </fieldset>
 
-            <div class="grid">
-
-                <div class="col">                    
-                        <fieldset>
-                            <label>
-                                IVA Incluido?
-                            </label>
-                            <input name="ivaIncluido" wire:model.live="ivaIncluido" wire:click="calcularPrecios" type="checkbox" role="switch" />
-                        </fieldset>                   
-                </div>
 
 
-                <div class="col">
-                    <label for="algo">Costo
-                        <input type="text" wire:model.blur="costo" wire:keydown="calcularPrecios" name="" id=""
-                        @error('costo') aria-invalid="true" @enderror
-                        />
-                        @error('costo') 
-                            <small id="invalid-helper">
-                                {{ $message }} 
-                            </small>                               
-                        @enderror
-                    </label>
-                </div>
-                <div class="col">
-                    <label for="algo">Iva
-                        <input type="text" wire:model.blur="iva" wire:keydown="calcularPrecios" name="" id=""
-                            @error('iva') aria-invalid="true" @enderror
-                        >
-                        @error('iva') 
-                            <small id="invalid-helper">
-                                {{ $message }} 
-                            </small>                               
-                        @enderror
-                    </label>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="col">
-                    <label for="">Lista
-                        <select name="" wire:model.blur="porcentaje1" wire:change="calcularPrecios">
-                            <option value="0">% 0</option>
-                            @foreach ($listaPrecios as $precio)
-                                <option value="{{$precio->porcentaje}}">{{$precio->nombre}} ({{$precio->porcentaje}}%)</option>
-                            @endforeach
-                           </select>
-                    </label>
-                </div>
-                <div class="col">
-                    <label for="algo">Porcentaje
-                        <input type="text" wire:model.blur="porcentaje1" wire:keydown="calcularPrecios" name="" id=""
-                        @error('porcentaje1') aria-invalid="true" @enderror
-                        />
-                        @error('porcentaje1') 
-                            <small id="invalid-helper">
-                                {{ $message }} 
-                            </small>                               
-                        @enderror
-                    </label>
-                </div>
-            </div>
-            <div class="grid">
-                <div class="col">
-                    <label for="">Precio 1
-                        <input type="text" wire:model.blur="precio1"
-                        @error('precio1') aria-invalid="true" @enderror
-                        />
-                        @error('precio1') 
-                            <small id="invalid-helper">
-                                {{ $message }} 
-                            </small>                               
-                        @enderror
-                    </label>
-                </div>
-                <div class="col">
-                    <label for="">Precio 2 ({{$empresa->precio2}}%)
-                        <input type="text" wire:model.blur="precio2"
-                        @error('precio2') aria-invalid="true" @enderror
-                        />
-                        @error('precio2') 
-                            <small id="invalid-helper">
-                                {{ $message }} 
-                            </small>                               
-                        @enderror
-                    </label>
-                </div>
-                <div class="col">
-                    <label for="">Precio 3 ({{$empresa->precio3}}%)
-                        <input type="text" wire:model.blur="precio3"
-                        @error('precio3') aria-invalid="true" @enderror
-                        />
-                        @error('precio3') 
-                            <small id="invalid-helper">
-                                {{ $message }} 
-                            </small>                               
-                        @enderror
-                    </label>
-                </div>
-            </div>
+                <div class="grid">
 
-            <div class="grid">
-                <div class="col">
-                    <label for="">Rubro
-                        <select name="" id="" wire:model="rubro">
-                            <option value="General">General</option>
-                            @foreach ($listaRubros as $rubro)
-                                <option value="{{$rubro->nombre}}">{{$rubro->nombre}}</option>                                
-                            @endforeach
-                        </select>
-                    </label>
+                    <div class="col">                    
+                            <fieldset>
+                                <label>
+                                    IVA Incluido?
+                                </label>
+                                <input name="ivaIncluido" wire:model.live="ivaIncluido" wire:click="calcularPrecios" type="checkbox" role="switch" />
+                            </fieldset>                   
+                    </div>
+                    <div class="col">
+                        <label for="algo">Costo
+                            <input type="text" wire:model.live="costo" wire:keydown="calcularPrecios" name="" id=""
+                            @error('costo') aria-invalid="true" @enderror
+                            />
+                            @error('costo') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="algo">Iva
+                            <input type="text" wire:model.blur="iva" wire:keydown="calcularPrecios" name="" id=""
+                                @error('iva') aria-invalid="true" @enderror
+                            >
+                            @error('iva') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
                 </div>
-                <div class="col">
-                    <label for="">Proveedor
-                        <select name="" id="" wire:model="proveedor">
-                            <option value="General">General</option>
-                            @foreach ($listaProveedores as $pro)
-                                <option value="{{$pro->nombre}}">{{$pro->nombre}}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                <div class="grid">
+                    <div class="col">
+                        <label for="">Lista
+                            <select name="" wire:model.blur="porcentaje1" wire:change="calcularPrecios">
+                                <option value="0">% 0</option>
+                                @foreach ($listaPrecios as $precio)
+                                    <option value="{{$precio->porcentaje}}">{{$precio->nombre}} ({{$precio->porcentaje}}%)</option>
+                                @endforeach
+                               </select>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="algo">Porcentaje
+                            <input type="text" wire:model.blur="porcentaje1" wire:keydown="calcularPrecios" name="" id=""
+                            @error('porcentaje1') aria-invalid="true" @enderror
+                            />
+                            @error('porcentaje1') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
                 </div>
-            </div>
+                <div class="grid">
+                    <div class="col">
+                        <label for="">Precio 1
+                            <input type="text" wire:model.live="precio1"
+                            @error('precio1') aria-invalid="true" @enderror
+                            />
+                            @error('precio1') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="">Precio 2 ({{$empresa->precio2}}%)
+                            <input type="text" wire:model.blur="precio2"
+                            @error('precio2') aria-invalid="true" @enderror
+                            />
+                            @error('precio2') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="">Precio 3 ({{$empresa->precio3}}%)
+                            <input type="text" wire:model.blur="precio3"
+                            @error('precio3') aria-invalid="true" @enderror
+                            />
+                            @error('precio3') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
+                </div>
 
 
-            <div class="grid">
-                <div class="col">
-                    <label for="">Pesable
-                        <select name="" id="" wire:model="pesable">
-                            <option value="no" selected>No</option>
-                            <option value="si">Si</option>
-                        </select>
-                    </label>
+            <hr />
+
+            <details >
+                <summary>Mas:</summary>
+
+                <div class="grid">
+                    <div class="col">
+                        <label for="">Rubro
+                            <select name="" id="" wire:model="rubro">
+                                <option value="General">General</option>
+                                @foreach ($listaRubros as $rubro)
+                                    <option value="{{$rubro->nombre}}">{{$rubro->nombre}}</option>                                
+                                @endforeach
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="">Proveedor
+                            <select name="" id="" wire:model="proveedor">
+                                <option value="General">General</option>
+                                @foreach ($listaProveedores as $pro)
+                                    <option value="{{$pro->nombre}}">{{$pro->nombre}}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="">Marca
+                            <select name="" id="" wire:model="marca">
+                                <option value="General">General</option>
+                                @foreach ($listaMarcas as $mar)
+                                    <option value="{{$mar->nombre}}">{{$mar->nombre}}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                    </div>
                 </div>
-                <div class="col">
-                    <label for="">Control Stock?
-                        <select name="" id="" wire:model="controlStock">
-                            <option value="no" selected>No</option>
-                            <option value="si">Si</option>
-                        </select>
-                    </label>
+                <div class="grid">
+                    <div class="col">
+                        <label for="">Pesable
+                            <select name="" id="" wire:model="pesable">
+                                <option value="no" selected>No</option>
+                                <option value="si">Si</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="">Control Stock?
+                            <select name="" id="" wire:model="controlStock">
+                                <option value="no" selected>No</option>
+                                <option value="si">Si</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="">Imagen
+                            <input type="text" wire:model="imagen">
+                        </label>
+                    </div>
                 </div>
-                <div class="col">
-                    <label for="">Imagen
-                        <input type="text" wire:model="imagen">
-                    </label>
-                </div>
-            </div>
-          
+
+            </details>
+
 
             <input
               type="submit"
@@ -489,6 +504,49 @@
             />
             </form>
             <button wire:click="cambiarModalStock" >Cancelar</button>
+        </article>
+    </dialog>
+
+    <dialog x-bind:open="isOpenMarca">
+        <article>
+          <header>
+            <button aria-label="Close" @click="isOpenMarca = false" rel="prev"></button>
+            <p>
+              <strong>Nueva Marca</strong>
+            </p>
+          </header>
+            @if (session()->has('marcaGuardar'))          
+                <p style="color: rgb(0, 137, 90);">
+                    {{ session('marcaGuardar') }}
+                </p>          
+            @endif
+            <form wire:submit="guardarMarca">
+            <fieldset>
+                <label>
+                Marca
+                <input
+                    wire:model.live="nuevaMarca"
+                    name="marca"
+                    placeholder="Nombre Marca"
+                    autocomplete="marca"
+                    @error('nuevaMarca') aria-invalid="true" @enderror
+                />
+                    @error('nuevaMarca') 
+                    <small id="invalid-helper">
+                        {{ $message }} 
+                        </small>
+                    @enderror
+                
+                </label>
+
+            </fieldset>
+            
+            <input
+                type="submit"
+                value="Guardar Marca"
+            />
+            </form>
+            <button  @click="isOpenMarca = false">Cancelar</button>
         </article>
     </dialog>
 
