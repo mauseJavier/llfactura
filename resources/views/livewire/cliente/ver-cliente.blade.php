@@ -75,9 +75,7 @@
 
     </div>
 
-    <dialog x-bind:open="modalNuevoCliente">
-        
-
+    <dialog x-bind:open="modalNuevoCliente">      
         <article>
           <header>
             <button aria-label="Close" rel="prev" @click="modalNuevoCliente = !modalNuevoCliente"></button>
@@ -175,7 +173,7 @@
 
             <button @click="modalNuevoCliente = !modalNuevoCliente">Cancelar</button>
         </article>
-      </dialog>
+    </dialog>
 
 
 </div>

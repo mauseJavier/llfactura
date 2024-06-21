@@ -1,9 +1,16 @@
-<div>
+<div x-data="{ modalNuevoProveedor: false }">
     <div class="container">
-        @dump($proveedores)
+        
         <h3>Proveedores</h3>
         <article>
-            <input type="search" name="" id="">
+            <div class="grid">
+                <div class="col">
+                    <button @click="modalNuevoProveedor = !modalNuevoProveedor">Nuevo Proveedor</button>
+                </div>
+                <div class="col">
+                    <input wire:model.live="datoBuscado" type="search" name="" id="">
+                </div>
+            </div>
         </article>
 
         @if (session('mensaje'))
@@ -20,38 +27,89 @@
                 <thead>
                 <tr>
                     <th scope="col">Razon Social</th>
-                    <th scope="col">Tipo Doc</th>
-                    <th scope="col">Numero</th>
-                    <th scope="col">Tipo Contr.</th>
-                    <th scope="col">Correo</th>
-                    <th scope="col">Domicilio</th>
-
-
+                    <th scope="col">cuit</th>
 
                 </tr>
                 </thead>
                 <tbody>
                     @foreach ($proveedores as $p)
-                        {{-- <tr>
+                        <tr>
                             <td>
-                                <button wire:click="editarCliente({{$c->id}})" @click="modalNuevoCliente = !modalNuevoCliente">
-                                    {{$c->razonSocial}}
+                                <button wire:click="editarProveedor({{$p->id}})" @click="modalNuevoProveedor = !modalNuevoProveedor">
+                                    {{$p->nombre}}
                                 </button>
                             </td>
-                            <td>{{$c->tipoDocumento}}</td>
-                            <td>{{$c->numeroDocumento}}</td>
-                            <td>{{$c->tipoContribuyente}}</td>
-                            <td>{{$c->correo}}</td>
-                            <td>{{$c->domicilio}}</td>
+                            <td>{{$p->cuit}}</td>
 
-
-                        </tr> --}}
+                        </tr>
                     @endforeach
 
                 </tbody>
                 
             </table>
         </div>
+
+        <dialog x-bind:open="modalNuevoProveedor">      
+            <article>
+              <header>
+                <button aria-label="Close" rel="prev" @click="modalNuevoProveedor = !modalNuevoProveedor"></button>
+                <p>
+                  <strong>Nuevo Cliente</strong>
+                </p>
+              </header>
+    
+                @if (session('mensaje'))
+                    <article>
+                        <p>
+                            {{ session('mensaje') }}    
+                        </p>     
+                    </article>
+                @endif
+    
+                <form wire:submit="guardarProveedor">
+                    <fieldset>
+                        <label>
+                            Nombre
+                            <input
+                            type="text"
+                            name=""
+                            placeholder="Nombre Proveedor"
+                            wire:model="nombre"
+                            @error('nombre') aria-invalid="true" @enderror
+                            />
+                            @error('nombre') 
+                                <small id="invalid-helper">
+                                    {{ $message }}  
+                                </small>
+                            @enderror
+                        </label>
+                        <label>
+                            Cuit
+                            <input
+                            type="text"
+                            name=""
+                            placeholder="Cuit"
+                            wire:model="cuit"
+                            @error('cuit') aria-invalid="true" @enderror
+                            />
+                            @error('cuit') 
+                                <small id="invalid-helper">
+                                    {{ $message }}  
+                                </small>
+                            @enderror
+                        </label>
+
+                    </fieldset>
+                
+                    <input
+                    type="submit"
+                    value="Guardar Cliente"
+                    />
+                </form>
+    
+                <button @click="modalNuevoProveedor = !modalNuevoProveedor">Cancelar</button>
+            </article>
+        </dialog>
 
     </div>
 </div>
