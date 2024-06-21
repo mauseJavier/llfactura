@@ -4,6 +4,11 @@ namespace App\Livewire\Inventario;
 
 use Livewire\Component;
 
+use Livewire\Attributes\Session;
+
+use Illuminate\Support\Carbon;
+
+
 use Livewire\Attributes\Validate;
 use Livewire\WithPagination;
 
@@ -14,7 +19,12 @@ class EdicionMultiple extends Component
 {
     use WithPagination;
 
+    #[Session(key: 'articulosEdicionMultiple')] 
+    public $articulosEdicionMultiple;
+
     public $datoBuscado ='' ;
+
+    public $imprimirReporte=false;
 
 
     // #[Validate('required|min:0|numeric')] 
@@ -29,24 +39,56 @@ class EdicionMultiple extends Component
     public $porcentaje2=0;
     public $porcentaje3=0;
 
+    public $arrayFiltros=['codigo','detalle','rubro','proveedor','marca'];
+
+
+    public function modificarFiltros($valor){
+
+            $pos = array_search($valor, $this->arrayFiltros);
+
+            if($pos !== false){
+
+                unset($this->arrayFiltros[$pos]);
+            }else{
+
+                $this->arrayFiltros[]= $valor;
+
+            }
+
+    }
+
 
     public function modificarPrecio(){
         // dd('hola');
 
         $affected = DB::table('inventarios')
                     ->where('empresa_id', Auth::user()->empresa_id)
-                    ->whereAny([
-                        'codigo',
-                        'detalle',
-                        'rubro',
-                        'proveedor',
-                        'marca'
-                    ], 'LIKE', "%$this->datoBuscado%")
+                    ->whereAny($this->arrayFiltros, 'LIKE', "%$this->datoBuscado%")
                     ->update(['precio1' => DB::raw('round(precio1 + ( precio1 * '.$this->porcentaje1.'/100),2)'),
                                 'precio2' => DB::raw('round(precio2 + ( precio2 * '.$this->porcentaje2.'/100),2)'),
-                                'precio3' => DB::raw('round(precio3 + ( precio3 * '.$this->porcentaje3.'/100),2)')]);
+                                'precio3' => DB::raw('round(precio3 + ( precio3 * '.$this->porcentaje3.'/100),2)'),
+                                'updated_at'=> Carbon::now()]);
                
-                    dump($affected);
+        // dump($affected);
+
+        if($this->imprimirReporte){
+
+            $this->articulosEdicionMultiple = [
+                'filtros'=>$this->arrayFiltros,
+                'datoBuscado'=>$this->datoBuscado,
+               ];
+               
+        
+            $this->redirectRoute('reporteEdicionMultiple');
+
+        }else{
+
+            session()->flash('mensaje', 'Filas actualizadas. '. $affected);
+
+        }
+
+
+
 
     }
 
@@ -79,13 +121,7 @@ class EdicionMultiple extends Component
                                                 DB::raw('round(precio2 + ( precio2 * '.$this->porcentaje2.'/100),2) as NuevoPrecio2'),
                                                 DB::raw('round(precio3 + ( precio3 * '.$this->porcentaje3.'/100),2) as NuevoPrecio3'),)
                                 ->where('empresa_id', Auth::user()->empresa_id)
-                                ->whereAny([
-                                    'codigo',
-                                    'detalle',
-                                    'rubro',
-                                    'proveedor',
-                                    'marca'
-                                ], 'LIKE', "%$this->datoBuscado%")        
+                                ->whereAny($this->arrayFiltros, 'LIKE', "%$this->datoBuscado%")        
                                 ->paginate(30),
         ])
         ->extends('layouts.app')

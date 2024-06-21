@@ -284,12 +284,12 @@ class NuevoComprobante extends Component
         $cliente = Cliente::updateOrCreate(
             ['numeroDocumento'=>$this->cuit,'empresa_id'=> $this->empresa->id],
             [            
-            'tipoDocumento'=>$this->tipoDocumento,
-            'numeroDocumento'=>$this->cuit,
-            'razonSocial'=>$this->razonSocial,
-            'domicilio'=>$this->domicilio,
-            'correo'=>$this->correoCliente,
-            'tipoContribuyente'=>$this->tipoContribuyente]
+            'tipoDocumento'=>trim($this->tipoDocumento),
+            'numeroDocumento'=>trim($this->cuit),
+            'razonSocial'=>trim($this->razonSocial),
+            'domicilio'=>trim($this->domicilio),
+            'correo'=>trim($this->correoCliente),
+            'tipoContribuyente'=>trim($this->tipoContribuyente)]
         );
 
         // dd($this->carrito['carrito']);

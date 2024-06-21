@@ -22,6 +22,8 @@ use App\Livewire\Stock\ImportarStock;
 use App\Livewire\Stock\RecibirStock;
 use App\Livewire\Stock\HistoricoEnvio;
 use App\Livewire\Remito\VerRemito;
+use App\Livewire\Cliente\VerCliente;
+use App\Livewire\Proveedor\VerProveedor;
 
 
 use App\Models\Empresa;
@@ -29,6 +31,8 @@ use App\Models\FormaPago;
 use App\Models\Comprobante;
 
 use App\Http\Controllers\ComprobanteController;
+use App\Http\Controllers\InventarioController;
+
 
 use Illuminate\Support\Facades\Auth; //PARA PRUEBA
 use Illuminate\Support\Facades\Storage; // para pruebas 
@@ -79,6 +83,8 @@ use Illuminate\Http\Request;
             Route::get('/inventario', VerInventario::class)->name('inventario');
             Route::get('/importarInventario', ImportarInventario::class)->name('importarInventario');
             Route::get('/edicionMultiple', EdicionMultiple::class)->name('edicionMultiple');
+            Route::get('/reporteEdicionMultiple', [InventarioController::class, 'remporteEdicionMultiple'])->name('reporteEdicionMultiple');
+            Route::get('/proveedor', VerProveedor::class)->name('proveedor');
         
 
         });
@@ -101,6 +107,7 @@ use Illuminate\Http\Request;
         Route::get('/historicoenvio', HistoricoEnvio::class)->name('historicoenvio');
         Route::get('/movimientostock/{codigo?}', MovimientoStock::class)->name('movimientostock');
         Route::get('/importarstock', ImportarStock::class)->name('importarstock');
+        Route::get('/cliente', VerCliente::class)->name('cliente');
 
 
 

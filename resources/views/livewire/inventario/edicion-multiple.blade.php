@@ -1,5 +1,6 @@
 <div>
     <div class="container">
+
         <h3>Edicion Multiple</h3>
         <article>
             <div class="grid">
@@ -12,14 +13,12 @@
                        
                             <input wire:keyup="actualizar" wire:model="porcentajePrecio3"  type="text" placeholder="% Precio 3" />
                         
+                            <button wire:click="modificarPrecio" wire:confirm="Serguro de Actualizar?">Actualizar</button>
                     </fieldset>
                     @error('porcentajePrecio1') {{ $message }} <br> @enderror
                     @error('porcentajePrecio2') {{ $message }} <br> @enderror
                     @error('porcentajePrecio3') {{ $message }} <br> @enderror
-                </div>
-                <div class="col">
-                    <button wire:click="modificarPrecio" wire:confirm="Serguro de Actualizar?">Actualizar</button>
-                </div>
+                </div>               
                 <div class="col">
                     <form role="search"  wire:submit="">      
                         
@@ -27,8 +26,62 @@
                         {{-- <input type="submit" value="Buscar" /> --}}
                     </form>
                 </div>
+
             </div>
         </article>
+
+        <article>
+   
+                <div class="grid">
+                    <div class="col">
+                        
+                        <legend>Criterio de Filtro:</legend>
+                        <label>
+                            <input type="checkbox" name="" checked  wire:change="modificarFiltros('codigo')" />
+                            Codigo
+                        </label>
+                        <label>
+                            <input type="checkbox" name="" checked  wire:change="modificarFiltros('detalle')"/>
+                            Detalle
+                        </label>
+                            
+                          
+                    </div>
+                    <div class="col">
+    
+                        <label>
+                            <input type="checkbox" name="" checked wire:change="modificarFiltros('rubro')"/>
+                            Rubro
+                          </label>
+                          <label>
+                            <input type="checkbox" name="" checked wire:change="modificarFiltros('proveedor')"/>
+                            Proveedor
+                          </label>
+                          <label>
+                            <input type="checkbox" name="" checked  wire:change="modificarFiltros('marca')"/>
+                            Marca
+                          </label>
+    
+                    </div>
+                    <div class="col">
+                        <fieldset>
+                            <label>
+                              <input wire:model="imprimirReporte" type="checkbox" role="switch" />
+                              Imprimir Reporte?
+                            </label>
+                          </fieldset>
+                    </div>
+                </div>
+
+        </article>
+
+        @if (session('mensaje'))
+        
+            <article>
+                {{ session('mensaje') }}
+            </article>
+        @endif
+
 
         <div class="overflow-auto">
             <table class="striped">
@@ -39,11 +92,11 @@
                     <th scope="col">Detalle</th>
 
                     <th scope="col">Precio 1</th>
-                    <th scope="col">X %{{$porcentaje1}}</th>
+                    <th scope="col">X {{$porcentaje1}}%</th>
                     <th scope="col">Precio 2</th>
-                    <th scope="col">X %{{$porcentaje2}}</th>
+                    <th scope="col">X {{$porcentaje2}}%</th>
                     <th scope="col">Precio 3</th>
-                    <th scope="col">X %{{$porcentaje3}}</th>
+                    <th scope="col">X {{$porcentaje3}}%</th>
                     
                     <th scope="col">Costo</th>
                     <th scope="col">Iva</th>
