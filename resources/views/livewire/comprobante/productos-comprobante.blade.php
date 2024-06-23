@@ -3,7 +3,7 @@
 
         {{-- @dump($productos) --}}
 
-        <h1>Productos del comprobante N° {{$idComprobante}} </h1>
+        <h1>Productos del comprobante N° {{$comprobante->numero}} </h1>
         <article>
             
             <div class="grid">

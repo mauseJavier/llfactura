@@ -36,6 +36,8 @@ class ComprobanteController extends Controller
         }
 
         $productos = productoComprobante::where('comprobante_id',$comprobante_id)->get();
+
+        $totalRevisado = floatval(($comprobante[0]->total) > 0 ? $comprobante[0]->total : ($comprobante[0]->total * -1)); 
       
         $importe_gravado_al21=0;
         $importe_iva_al21=0;
@@ -103,7 +105,10 @@ class ComprobanteController extends Controller
 
 
 
-        if($comprobante[0]->tipoComp == 'remito' || $comprobante[0]->tipoComp == 'presupuesto'){
+        if($comprobante[0]->tipoComp == 'remito' || 
+            $comprobante[0]->tipoComp == 'presupuesto' ||
+            $comprobante[0]->tipoComp == 'notaRemito') {
+                
             $infoQR ='llfactura.com';
 
         }else{
@@ -135,7 +140,7 @@ class ComprobanteController extends Controller
                                 "ptoVta"=> $comprobante[0]->ptoVta,
                                 "tipoCmp"=> intval($comprobante[0]->tipoComp),
                                 "nroCmp"=> $comprobante[0]->numero,
-                                "importe"=> floatval($comprobante[0]->total),
+                                "importe"=> floatval($totalRevisado),
                                 "moneda"=> "PES",
                                 "ctz"=> 1,
                                 "tipoDocRec"=> $comprobante[0]->DocTipo,
@@ -205,6 +210,30 @@ class ComprobanteController extends Controller
                     $iva21 = 0;
                     $subtotal = 0;
                     break;
+                case 3:
+                    $tipoComprobante = 'NOTA CREDITO A';
+                    $iva105 = $importe_iva_al105;
+                    $iva21 =$importe_iva_al21;
+                    $subtotal = $importe_gravado_al21 + $importe_gravado_al105;
+                    break;
+                case 8:
+                    $tipoComprobante = 'NOTA CREDITO B';
+                    $iva105 = 0;
+                    $iva21 = 0;
+                    $subtotal = 0;
+                    break;
+                case 13:
+                    $tipoComprobante = 'NOTA CREDITO C';
+                    $iva105 = 0;
+                    $iva21 = 0;
+                    $subtotal = 0;
+                    break;
+                case 'notaRemito':
+                    $tipoComprobante = 'NOTA REMITO';
+                    $iva105 = 0;
+                    $iva21 = 0;
+                    $subtotal = 0;
+                    break;
                
             }
 
@@ -234,7 +263,7 @@ class ComprobanteController extends Controller
                 'subtotal'=> $subtotal,
                 'iva105'=> $iva105 ,
                 'iva21'=> $iva21 ,
-                'totalVenta'=> number_format($comprobante[0]->total, 2) ,
+                'totalVenta'=> number_format($totalRevisado, 2) ,
                 'cae'=>$comprobante[0]->cae,
                 'vtocae'=>date('d-m-Y', strtotime($comprobante[0]->fechaVencimiento)),
                 'qr'=>$qrcode,

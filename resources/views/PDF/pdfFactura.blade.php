@@ -175,7 +175,7 @@
     </tbody>
 
     <tfoot>
-      @if ($codigoFactura == 1)
+      @if ($codigoFactura == 1 OR $codigoFactura == 3)
         <tr>
             <td colspan="3"></td>
             <td align="right">Subtotal $</td>

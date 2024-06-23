@@ -6,18 +6,22 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 use App\Models\productoComprobante;
+use App\Models\Comprobante;
 
 class ProductosComprobante extends Component
 {
     use WithPagination;
 
-    public $idComprobante;
 
-    public function mount($idComprobante) 
+    public $comprobante;
+
+    public function mount(Comprobante $idComprobante) 
     {
         // $this->post = Post::findOrFail($id);
 
-        $this->idComprobante = $idComprobante;
+        $this->comprobante = $idComprobante;
+
+        // dd($this->comprobante);
     }
 
 
@@ -25,7 +29,7 @@ class ProductosComprobante extends Component
     {
         return view('livewire.comprobante.productos-comprobante',
         [
-            'productos'=> productoComprobante::Where('comprobante_id',$this->idComprobante)->paginate(30),
+            'productos'=> productoComprobante::Where('comprobante_id',$this->comprobante->id)->paginate(30),
         ])
         ->extends('layouts.app')
         ->section('main');

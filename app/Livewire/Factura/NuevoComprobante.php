@@ -126,14 +126,18 @@ class NuevoComprobante extends Component
 
         // AK TENEMOS QUE SABER SI VAMOS A HACER A B C O REMITO PRESUPUESTO    
         if($this->tipoComprobante == 11){
-            // dd('factura c');
+            $descripcionTipoComp = 'Factura C';
             $nuevoComprobante = $this->crearComprobanteC($this->total,$this->cuit,$this->tipoDocumento);            
         }elseif($this->tipoComprobante == 6){
+            $descripcionTipoComp = 'Factura B';
             $nuevoComprobante = $this->crearComprobanteB($this->total,$this->tipoDocumento,$this->cuit);
         }elseif($this->tipoComprobante == 1){
+            $descripcionTipoComp = 'Factura A';
             $nuevoComprobante = $this->crearComprobanteA($this->total,$this->tipoDocumento,$this->cuit);
 
         }elseif($this->tipoComprobante == 'remito'){
+            $descripcionTipoComp = 'Remito';
+
             
             // Obtener el último registro
             $ultimoRegistro = Comprobante::latest()->first();
@@ -190,6 +194,8 @@ class NuevoComprobante extends Component
                 }');
 
         }elseif($this->tipoComprobante == 'presupuesto'){
+
+            $descripcionTipoComp = 'Presupuesto';
 
             // Obtener el último registro
             $ultimoRegistro = Comprobante::latest()->first();
@@ -276,6 +282,7 @@ class NuevoComprobante extends Component
             'leyenda'=> $this->leyenda,
             'idFormaPago'=>$this->idFormaPago,
             'ptoVta'=>$nuevoComprobante->FeCabResp->PtoVta,
+            'deposito_id'=>$this->usuario->deposito_id,
             'usuario'=> $this->usuario->name,
             'remito'=>  $this->remitoEntrega, //no (se entrega en el momento ) si (se entrega posterior)
         ]);
@@ -316,6 +323,7 @@ class NuevoComprobante extends Component
                     'cantidad'=>$value['cantidad'],
                     'rubro'=>$value['rubro'],
                     'proveedor'=>$value['proveedor'],
+                    'controlStock'=>$value['controlStock'],
                     'tipoComp'=>$this->tipoComprobante,
                     'fecha'=>$this->fechaHoy,
                     'idFormaPago'=>$this->idFormaPago,
@@ -331,7 +339,7 @@ class NuevoComprobante extends Component
                         'detalle'=>$value['detalle'],
                         'deposito_id'=>$this->usuario->deposito_id,
                         'stock'=>($value['cantidad'] * -1),
-                        'comentario'=>'Venta '.$comprobante->tipoComp.' n-'.$comprobante->numero,
+                        'comentario'=>'Venta '.$descripcionTipoComp.' N-'.$comprobante->numero,
                         'usuario'=>$this->usuario->name,
                         'empresa_id'=>$this->empresa->id,
         

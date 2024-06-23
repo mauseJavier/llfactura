@@ -29,8 +29,19 @@
                   @case(11)
                     <label for="">Factura C: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
                   @break
+
                   @case('remito')
                     <label for="">Remito: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                  @break
+
+                  @case('3')
+                  <label for="">NC A: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                  @break
+                  @case('8')
+                    <label for="">NC B: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                  @break
+                  @case('13')
+                    <label for="">NC C: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
                   @break
                 @default
 
@@ -72,6 +83,7 @@
                     <th scope="col">
                       Usuario
                     </th>
+                    <th scope="col">Leyenda</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -84,7 +96,10 @@
                                 <ul>
                                   <li><a wire:navigate href="{{route('productosComprobante',['idComprobante'=>$item->id])}}">Ver</a></li>
                                   <li><a wire:navigate href="{{route('formatoPDF',['comprobante_id'=>$item->id])}}">Imprimir</a></li>
-                                  <li><a wire:navigate href="{{route('remitoscomprobante')}}">Remitos</a></li>
+                                  @if ($item->tipoComp == 1 OR $item->tipoComp == 6 OR $item->tipoComp == 11 OR $item->tipoComp == 'remito')
+                                    <li><a wire:navigate href="{{route('remitoscomprobante')}}">Remitos</a></li>
+                                    <li><a wire:navigate href="{{route('notacredito',['comprobante'=>$item->id])}}">Nota Credito</a></li>
+                                  @endif
                                 </ul>
                               </details>                       
                             </th>
@@ -103,18 +118,29 @@
                                   @case('remito')
                                       Remito
                                       @break
+
+                                  @case(3)
+                                    NC A
+                                    @break
+                                    @case(8)
+                                    NC B
+                                    @break
+                                    @case(13)
+                                    NC C
+                                    @break
                                   @default
                                   {{$item->tipoComp}}
                               @endswitch
                               
                             </td>
                             <td>{{$item->numero}}</td>
-                            <td>{{$item->total}}</td>
+                            <td>${{$item->total}}</td>
                             <td>{{$item->cae}}</td>
                             <td>{{$item->fechaVencimiento}}</td>
                             <td>{{$item->razonSocial}}</td>
                             <td>{{$item->cuitCliente}}</td>
                             <td>{{$item->usuario}}</td>
+                            <td>{{$item->leyenda}}</td>
                           </tr>
                     @endforeach
 

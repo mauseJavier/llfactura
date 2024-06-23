@@ -149,7 +149,7 @@
 			<td class="border-top padding-t-3 padding-b-3">
 				<div>
 					<table>
-						@if ($codigoFactura == 1)
+						@if ($codigoFactura == 1 OR $codigoFactura == 3)
 							<tr>
 								<td colspan="3"></td>
 								<td align="right">Subtotal $</td>

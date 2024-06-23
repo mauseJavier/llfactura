@@ -103,7 +103,7 @@
                 
                     <input
                     type="submit"
-                    value="Guardar Cliente"
+                    value="Guardar Proveedor"
                     />
                 </form>
     

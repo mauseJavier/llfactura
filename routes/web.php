@@ -10,6 +10,7 @@ use App\Livewire\Factura\NuevoComprobante;
 use App\Livewire\Factura\Venta;
 use App\Livewire\Comprobante\VerComprobante;
 use App\Livewire\Comprobante\ProductosComprobante;
+use App\Livewire\Comprobante\NotaCredito;
 use App\Livewire\Usuarios\Usuarios;
 use App\Livewire\Usuarios\Update;
 use App\Livewire\Inventario\VerInventario;
@@ -99,6 +100,8 @@ use Illuminate\Http\Request;
         Route::get('/remitoscomprobante', VerRemito::class)->name('remitoscomprobante');
 
         Route::get('/comprobante', VerComprobante::class)->name('comprobante');
+        Route::get('/notacredito/{comprobante}', NotaCredito::class)->name('notacredito');
+
         Route::get('/productosComprobante/{idComprobante}', ProductosComprobante::class)->name('productosComprobante');
         Route::get('/nuevoComprobante', NuevoComprobante::class)->name('nuevoComprobante');
         Route::get('/venta', Venta::class)->name('venta');
