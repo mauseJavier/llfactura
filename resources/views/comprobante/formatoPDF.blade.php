@@ -17,8 +17,16 @@
           <details class="dropdown">
             <summary>Formato</summary>
             <ul>
-              <li><a  href="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'A4'])}}" target="_blank">Formato A4</a> </li>
-              <li><a  href="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'Ticket'])}}" target="_blank">Formato Ticket</a></li>
+              @if ($tipo == 'factura')
+                  <li><a  href="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'A4'])}}" target="_blank">Formato A4</a> </li>
+                  <li><a  href="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'Ticket'])}}" target="_blank">Formato Ticket</a></li>
+                  
+              @else
+
+                  <li><a  href="{{route('imprimirPresupuesto',['presupuesto_id'=>$comprobante_id,'formato'=>'A4'])}}" target="_blank">Formato A4</a> </li>
+
+                  
+              @endif
 
             </ul>
           </details>

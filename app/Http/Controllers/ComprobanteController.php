@@ -25,7 +25,7 @@ class ComprobanteController extends Controller
   
         $empresa = Empresa::find(Auth::user()->empresa_id);  
 
-//    return Auth::user();
+        //    return Auth::user();
 
         $comprobante = Comprobante::where('id',$comprobante_id)->where('empresa_id',$empresa->id)->get();
 

@@ -43,6 +43,9 @@
                   @case('13')
                     <label for="">NC C: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
                   @break
+                @case('notaRemito')
+                    <label for="">NC R: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                  @break
                 @default
 
                 @endswitch
@@ -95,7 +98,7 @@
                                 <summary>Acciones</summary>
                                 <ul>
                                   <li><a wire:navigate href="{{route('productosComprobante',['idComprobante'=>$item->id])}}">Ver</a></li>
-                                  <li><a wire:navigate href="{{route('formatoPDF',['comprobante_id'=>$item->id])}}">Imprimir</a></li>
+                                  <li><a wire:navigate href="{{route('formatoPDF',['tipo'=>'factura','comprobante_id'=>$item->id])}}">Imprimir</a></li>
                                   @if ($item->tipoComp == 1 OR $item->tipoComp == 6 OR $item->tipoComp == 11 OR $item->tipoComp == 'remito')
                                     <li><a wire:navigate href="{{route('remitoscomprobante')}}">Remitos</a></li>
                                     <li><a wire:navigate href="{{route('notacredito',['comprobante'=>$item->id])}}">Nota Credito</a></li>
@@ -121,6 +124,8 @@
 
                                   @case(3)
                                     NC A
+
+                            </th>
                                     @break
                                     @case(8)
                                     NC B

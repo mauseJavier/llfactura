@@ -20,6 +20,10 @@ use App\Models\Cliente;
 use App\Models\FormaPago;
 use App\Models\productoComprobante;
 
+use App\Models\Presupuesto;
+use App\Models\ProductoPresupuesto;
+
+
 use Illuminate\Support\Facades\Auth;
 
 use App\Events\DescontarStockEvent;
@@ -127,13 +131,16 @@ class NuevoComprobante extends Component
         // AK TENEMOS QUE SABER SI VAMOS A HACER A B C O REMITO PRESUPUESTO    
         if($this->tipoComprobante == 11){
             $descripcionTipoComp = 'Factura C';
-            $nuevoComprobante = $this->crearComprobanteC($this->total,$this->cuit,$this->tipoDocumento);            
+            $nuevoComprobante = $this->crearComprobanteC($this->total,$this->cuit,$this->tipoDocumento);
+            $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);            
         }elseif($this->tipoComprobante == 6){
             $descripcionTipoComp = 'Factura B';
             $nuevoComprobante = $this->crearComprobanteB($this->total,$this->tipoDocumento,$this->cuit);
+            $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
         }elseif($this->tipoComprobante == 1){
             $descripcionTipoComp = 'Factura A';
             $nuevoComprobante = $this->crearComprobanteA($this->total,$this->tipoDocumento,$this->cuit);
+            $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
 
         }elseif($this->tipoComprobante == 'remito'){
             $descripcionTipoComp = 'Remito';
@@ -192,187 +199,30 @@ class NuevoComprobante extends Component
                     }
                     }
                 }');
+            $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
 
         }elseif($this->tipoComprobante == 'presupuesto'){
-
-            $descripcionTipoComp = 'Presupuesto';
-
-            // Obtener el último registro
-            $ultimoRegistro = Comprobante::latest()->first();
-
-            if ($ultimoRegistro) {
-                $ultimoId = $ultimoRegistro->id + 1;
-                // echo "El último ID es: " . $ultimoId;
-            } else {
-                // echo "No hay registros en la tabla.";
-                $ultimoId =  1;
-            }
-
-            $nuevoComprobante = json_decode(
-                '{
-                    "FeCabResp": {
-                    "Cuit": '.$this->empresa->cuit.',
-                    "PtoVta": 0,
-                    "CbteTipo": "presupuesto",
-                    "FchProceso": "0",
-                    "CantReg": 1,
-                    "Resultado": "A",
-                    "Reproceso": "N"
-                    },
-                    "FeDetResp": {
-                    "FECAEDetResponse": {
-                        "Concepto": 1,
-                        "DocTipo": '.$this->tipoDocumento.',
-                        "DocNro": '.$this->cuit.',
-                        "CbteDesde": '.$ultimoId.',
-                        "CbteHasta": '.$ultimoId.',
-                        "CbteFch": "0",
-                        "Resultado": "A",
-                        "CAE": "0",
-                        "CAEFchVto": "'.$this->fechaHoy.'"
-                    }
-                    }
-                }');
+            $comprobanteId = $this->finalizarPresupuesto(); 
         }else{
             dd($this->tipoComprobante);
         }
-
-        //RESPUESTA DE AFIP
-        $ejemplo = '{
-            "FeCabResp": {
-              "Cuit": 20409378472,
-              "PtoVta": 4,
-              "CbteTipo": 11,
-              "FchProceso": "20240331020820",
-              "CantReg": 1,
-              "Resultado": "A",
-              "Reproceso": "N"
-            },
-            "FeDetResp": {
-              "FECAEDetResponse": {
-                "Concepto": 1,
-                "DocTipo": 96,
-                "DocNro": 35833716,
-                "CbteDesde": 11,
-                "CbteHasta": 11,
-                "CbteFch": "20240331",
-                "Resultado": "A",
-                "CAE": "74132154047011",
-                "CAEFchVto": "20240410"
-              }
-            }
-        }';
- 
-
-        // Post::create($validated);
-        $comprobante = Comprobante::create([
-            
-            'numero' => $nuevoComprobante->FeDetResp->FECAEDetResponse->CbteDesde,
-            'total' => round($this->total,2),
-            'cae' => $nuevoComprobante->FeDetResp->FECAEDetResponse->CAE,
-            'fechaVencimiento' => $nuevoComprobante->FeDetResp->FECAEDetResponse->CAEFchVto,
-            'DocTipo'=>$nuevoComprobante->FeDetResp->FECAEDetResponse->DocTipo,
-            'cuitCliente' => $this->cuit,
-            'razonSocial'=>$this->razonSocial,
-            'tipoContribuyente'=>$this->tipoContribuyente,
-            'domicilio'=>$this->domicilio,
-            'empresa_id'=> $this->empresa->id,
-            'tipoComp'=>$this->tipoComprobante,
-            'fecha'=> Carbon::now()->format('Y-m-d H:i:s'),
-            'leyenda'=> $this->leyenda,
-            'idFormaPago'=>$this->idFormaPago,
-            'ptoVta'=>$nuevoComprobante->FeCabResp->PtoVta,
-            'deposito_id'=>$this->usuario->deposito_id,
-            'usuario'=> $this->usuario->name,
-            'remito'=>  $this->remitoEntrega, //no (se entrega en el momento ) si (se entrega posterior)
-        ]);
-
-
-        $cliente = Cliente::updateOrCreate(
-            ['numeroDocumento'=>$this->cuit,'empresa_id'=> $this->empresa->id],
-            [            
-            'tipoDocumento'=>trim($this->tipoDocumento),
-            'numeroDocumento'=>trim($this->cuit),
-            'razonSocial'=>trim($this->razonSocial),
-            'domicilio'=>trim($this->domicilio),
-            'correo'=>trim($this->correoCliente),
-            'tipoContribuyente'=>trim($this->tipoContribuyente)]
-        );
-
-        // dd($this->carrito['carrito']);
-
-        if(isset($this->carrito['carrito'])){//SI EXITE GUARDA LOS ARTICULOS
-            
-            foreach ($this->carrito['carrito'] as $key => $value) {
-                // array:6 [▼ // app/Livewire/Factura/NuevoComprobante.php:75
-                // "codigo" => "28464334"
-                // "detalle" => "alfajor"
-                // "precio" => 1
-                // "iva" => 21
-                // "cantidad" => 1
-                // "subtotal" => 1
-                // ]
-                // dump($value);
-                productoComprobante::create([
-                    'comprobante_id'=> $comprobante->id,
-                    'comprobante_numero'=>$comprobante->numero,
-                    'codigo'=>$value['codigo'],
-                    'detalle'=>$value['detalle'],
-                    'precio'=>$value['precio'],
-                    'iva'=>$value['iva'],
-                    'cantidad'=>$value['cantidad'],
-                    'rubro'=>$value['rubro'],
-                    'proveedor'=>$value['proveedor'],
-                    'controlStock'=>$value['controlStock'],
-                    'tipoComp'=>$this->tipoComprobante,
-                    'fecha'=>$this->fechaHoy,
-                    'idFormaPago'=>$this->idFormaPago,
-                    'ptoVta'=>$nuevoComprobante->FeCabResp->PtoVta,
-                    'usuario'=> $this->usuario->name,
-                    'empresa_id'=> $this->empresa->id,
-                ]);
-
-                if($this->remitoEntrega == 'no' AND $value['controlStock'] == 'si'){  //no (se entrega en el momento ) si (se entrega posterior)
-                    //AK DESCUENTA EL STOCK
-                    DescontarStockEvent::dispatch([
-                        'codigo'=>$value['codigo'],
-                        'detalle'=>$value['detalle'],
-                        'deposito_id'=>$this->usuario->deposito_id,
-                        'stock'=>($value['cantidad'] * -1),
-                        'comentario'=>'Venta '.$descripcionTipoComp.' N-'.$comprobante->numero,
-                        'usuario'=>$this->usuario->name,
-                        'empresa_id'=>$this->empresa->id,
-        
-                    ]);
-                }else{
-                    //AK  EL REMITO CUANDO SE GERENERE DESCUENTA EL STOCK
-                }
-
-
-
-    
-            }
-        }
-
 
 
         //borramos la session de carrito 
         $this->carrito=null;
 
         if($this->imprimir){
-            // Via a request instance...
 
-            // $request->session()->put('comprobante',(array(
-              
-            //        "comprobante"=>$comprobante,
-            //        "producto"=>$producto,
-            //        )
-            //    ) 
-            //    );
+            if ($this->tipoComprobante == 'presupuesto'){
 
-            // NO SE HACE DE ESTA MANERA 
-            // $this->redirect('/formatoPDF',['comprobante_id'=>$comprobante->id]); 
-            $this->redirectRoute('formatoPDF',['comprobante_id'=>$comprobante->id]);
+                $this->redirectRoute('formatoPDF',['comprobante_id'=>$comprobanteId,
+                                                    'tipo'=>'presupuesto']);
+            }else{
+
+                $this->redirectRoute('formatoPDF',['comprobante_id'=>$comprobanteId,
+                                                    'tipo'=>'factura']);
+            }
+
 
         }else{
 
@@ -1386,6 +1236,219 @@ class NuevoComprobante extends Component
             // ));
 
             return $res;
+    }
+
+    function finalizarComprobante($nuevoComprobante,$descripcionTipoComp){
+
+                //RESPUESTA DE AFIP
+                $ejemplo = '{
+                    "FeCabResp": {
+                      "Cuit": 20409378472,
+                      "PtoVta": 4,
+                      "CbteTipo": 11,
+                      "FchProceso": "20240331020820",
+                      "CantReg": 1,
+                      "Resultado": "A",
+                      "Reproceso": "N"
+                    },
+                    "FeDetResp": {
+                      "FECAEDetResponse": {
+                        "Concepto": 1,
+                        "DocTipo": 96,
+                        "DocNro": 35833716,
+                        "CbteDesde": 11,
+                        "CbteHasta": 11,
+                        "CbteFch": "20240331",
+                        "Resultado": "A",
+                        "CAE": "74132154047011",
+                        "CAEFchVto": "20240410"
+                      }
+                    }
+                }';
+         
+        
+                // Post::create($validated);
+                $comprobante = Comprobante::create([
+                    
+                    'numero' => $nuevoComprobante->FeDetResp->FECAEDetResponse->CbteDesde,
+                    'total' => round($this->total,2),
+                    'cae' => $nuevoComprobante->FeDetResp->FECAEDetResponse->CAE,
+                    'fechaVencimiento' => $nuevoComprobante->FeDetResp->FECAEDetResponse->CAEFchVto,
+                    'DocTipo'=>$nuevoComprobante->FeDetResp->FECAEDetResponse->DocTipo,
+                    'cuitCliente' => $this->cuit,
+                    'razonSocial'=>$this->razonSocial,
+                    'tipoContribuyente'=>$this->tipoContribuyente,
+                    'domicilio'=>$this->domicilio,
+                    'empresa_id'=> $this->empresa->id,
+                    'tipoComp'=>$this->tipoComprobante,
+                    'fecha'=> Carbon::now()->format('Y-m-d H:i:s'),
+                    'leyenda'=> $this->leyenda,
+                    'idFormaPago'=>$this->idFormaPago,
+                    'ptoVta'=>$nuevoComprobante->FeCabResp->PtoVta,
+                    'deposito_id'=>$this->usuario->deposito_id,
+                    'usuario'=> $this->usuario->name,
+                    'remito'=>  $this->remitoEntrega, //no (se entrega en el momento ) si (se entrega posterior)
+                ]);
+        
+        
+                $cliente = Cliente::updateOrCreate(
+                    ['numeroDocumento'=>$this->cuit,'empresa_id'=> $this->empresa->id],
+                    [            
+                    'tipoDocumento'=>trim($this->tipoDocumento),
+                    'numeroDocumento'=>trim($this->cuit),
+                    'razonSocial'=>trim($this->razonSocial),
+                    'domicilio'=>trim($this->domicilio),
+                    'correo'=>trim($this->correoCliente),
+                    'tipoContribuyente'=>trim($this->tipoContribuyente)]
+                );
+        
+                // dd($this->carrito['carrito']);
+        
+                if(isset($this->carrito['carrito'])){//SI EXITE GUARDA LOS ARTICULOS
+                    
+                    foreach ($this->carrito['carrito'] as $key => $value) {
+                        // array:6 [▼ // app/Livewire/Factura/NuevoComprobante.php:75
+                        // "codigo" => "28464334"
+                        // "detalle" => "alfajor"
+                        // "precio" => 1
+                        // "iva" => 21
+                        // "cantidad" => 1
+                        // "subtotal" => 1
+                        // ]
+                        // dump($value);
+                        productoComprobante::create([
+                            'comprobante_id'=> $comprobante->id,
+                            'comprobante_numero'=>$comprobante->numero,
+                            'codigo'=>$value['codigo'],
+                            'detalle'=>$value['detalle'],
+                            'precio'=>$value['precio'],
+                            'iva'=>$value['iva'],
+                            'cantidad'=>$value['cantidad'],
+                            'rubro'=>$value['rubro'],
+                            'proveedor'=>$value['proveedor'],
+                            'controlStock'=>$value['controlStock'],
+                            'tipoComp'=>$this->tipoComprobante,
+                            'fecha'=>$this->fechaHoy,
+                            'idFormaPago'=>$this->idFormaPago,
+                            'ptoVta'=>$nuevoComprobante->FeCabResp->PtoVta,
+                            'usuario'=> $this->usuario->name,
+                            'empresa_id'=> $this->empresa->id,
+                        ]);
+        
+                        if($this->remitoEntrega == 'no' AND $value['controlStock'] == 'si'){  //no (se entrega en el momento ) si (se entrega posterior)
+                            //AK DESCUENTA EL STOCK
+                            DescontarStockEvent::dispatch([
+                                'codigo'=>$value['codigo'],
+                                'detalle'=>$value['detalle'],
+                                'deposito_id'=>$this->usuario->deposito_id,
+                                'stock'=>($value['cantidad'] * -1),
+                                'comentario'=>'Venta '.$descripcionTipoComp.' N-'.$comprobante->numero,
+                                'usuario'=>$this->usuario->name,
+                                'empresa_id'=>$this->empresa->id,
+                
+                            ]);
+                        }else{
+                            //AK  EL REMITO CUANDO SE GERENERE DESCUENTA EL STOCK
+                        }
+        
+        
+        
+            
+                    }
+                }
+
+                return $comprobante->id;
+    }
+
+    function finalizarPresupuesto(){
+
+        $descripcionTipoComp = 'Presupuesto';
+
+        // Obtener el último registro
+        $ultimoRegistro = Presupuesto::where('empresa_id',$this->empresa->id)->latest()->first();
+
+        if ($ultimoRegistro) {
+            $ultimoId = $ultimoRegistro->id + 1;
+            // echo "El último ID es: " . $ultimoId;
+        } else {
+            // echo "No hay registros en la tabla.";
+            $ultimoId =  1;
+        }
+
+            // Post::create($validated);
+            $presupuestoGuardado = Presupuesto::create([
+                
+                'tipoComp'=>$this->tipoComprobante,
+                'numero' => $ultimoId,
+                'total' => round($this->total,2),
+                
+                'fechaVencimiento' => Carbon::now()->addDays(7)->format('Y-m-d H:i:s') ,// vencimiento del presupuesto 7 dias 
+                'DocTipo'=>$this->tipoDocumento,
+                'cuitCliente' => $this->cuit,
+                'razonSocial'=>$this->razonSocial,
+                'tipoContribuyente'=>$this->tipoContribuyente,
+                'domicilio'=>$this->domicilio,
+                'empresa_id'=> $this->empresa->id,
+                'fecha'=> Carbon::now()->format('Y-m-d H:i:s'),
+                'leyenda'=> $this->leyenda,
+                'idFormaPago'=>$this->idFormaPago,
+                
+                'deposito_id'=>$this->usuario->deposito_id,
+                'usuario'=> $this->usuario->name,
+            ]);
+
+
+            $cliente = Cliente::updateOrCreate(
+                ['numeroDocumento'=>$this->cuit,'empresa_id'=> $this->empresa->id],
+                [            
+                'tipoDocumento'=>trim($this->tipoDocumento),
+                'numeroDocumento'=>trim($this->cuit),
+                'razonSocial'=>trim($this->razonSocial),
+                'domicilio'=>trim($this->domicilio),
+                'correo'=>trim($this->correoCliente),
+                'tipoContribuyente'=>trim($this->tipoContribuyente)]
+            );
+
+            // dd($this->carrito['carrito']);
+
+            if(isset($this->carrito['carrito'])){//SI EXITE GUARDA LOS ARTICULOS
+                
+                foreach ($this->carrito['carrito'] as $key => $value) {
+                    // array:6 [▼ // app/Livewire/Factura/NuevoComprobante.php:75
+                    // "codigo" => "28464334"
+                    // "detalle" => "alfajor"
+                    // "precio" => 1
+                    // "iva" => 21
+                    // "cantidad" => 1
+                    // "subtotal" => 1
+                    // ]
+                    // dump($value);
+                    ProductoPresupuesto::create([
+                        'presupuesto_id'=> $presupuestoGuardado->id,
+                        'presupuesto_numero'=>$presupuestoGuardado->numero,
+                        'codigo'=>$value['codigo'],
+                        'detalle'=>$value['detalle'],
+                        'precio'=>$value['precio'],
+                        'iva'=>$value['iva'],
+                        'cantidad'=>$value['cantidad'],
+                        'rubro'=>$value['rubro'],
+                        'proveedor'=>$value['proveedor'],
+                        'controlStock'=>$value['controlStock'],
+                        'tipoComp'=>$this->tipoComprobante,
+                        'fecha'=>$presupuestoGuardado->fecha,
+                        'idFormaPago'=>$this->idFormaPago,
+                        
+                        'usuario'=> $this->usuario->name,
+                        'empresa_id'=> $this->empresa->id,
+                    ]);
+
+
+                    //UN PRESUPUESTO NO DESCUENTA STOCK
+                }
+            }
+
+            return $presupuestoGuardado->id;
+          
     }
 
 

@@ -25,6 +25,7 @@ use App\Livewire\Stock\HistoricoEnvio;
 use App\Livewire\Remito\VerRemito;
 use App\Livewire\Cliente\VerCliente;
 use App\Livewire\Proveedor\VerProveedor;
+use App\Livewire\Presupuesto\VerPresupuesto;
 
 
 use App\Models\Empresa;
@@ -32,6 +33,7 @@ use App\Models\FormaPago;
 use App\Models\Comprobante;
 
 use App\Http\Controllers\ComprobanteController;
+use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\InventarioController;
 
 
@@ -112,13 +114,17 @@ use Illuminate\Http\Request;
         Route::get('/importarstock', ImportarStock::class)->name('importarstock');
         Route::get('/cliente', VerCliente::class)->name('cliente');
 
+        Route::get('/presupuesto', VerPresupuesto::class)->name('presupuesto');
 
 
-        Route::get('formatoPDF/{comprobante_id?}', function ($comprobante_id = null) {
+
+
+        Route::get('formatoPDF/{tipo}/{comprobante_id?}', function ($tipo,$comprobante_id = null) {
 
             if($comprobante_id){
-                
-                return view('comprobante.formatoPDF',['comprobante_id'=>$comprobante_id])->render();
+
+                return view('comprobante.formatoPDF',['comprobante_id'=>$comprobante_id,
+                                                        'tipo'=>$tipo])->render();               
 
             }else{
                 return redirect('comprobante')->with('mensaje', 'Sin elementos para mostrar factura');
@@ -129,6 +135,8 @@ use Illuminate\Http\Request;
 
                 //para pruebas
         Route::get('/imprimirComprobante/{comprobante_id?}/{formato?}', [ComprobanteController::class, 'imprimir'])->name('imprimirComprobante');
+        Route::get('/imprimirPresupuesto/{presupuesto_id?}/{formato?}', [PresupuestoController::class, 'imprimir'])->name('imprimirPresupuesto');
+
 
 
 

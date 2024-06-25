@@ -78,7 +78,7 @@
           <li>Time: 10:00am - 12:00pm</li>
         </ul>
       </article>
-    </dialog>
+    </dialog>    
 
   </body>
 </html>
