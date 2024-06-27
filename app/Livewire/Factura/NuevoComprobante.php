@@ -68,6 +68,9 @@ class NuevoComprobante extends Component
     #[Session(key: 'carrito')] 
     public $carrito;
 
+    #[Session(key: 'cliente')] 
+    public $cliente;
+
   
 
 
@@ -210,6 +213,8 @@ class NuevoComprobante extends Component
 
         //borramos la session de carrito 
         $this->carrito=null;
+        $this->cliente=null;
+
 
         if($this->imprimir){
 
@@ -285,6 +290,20 @@ class NuevoComprobante extends Component
         $this->formaPago = FormaPago::all();
         $this->idFormaPago = 1;
         $this->remitoEntrega = 'no'; //no (se entrega en el momento ) si (se entrega posterior)
+
+
+        //PARA CARGAR EL CLIENTE EN EL CASO DE QUE SE CARGUE UN PRESUPUESTO 
+        if(isset($this->cliente['razonSocial'])){
+
+            $this->cuit = $this->cliente['cuitCliente'];
+            $this->razonSocial = $this->cliente['razonSocial'];
+            $this->tipoDocumento = $this->cliente['DocTipo'];
+            $this->tipoContribuyente = $this->cliente['tipoContribuyente'];
+            $this->domicilio = $this->cliente['domicilio'];
+            $this->leyenda = $this->cliente['leyenda'];
+            $this->idFormaPago = $this->cliente['idFormaPago'];
+
+        }
         
     
     }
@@ -704,9 +723,9 @@ class NuevoComprobante extends Component
                     'FchServDesde'  => $fecha_servicio_desde,
                     'FchServHasta'  => $fecha_servicio_hasta,
                     'FchVtoPago'    => $fecha_vencimiento_pago,
-                    'ImpTotal' 	=> ($importe_total) ,
+                    'ImpTotal' 	=> round($importe_total,2) ,
                     'ImpTotConc'=> 0, // Importe neto no gravado
-                    'ImpNeto' 	=> $importe_total, // Importe neto
+                    'ImpNeto' 	=> round($importe_total,2), // Importe neto
                     'ImpOpEx' 	=> 0, // Importe exento al IVA
                     'ImpIVA' 	=> 0, // Importe de IVA
                     'ImpTrib' 	=> 0, //Importe total de tributos

@@ -68,8 +68,8 @@
             <div class="col">{{-- LISTA DE PRODUCTOS --}}
                 <article>
                     <h6>Productos</h6>
-                    <button>Cargar</button>
-                    <button>Imprimir</button>
+                    <button wire:click="cargarPresupuesto">Cargar</button>
+                    <button wire:click="imprimirPresupuesto">Imprimir</button>
                 </article>
 
                 {{-- "id" => 1

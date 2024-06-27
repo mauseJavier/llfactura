@@ -208,6 +208,8 @@ class Venta extends Component
 
     public function borrarCarrito(){
         $this->carrito=null;
+        $this->cliente=null;
+
         $this->esconderCelular = 'esconderCelular';
         $this->mostrarCelular= '';
     }
