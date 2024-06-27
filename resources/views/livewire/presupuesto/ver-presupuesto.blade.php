@@ -2,6 +2,12 @@
     <div class="container">
         <H3>Presupuestos</H3>
 
+        @if (session('mensaje'))
+          <article>
+            {{ session('mensaje') }}
+          </article>
+        @endif
+
         <div class="grid">
 
             <div class="col">{{-- PRESUPUESTO --}}

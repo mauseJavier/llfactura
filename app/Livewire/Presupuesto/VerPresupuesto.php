@@ -43,51 +43,62 @@ class VerPresupuesto extends Component
         $this->carrito = null;
         $this->cliente = null;
 
-        $productos = ProductoPresupuesto::where('presupuesto_id',$this->presupuesto->id)->get();
-        // dump($this->presupuesto);
-
-        $this->cliente = array(
-            'DocTipo'=> $this->presupuesto->DocTipo,
-            'cuitCliente'=> $this->presupuesto->cuitCliente,
-            'razonSocial'=> $this->presupuesto->razonSocial,
-            'tipoContribuyente'=> $this->presupuesto->tipoContribuyente,
-            'domicilio'=> $this->presupuesto->domicilio,
-            'leyenda'=> $this->presupuesto->leyenda,
-            'idFormaPago'=> $this->presupuesto->idFormaPago,
-        );
-
-        foreach ($productos as $key => $value) {
-            # code...
-            $this->carrito['carrito'][] = array(
-                'codigo'=>$value->codigo,
-                'detalle'=>$value->detalle,
-                'precio'=> round( $value->precio,2),
-                'iva'=>$value->iva,
-                'cantidad'=>$value->cantidad,
-                'rubro'=>$value->rubro,
-                'proveedor'=>$value->proveedor,
-                'controlStock'=>$value->controlStock,
-                'subtotal'=> round( $value->precio * $value->cantidad,2) ,
-    
-                ) ;
-        }
+        // dd($this->presupuesto);
+        if(isset($this->presupuesto->DocTipo)){
 
 
-            $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
-            $cantidadArticulos = 0 ;
+            $productos = ProductoPresupuesto::where('presupuesto_id',$this->presupuesto->id)->get();
+            // dump($this->presupuesto);
 
-            foreach ($this->carrito['carrito'] as $item) {
+            $this->cliente = array(
+                'DocTipo'=> $this->presupuesto->DocTipo,
+                'cuitCliente'=> $this->presupuesto->cuitCliente,
+                'razonSocial'=> $this->presupuesto->razonSocial,
+                'tipoContribuyente'=> $this->presupuesto->tipoContribuyente,
+                'domicilio'=> $this->presupuesto->domicilio,
+                'leyenda'=> $this->presupuesto->leyenda,
+                'idFormaPago'=> $this->presupuesto->idFormaPago,
+            );
 
-                // dd($this->carrito['carrito']);
-                $totalSubtotal += $item['subtotal'];
-                $cantidadArticulos += $item['cantidad'];
-
+            foreach ($productos as $key => $value) {
+                # code...
+                $this->carrito['carrito'][] = array(
+                    'codigo'=>$value->codigo,
+                    'detalle'=>$value->detalle,
+                    'precio'=> round( $value->precio,2),
+                    'iva'=>$value->iva,
+                    'cantidad'=>$value->cantidad,
+                    'rubro'=>$value->rubro,
+                    'proveedor'=>$value->proveedor,
+                    'controlStock'=>$value->controlStock,
+                    'subtotal'=> round( $value->precio * $value->cantidad,2) ,
+        
+                    ) ;
             }
 
-            $this->carrito['total']=  round($totalSubtotal,2);
-            $this->carrito['articulos']=  $cantidadArticulos;
 
-            $this->redirectRoute('nuevoComprobante');
+                $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
+                $cantidadArticulos = 0 ;
+
+                foreach ($this->carrito['carrito'] as $item) {
+
+                    // dd($this->carrito['carrito']);
+                    $totalSubtotal += $item['subtotal'];
+                    $cantidadArticulos += $item['cantidad'];
+
+                }
+
+                $this->carrito['total']=  round($totalSubtotal,2);
+                $this->carrito['articulos']=  $cantidadArticulos;
+
+                $this->redirectRoute('nuevoComprobante');
+
+
+        }else{
+            session()->flash('mensaje', 'No existe Presupuesto.');
+
+        }
+
 
 
     }
