@@ -25,6 +25,8 @@ class ComprobanteController extends Controller
   
         $empresa = Empresa::find(Auth::user()->empresa_id);  
 
+        // dd($empresa);
+
         //    return Auth::user();
 
         $comprobante = Comprobante::where('id',$comprobante_id)->where('empresa_id',$empresa->id)->get();
@@ -237,6 +239,13 @@ class ComprobanteController extends Controller
                
             }
 
+            if($empresa->iva == 'ME'){
+                $empresaIva = 'RESPONSABLE MONOTRIBUTO';
+
+            }else{
+                $empresaIva = 'RESPONSABLE INSCRIPTO';
+            }
+
             $nombreFormaPago = FormaPago::find($comprobante[0]->idFormaPago);
 
 
@@ -245,10 +254,13 @@ class ComprobanteController extends Controller
                 'empresaNombre'=>$empresa->razonSocial,
                 'numeroFactura'=> sprintf("%04d", $comprobante[0]->ptoVta)  .'-'. sprintf("%08d", $comprobante[0]->numero),
                 'cuitEmpresa'=>$empresa->cuit,
+                'empresaIva'=>$empresaIva,
 
                 'inicioActividades'=> date('d-m-Y', strtotime($empresa->inicioActividades)) ,
                 'fechaFactura'=>date('d-m-Y', strtotime($comprobante[0]->fecha)),
-                'direccionEmpresa'=>$empresa->domicilio,
+
+                'direccionEmpresa'=>$empresa->domicilio, // CAMBIAR POR DOMICILIO DEL USUARIO 
+
                 'telefonoEmpresa'=>$empresa->telefono,
                 'titularEmpresa'=>$empresa->titular,
                 'tipoFactura'=>$tipoComprobante,

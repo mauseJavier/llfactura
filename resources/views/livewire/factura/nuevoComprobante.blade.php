@@ -164,7 +164,13 @@
 
                 {{-- //////////////// --}}
                 <div class="grid">
+
                     <div>
+                        <livewire:Factura.Clientes :empresa_id="$empresa->id" wire:model="razonSocial"/>
+                    </div>
+
+
+                    <div x-data>
                         <label for="">Numero de Documento</label>
                         <fieldset role="group">                       
     
@@ -178,6 +184,8 @@
                                 name="cuit"    
                                 placeholder="Numero de Documento"
                                 autocomplete="cuit"
+                                x-on:click="event.target.select()"
+
                             
                                 @if ($errors->has('cuit'))
                                     aria-invalid="true"
@@ -187,7 +195,7 @@
     
                             />      
                             
-                            <button wire:click="buscarCliente">Buscar</button>
+                            <button wire:click="buscarCliente">Buscar(CUIT)</button>
                             
                           </fieldset>
                           <small id="invalid-helper">@error('cuit') {{ $message }} @enderror </small>                  
@@ -213,7 +221,7 @@
                     </div>
                 </div>
     
-                <fieldset>
+                {{-- <fieldset>
                     <label>
                       Nombre y Apellido o Razon Social
                       <input
@@ -225,7 +233,7 @@
                       />
                     </label>
                    
-                </fieldset>   
+                </fieldset>    --}}
     
                 {{-- /////////////// --}}
 

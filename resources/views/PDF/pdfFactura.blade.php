@@ -50,12 +50,15 @@
     <tr style="align-content: center; align-items: center;">
 
       <td  style="width: 250px; "  >
-          <img src="{{$logo}}"  alt="" width="80" style="margin-top: -30px; margin-left: auto;"/>
+          <img src="{{$logo}}"  alt="" width="100" style="margin-top: -30px; margin-left: auto;"/>
 
           <table style="text-align: center;">
             <tr>
               <td><h1>{{$empresaNombre}}</h1></td>              
             </tr>
+            <tr>
+              <td>{{$empresaIva}}</td>
+           </tr>
             <tr>
                <td>{{$direccionEmpresa}}</td>
             </tr>
@@ -71,7 +74,7 @@
         
       <td colspan="3" class="centered-cell" style="text-align: center; padding-top: 0%;">
         
-          <h1 class="centered-cell" style="border: 1px solid black; width: 100px; height: 50px; margin-top: -20px;" >{{$tipoFactura}}</h1> 
+          <h1 class="centered-cell" style=" width: 100px; height: 50px; margin-top: -20px;" >{{$tipoFactura}}</h1> 
           <small style="text-align: center;">Cod.{{$codigoFactura}}</small> 
 
 

@@ -27,6 +27,8 @@ use App\Livewire\Cliente\VerCliente;
 use App\Livewire\Proveedor\VerProveedor;
 use App\Livewire\Presupuesto\VerPresupuesto;
 
+use App\Livewire\FacturacionEmpresas\VerFacturacionEmpresas;
+
 
 use App\Models\Empresa;
 use App\Models\FormaPago;
@@ -72,6 +74,8 @@ use Illuminate\Http\Request;
             Route::get('/updateUsuario/{id}', Update::class)->name('updateUsuario');
 
             Route::get('/empresa', VerEmpresa::class)->name('empresa');
+            Route::get('/facturacionempresas', VerFacturacionEmpresas::class)->name('facturacionempresas');
+
 
         
 

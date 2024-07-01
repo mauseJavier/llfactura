@@ -68,6 +68,7 @@
 		<tr>
 			<td class="padding-b-3">
 				<p>{{$empresaNombre}}</p>
+				<P>{{$empresaIva}}</P>
 				<p>{{$direccionEmpresa}}</p>
                 <P>DE: {{$titularEmpresa}}</P>
 				<p>C.U.I.T.: {{$cuitEmpresa}}</p>

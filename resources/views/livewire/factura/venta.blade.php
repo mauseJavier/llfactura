@@ -3,49 +3,71 @@
 
 <div class="container">
 
-  @if ($carrito)
-    <article style="text-align: center; justify-content: center;">
+  <div style="justify-content: center; align-items: center; ">
 
-      <h1 style="font-size: 50px;">$ {{$carrito['total']}}</h1>
-      <small>Articulos: {{$carrito['articulos']}}</small>
+    @if ($carrito)
+      <article style="
+
+              align-items: center;
+              justify-content: center;
+              text-align: center;
+          
+              top: 0;
+              width: 80%;
+              max-width: 100%;
+              min-width: 100px;
+              padding: 5px;
+  
+              margin: auto;
+              ">
+        <h1 style="font-size: 50px;">$ {{$carrito['total']}}</h1>
+        <small>Artículos: {{$carrito['articulos']}}</small>
+      </article>      
+    @endif
+  
+  </div>
+  
+    <br>
+
+
+  @if ($carrito)
+    <div style="justify-content: center; align-items: center; "> 
+
       
-  </article>      
-  @endif
+      
+      <div role="group">        
+        <button wire:click="borrarCarrito"  class="contrast" >Cancelar</button>
+        <a wire:navigate href="{{route('nuevoComprobante')}}" role="button" >Finalizar</a>
+      </div>
 
+      <div class="grid">
+        <div class="col">
+          <label>
+            <input name="terms" type="checkbox" role="switch" wire:click="cambiar" />
+            VerCarrito
+          </label>
 
-
-  @if ($carrito)
-  <nav>
-    <ul>
-      <li>      
+        </div>
+        <div class="col">
           <fieldset role="group">
             <input type="number" step=".5" wire:model="porcentaje" style="text-align: right;">
             <button wire:click="aplicarPorcentaje">%</button>
           </fieldset>        
           @if (session('mensaje'))
-              <div class="alert alert-success">
-                  {{ session('mensaje') }}
-              </div>
+          <div class="alert alert-success">
+          {{ session('mensaje') }}
+          </div>
           @endif
-      </li>
-      <li>
-        <button wire:click="borrarCarrito"  class="outline">Borrar</button>
-      </li>
+
+        </div>
+      </div>
+      
+      
 
       
-      <a wire:navigate href="{{route('nuevoComprobante')}}" role="button" class="outline contrast">Finalizar</a>
-      
-    </ul>
-    <ul>
-      <li>
-        <label>
-          <input name="terms" type="checkbox" role="switch" wire:click="cambiar" />
-          VerCarrito
-        </label>
-        
-      </li>
-    </ul>
-  </nav>
+
+
+    </div>       
   @endif
 
 
@@ -144,7 +166,8 @@
                 wire:keydown.up="sumarCantidad"
                 autocomplete="off"
              />
-            <input type="submit" value="Buscar" />
+            
+            <button type="submit" ><i class="fa-solid fa-magnifying-glass"></i></button>
           </form>
           @error('cantidad') 
             <small id="invalid-helper">

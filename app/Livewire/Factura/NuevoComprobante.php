@@ -5,7 +5,6 @@ namespace App\Livewire\Factura;
 use Afip;
 use Carbon\Carbon;
 
-
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
@@ -19,6 +18,7 @@ use App\Models\Empresa;
 use App\Models\Cliente;
 use App\Models\FormaPago;
 use App\Models\productoComprobante;
+
 
 use App\Models\Presupuesto;
 use App\Models\ProductoPresupuesto;
@@ -61,6 +61,8 @@ class NuevoComprobante extends Component
 
 
 
+
+
     //para cuando el total viene del carrito no se pueda editar el monto a mano 
     public $modificarImporte='';
 
@@ -72,6 +74,34 @@ class NuevoComprobante extends Component
     public $cliente;
 
   
+
+
+
+    #[On('seleccionarCliente')] 
+    public function seleccionarCliente(Cliente $cliente){
+
+        // array:10 [▼
+        //     "id" => 7
+        //     "tipoDocumento" => 99
+        //     "tipoContribuyente" => 5
+        //     "numeroDocumento" => 5555333
+        //     "razonSocial" => "martin"
+        //     "domicilio" => ""
+        //     "correo" => ""
+        //     "empresa_id" => 1
+        //     "created_at" => "2024-06-30 00:30:55"
+        //     "updated_at" => "2024-06-30 00:30:55"
+        // ]
+
+        $this->domicilio = $cliente->domicilio;
+        $this->correoCliente = $cliente->correo;
+        $this->tipoDocumento = $cliente->tipoDocumento;
+        $this->razonSocial = $cliente->razonSocial;
+        $this->tipoContribuyente = $cliente->tipoContribuyente;
+        $this->cuit = $cliente->numeroDocumento;
+
+
+    }
 
 
     public function facturar(Request $request)//este request es por la session 

@@ -9,8 +9,8 @@
           </li>
           <li>
             <hgroup>
-              <a href="/nuevoComprobante" wire:navigate><h4 style="color: forestgreen">Factura</h4></a>
-              <a href="/panel" wire:navigate><h4>App </h4></a></strong>         
+              <a href="/nuevoComprobante" wire:navigate><h4 style="color: forestgreen">FacturaApp</h4></a>
+                  
               <small><h6>{{$empresa->razonSocial}}</h6></small>
             </hgroup>
           </li>
@@ -24,6 +24,9 @@
         <ul>
           
           {{-- <li><a href="{{route('profile')}}" class="secondary">{{$name}}</a></li> --}}
+          <li>
+            <a wire:navigate href="/panel"><i class="fa-solid fa-house fa-xl"></i></a>    
+          </li>
           <li>
             <a wire:navigate href="{{route('venta')}}"><i class="fa-solid fa-cart-shopping fa-xl"></i></a>    
           </li>
@@ -49,6 +52,9 @@
                   </li>
                   <li>
                     <a wire:navigate href="{{route('empresa')}}">Empresas</a>
+                  </li>
+                  <li>
+                    <a wire:navigate href="{{route('facturacionempresas')}}">Facturacion Empresas</a>
                   </li>
                     
                 @endif

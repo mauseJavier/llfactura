@@ -16,9 +16,9 @@
             <div class="col" style="text-align: center;">
                 <a href="/venta" wire:navigate>                    
                     <article class="ponerSombras">
-                        <i class="fa-solid fa-tag fa-10x"></i>
+                        <i class="fa-solid fa-tag fa-5x"></i>
                         <hr>              
-                        <h1><strong>Nueva Venta</strong></h1>
+                        <h3><strong>Nueva Venta</strong></h3>
                     </article>
                 </a>
 
@@ -27,10 +27,10 @@
 
                 <a href="{{route('comprobante')}}" wire:navigate>                       
                     <article class="ponerSombras">
-                        <i class="fa-solid fa-receipt fa-10x"></i>   
+                        <i class="fa-solid fa-receipt fa-5x"></i>   
                         <hr>
                         
-                        <h1><strong>Comprobantes</strong></h1> 
+                        <h3><strong>Comprobantes</strong></h3> 
                                  
                     </article>
                 </a>
@@ -43,18 +43,18 @@
                 <a href="/stock" wire:navigate>                    
                     <article class="ponerSombras">
                         {{-- <i class="fa-solid fa-file-invoice-dollar fa-10x"></i>   --}}
-                        <i class="fa-solid fa-boxes-packing fa-10x"></i>
+                        <i class="fa-solid fa-boxes-packing fa-5x"></i>
                         <hr>              
-                        <h1><strong>Stock</strong></h1>
+                        <h3><strong>Stock</strong></h3>
                     </article>
                 </a>
             </div>
             <div class="col" style="text-align: center;">
                 <a href="/cliente" wire:navigate>                    
                     <article class="ponerSombras">
-                        <i class="fa-solid fa-users fa-10x"></i>
+                        <i class="fa-solid fa-users fa-5x"></i>
                         <hr>              
-                        <h1><strong>Clientes</strong></h1>
+                        <h3><strong>Clientes</strong></h3>
                     </article>
                 </a>
             </div>
@@ -62,9 +62,9 @@
             <div class="col" style="text-align: center;">
                 <a href="/presupuesto" wire:navigate>                    
                     <article class="ponerSombras">
-                        <i class="fa-solid fa-file-invoice-dollar fa-10x"></i>  
+                        <i class="fa-solid fa-file-invoice-dollar fa-5x"></i>  
                         <hr>              
-                        <h1><strong>Presupuestos</strong></h1>
+                        <h3><strong>Presupuestos</strong></h3>
                     </article>
                 </a>
             </div>
@@ -81,9 +81,9 @@
                     <a href="{{route('inventario')}}" wire:navigate>                    
                     <article class="ponerSombras">
                         {{-- <i class="fa-solid fa-file-invoice-dollar fa-10x"></i>                 --}}
-                        <i class="fa-solid fa-boxes-stacked fa-10x"></i>
+                        <i class="fa-solid fa-boxes-stacked fa-5x"></i>
                         <hr>
-                        <h1><strong>Inventario</strong></h1>
+                        <h3><strong>Inventario</strong></h3>
                     </article>
                     </a>
                 </div>
@@ -91,9 +91,9 @@
                     <a href="/proveedor" wire:navigate>                    
                         <article class="ponerSombras">
                             {{-- <i class="fa-solid fa-users fa-10x"></i> --}}
-                            <i class="fa-solid fa-dolly fa-10x"></i>
+                            <i class="fa-solid fa-dolly fa-5x"></i>
                             <hr>              
-                            <h1><strong>Proveedores</strong></h1>
+                            <h3><strong>Proveedores</strong></h3>
                         </article>
                     </a>
                 </div>

@@ -54,7 +54,7 @@
               <header>
                 <button aria-label="Close" rel="prev" @click="modalNuevoProveedor = !modalNuevoProveedor"></button>
                 <p>
-                  <strong>Nuevo Cliente</strong>
+                  <strong>Nuevo Proveedor</strong>
                 </p>
               </header>
     

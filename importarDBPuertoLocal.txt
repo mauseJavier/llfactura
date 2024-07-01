@@ -1,3 +1,5 @@
+IMPORTAR MYSQL
+
 php artisan serve --host=192.168.1.111 --port=8080
 
 
@@ -6,4 +8,4 @@ php artisan make:migration add_new_column_to_users_table --table=users
 sudo  /opt/lampp/bin/mysql -h localhost -u root -p --default-character-set=utf8 facturaApp</home/mause/Descargas/4llfactura.sql
 
 
-sudo  /opt/lampp/bin/mysql -h localhost -u root -p --default-character-set=utf8 patagoniaweb</home/mause/Descargas/2patagonia.sql
+sudo  /opt/lampp/bin/mysql -h localhost -u root -p --default-character-set=utf8 facturaApp</home/mause/Descargas/
