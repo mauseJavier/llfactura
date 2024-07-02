@@ -86,6 +86,9 @@ class VerInventario extends Component
     public $nuevoProveedor = '';
     public $nuevaMarca = '';
 
+    public $nuevaLista='';
+    public $porcentajeLista=0;
+
     //MODIFICAR EL STOCK
 
     #[Validate('required', message: 'Requerido')]
@@ -163,6 +166,33 @@ class VerInventario extends Component
 
 
         $this->nuevaMarca = '';
+    }
+
+    public function guardarLista(){
+
+        $validated = $this->validate([ 
+            'nuevaLista' => 'required|min:3',
+            'porcentajeLista' => 'required|numeric',
+        ]);
+
+        $listaGuardada = ListaPrecio::create([
+            'nombre'=> $this->nuevaLista,
+            'porcentaje'=> $this->porcentajeLista,
+            'empresa_id'=>$this->empresa->id,
+        ]);
+
+        if($listaGuardada){
+
+            session()->flash('mensajeLista', 'Lista '.$listaGuardada->nombre.' Guardado.');
+        }else{
+
+            session()->flash('mensajeLista', 'Ocurrio un Error');
+        }
+
+
+        $this->nuevaLista = '';
+        $this->porcentajeLista = 0;
+
     }
 
     public function guardarProveedor(){

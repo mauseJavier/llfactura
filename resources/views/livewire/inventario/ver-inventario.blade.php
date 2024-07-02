@@ -1,4 +1,4 @@
-<div x-data="{ isOpenRubro: false, isOpenProveedor: false, isOpenMarca: false}">
+<div x-data="{ isOpenRubro: false, isOpenProveedor: false, isOpenMarca: false, isOpenLista: false}">
     {{-- If you look to others for fulfillment, you will never truly be fulfilled. --}}
 
     {{-- @dump($inventario) --}}
@@ -28,7 +28,10 @@
                                         <a role="button" class="outline"  @click="isOpenProveedor = !isOpenProveedor">Proveedor</a>
                                     </li>
                                     <li>
-                                        <a role="button" class="outline"  @click="isOpenMarca = !isOpenProveedor">Marca</a>
+                                        <a role="button" class="outline"  @click="isOpenMarca = !isOpenMarca">Marca</a>
+                                    </li>
+                                    <li>
+                                        <a role="button" class="outline"  @click="isOpenLista = !isOpenLista">Lista Precio</a>
                                     </li>
                                     <li>
                                         <a role="button" class="outline" wire:navigate href="{{route('edicionMultiple')}}">Edicion Multiple</a>
@@ -547,6 +550,67 @@
             />
             </form>
             <button  @click="isOpenMarca = false">Cancelar</button>
+        </article>
+    </dialog>
+
+
+    <dialog x-bind:open="isOpenLista">
+        <article>
+          <header>
+            <button aria-label="Close" @click="isOpenLista = false" rel="prev"></button>
+            <p>
+              <strong>Nueva Lista</strong>
+            </p>
+          </header>
+            @if (session()->has('mensajeLista'))          
+                <p style="color: rgb(0, 137, 90);">
+                    {{ session('mensajeLista') }}
+                </p>          
+            @endif
+            <form wire:submit="guardarLista">
+            <fieldset>
+                <label>
+                Nombre Lista
+                <input
+                    wire:model.live="nuevaLista"
+                    name=""
+                    placeholder="Nombre Lista"
+                    
+                    @error('nuevaLista') aria-invalid="true" @enderror
+                />
+                    @error('nuevaLista') 
+                    <small id="invalid-helper">
+                        {{ $message }} 
+                        </small>
+                    @enderror
+                
+                </label>
+
+                <label>
+                    Porcentaje Lista %
+                    <input
+                        wire:model.live="porcentajeLista"
+                        name=""
+                        placeholder="%"
+                        
+                        @error('porcentajeLista') aria-invalid="true" @enderror
+                    />
+                        @error('porcentajeLista') 
+                        <small id="invalid-helper">
+                            {{ $message }} 
+                            </small>
+                        @enderror
+                    
+                    </label>
+
+            </fieldset>
+            
+            <input
+                type="submit"
+                value="Guardar Lista"
+            />
+            </form>
+            <button  @click="isOpenLista = false">Cancelar</button>
         </article>
     </dialog>
 

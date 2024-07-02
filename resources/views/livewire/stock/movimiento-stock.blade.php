@@ -1,5 +1,5 @@
 <div>
-    {{-- @dump($registros) --}}
+    {{-- @dump($depositoId) --}}
 
     <div class="container">
         <h1>Movimiento por Codigo</h1>
@@ -11,12 +11,12 @@
                 <div class="col">
 
                     <!-- Select -->
-                    <select name="select" aria-label="Select" required>
-                        <option selected disabled value="">Select</option>
-                        <option>Solid</option>
-                        <option>Liquid</option>
-                        <option>Gas</option>
-                        <option>Plasma</option>false
+                    <select wire:model.live="depositoId">
+                        <option value="todo">TODO</option>                            
+
+                        @foreach ($depositos as $d)
+                            <option value="{{$d->id}}">{{$d->nombre}}</option>                            
+                        @endforeach
                     </select>
                 </div>
                 <div class="col">

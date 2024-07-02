@@ -21,21 +21,29 @@ class MovimientoStock extends Component
     public $codigo;
     public $empresa;
 
+    public $depositoId;
+
     public function mount(){
 
 
         $this->empresa = Empresa::find(Auth::user()->empresa_id);
+        $this->depositoId = 'todo';
+
 
     }
     public function render()
     {
         return view('livewire.stock.movimiento-stock',[
             'registros'=> DB::table('stocks as a')
-                ->select('a.*', 'b.nombre as nombreDeposito')
-                ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
-                ->where('a.codigo', 'like', '%' . $this->codigo . '%')
-                ->where('a.empresa_id', $this->empresa->id)
-                ->paginate(10),
+            ->select('a.*', 'b.nombre as nombreDeposito')
+            ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
+            ->where('a.codigo', 'like', '%' . $this->codigo . '%')
+            ->where('a.empresa_id', $this->empresa->id)
+            ->when($this->depositoId !== 'todo', function ($query) {
+                return $query->where('a.deposito_id', $this->depositoId);
+            })
+            ->paginate(10),
+            'depositos'=> Deposito::where('empresa_id',$this->empresa->id)->get(),
         ])
         ->extends('layouts.app')
         ->section('main'); 

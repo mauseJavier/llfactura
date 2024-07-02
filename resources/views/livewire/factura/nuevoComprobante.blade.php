@@ -62,7 +62,7 @@
             <div class="grid" style="text-align: center;" >
                 <div>
                     <button class="outline" style="width: 100%" x-text="buttonText"
-                        wire:click="facturar" wire:confirm="Finalizar Comprobante?" >
+                        wire:click="facturar">
                     </button>
                 </div>
                 <div>

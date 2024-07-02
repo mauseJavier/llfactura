@@ -56,7 +56,7 @@ class NuevoComprobante extends Component
     public $usuario;
 
 
-    public $imprimir;
+    public $imprimir = true;
     public $remitoEntrega;
 
 
@@ -256,6 +256,7 @@ class NuevoComprobante extends Component
 
                 $this->redirectRoute('formatoPDF',['comprobante_id'=>$comprobanteId,
                                                     'tipo'=>'factura']);
+               
             }
 
 

@@ -169,15 +169,17 @@ class VerStock extends Component
     {
         return view('livewire.stock.ver-stock',[     
                 'stock'=> DB::table('stocks as a')
-                    ->select('a.codigo', 'a.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
+                    ->select('a.codigo', 'c.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
                     ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
+                    ->join('inventarios as c', 'a.codigo', '=', 'c.codigo')
+
                     ->where('a.empresa_id', $this->empresa->id)
                     ->where(function($query) {
                         $query->where('a.codigo', 'like', '%' . $this->datoBuscado . '%')
-                            ->orWhere('a.detalle', 'like', '%' . $this->datoBuscado . '%')
+                            ->orWhere('c.detalle', 'like', '%' . $this->datoBuscado . '%')
                             ->orWhere('b.nombre', 'like', '%' . $this->datoBuscado . '%');
                     })
-                    ->groupBy('a.codigo', 'a.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
+                    ->groupBy('a.codigo', 'c.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
                     ->orderBy('sumStock')
                     ->paginate(10),
             ])        
