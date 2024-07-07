@@ -20,6 +20,27 @@
         </ul>
 
 
+        @if ($total != 0)
+          <article style="
+    
+                  align-items: center;
+                  justify-content: center;
+                  text-align: center;
+              
+                  top: 0;
+                  width: 80%;
+                  max-width: 100%;
+                  min-width: 100px;
+                  padding: 2px;
+      
+                  margin: auto;
+                  ">
+            <h3>$ {{$total}}</h3>
+            <small>Artículos: {{$articulos}}</small>
+          </article>      
+        @endif
+
+
         
         <ul>
           

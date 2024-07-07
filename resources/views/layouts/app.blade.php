@@ -20,11 +20,6 @@
         color: rgb(71, 164, 23);
       }
 
-      @media (max-width: 1000px) {
-            .esconderCelular {
-                display: none;
-            }
-        }
 
         /* para las sombras */
         .ponerSombras:hover {

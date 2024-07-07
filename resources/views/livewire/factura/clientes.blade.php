@@ -12,7 +12,7 @@
     @if(!empty($resultados) AND !empty($clienteBuscado))
 
         @foreach($resultados as $c)
-            <article wire:click="seleccionar({{$c->id}},'{{$c->razonSocial}}')">{{ $c->razonSocial }} ({{ $c->numeroDocumento }})</article>
+            <article wire:click="seleccionar({{$c->id}},'{{$c->razonSocial}}')" >{{ $c->razonSocial }} ({{ $c->numeroDocumento }})</article>
         @endforeach
     @endif
 </div>

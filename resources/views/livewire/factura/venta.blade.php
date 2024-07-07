@@ -1,11 +1,11 @@
 <div>
     {{-- The whole world belongs to you. --}}
 
-<div class="container">
+<div class="container" style="margin-top: -2%;">
 
   <div style="justify-content: center; align-items: center; ">
 
-    @if ($carrito)
+    {{-- @if ($carrito)
       <article style="
 
               align-items: center;
@@ -23,52 +23,11 @@
         <h1 style="font-size: 50px;">$ {{$carrito['total']}}</h1>
         <small>Artículos: {{$carrito['articulos']}}</small>
       </article>      
-    @endif
+    @endif --}}
   
   </div>
   
     <br>
-
-
-  @if ($carrito)
-    <div style="justify-content: center; align-items: center; "> 
-
-      
-      
-      <div role="group">        
-        <button wire:click="borrarCarrito"  class="contrast" >Cancelar</button>
-        <a wire:navigate href="{{route('nuevoComprobante')}}" role="button" >Finalizar</a>
-      </div>
-
-      <div class="grid">
-        <div class="col">
-          <label>
-            <input name="terms" type="checkbox" role="switch" wire:click="cambiar" />
-            VerCarrito
-          </label>
-
-        </div>
-        <div class="col">
-          <fieldset role="group">
-            <input type="number" step=".5" wire:model="porcentaje" style="text-align: right;">
-            <button wire:click="aplicarPorcentaje">%</button>
-          </fieldset>        
-          @if (session('mensaje'))
-          <div class="alert alert-success">
-          {{ session('mensaje') }}
-          </div>
-          @endif
-
-        </div>
-      </div>
-      
-      
-
-      
-
-
-    </div>       
-  @endif
 
 
 
@@ -78,144 +37,245 @@
     <div class="grid">
       
       @if ($carrito)
-      <article  class="{{$esconderCelular}}" style="background-color: rgb(48, 53, 50);">
+        <article  style="background-color: rgb(48, 53, 50);">
 
-        <div>
-            <h3>Articulos Cargados</h3>
-            <div class="overflow-auto">
-                <table>
-                    <thead>
-                      <tr>
+          <div style=" 
+                        height: {{$tamañoGrillaVenta}}px; /* Fija la altura deseada */
+                        overflow: auto; /* Permite el desplazamiento */">
+                        {{-- <p>{{$tamañoGrillaVenta}}</p>
+                        <p>{{count($carrito['carrito'])}}</p> --}}
                         
-                        <th scope="col"  style="text-align: center;">Borrar-Detalle</th>
-                        <th scope="col">Precio</th>
-                        
-                        <th scope="col">Cant</th>
-                        <th scope="col">Sub Total</th>
+              {{-- <h6>Articulos Cargados</h6> --}}
 
-                      </tr>
-                    </thead>
-                    <tbody>
+              <div class="overflow-auto" >
+                  <table style="font-size: 15px;" style="height: 10px;"  id="tablaCarrito">
+                      <thead>
+                        <tr>
+                          
+                          <th scope="col"  style="text-align: center;">Codigo-Borrar</th>
+                          <th scope="col"  style="text-align: center;">Detalle-Editar</th>
 
-                        @foreach ($carrito['carrito'] as $key => $articulo)
-                          <tr>                            
-                            
-                              <th scope="row">
+                          <th scope="col">Precio</th>
+                          
+                          <th scope="col">Cant</th>
+                          <th scope="col">Sub Total</th>
 
-                                <div role="group">
-                                  <button 
-                                    class="outline secondary"
+                        </tr>
+                      </thead>
+                      <tbody>
+
+
+                          @foreach ($carrito['carrito'] as $key => $articulo)
+                            <tr>                            
+                              
+                                <th scope="row">
+
+                                  <p 
                                     wire:click="borrarArticulo({{$key}})" 
-                                    data-tooltip="Eliminar"
+                                    style="cursor: pointer; font-size: 15px;"
                                   >
+                                  
                                     <i class="fa-solid fa-trash"></i>
                                     {{$articulo['codigo']}}
-                                  </button>
-                                  <button class="outline contrast" wire:click="abrirModal({{$key}})" data-tooltip="Editar">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                    {{$articulo['detalle']}}
-                                  </button>
-                                </div>
+                                  </p>
 
-                              </th>  
-                              <th scope="row">${{$articulo['precio']}}</th>  
-                              <th scope="row">{{$articulo['cantidad']}}</th>                            
+                                  {{-- <div role="group">
+                                    <button 
+                                      class="outline secondary"
+                                      wire:click="borrarArticulo({{$key}})" 
+                                      data-tooltip="Eliminar"
+                                      style="font-size: 15px;"
+                                    >
+                                      <i class="fa-solid fa-trash"></i>
+                                      {{$articulo['codigo']}}
+                                    </button>
+                                    <button class="outline contrast" 
+                                      wire:click="abrirModal({{$key}})" 
+                                      data-tooltip="Editar"
+                                      style="font-size: 15px;">
+                                      <i class="fa-regular fa-pen-to-square"></i>
+                                      {{$articulo['detalle']}}
+                                    </button>
+                                  </div>  --}}
 
-                              {{-- <td><input class="seleccionarTodo" style="text-align: right;" type="text" value="{{$articulo['precio']}}" name="precio" style="min-width: 300px;" ></td>
-                              
-                              <td><input class="seleccionarTodo" style="text-align: right;" type="text" value="{{$articulo['cantidad']}}" name="cantidad" style="min-width: 300px;" ></td> --}}
-                                                       
-                              <td style="text-align: right;">${{$articulo['subtotal']}}</td>
-                              
-                          </tr>                          
-                        @endforeach
+                                </th>  
+
+                                <th >
+
+                                  <p
+                                    wire:click="abrirModal({{$key}})" 
+                                   
+                                    style="cursor: pointer; font-size: 15px;"
+                                    >
+                                      <i class="fa-regular fa-pen-to-square"></i>
+                                      {{$articulo['detalle']}}
+                                  </p>
+                                </th>
+                                <th scope="row" >${{$articulo['precio']}}</th>  
+                                <th scope="row" >{{$articulo['cantidad']}}</th>                            
+
+                                {{-- <td><input class="seleccionarTodo" style="text-align: right;" type="text" value="{{$articulo['precio']}}" name="precio" style="min-width: 300px;" ></td>
+                                
+                                <td><input class="seleccionarTodo" style="text-align: right;" type="text" value="{{$articulo['cantidad']}}" name="cantidad" style="min-width: 300px;" ></td>  --}}
+                                                        
+                                <td style="text-align: right;"><strong>${{$articulo['subtotal']}}</strong></td>
+                                
+                            </tr>                          
+                          @endforeach 
                           
-                    </tbody>
-                    <tfoot>
-                      <tr>
+                            
+                      </tbody>
+                      <tfoot>
+                        <tr>
 
-                      </tr>
-                    </tfoot>
-                </table>
-              </div>
+                        </tr>
+                      </tfoot>
+                  </table>
+                </div>
 
-        </div>
+          </div>
 
-      </article>
+        </article>
 
-
-          
       @endif
 
-        
 
-        <div class="{{$mostrarCelular}}">
+    </div>
+
+    <div class="grid">
+
+      <div >
             
  
-          
-          <form role="search"  wire:submit="buscarCargar">        
-            <input style="text-align: center; width: 30%;" class="seleccionarTodo" 
-              wire:model.live="cantidad"
-              wire:keydown.down="restarCantidad"
-              wire:keydown.up="sumarCantidad"
-              type="text"
+        <div class="grid">
+
+          @if ($carrito)
+
+
+
+            <div class="div">
+
+              {{-- @if ($carrito)          
+                    <button wire:click="borrarCarrito"  class="contrast" data-tooltip="Borrar todo" style="font-size: 15px;">Cancelar</button>
+                    <a wire:navigate href="{{route('nuevoComprobante')}}" role="button" data-tooltip="Finalizar Venta"  style="font-size: 15px;">Finalizar</a>
             
-            >
-            <input wire:model.live="datoBuscado" name="search" type="search" placeholder="Buscar en Inventario   ⬆️ + ⬇️ - Cantidad " class="seleccionarTodo"
+                    <label style="font-size: 15px;">
+                      <input name="terms" type="checkbox" role="switch" wire:click="cambiar" />
+                      VerCarrito
+                    </label>    
+              @endif --}}
+
+              <fieldset role="group">
+
+                <a wire:navigate href="{{route('nuevoComprobante')}}" role="button" data-tooltip="Finalizar Venta"  >Finalizar</a>
+                <a  wire:click="borrarCarrito" role="button" data-tooltip="Borrar todo"  class="secondary">Cancelar</a>
+                {{-- <button wire:click="borrarCarrito"  class="contrast" data-tooltip="Borrar todo" style="font-size: 15px;">Cancelar</button> --}}
+
+                <input type="number" step=".5" wire:model="porcentaje" style="text-align: right; font-size: 15px; text-align: center;">
+                <button wire:click="aplicarPorcentaje" data-tooltip="Aplicar % a Toda la Venta" >%</button>
+              </fieldset>        
+              @if (session('mensaje'))
+                <div class="alert alert-success">
+              {{ session('mensaje') }}
+              </div>
+              @endif
+
+            </div>
+
+
+
+              
+          @endif
+
+
+
+
+          <div class="div">
+            <form role="search"  wire:submit="buscarCargar" >        
+              <input style="text-align: center; width: 20%;" class="seleccionarTodo" 
+                wire:model.live="cantidad"
                 wire:keydown.down="restarCantidad"
                 wire:keydown.up="sumarCantidad"
-                autocomplete="off"
-             />
-            
-            <button type="submit" ><i class="fa-solid fa-magnifying-glass"></i></button>
-          </form>
-          @error('cantidad') 
-            <small id="invalid-helper">
-              {{ $message }} 
-            </small>
-          @enderror
+                type="text"
+                style="font-size: 15px;"
               
+              >
+              <input wire:model.live="datoBuscado" name="search" type="search" placeholder="Buscar en Inventario" class="seleccionarTodo"
+                  wire:keydown.down="restarCantidad"
+                  wire:keydown.up="sumarCantidad"
+                  autocomplete="off"
+                  style="font-size: 15px;"
+               />
+              
+              <button type="submit" ><i class="fa-solid fa-magnifying-glass" style="font-size: 15px;"></i></button>
+            </form>
 
-              <div class="overflow-auto">
-                <table>
-                    <thead>
-                      <tr>
-                        <th scope="col">Codigo</th>
-                        <th scope="col">Detalle</th>
-                        <th scope="col" style="text-align: right;">
-                                  <!-- Select -->
-                          <select name="select" aria-label="Select" required wire:model.live="seleccionPrecio">
-                            <option selected value="precio1">Precio 1</option>
-                            <option value="precio2">Precio 2</option>
-                            <option value="precio3">Precio 3</option>
-
-                          </select>
-                        </th>
-                       
-                      </tr>
-                    </thead>
-                    <tbody>
-                      @foreach ($inventario as $i)
-                        <tr>
-                          <th scope="row"><button wire:click="cargar({{$i->id}})">{{$i->codigo}}</button> </th>
-                          <td>{{$i->detalle}}</td>
-                          <td style="text-align: right;">${{$i->precio}}</td>
-        
-                        </tr>
-                      @endforeach
-
-                    </tbody>
-                    <tfoot>
-                      <tr>
-
-                      </tr>
-                    </tfoot>
-                </table>
-              </div>
-
-              {{ $inventario->links('vendor.livewire.bootstrap') }}
+          </div>
 
         </div>
+
+
+
+
+        @error('porcentaje') 
+          <small id="invalid-helper">
+            {{ $message }} 
+          </small>
+        @enderror
+
+        
+
+        @error('cantidad') 
+          <small id="invalid-helper">
+            {{ $message }} 
+          </small>
+        @enderror
+            
+
+            <div class="overflow-auto"
+            style=" 
+                        height: 800px; /* Fija la altura deseada */
+                        overflow: auto; /* Permite el desplazamiento */"
+            >
+              <table style="font-size: 15px;">
+                  <thead>
+                    <tr>
+                      <th scope="col">Codigo</th>
+                      <th scope="col">Detalle</th>
+                      <th scope="col" style="text-align: right;">
+                                <!-- Select -->
+                        <select name="select" aria-label="Select" required wire:model.live="seleccionPrecio" style="font-size: 15px; ">
+                          <option selected value="precio1">Precio 1</option>
+                          <option value="precio2">Precio 2</option>
+                          <option value="precio3">Precio 3</option>
+
+                        </select>
+                      </th>
+                     
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @foreach ($inventario as $i)
+                      <tr>
+                        <th scope="row"><button wire:click="cargar({{$i->id}})" style="font-size: 15px;">{{$i->codigo}}</button> </th>
+                        <td>{{$i->detalle}}</td>
+                        <td style="text-align: right;">${{$i->precio}}</td>
+      
+                      </tr>
+                    @endforeach
+
+                  </tbody>
+                  <tfoot>
+                    <tr>
+
+                    </tr>
+                  </tfoot>
+              </table>
+            </div>
+
+            {{-- {{ $inventario->links('vendor.livewire.bootstrap') }} --}}
+
+      </div>
 
     </div>
 
@@ -240,6 +300,25 @@
             </label>
           </fieldset>
 
+          <hr>
+
+          <fieldset>
+            <legend>Modificar Precios Inventario:</legend>
+            <label>
+              <input type="checkbox" wire:model="checkPrecio1" />
+              Precio 1
+            </label>
+            <label>
+              <input type="checkbox" wire:model="checkPrecio2"  />
+              Precio 2
+            </label>
+            <label>
+              <input type="checkbox" wire:model="checkPrecio3" />
+              Precio 3
+            </label>
+            
+          </fieldset>
+
         <footer>
           <button className="secondary"
             wire:click="cerrarModal">
@@ -251,8 +330,9 @@
       </article>
     </dialog>
 
-</div>
 
+    
+</div>
 
 
 

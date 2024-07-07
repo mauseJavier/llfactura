@@ -183,55 +183,72 @@ class ComprobanteController extends Controller
 
             switch ($comprobante[0]->tipoComp) {
                 case 1:
-                    $tipoComprobante = 'Factura A';
+                    $tipoComprobante = 'Factura';
+                    $abreviatura = 'A';
                     $iva105 = $importe_iva_al105;
                     $iva21 =$importe_iva_al21;
                     $subtotal = $importe_gravado_al21 + $importe_gravado_al105;
                     break;
                 case 6:
-                    $tipoComprobante = 'Factura B';
+                    $tipoComprobante = 'Factura';
+                    $abreviatura = 'B';
+
                     $iva105 = $importe_iva_al105;
                     $iva21 =$importe_iva_al21;
                     $subtotal = $importe_gravado_al21 + $importe_gravado_al105;
                     break;
                 case 11:
-                    $tipoComprobante = 'Factura C';
+                    $tipoComprobante = 'Factura';
+                    $abreviatura = 'C';
+
                     $iva105 = 0;
                     $iva21 = 0;
                     $subtotal = 0;
                     break;
                 case 'remito':
                     $tipoComprobante = 'Remito';
+                    $abreviatura = 'R';
+
                     $iva105 = 0;
                     $iva21 = 0;
                     $subtotal = 0;
                     break;
                 case 'presupuesto':
                     $tipoComprobante = 'Presupuesto';
+                    $abreviatura = 'P';
+
                     $iva105 = 0;
                     $iva21 = 0;
                     $subtotal = 0;
                     break;
                 case 3:
                     $tipoComprobante = 'NOTA CREDITO A';
+                    $abreviatura = 'NCA';
+
                     $iva105 = $importe_iva_al105;
                     $iva21 =$importe_iva_al21;
                     $subtotal = $importe_gravado_al21 + $importe_gravado_al105;
                     break;
                 case 8:
                     $tipoComprobante = 'NOTA CREDITO B';
+                    $abreviatura = 'NCB';
+
                     $iva105 = 0;
                     $iva21 = 0;
                     $subtotal = 0;
                     break;
                 case 13:
                     $tipoComprobante = 'NOTA CREDITO C';
+                    $abreviatura = 'NCC';
+
                     $iva105 = 0;
                     $iva21 = 0;
                     $subtotal = 0;
                     break;
                 case 'notaRemito':
                     $tipoComprobante = 'NOTA REMITO';
+                    $abreviatura = 'NR';
+
                     $iva105 = 0;
                     $iva21 = 0;
                     $subtotal = 0;
@@ -264,6 +281,8 @@ class ComprobanteController extends Controller
                 'telefonoEmpresa'=>$empresa->telefono,
                 'titularEmpresa'=>$empresa->titular,
                 'tipoFactura'=>$tipoComprobante,
+                'abreviatura'=>$abreviatura,
+                
                 'codigoFactura'=>$comprobante[0]->tipoComp,
                 'nombreCliente'=>$comprobante[0]->razonSocial,
                 'cuitCliente'=>$comprobante[0]->cuitCliente,

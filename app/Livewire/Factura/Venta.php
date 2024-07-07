@@ -24,22 +24,37 @@ class Venta extends Component
     public $datoBuscado = '';
     public $cantidad = 1;
     public $seleccionPrecio = 'precio1';
-    public $esconderCelular = 'esconderCelular';
-    public $mostrarCelular = '';
     public $estadoModal = '';
     public $porcentaje=0;
+
+    public $tamañoGrillaVenta=0;
 
     public $modificarDetalle;
     public $modificarPrecio;
     public $modificarCantidad;
     public $modificarKey;
 
+    public $checkPrecio1;
+    public $checkPrecio2;
+    public $checkPrecio3;
+
+
     #[Session(key: 'carrito')] 
     public $carrito;
 
     public function mount() 
     { 
+
+        if(isset($this->carrito['total'])){
+
+            $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
+            $this->tamañoGrillaVenta(count($this->carrito['carrito']));
+        }else{
+        }
+
     }
+
+
 
     public function buscarCargar()
     {
@@ -76,13 +91,20 @@ class Venta extends Component
 
         $validated = $this->validate([
             'cantidad' => 'required|numeric|min:1',
+            'porcentaje' => 'required|numeric',
+
         ], [
             'cantidad.required' => 'El campo cantidad a enviar es obligatorio.',
             'cantidad.numeric' => 'El campo cantidad a enviar debe ser un número.',
             'cantidad.min' => 'El campo cantidad a enviar debe ser mayor que 0.',
+
+            'porcentaje.required' => 'El campo porcentaje a enviar es obligatorio.',
+            'porcentaje.numeric' => 'El campo porcentaje a enviar debe ser un número.',
         ]);
 
-            $this->carrito['carrito'][] = array(
+
+
+            $nuevoArticulo = array(
                 'codigo'=>$articulo[0]->codigo,
                 'detalle'=>$articulo[0]->detalle,
                 'precio'=> round(($articulo[0]->precio * $this->porcentaje / 100 + $articulo[0]->precio),2),
@@ -94,6 +116,12 @@ class Venta extends Component
                 'subtotal'=> round(($articulo[0]->precio * $this->porcentaje / 100 + $articulo[0]->precio) * $this->cantidad,2) ,
 
                 ) ;
+
+                if(!isset($this->carrito['carrito'])){
+                    $this->carrito['carrito']=[];
+                }
+
+                array_unshift($this->carrito['carrito'], $nuevoArticulo);
 
                 $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
                 $cantidadArticulos = 0 ;
@@ -109,6 +137,25 @@ class Venta extends Component
                 $this->carrito['total']=  round($totalSubtotal,2);
                 $this->carrito['articulos']=  $cantidadArticulos;
 
+                // $this->carrito['carrito'] = array_reverse($this->carrito['carrito']);  // Invierte el orden
+                // usort($this->carrito['carrito'], function($a, $b) {
+                //     return $b <=> $a;  // Orden descendente
+                // });
+                // // Invertir el array
+                // $this->carrito['carrito'] = array_reverse($this->carrito['carrito'],true);
+                
+                
+                
+                $this->porcentaje=0;
+                
+                
+                $this->tamañoGrillaVenta(count($this->carrito['carrito']));
+                
+                $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
+                
+                // dd($this->carrito['carrito']);
+                
+
     }
 
     public function aplicarPorcentaje(){
@@ -120,18 +167,21 @@ class Venta extends Component
             $precio = $this->carrito['carrito'][$key]['precio'];
             $cantidad = $this->carrito['carrito'][$key]['cantidad'];
 
-            $precio =round($precio+($precio * $this->porcentaje /100));
+            $precio =round($precio+($precio * $this->porcentaje /100),2);
 
             $this->carrito['carrito'][$key]['precio'] = $precio ;
-            $this->carrito['carrito'][$key]['subtotal'] = round($precio * $cantidad);
+            $this->carrito['carrito'][$key]['subtotal'] = round($precio * $cantidad,2);
 
             // dd($this->carrito['carrito']);
-            $totalSubtotal += round($precio * $cantidad);
+            $totalSubtotal += round($precio * $cantidad,2);
             $cantidadArticulos += $item['cantidad'];
         }
 
         $this->carrito['total']= round($totalSubtotal,2);
         $this->carrito['articulos']=  $cantidadArticulos;
+
+        $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
+
 
         session()->flash('mensaje', '% aplicado: '. $this->porcentaje);
 
@@ -154,15 +204,23 @@ class Venta extends Component
                 $cantidadArticulos += $item['cantidad'];
             }
 
-            $this->carrito['carrito']=$array;//asignamos los nuevos valores 
+            $this->carrito['carrito']= $array;//asignamos los nuevos valores 
             $this->carrito['total']= round($totalSubtotal,2);
             $this->carrito['articulos']=  $cantidadArticulos;
 
             if($totalSubtotal == 0){
                 $this->borrarCarrito();
-                $this->esconderCelular = 'esconderCelular';
-                $this->mostrarCelular= '';
+
+                $this->dispatch('actualizarCarrito', total: 0 , articulos: 0);
+                $this->tamañoGrillaVenta(0);
+
+            }else{
+                $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
+
+                $this->tamañoGrillaVenta(count($this->carrito['carrito']));
             }
+
+
 
     }
 
@@ -182,9 +240,9 @@ class Venta extends Component
     public function modificarCarrito(){
 
         $this->carrito['carrito'][$this->modificarKey]['detalle'] = $this->modificarDetalle ;
-        $this->carrito['carrito'][$this->modificarKey]['precio'] =    $this->modificarPrecio ;
-        $this->carrito['carrito'][$this->modificarKey]['cantidad'] =  $this->modificarCantidad ;    
-        $this->carrito['carrito'][$this->modificarKey]['subtotal'] =  round( $this->modificarPrecio * $this->modificarCantidad,2) ;   
+        $this->carrito['carrito'][$this->modificarKey]['precio'] =    round(floatval($this->modificarPrecio),2) ; 
+        $this->carrito['carrito'][$this->modificarKey]['cantidad'] =  round(floatval($this->modificarCantidad),2) ;    
+        $this->carrito['carrito'][$this->modificarKey]['subtotal'] =  round( floatval($this->modificarPrecio) * floatval($this->modificarCantidad),2) ;   
 
         $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
         $cantidadArticulos = 0 ;
@@ -198,6 +256,34 @@ class Venta extends Component
         $this->carrito['total']= round($totalSubtotal,2);
         $this->carrito['articulos']=  $cantidadArticulos;
 
+
+        // dd($this->checkPrecio1 .' '.$this->checkPrecio2 .' '.$this->checkPrecio3);
+        if($this->checkPrecio1){
+            Inventario::where('codigo', $this->carrito['carrito'][$this->modificarKey]['codigo'])
+                        ->where('empresa_id', Auth::user()->empresa_id)
+                ->update(['precio1' => round(floatval($this->modificarPrecio),2)]);
+        }
+
+        if($this->checkPrecio2){
+            Inventario::where('codigo', $this->carrito['carrito'][$this->modificarKey]['codigo'])
+                        ->where('empresa_id', Auth::user()->empresa_id)
+                ->update(['precio2' => round(floatval($this->modificarPrecio),2)]);
+        }
+
+        if($this->checkPrecio3){
+            Inventario::where('codigo', $this->carrito['carrito'][$this->modificarKey]['codigo'])
+                        ->where('empresa_id', Auth::user()->empresa_id)
+                ->update(['precio3' => round(floatval($this->modificarPrecio),2)]);
+        }
+
+
+        $this->checkPrecio1 = false;
+        $this->checkPrecio2 = false;
+        $this->checkPrecio3 = false;
+
+        $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
+
+
         $this->cerrarModal();
     }
 
@@ -210,8 +296,11 @@ class Venta extends Component
         $this->carrito=null;
         $this->cliente=null;
 
-        $this->esconderCelular = 'esconderCelular';
-        $this->mostrarCelular= '';
+
+        $this->dispatch('actualizarCarrito', total: 0 , articulos: 0);
+        $this->tamañoGrillaVenta(0);
+
+
     }
 
     public function render()
@@ -265,18 +354,19 @@ class Venta extends Component
         
     }
 
-    public function cambiar(){
-       
-        if($this->esconderCelular == 'esconderCelular'){
-            $this->esconderCelular = '';
-            $this->mostrarCelular= 'esconderCelular';
+    public function tamañoGrillaVenta($cantidadArticulos){
 
+        $maximoFilas = 4;
+        if($cantidadArticulos <= $maximoFilas){
+
+            $this->tamañoGrillaVenta =  20 +($cantidadArticulos * 70);
         }else{
-            $this->esconderCelular = 'esconderCelular';
-            $this->mostrarCelular= '';
-
+            $this->tamañoGrillaVenta = 20 + $maximoFilas * 70;
         }
+
     }
+
+
 
 
 }

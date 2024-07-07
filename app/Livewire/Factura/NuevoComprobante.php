@@ -104,6 +104,7 @@ class NuevoComprobante extends Component
     }
 
 
+
     public function facturar(Request $request)//este request es por la session 
     {
 

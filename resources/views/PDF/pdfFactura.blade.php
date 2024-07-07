@@ -74,16 +74,16 @@
         
       <td colspan="3" class="centered-cell" style="text-align: center; padding-top: 0%;">
         
-          <h1 class="centered-cell" style=" width: 100px; height: 50px; margin-top: -20px;" >{{$tipoFactura}}</h1> 
-          <small style="text-align: center;">Cod.{{$codigoFactura}}</small> 
+          <h1 class="centered-cell" style=" width: 100px; height: 50px; margin-top: -20px;" >{{$abreviatura}}</h1> 
+          <small style="text-align: center; margin-top: -30px;">Cod.{{$codigoFactura}}</small> 
 
 
       </td> 
 
 
       <td class="centered-cell">  
-        <h2 style="font-size: 300%; margin-top: -30px; margin-left: auto;">FACTURA</h2>    
-          <ul style="list-style: none; font-size: 80%;  margin-left: auto;">
+        <h2 style="font-size: 300%; margin-top: -30px; margin-left: auto;">{{$tipoFactura}}</h2>    
+          <ul style="list-style: none; font-size: 80%;   margin-left: auto;">
             <li>
               NRO: {{$numeroFactura}}
             </li>
