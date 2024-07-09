@@ -33,7 +33,7 @@ class InventarioController extends Controller
         $datos = DB::table('inventarios')
         ->select('*')
         ->where('empresa_id', Auth::user()->empresa_id)
-        ->whereAny($filtros['filtros'], 'LIKE', '%'.$filtros['datoBuscado'].'%')
+        ->where($filtros['criterio'],$filtros['dato'])
         ->get();
 
 

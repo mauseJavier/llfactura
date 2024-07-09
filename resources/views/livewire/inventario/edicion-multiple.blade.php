@@ -2,30 +2,53 @@
     <div class="container">
 
         <h3>Edicion Multiple</h3>
+        <fieldset>
+            <label>
+              <input wire:model.live="precioFijo" name="terms" type="checkbox" role="switch" />
+              Procentaje / Precio Fijo
+            </label>
+
+          </fieldset>
         <article>
             <div class="grid">
-                <div class="col">
-                    <fieldset role="group">
-                      
-                            <input wire:keyup="actualizar" wire:model="porcentajePrecio1"  type="text" placeholder="% Precio 1"/>
-                     
-                            <input wire:keyup="actualizar" wire:model="porcentajePrecio2" type="text" placeholder="% Precio 2" />
-                       
-                            <input wire:keyup="actualizar" wire:model="porcentajePrecio3"  type="text" placeholder="% Precio 3" />
+                @if (!$precioFijo)
+                    <div class="col">
+                        <fieldset role="group">
                         
-                            <button wire:click="modificarPrecio" wire:confirm="Serguro de Actualizar?">Actualizar</button>
-                    </fieldset>
-                    @error('porcentajePrecio1') {{ $message }} <br> @enderror
-                    @error('porcentajePrecio2') {{ $message }} <br> @enderror
-                    @error('porcentajePrecio3') {{ $message }} <br> @enderror
-                </div>               
-                <div class="col">
-                    <form role="search"  wire:submit="">      
+                                <input wire:keyup="actualizar" wire:model="porcentajePrecio1"  type="text" placeholder="% Precio 1"/>
                         
-                        <input wire:model.live="datoBuscado" name="search" type="search" placeholder="Buscar en Inventario" class="seleccionarTodo" />
-                        {{-- <input type="submit" value="Buscar" /> --}}
-                    </form>
-                </div>
+                                <input wire:keyup="actualizar" wire:model="porcentajePrecio2" type="text" placeholder="% Precio 2" />
+                        
+                                <input wire:keyup="actualizar" wire:model="porcentajePrecio3"  type="text" placeholder="% Precio 3" />
+                            
+                                <button wire:click="modificarPrecio" wire:confirm="Serguro de Actualizar?">Porcentaje</button>
+                        </fieldset>
+                        @error('porcentajePrecio1') <p style="color: red;"> {{ $message }} </p><br> @enderror
+                        @error('porcentajePrecio2') <p style="color: red;"> {{ $message }} </p> <br> @enderror
+                        @error('porcentajePrecio3') <p style="color: red;"> {{ $message }} </p> <br> @enderror
+                    </div>   
+                    
+                @else
+
+                    <div class="col">
+                        <fieldset role="group">
+                        
+                                <input wire:keyup="actualizar" wire:model="fijo1"  type="text" placeholder="% Precio 1"/>
+                        
+                                <input wire:keyup="actualizar" wire:model="fijo2" type="text" placeholder="% Precio 2" />
+                        
+                                <input wire:keyup="actualizar" wire:model="fijo3"  type="text" placeholder="% Precio 3" />
+                            
+                                <button wire:click="modificarPrecio" wire:confirm="Serguro de Actualizar?">PrecioFijo</button>
+                        </fieldset>
+                        @error('fijo1') <p style="color: red;"> {{ $message }} </p><br> @enderror
+                        @error('fijo2') <p style="color: red;"> {{ $message }} </p> <br> @enderror
+                        @error('fijo3') <p style="color: red;"> {{ $message }} </p> <br> @enderror
+                    </div>  
+                    
+                @endif
+            
+  
 
             </div>
         </article>
@@ -36,32 +59,27 @@
                     <div class="col">
                         
                         <legend>Criterio de Filtro:</legend>
-                        <label>
-                            <input type="checkbox" name="" checked  wire:change="modificarFiltros('codigo')" />
-                            Codigo
-                        </label>
-                        <label>
-                            <input type="checkbox" name="" checked  wire:change="modificarFiltros('detalle')"/>
-                            Detalle
-                        </label>
+
+                        <select name="" id="" wire:model="criterioFiltro" wire:change="actualizarCriterio">
+                            <option value="rubro">Rubro</option>
+                            <option value="proveedor">Proveedor</option>
+                            <option value="marca">Marca</option>
+                        </select>
                             
                           
                     </div>
                     <div class="col">
-    
-                        <label>
-                            <input type="checkbox" name="" checked wire:change="modificarFiltros('rubro')"/>
-                            Rubro
-                          </label>
-                          <label>
-                            <input type="checkbox" name="" checked wire:change="modificarFiltros('proveedor')"/>
-                            Proveedor
-                          </label>
-                          <label>
-                            <input type="checkbox" name="" checked  wire:change="modificarFiltros('marca')"/>
-                            Marca
-                          </label>
-    
+                        <label for="">
+                            Dato Filtrado
+                            <select name="" id="" wire:model.live="datoFiltro" >
+                                
+                                @foreach ($opciones as $i)
+                                    <option value="{{$i->nombre}}" >{{$i->nombre}}</option>                                
+                                @endforeach
+                            </select>
+        
+                        </label>
+
                     </div>
                     <div class="col">
                         <fieldset>
@@ -91,12 +109,22 @@
                     <th scope="col">Codigo</th>
                     <th scope="col">Detalle</th>
 
-                    <th scope="col">Precio 1</th>
-                    <th scope="col">X {{$porcentaje1}}%</th>
-                    <th scope="col">Precio 2</th>
-                    <th scope="col">X {{$porcentaje2}}%</th>
-                    <th scope="col">Precio 3</th>
-                    <th scope="col">X {{$porcentaje3}}%</th>
+                    @if (!$precioFijo)
+                        
+                        <th scope="col">Precio 1</th>
+                        <th scope="col">X {{$porcentaje1}}%</th>
+                        <th scope="col">Precio 2</th>
+                        <th scope="col">X {{$porcentaje2}}%</th>
+                        <th scope="col">Precio 3</th>
+                        <th scope="col">X {{$porcentaje3}}%</th>
+                    @else
+                        <th scope="col">Precio 1</th>
+                        <th scope="col">P.F. ${{$precioFijo1}}</th>
+                        <th scope="col">Precio 2</th>
+                        <th scope="col">P.F. ${{$precioFijo2}}</th>
+                        <th scope="col">Precio 3</th>
+                        <th scope="col">P.F. ${{$precioFijo3}}</th>
+                    @endif
                     
                     <th scope="col">Costo</th>
                     <th scope="col">Iva</th>
