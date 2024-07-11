@@ -266,8 +266,8 @@ class VerInventario extends Component
 
 
         $this->precio1 = round( $costo_mas_iva + ($costo_mas_iva * $this->porcentaje1 /100) ,2);
-        $this->precio2 = round( $costo_mas_iva + ($costo_mas_iva * $this->empresa->precio2 /100) ,2);
-        $this->precio3 = round( $costo_mas_iva + ($costo_mas_iva * $this->empresa->precio3 /100) ,2);
+        $this->precio2 = round( $this->precio1 + ($this->precio1 * $this->empresa->precio2 /100) ,2);
+        $this->precio3 = round( $this->precio1 + ($this->precio1 * $this->empresa->precio3 /100) ,2);
 
 
     }
@@ -298,6 +298,7 @@ class VerInventario extends Component
         $this->precio1=$articulo->precio1;
         $this->precio2=$articulo->precio2;
         $this->precio3=$articulo->precio3;
+        $this->porcentaje1=$articulo->porcentaje;
         $this->iva = $articulo->iva;
         $this->rubro=$articulo->rubro;
         $this->proveedor=$articulo->proveedor;
@@ -321,6 +322,7 @@ class VerInventario extends Component
                 'precio1'=> round($this->precio1,2),
                 'precio2'=> round($this->precio2,2),
                 'precio3'=> round($this->precio3,2),
+                'porcentaje'=> round($this->porcentaje1,2),
                 'iva'=> round($this->iva,2),
                 'rubro'=> $this->rubro,
                 'proveedor'=> $this->proveedor,
@@ -354,6 +356,7 @@ class VerInventario extends Component
         $this->precio1=0;
         $this->precio2=0;
         $this->precio3=0;
+        $this->porcentaje1=0;
         $this->iva = $this->empresa->ivaDefecto;
         $this->rubro='General';
         $this->proveedor='General';

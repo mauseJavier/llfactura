@@ -276,7 +276,7 @@ class ComprobanteController extends Controller
                 'inicioActividades'=> date('d-m-Y', strtotime($empresa->inicioActividades)) ,
                 'fechaFactura'=>date('d-m-Y', strtotime($comprobante[0]->fecha)),
 
-                'direccionEmpresa'=>$empresa->domicilio, // CAMBIAR POR DOMICILIO DEL USUARIO 
+                'direccionEmpresa'=>Auth::user()->domicilio,
 
                 'telefonoEmpresa'=>$empresa->telefono,
                 'titularEmpresa'=>$empresa->titular,

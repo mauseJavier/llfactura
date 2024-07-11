@@ -152,111 +152,93 @@
             </div>            
         </article>
 
-
         <article>
-            <details 
-                    @if ($cuit !=0)
-                        open
-                    @endif
-            >
-               
-                <summary>Datos Cliente</summary>
 
-                {{-- //////////////// --}}
-                <div class="grid">
+            {{-- //////////////// --}}
+            <div class="grid">
 
-                    <div>
-                        <livewire:Factura.Clientes :empresa_id="$empresa->id" wire:model="razonSocial"/>
-                    </div>
-
-
-                    <div x-data>
-                        <label for="">Numero de Documento</label>
-                        <fieldset role="group">                       
-    
-                            <input  
-                                wire:model ="cuit" 
-                                wire:keydown.enter="buscarCliente"
-                                {{-- wire:focusout="buscarCliente" por si no queda bien que rederise a cada rato--}}
-                                {{-- wire:keyup ="buscarCliente" --}}
-                                maxlength="11" 
-                                style="width:100%"    
-                                name="cuit"    
-                                placeholder="Numero de Documento"
-                                autocomplete="cuit"
-                                x-on:click="event.target.select()"
-
-                            
-                                @if ($errors->has('cuit'))
-                                    aria-invalid="true"
-                                @else  
-                                    aria-invalid="" 
-                                @endif                   
-    
-                            />      
-                            
-                            <button wire:click="buscarCliente">Buscar(CUIT)</button>
-                            
-                          </fieldset>
-                          <small id="invalid-helper">@error('cuit') {{ $message }} @enderror </small>                  
-                    </div>
-                    <div role="group" >
-                        <label for="">
-                            Documento del receptor
-                            <select name="" aria-label=""  required wire:model="tipoDocumento">         
-                                {{-- *
-                                * 80 = CUIT 
-                                * 86 = CUIL 
-                                * 96 = DNI
-                                * 99 = Consumidor Final                    
-                                 --}}
-                                <option value="99">Consumidor Final</option>
-                                <option value="80">CUIT</option>
-                                <option value="96">DNI</option>
-                                <option value="86">CUIL</option>
-                            </select>
-                            
-                        </label>
-                        
-                    </div>
+                <div>
+                    <livewire:Factura.Clientes :empresa_id="$empresa->id" wire:model="razonSocial"/>
                 </div>
-    
-                {{-- <fieldset>
-                    <label>
-                      Nombre y Apellido o Razon Social
-                      <input
-                        wire:model="razonSocial"
-                        maxlength=""
-                        name=""
-                        placeholder="Nombre y Apellido o Razon Social"
-                        autocomplete=""
-                      />
-                    </label>
-                   
-                </fieldset>    --}}
-    
-                {{-- /////////////// --}}
 
-              </details>
+
+                <div x-data>
+                    <label for="">Numero de Documento</label>
+                    <fieldset role="group">                       
+
+                        <input  
+                            wire:model ="cuit" 
+                            wire:keydown.enter="buscarCliente"
+                            {{-- wire:focusout="buscarCliente" por si no queda bien que rederise a cada rato--}}
+                            {{-- wire:keyup ="buscarCliente" --}}
+                            maxlength="11" 
+                            style="width:100%"    
+                            name="cuit"    
+                            placeholder="Numero de Documento"
+                            autocomplete="cuit"
+                            x-on:click="event.target.select()"
+
+                        
+                            @if ($errors->has('cuit'))
+                                aria-invalid="true"
+                            @else  
+                                aria-invalid="" 
+                            @endif                   
+
+                        />      
+                        
+                        <button wire:click="buscarCliente"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        
+                        </fieldset>
+                        <small id="invalid-helper">@error('cuit') {{ $message }} @enderror </small>                  
+                </div>
+                                
+            </div>
+
+            <div class="grid">
+
+                <label for="">
+                    Tipo de Docuemento
+                    <select name="" aria-label=""  required wire:model="tipoDocumento">         
+                        {{-- *
+                        * 80 = CUIT 
+                        * 86 = CUIL 
+                        * 96 = DNI
+                        * 99 = Consumidor Final                    
+                            --}}
+                        <option value="99">Consumidor Final</option>
+                        <option value="80">CUIT</option>
+                        <option value="96">DNI</option>
+                        <option value="86">CUIL</option>
+                    </select>
+                    
+                </label>
+                    
+                
+
+                <label for="">
+                    Domicilio
+                    <input 
+                    type="text"
+                    name="domicilio"
+                    placeholder="Domicilio"
+                    aria-label="Domicilio"
+                    autocomplete="domicilio"
+                    wire:model="domicilio"                     
+                    />
+                </label>
+
+            </div>
 
         </article>
+
         
         <article>
             <details>
                
                 <summary>Mas Datos</summary>
                     <fieldset class="grid">
-                        <label for="">
-                            Domicilio
-                            <input 
-                            type="text"
-                            name="domicilio"
-                            placeholder="Domicilio"
-                            aria-label="Domicilio"
-                            autocomplete="domicilio"
-                            wire:model="domicilio"                     
-                            />
-                        </label>
+
                         <label for="">
                             Correo
                             <input
@@ -269,43 +251,37 @@
                             />
                         </label>
                     </fieldset>
+
+                    <fieldset class="grid">
+                        <label for="">
+                            Leyenda
+                            <input
+                            type="text"
+                            name="leyenda"
+                            placeholder="Leyenda"
+                            aria-label="Leyenda"
+                            autocomplete="leyenda"
+                            wire:model="leyenda"
+                            />
+                        </label>
+    
+    
+    
+                        <label for="">
+                            Remito?
+                            <select name="" aria-label=""  required wire:model="remitoEntrega">         
+                                
+                                <option value="no">NO (ENTREGA EN EL MOMENTO)</option>
+                                <option value="si">SI (ENTREGA POSTERIOR)</option>
+                                
+                            </select>
+                            
+                        </label>
+    
+                    </fieldset>
+
               </details>
               
-              <hr />
-              
-              <details>
-                <summary>Otros Datos</summary>
-
-                <fieldset class="grid">
-                    <label for="">
-                        Leyenda
-                        <input
-                        type="text"
-                        name="leyenda"
-                        placeholder="Leyenda"
-                        aria-label="Leyenda"
-                        autocomplete="leyenda"
-                        wire:model="leyenda"
-                        />
-                    </label>
-
-
-
-                    <label for="">
-                        Remito?
-                        <select name="" aria-label=""  required wire:model="remitoEntrega">         
-                            
-                            <option value="no">NO (ENTREGA EN EL MOMENTO)</option>
-                            <option value="si">SI (ENTREGA POSTERIOR)</option>
-                            
-                        </select>
-                        
-                    </label>
-
-                </fieldset>
-
-
-              </details>
         </article>
     </div>
 

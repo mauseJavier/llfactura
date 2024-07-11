@@ -79,7 +79,7 @@
 		</tr>
 		<tr>
 			<td class="border-top padding-t-3 padding-b-3">
-				<p class="text-center text-lg">{{$tipoFactura}}</p>
+				<p class="text-center text-lg">{{$tipoFactura}} {{$abreviatura}}</p>
 				<p class="text-center">Codigo {{$codigoFactura}}</p>
 				<p>NRO: {{$numeroFactura}}</p>
 	

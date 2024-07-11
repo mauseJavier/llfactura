@@ -43,6 +43,8 @@ use Illuminate\Support\Facades\Auth; //PARA PRUEBA
 use Illuminate\Support\Facades\Storage; // para pruebas 
 use Barryvdh\DomPDF\Facade\Pdf; //para pruebas
 use chillerlan\QRCode\{QRCode, QROptions}; //PRUEBASSS
+use App\Models\User; //PRUEBAS
+use Illuminate\Support\Facades\DB; //PRUEBAS
 
 
 use Illuminate\Http\Request;
@@ -145,48 +147,20 @@ use Illuminate\Http\Request;
 
 
 
-        Route::get('/cuit/{cuit}', function ($cuit) {
+        Route::get('/pasarDomicilio', function () {
 
-            $empresa = Empresa::find(Auth::user()->empresa_id);
-            
-                if (Storage::disk('local')->exists('public/'.$empresa->cuit.'/cert.crt') ) {
-                    // ...
-                    $cert = Storage::get('public/'.$empresa->cuit.'/cert.crt');
+            $empresas= Empresa::all();
 
-                    // return response()->json($cert, 200);
-                    
-                }else
-                {
-                    return response()->json('no existe cert', 200);
-                }
+            foreach ($empresas as $key => $value) {
+                dump($value->domicilio .' '.$value->razonSocial);
 
-                if ( Storage::disk('local')->exists('public/'.$empresa->cuit.'/key.key')) {
-                    // ...
-                
-                    $key = Storage::get('public/'.$empresa->cuit.'/key.key');
+                $affected = DB::table('users')
+                ->where('empresa_id',$value->id)
+                ->update(['domicilio' => $value->domicilio]);
 
-                    // return response()->json($key, 200);
-                    
-                }else
-                {
-                    return response()->json('no existe key', 200);
-                }
+                dump('actualizado '. $affected);
+            }
 
-
-
-                $afip = new Afip(array(
-                    'CUIT' =>  $empresa->cuit,
-                    'cert' => $cert,
-                    'key' => $key,
-                    'access_token' => env('tokenAFIPsdk'),
-                    'production' => TRUE
-                ));
-            
-            // CUIT del contribuyente
-            // $tax_id = 20111111111;
-
-            $taxpayer_details = $afip->RegisterInscriptionProof->GetTaxpayerDetails($cuit); 
-            return $taxpayer_details;
             
         });
 

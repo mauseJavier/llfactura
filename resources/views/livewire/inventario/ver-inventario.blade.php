@@ -260,7 +260,7 @@
                         </label>
                     </div>
                     <div class="col">
-                        <label for="">Precio 2 ({{$empresa->precio2}}%)
+                        <label for="">P.2 ({{$empresa->precio2}}% de P1)
                             <input type="text" wire:model.blur="precio2"
                             @error('precio2') aria-invalid="true" @enderror
                             />
@@ -272,7 +272,7 @@
                         </label>
                     </div>
                     <div class="col">
-                        <label for="">Precio 3 ({{$empresa->precio3}}%)
+                        <label for="">P.3 ({{$empresa->precio3}}% de P1)
                             <input type="text" wire:model.blur="precio3"
                             @error('precio3') aria-invalid="true" @enderror
                             />
@@ -284,12 +284,6 @@
                         </label>
                     </div>
                 </div>
-
-
-            <hr />
-
-            <details >
-                <summary>Mas:</summary>
 
                 <div class="grid">
                     <div class="col">
@@ -323,6 +317,14 @@
                         </label>
                     </div>
                 </div>
+
+
+            <hr />
+
+            <details >
+                <summary>Mas:</summary>
+
+
                 <div class="grid">
                     <div class="col">
                         <label for="">Pesable

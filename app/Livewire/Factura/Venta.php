@@ -81,7 +81,7 @@ class Venta extends Component
         ->get();
         
         $this->crearCarrito($articulo);
-        
+        $this->datoBuscado= '';
         $this->cantidad = 1;
         
     }
