@@ -36,14 +36,14 @@
                     />
                 </label>
                 <label>
-                Correo
-                <input
-                wire:model="email"
-                name="email"
-                placeholder="Ingrese Correo"
-                autocomplete="email"
-                />
-            </label>
+                    Correo
+                    <input
+                        wire:model="email"
+                        name="email"
+                        placeholder="Ingrese Correo"
+                        autocomplete="email"
+                    />
+                </label>
             <label for="">
                 Empresa
                 <select  wire:model="empresa_id" wire:change="buscarDepositos"  name="empresa_id" aria-label="" required>
@@ -72,6 +72,16 @@
                     @endforeach
                     
                 </select>
+            </label>
+
+            <label>
+                Domicilio del Usuario
+                <input
+                    wire:model="domicilio"
+                    name=""
+                    placeholder="Ingrese Domicilio"
+                    
+                />
             </label>
             
             <label for="">

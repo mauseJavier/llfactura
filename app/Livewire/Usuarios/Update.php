@@ -16,7 +16,7 @@ use App\Models\Deposito;
 class Update extends Component
 {
 
-    public $usuario,$name,$email,$empresa_id,$puntoVenta,$role_id;
+    public $usuario,$name,$email,$empresa_id,$puntoVenta,$role_id, $domicilio;
    
     public $deposito_id;
 
@@ -88,12 +88,15 @@ class Update extends Component
     public function mount($id)
     {
         $this->usuario = User::find($id);
+
         $this->name = $this->usuario->name;
         $this->email = $this->usuario->email;
         $this->empresa_id = $this->usuario->empresa_id;
         $this->puntoVenta = $this->usuario->puntoVenta;
         $this->role_id = $this->usuario->role_id;
         $this->deposito_id = $this->usuario->deposito_id;
+        $this->domicilio = $this->usuario->domicilio;
+
 
         $this->empresa = Empresa::find($this->usuario->empresa_id);
         $this->depositos = Deposito::where('empresa_id', $this->empresa->id)->get();
@@ -123,6 +126,8 @@ class Update extends Component
 
         $this->listaPuntoVenta = $this->datosEmpresa($this->empresa_id);
         $this->puntoVenta = $this->listaPuntoVenta[0]->Nro;
+        $domicilio = Empresa::select('domicilio')->where('id',$this->empresa_id)->get();
+        $this->domicilio = $domicilio[0]->domicilio;
 
     }
 
@@ -147,6 +152,8 @@ class Update extends Component
         $this->usuario->puntoVenta = $this->puntoVenta;
         $this->usuario->role_id = $this->role_id;
         $this->usuario->deposito_id = $this->deposito_id;
+        $this->usuario->domicilio = $this->domicilio;
+
  
         $this->usuario->save();
  

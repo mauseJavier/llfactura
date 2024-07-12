@@ -3,14 +3,27 @@
 
     <div class="container">
         <h1>Stock</h1>
-        <article>
-            <div class="grid">
+      <article>
+          <div class="grid">
                 <div class="col">
                   <button @click=" modalOpen = !modalOpen" >Nuevo Deposito</button>
-                </div>
-                <div class="col">
                   <a wire:navigate role="button" href="{{route('importarstock')}}">Importar Stock</a>
                 </div>
+
+
+                <div class="col">
+                    <input
+                        type="search"
+                        name="buscar"
+                        placeholder="Buscar"
+                        aria-label="Search"
+                        wire:model.live="datoBuscado"
+                    />
+
+                </div>
+          </div>
+
+          <div class="grid">
 
                 {{-- SI ES NULL NO SE PUEDEN HACER ENVIOS  --}}
                 @if ($depositos)                 
@@ -29,19 +42,10 @@
                   </div>
                 @endif
 
-                <div class="col">
-                    <input
-                        type="search"
-                        name="buscar"
-                        placeholder="Buscar"
-                        aria-label="Search"
-                        wire:model.live="datoBuscado"
-                    />
 
-                </div>
-            </div>
+          </div>
             
-        </article>
+      </article>
 
         @if (session('mensaje'))        
           <article style="color: green;">

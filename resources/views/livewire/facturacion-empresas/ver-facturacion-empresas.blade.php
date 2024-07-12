@@ -1,6 +1,6 @@
 <div>
 
-    <div class="container">
+    <div class="container-fluid">
     
         <h3>Facturacion Empresas</h3>
 
@@ -37,6 +37,7 @@
                 <thead>
                 <tr>
                     <th scope="col">id</th>
+                    <th scope="col">createdAT</th>
                     <th scope="col">empresa</th>
                     <th scope="col">usuario</th>
                     <th scope="col">tipoComp</th>
@@ -50,13 +51,13 @@
                     <th scope="col">cliente</th>
                     <th scope="col">cuitCliente</th>
                     <th scope="col">formaPago</th>
-                    <th scope="col">createdAT</th>
                 </tr>
                 </thead>
                 <tbody>
                     @foreach ($comprobantes as $c)                        
                         <tr>
                             <th scope="row">{{$c->id}}</th>
+                            <th scope="row">{{$c->created_at}}</th>
                             <th scope="row">{{$c->empresa_razonSocial}}</th>
                             <th scope="row">{{$c->usuario}}</th>
                             <th scope="row">{{$c->tipoComp}}</th>
@@ -70,7 +71,6 @@
                             <th scope="row">{{$c->razonSocial}}</th>
                             <th scope="row">{{$c->cuitCliente}}</th>
                             <th scope="row">{{$c->forma_pago_nombre}}</th>
-                            <th scope="row">{{$c->created_at}}</th>
                         </tr>
                     @endforeach
 
