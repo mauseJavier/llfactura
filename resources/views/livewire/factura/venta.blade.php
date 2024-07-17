@@ -1,37 +1,27 @@
 <div>
     {{-- The whole world belongs to you. --}}
+    <style>
+      .bg-default {
+          /* background-color: lightgray; */
+      }
+      .bg-focus {
+          background-color: red;
+      }
+  </style>
 
-<div class="container" style="margin-top: -2%;">
 
-  <div style="justify-content: center; align-items: center; ">
+      <div class="container" style="margin-top: -2%;">
 
-    {{-- @if ($carrito)
-      <article style="
+        <div style="justify-content: center; align-items: center; ">
 
-              align-items: center;
-              justify-content: center;
-              text-align: center;
-          
-              top: 0;
-              width: 80%;
-              max-width: 100%;
-              min-width: 100px;
-              padding: 5px;
-  
-              margin: auto;
-              ">
-        <h1 style="font-size: 50px;">$ {{$carrito['total']}}</h1>
-        <small>Artículos: {{$carrito['articulos']}}</small>
-      </article>      
-    @endif --}}
-  
-  </div>
-  
-    <br>
+        
+        </div>
+        
+          <br>
 
 
 
-</div>
+      </div>
 
 
     <div class="grid">
@@ -42,10 +32,7 @@
           <div style=" 
                         height: {{$tamañoGrillaVenta}}px; /* Fija la altura deseada */
                         overflow: auto; /* Permite el desplazamiento */">
-                        {{-- <p>{{$tamañoGrillaVenta}}</p>
-                        <p>{{count($carrito['carrito'])}}</p> --}}
-                        
-              {{-- <h6>Articulos Cargados</h6> --}}
+
 
               <div class="overflow-auto" >
                   <table style="font-size: 15px;" style="height: 10px;"  id="tablaCarrito">
@@ -79,24 +66,6 @@
                                     {{$articulo['codigo']}}
                                   </p>
 
-                                  {{-- <div role="group">
-                                    <button 
-                                      class="outline secondary"
-                                      wire:click="borrarArticulo({{$key}})" 
-                                      data-tooltip="Eliminar"
-                                      style="font-size: 15px;"
-                                    >
-                                      <i class="fa-solid fa-trash"></i>
-                                      {{$articulo['codigo']}}
-                                    </button>
-                                    <button class="outline contrast" 
-                                      wire:click="abrirModal({{$key}})" 
-                                      data-tooltip="Editar"
-                                      style="font-size: 15px;">
-                                      <i class="fa-regular fa-pen-to-square"></i>
-                                      {{$articulo['detalle']}}
-                                    </button>
-                                  </div>  --}}
 
                                 </th>  
 
@@ -155,16 +124,6 @@
 
             <div class="div">
 
-              {{-- @if ($carrito)          
-                    <button wire:click="borrarCarrito"  class="contrast" data-tooltip="Borrar todo" style="font-size: 15px;">Cancelar</button>
-                    <a wire:navigate href="{{route('nuevoComprobante')}}" role="button" data-tooltip="Finalizar Venta"  style="font-size: 15px;">Finalizar</a>
-            
-                    <label style="font-size: 15px;">
-                      <input name="terms" type="checkbox" role="switch" wire:click="cambiar" />
-                      VerCarrito
-                    </label>    
-              @endif --}}
-
               <fieldset role="group">
 
                 <a wire:navigate href="{{route('nuevoComprobante')}}" role="button" data-tooltip="Finalizar Venta"  >Finalizar</a>
@@ -205,6 +164,7 @@
                   wire:keydown.up="sumarCantidad"
                   autocomplete="off"
                   style="font-size: 15px;"
+                  autofocus
                />
               
               <button type="submit" ><i class="fa-solid fa-magnifying-glass" style="font-size: 15px;"></i></button>
@@ -237,7 +197,7 @@
                         height: 800px; /* Fija la altura deseada */
                         overflow: auto; /* Permite el desplazamiento */"
             >
-              <table style="font-size: 15px;">
+              <table style="font-size: 15px;" >
                   <thead>
                     <tr>
                       <th scope="col">Codigo</th>
@@ -256,9 +216,18 @@
                   </thead>
                   <tbody>
                     @foreach ($inventario as $i)
-                      <tr>
-                        <th scope="row"><button wire:click="cargar({{$i->id}})" style="font-size: 15px;">{{$i->codigo}}</button> </th>
-                        <td>{{$i->detalle}}</td>
+                      <tr x-data="{ isFocused: false }">
+                        <th scope="row">
+                            <button 
+                              :class="{ 'bg-default': !isFocused, 'bg-focus': isFocused }" 
+                              @focus="isFocused = true" 
+                              @blur="isFocused = false"
+                              class="bg-default"
+                              
+                              wire:click="cargar({{$i->id}})" style="font-size: 15px;">{{$i->codigo}}
+                            </button> 
+                        </th>
+                        <td >{{$i->detalle}}</td>
                         <td style="text-align: right;">${{$i->precio}}</td>
       
                       </tr>
@@ -331,8 +300,8 @@
     </dialog>
 
 
-    
 </div>
+
 
 
 

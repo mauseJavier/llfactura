@@ -42,6 +42,8 @@ class Venta extends Component
     #[Session(key: 'carrito')] 
     public $carrito;
 
+  
+
     public function mount() 
     { 
 

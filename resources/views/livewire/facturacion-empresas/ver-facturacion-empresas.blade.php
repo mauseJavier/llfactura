@@ -36,25 +36,25 @@
             <table>
                 <thead>
                 <tr>
-                    <th scope="col">id</th>
-                    <th scope="col">createdAT</th>
-                    <th scope="col">empresa</th>
-                    <th scope="col">usuario</th>
-                    <th scope="col">tipoComp</th>
-                    <th scope="col">numero</th>
-                    <th scope="col">total</th>
-                    <th scope="col">cae</th>
-                    <th scope="col">vencimiento</th>
-                    <th scope="col">fecha</th>
-                    <th scope="col">ptoVta</th>
-                    <th scope="col">deposito</th>
-                    <th scope="col">cliente</th>
-                    <th scope="col">cuitCliente</th>
-                    <th scope="col">formaPago</th>
+                    <th scope="col" style="color: red;">id</th>
+                    <th scope="col" style="color: red;">createdAT</th>
+                    <th scope="col" style="color: red;">empresa</th>
+                    <th scope="col" style="color: red;">usuario</th>
+                    <th scope="col" style="color: red;">tipoComp</th>
+                    <th scope="col" style="color: red;">numero</th>
+                    <th scope="col" style="color: red;">total</th>
+                    <th scope="col" style="color: red;">cae</th>
+                    <th scope="col" style="color: red;">vencimiento</th>
+                    <th scope="col" style="color: red;">fecha</th>
+                    <th scope="col" style="color: red;">ptoVta</th>
+                    <th scope="col" style="color: red;">deposito</th>
+                    <th scope="col" style="color: red;">cliente</th>
+                    <th scope="col" style="color: red;">cuitCliente</th>
+                    <th scope="col" style="color: red;">formaPago</th>
                 </tr>
                 </thead>
                 <tbody>
-                    @foreach ($comprobantes as $c)                        
+                    @foreach ($comprobantes as $key => $c)                        
                         <tr>
                             <th scope="row">{{$c->id}}</th>
                             <th scope="row">{{$c->created_at}}</th>
@@ -72,11 +72,36 @@
                             <th scope="row">{{$c->cuitCliente}}</th>
                             <th scope="row">{{$c->forma_pago_nombre}}</th>
                         </tr>
+                        @if (is_int($key / 5) AND $key/5>0)
+
+                        <thead>
+                            <tr>
+                                <th scope="col" style="color: red;">id</th>
+                                <th scope="col" style="color: red;">createdAT</th>
+                                <th scope="col" style="color: red;">empresa</th>
+                                <th scope="col" style="color: red;">usuario</th>
+                                <th scope="col" style="color: red;">tipoComp</th>
+                                <th scope="col" style="color: red;">numero</th>
+                                <th scope="col" style="color: red;">total</th>
+                                <th scope="col" style="color: red;">cae</th>
+                                <th scope="col" style="color: red;">vencimiento</th>
+                                <th scope="col" style="color: red;">fecha</th>
+                                <th scope="col" style="color: red;">ptoVta</th>
+                                <th scope="col" style="color: red;">deposito</th>
+                                <th scope="col" style="color: red;">cliente</th>
+                                <th scope="col" style="color: red;">cuitCliente</th>
+                                <th scope="col" style="color: red;">formaPago</th>
+                            </tr>
+                            </thead>
+                            
+                        @endif
                     @endforeach
 
                 </tbody>
 
             </table>
         </div>
-        </div>
+        {{ $comprobantes->links('vendor.livewire.bootstrap') }}
+
+    </div>
 </div>
