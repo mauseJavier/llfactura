@@ -127,7 +127,7 @@
               <fieldset role="group">
 
                 <a wire:navigate href="{{route('nuevoComprobante')}}" role="button" data-tooltip="Finalizar Venta"  >Finalizar</a>
-                <a  wire:click="borrarCarrito" role="button" data-tooltip="Borrar todo"  class="secondary">Cancelar</a>
+                <a  wire:click="borrarCarrito" role="button" data-tooltip="Borrar todo"  class="bg-focus">Cancelar</a>
                 {{-- <button wire:click="borrarCarrito"  class="contrast" data-tooltip="Borrar todo" style="font-size: 15px;">Cancelar</button> --}}
 
                 <input type="number" step=".5" wire:model="porcentaje" style="text-align: right; font-size: 15px; text-align: center;">
@@ -223,7 +223,8 @@
                               @focus="isFocused = true" 
                               @blur="isFocused = false"
                               class="bg-default"
-                              
+                              wire:keydown.prevent.down="restarCantidad"
+                              wire:keydown.prevent.up="sumarCantidad"
                               wire:click="cargar({{$i->id}})" style="font-size: 15px;">{{$i->codigo}}
                             </button> 
                         </th>
