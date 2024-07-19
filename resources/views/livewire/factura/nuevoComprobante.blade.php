@@ -102,6 +102,12 @@
                             @foreach ($formaPago as $item)
                                 <option value="{{$item->id}}">{{$item->nombre}}</option>
                             @endforeach
+
+                            @if ($cuit !== 0) 
+                            {{-- SI ESTA CARGADO UN CLIENTE SE PUEDE ASIGNAR EL SALDO A LA CUENTA CORRIENTE  --}}
+                                <option value="0">Cuenta Corriente</option>                                
+                            @endif
+
                         </select>
                         
 
