@@ -7,7 +7,10 @@
 
     <article>
       <header>Formato PDF</header>
+      <a href="{{route('nuevoComprobante')}}" role="button" wire:navigate>Nueva Factura</a>
+      <a href="{{route('comprobante')}}" role="button" wire:navigate>Comprobantes</a>
 
+      <hr>
 
       @if($comprobante_id)
           {{-- <a role="button" href="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'A4'])}}" target="_blank">Formato A4</a>   
@@ -60,8 +63,7 @@
 
       </form> --}}
 
-      <a href="{{route('nuevoComprobante')}}" role="button" wire:navigate>Nueva Factura</a>
-      <a href="{{route('comprobante')}}" role="button" wire:navigate>Comprobantes</a>
+
     </article>
 
 </div>
