@@ -12,9 +12,9 @@
 
       <hr>
 
-      @if($comprobante_id)
+      {{-- @if($comprobante_id)
           {{-- <a role="button" href="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'A4'])}}" target="_blank">Formato A4</a>   
-          <a role="button" href="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'Ticket'])}}" target="_blank">Formato Ticket</a>   --}}
+          <a role="button" href="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'Ticket'])}}" target="_blank">Formato Ticket</a>  
 
           <!-- Dropdown -->
           <details class="dropdown">
@@ -38,33 +38,33 @@
       @else
           <a role="button" href="https://www.example.com" target="_blank">PARA VOLVER A LA FACTURA </a>
           <a role="button" href="https://www.example.com" target="_blank">PARA VOLVER A LA FACTURA </a>  
-      @endif
+      @endif --}}
 
-    {{--   
-      
-      @if (\Session::has('comprobante'))
-        <form action="{{route('imprimirComprobante')}}" target="_blank">        
-      @elseif(isset($comprobante_id))
-        <form action="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id])}}" target="_blank">
-      @else
-        <form action="{{route('factura')}}">
-      @endif
-      
-
-          <select name="formatoPDF" aria-label="Seleccione formato" required>
-              <option selected value="A4">
-                Hoja A4
-              </option>
-              <option value="T">Ticket</option>
-
-            </select>
-
-            <button type="submit">Imprimir</button>
-
-      </form> --}}
-
+    
 
     </article>
+
+    @if ($tipo == 'factura')
+        
+    <div class="grid">
+      <div class="col">
+
+        <iframe width="100%" height="1000px" src="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'Ticket'])}}" frameborder="0"></iframe>
+      </div>
+      <div class="col">
+
+        <iframe width="100%" height="1000px" src="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'A4'])}}" frameborder="0"></iframe>
+      </div>
+    </div>
+
+    @else
+
+      <iframe width="100%" height="1000px" src="{{route('imprimirPresupuesto',['presupuesto_id'=>$comprobante_id,'formato'=>'A4'])}}" frameborder="0"></iframe>
+
+        
+    @endif
+
+
 
 </div>
 
