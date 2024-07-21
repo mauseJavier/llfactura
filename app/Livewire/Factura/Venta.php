@@ -92,7 +92,7 @@ class Venta extends Component
     {
 
         $validated = $this->validate([
-            'cantidad' => 'required|numeric|min:1',
+            'cantidad' => 'required|numeric',
             'porcentaje' => 'required|numeric',
 
         ], [
