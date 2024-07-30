@@ -24,6 +24,8 @@ use App\Livewire\Stock\RecibirStock;
 use App\Livewire\Stock\HistoricoEnvio;
 use App\Livewire\Remito\VerRemito;
 use App\Livewire\Cliente\VerCliente;
+use App\Livewire\Cliente\CuentaCorriente;
+
 use App\Livewire\Proveedor\VerProveedor;
 use App\Livewire\Presupuesto\VerPresupuesto;
 
@@ -119,6 +121,8 @@ use Illuminate\Http\Request;
         Route::get('/movimientostock/{codigo?}', MovimientoStock::class)->name('movimientostock');
         Route::get('/importarstock', ImportarStock::class)->name('importarstock');
         Route::get('/cliente', VerCliente::class)->name('cliente');
+        Route::get('/cuentaCorriente/{cliente}', CuentaCorriente::class)->name('cuentaCorriente');
+
 
         Route::get('/presupuesto', VerPresupuesto::class)->name('presupuesto');
 

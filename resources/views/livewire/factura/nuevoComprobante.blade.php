@@ -100,7 +100,10 @@
 
                         <select name="" aria-label=""  required wire:model="idFormaPago">         
                             @foreach ($formaPago as $item)
-                                <option value="{{$item->id}}">{{$item->nombre}}</option>
+                                @if ($item->id !== 0) 
+                                    {{-- PARA QUE NO MUESTRE EL CUENTA CORRIENTE DE LA BASE                               --}}
+                                    <option value="{{$item->id}}">{{$item->nombre}}</option>
+                                @endif
                             @endforeach
 
                             @if ($cuit !== 0) 

@@ -1402,29 +1402,26 @@ class NuevoComprobante extends Component
                         }else{
                             //AK  EL REMITO CUANDO SE GERENERE DESCUENTA EL STOCK
                         }
-
-
-                        if($this->idFormaPago == 0){  //aplica el saldo a cuenta corriente
-                            //AK APLICA EL SALDO AL CLIENTE
-                            SaldoCuentaCorriente::dispatch([
-                                'empresa_id'=>$this->empresa->id,
-                                'cliente_id'=>$cliente->id,
-                                'comprobante_id'=>$comprobante->id,
-                                'tipo'=>'venta',
-                                'comentario'=>'un comentario',
-                                'debe'=>round($this->total,2),
-                                'haber'=>0,
-                                'saldo'=>round($this->total,2),
-                
-                            ]);
-                        }else{
-                            //AK  DEBERIA AUMENTAR LA CAJA
-                        }
-        
-        
-        
-            
+                        
                     }
+                    
+                }
+
+                if($this->idFormaPago == 0){  //aplica el saldo a cuenta corriente
+                    //AK APLICA EL SALDO AL CLIENTE
+                    SaldoCuentaCorriente::dispatch([
+                        'empresa_id'=>$this->empresa->id,
+                        'cliente_id'=>$cliente->id,
+                        'comprobante_id'=>$comprobante->id,
+                        'tipo'=>'venta',
+                        'comentario'=>'un comentario',
+                        'debe'=>round($this->total,2),
+                        'haber'=>0,
+                        // 'saldo'=>round($this->total,2), el saldo se calcula en listener 
+        
+                    ]);
+                }else{
+                    //AK  DEBERIA AUMENTAR LA CAJA
                 }
 
                 return $comprobante->id;

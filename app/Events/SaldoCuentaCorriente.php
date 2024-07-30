@@ -21,7 +21,7 @@ class SaldoCuentaCorriente
     public $comentario;
     public $debe;
     public $haber;
-    public $saldo;
+    // public $saldo;
 
     /**
      * Create a new event instance.
@@ -35,7 +35,7 @@ class SaldoCuentaCorriente
         $this->comentario = $datos['comentario'];
         $this->debe = $datos['debe'];
         $this->haber = $datos['haber'];
-        $this->saldo = $datos['saldo'];
+        // $this->saldo = $datos['saldo']; se calcula en el listener
     }
 
     /**

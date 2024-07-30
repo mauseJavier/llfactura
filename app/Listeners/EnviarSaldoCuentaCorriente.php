@@ -25,6 +25,17 @@ class EnviarSaldoCuentaCorriente
     public function handle(SaldoCuentaCorriente $event): void
     {
         //
+
+        // $credentials = tbl_usuario::select('rol')->orderBy('usu_id', 'desc')->first();
+
+        $saldo = (CuentaCorriente::select('saldo')->where('cliente_id',$event->cliente_id)
+                        ->where('empresa_id',$event->empresa_id)->orderBy('created_at', 'desc')->first());
+        
+        if(!isset($saldo['saldo'])){
+            $saldo['saldo'] =0;
+        }
+
+        // dd($saldo['saldo']);
         CuentaCorriente::create([
             'empresa_id'=> $event->empresa_id,
             'cliente_id'=> $event->cliente_id,
@@ -33,7 +44,7 @@ class EnviarSaldoCuentaCorriente
             'comentario'=> $event->comentario,
             'debe'=> $event->debe,
             'haber'=> $event->haber,
-            'saldo'=> $event->saldo,
+            'saldo'=> round((doubleval($saldo['saldo']) + $event->haber )-($event->debe),2),
 
         ]);
     }
