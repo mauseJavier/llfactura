@@ -2,7 +2,7 @@
 
 @section('main')
 
-<div class="container">
+<div class="container" x-data="{ selectedOption: 'ticket' }">
 
 
     <article>
@@ -40,18 +40,27 @@
           <a role="button" href="https://www.example.com" target="_blank">PARA VOLVER A LA FACTURA </a>  
       @endif --}}
 
-    
+      <fieldset>
+        <legend>Formato Imprecion:</legend>
+        <label>
+          <input type="radio" name="language" value="ticket" x-model="selectedOption" />
+          Tiket
+        </label>
+        <label>
+          <input type="radio" name="language" value="A4" x-model="selectedOption" />
+          Hoja A4
+        </label>
+      </fieldset>
 
     </article>
 
     @if ($tipo == 'factura')
         
     <div class="grid">
-      <div class="col">
-
+      <div class="col" x-show="selectedOption === 'ticket'">
         <iframe width="100%" height="1000px" src="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'Ticket'])}}" frameborder="0"></iframe>
       </div>
-      <div class="col">
+      <div class="col" x-show="selectedOption === 'A4'">
 
         <iframe width="100%" height="1000px" src="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'A4'])}}" frameborder="0"></iframe>
       </div>
