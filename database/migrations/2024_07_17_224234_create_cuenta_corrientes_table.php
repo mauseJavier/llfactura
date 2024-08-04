@@ -22,6 +22,7 @@ return new class extends Migration
             $table->double('debe'); //debe 
             $table->double('haber'); //haber
             $table->double('saldo'); //saldo 
+            $table->string('usuario')->nullable();
 
             $table->timestamps();
         });

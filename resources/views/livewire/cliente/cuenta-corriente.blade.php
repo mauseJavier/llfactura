@@ -86,27 +86,57 @@
               <strong>Realizar un Pago</strong>
             </p>
           </header>
-            <form>
+            <form wire:submit="pagar">
                 <fieldset>
                 <label>
                     Comentario
                     <input
+                    wire:model="comentario"
                     name="comentario"
                     placeholder="Ingrese un Comentario"
                     
-                    />
+                    @error('comentario') 
+                        aria-invalid="true"
+                        aria-describedby="invalid-helper"
+                    @enderror
+
+                    >
+                @error('comentario') 
+                    <small id="invalid-helper">
+                        {{ $message }}
+                    </small>
+                @enderror
+
+
+
                 </label>
                 <label>
                     Importe Pagado
                     <input
+                    wire:model="importePagado"
                     type="text"
                     name="pago"
                     placeholder="Ingrese un Importe"
                     
-                    />
+                    @error('importePagado') 
+                        aria-invalid="true"
+                        aria-describedby="invalid-helper"
+                    @enderror
+
+                    >
+                @error('importePagado') 
+                    <small id="invalid-helper">
+                        {{ $message }}
+                    </small>
+                @enderror
+                
                 </label>
                 </fieldset>
-            
+                
+
+                <input type="button" value="Cancelar"
+                    @click="modalPago = !modalPago"
+                    style="background-color: red;">
                 <input
                 type="submit"
                 value="Realizar Pago"

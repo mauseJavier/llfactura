@@ -45,6 +45,7 @@ class EnviarSaldoCuentaCorriente
             'debe'=> $event->debe,
             'haber'=> $event->haber,
             'saldo'=> round((doubleval($saldo['saldo']) + $event->haber )-($event->debe),2),
+            'usuario'=> $event->usuario,
 
         ]);
     }

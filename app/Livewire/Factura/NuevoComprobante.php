@@ -1417,6 +1417,7 @@ class NuevoComprobante extends Component
                         'comentario'=>'un comentario',
                         'debe'=>round($this->total,2),
                         'haber'=>0,
+                        'usuario'=>$this->usuario->name,
                         // 'saldo'=>round($this->total,2), el saldo se calcula en listener 
         
                     ]);
