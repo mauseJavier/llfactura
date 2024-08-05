@@ -84,7 +84,10 @@ class CuentaCorriente extends Component
     public function render()
     {
         return view('livewire.cliente.cuenta-corriente',[
-            'movimientos'=> DB::table('cuenta_corrientes')->where('cliente_id',$this->cliente->id)->orderBy('created_at','DESC')->paginate(5),
+            'movimientos'=> DB::table('cuenta_corrientes')
+                ->where('cliente_id',$this->cliente->id)
+                ->where('created_at','>=',$this->fechaDesde)
+                ->orderBy('created_at','DESC')->paginate(5),
             'saldo' => DB::table('cuenta_corrientes')->select('saldo')->where('cliente_id',$this->cliente->id)->orderBy('created_at','DESC')->limit(1)->get(),
         ])
         ->extends('layouts.app')

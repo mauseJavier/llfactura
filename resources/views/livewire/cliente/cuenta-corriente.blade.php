@@ -40,12 +40,14 @@
                 <thead>
                   <tr>
                     <th scope="col">Fecha</th>
-                    <th scope="col">Comprobate</th>
-                    <th scope="col">Tipo</th>
+                    <th scope="col">Comp.</th>
+                    <th scope="col">VER</th>
                     <th scope="col">Comentario</th>
                     <th scope="col">Debe</th>
                     <th scope="col">Haber</th>
-                    <th scope="col">Saldo</th>    
+                    <th scope="col">Saldo</th>  
+                    <th scope="col">Usuario</th>    
+  
     
     
                   </tr>
@@ -55,11 +57,19 @@
                         <tr>
                             <td>{{$c->created_at}}</td>
                             <td>{{$c->comprobante_id}}</td>
-                            <td>{{$c->tipo}}</td>
+                            @if ($c->tipo == 'venta')
+                                
+                                <td><a target="_blank" rel="noopener noreferrer" href="{{route('reciboPdf',['recibo_id'=>$c->id])}}">Ver Comp. {{$c->comprobante_id}}</a> </td>
+                            @else
+                                <td><a target="_blank" rel="noopener noreferrer" href="{{route('reciboPdf',['recibo_id'=>$c->id])}}">Ver Pago {{$c->id}}</a> </td>
+                                
+                            @endif
                             <td>{{$c->comentario}}</td>
                             <td>{{$c->debe}}</td>
                             <td>{{$c->haber}}</td>
                             <td>{{$c->saldo}}</td>
+                            <td>{{$c->usuario}}</td>
+
     
     
     

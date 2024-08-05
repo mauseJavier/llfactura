@@ -39,6 +39,7 @@ use App\Models\Comprobante;
 use App\Http\Controllers\ComprobanteController;
 use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\InventarioController;
+use App\Http\Controllers\ReciboPdfController;
 
 
 use Illuminate\Support\Facades\Auth; //PARA PRUEBA
@@ -122,6 +123,10 @@ use Illuminate\Http\Request;
         Route::get('/importarstock', ImportarStock::class)->name('importarstock');
         Route::get('/cliente', VerCliente::class)->name('cliente');
         Route::get('/cuentaCorriente/{cliente}', CuentaCorriente::class)->name('cuentaCorriente');
+
+        Route::get('/reciboPdf/{recibo_id?}', [ReciboPdfController::class, 'imprimir'])->name('reciboPdf');
+
+        
 
 
         Route::get('/presupuesto', VerPresupuesto::class)->name('presupuesto');

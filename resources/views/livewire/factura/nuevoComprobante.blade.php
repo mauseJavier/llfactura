@@ -176,7 +176,7 @@
                     <fieldset role="group">                       
 
                         <input  
-                            wire:model ="cuit" 
+                            wire:model.live ="cuit" 
                             wire:keydown.enter="buscarCliente"
                             {{-- wire:focusout="buscarCliente" por si no queda bien que rederise a cada rato--}}
                             {{-- wire:keyup ="buscarCliente" --}}
