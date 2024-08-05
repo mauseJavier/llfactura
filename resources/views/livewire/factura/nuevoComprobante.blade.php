@@ -100,8 +100,17 @@
 
                         <select name="" aria-label=""  required wire:model="idFormaPago">         
                             @foreach ($formaPago as $item)
-                                <option value="{{$item->id}}">{{$item->nombre}}</option>
+                                @if ($item->id !== 0) 
+                                    {{-- PARA QUE NO MUESTRE EL CUENTA CORRIENTE DE LA BASE                               --}}
+                                    <option value="{{$item->id}}">{{$item->nombre}}</option>
+                                @endif
                             @endforeach
+
+                            @if ($cuit !== 0) 
+                            {{-- SI ESTA CARGADO UN CLIENTE SE PUEDE ASIGNAR EL SALDO A LA CUENTA CORRIENTE  --}}
+                                <option value="0">Cuenta Corriente</option>                                
+                            @endif
+
                         </select>
                         
 
@@ -167,7 +176,7 @@
                     <fieldset role="group">                       
 
                         <input  
-                            wire:model ="cuit" 
+                            wire:model.live ="cuit" 
                             wire:keydown.enter="buscarCliente"
                             {{-- wire:focusout="buscarCliente" por si no queda bien que rederise a cada rato--}}
                             {{-- wire:keyup ="buscarCliente" --}}

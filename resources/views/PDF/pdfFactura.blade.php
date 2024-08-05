@@ -202,9 +202,9 @@
         @endif
       @endif
         <tr>
-            <td colspan="3"></td>
+            <td colspan=""></td>
             <td align="right">Total $</td>
-            <td align="right" class="gray">$ {{$totalVenta}}</td>
+            <td colspan="3" align="right" class="gray">$ {{$totalVenta}}</td>
         </tr>
 
         <tr class="bill-row row-details">

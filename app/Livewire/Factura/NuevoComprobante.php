@@ -27,6 +27,7 @@ use App\Models\ProductoPresupuesto;
 use Illuminate\Support\Facades\Auth;
 
 use App\Events\DescontarStockEvent;
+use App\Events\SaldoCuentaCorriente;
 
 //PARA ESCUCHAR EVENTOS 
 use Livewire\Attributes\On; 
@@ -1401,11 +1402,27 @@ class NuevoComprobante extends Component
                         }else{
                             //AK  EL REMITO CUANDO SE GERENERE DESCUENTA EL STOCK
                         }
-        
-        
-        
-            
+                        
                     }
+                    
+                }
+
+                if($this->idFormaPago == 0){  //aplica el saldo a cuenta corriente
+                    //AK APLICA EL SALDO AL CLIENTE
+                    SaldoCuentaCorriente::dispatch([
+                        'empresa_id'=>$this->empresa->id,
+                        'cliente_id'=>$cliente->id,
+                        'comprobante_id'=>$comprobante->id,
+                        'tipo'=>'venta',
+                        'comentario'=>'un comentario',
+                        'debe'=>round($this->total,2),
+                        'haber'=>0,
+                        'usuario'=>$this->usuario->name,
+                        // 'saldo'=>round($this->total,2), el saldo se calcula en listener 
+        
+                    ]);
+                }else{
+                    //AK  DEBERIA AUMENTAR LA CAJA
                 }
 
                 return $comprobante->id;

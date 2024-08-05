@@ -1,4 +1,5 @@
 <div x-data="{ modalNuevoCliente: false }">
+
     <div class="container" >
         <h3>Clientes</h3>
 
@@ -45,6 +46,8 @@
                 <th scope="col">Correo</th>
                 <th scope="col">Domicilio</th>
 
+                <th scope="col">Saldo</th>
+
 
 
               </tr>
@@ -62,6 +65,8 @@
                         <td>{{$c->tipoContribuyente}}</td>
                         <td>{{$c->correo}}</td>
                         <td>{{$c->domicilio}}</td>
+                        <td><a href="{{route('cuentaCorriente',['cliente'=>$c->id])}}">${{($c->saldo) ? $c->saldo : 0}}</a></td>
+
 
 
                     </tr>

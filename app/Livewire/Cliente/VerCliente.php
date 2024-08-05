@@ -5,6 +5,8 @@ namespace App\Livewire\Cliente;
 use Livewire\Component;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 use App\Models\Empresa;
 
@@ -71,12 +73,21 @@ class VerCliente extends Component
     public function render()
     {
         return view('livewire.cliente.ver-cliente',[
-            'clientes'=> Cliente::where('empresa_id', Auth::user()->empresa_id)
-                                ->whereAny([
-                                    'numeroDocumento',
-                                    'razonSocial',
-                                    'domicilio'
-                                ], 'LIKE', '%'.$this->datoBuscado.'%')->orderby('created_at','DESC')->get(),
+
+            'clientes'=> DB::table('clientes')
+                ->leftJoin('cuenta_corrientes', function ($join) {
+                    $join->on('clientes.id', '=', 'cuenta_corrientes.cliente_id')
+                        ->whereRaw('cuenta_corrientes.created_at = (select max(created_at) from cuenta_corrientes where cliente_id = clientes.id)');
+                })
+                ->where('clientes.empresa_id', Auth::user()->empresa_id)
+                ->where(function ($query) {
+                    $query->where('clientes.numeroDocumento', 'LIKE', '%'.$this->datoBuscado.'%')
+                        ->orWhere('clientes.razonSocial', 'LIKE', '%'.$this->datoBuscado.'%')
+                        ->orWhere('clientes.domicilio', 'LIKE', '%'.$this->datoBuscado.'%');
+                })
+                ->select('clientes.*', 'cuenta_corrientes.saldo')
+                ->orderBy('clientes.created_at', 'DESC')
+                ->get(),
         ])
         ->extends('layouts.app')
         ->section('main');

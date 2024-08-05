@@ -263,6 +263,7 @@ class ComprobanteController extends Controller
                 $empresaIva = 'RESPONSABLE INSCRIPTO';
             }
 
+
             $nombreFormaPago = FormaPago::find($comprobante[0]->idFormaPago);
 
 
