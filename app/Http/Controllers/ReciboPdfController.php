@@ -33,7 +33,7 @@ class ReciboPdfController extends Controller
         $pdf = Pdf::loadView('PDF.pdfReciboPdf',compact('recibo_id','cliente'));
         $pdf->set_paper(array(0,0,250,300), 'portrait');
 
-        $nombreArchivo= 'NombreArchivo.pdf';
+        $nombreArchivo= 'Recibo de Pago '.$cliente->razonSocial.'.pdf';
         // return $pdf->download($nombreArchivo);
         return $pdf->stream($nombreArchivo);    
 
