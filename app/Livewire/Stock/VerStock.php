@@ -168,20 +168,25 @@ class VerStock extends Component
     public function render()
     {
         return view('livewire.stock.ver-stock',[     
-                'stock'=> DB::table('stocks as a')
-                    ->select('a.codigo', 'c.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
-                    ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
-                    ->join('inventarios as c', 'a.codigo', '=', 'c.codigo')
-
-                    ->where('a.empresa_id', $this->empresa->id)
-                    ->where(function($query) {
-                        $query->where('a.codigo', 'like', '%' . $this->datoBuscado . '%')
-                            ->orWhere('c.detalle', 'like', '%' . $this->datoBuscado . '%')
-                            ->orWhere('b.nombre', 'like', '%' . $this->datoBuscado . '%');
-                    })
-                    ->groupBy('a.codigo', 'c.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
-                    ->orderBy('sumStock')
-                    ->paginate(10),
+                'stock'=>     DB::table('stocks as a')
+                ->select('a.codigo', 'c.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
+                ->join('depositos as b', function($join) {
+                    $join->on('a.deposito_id', '=', 'b.id')
+                         ->where('b.empresa_id', '=', $this->empresa->id);
+                })
+                ->join('inventarios as c', function($join) {
+                    $join->on('a.codigo', '=', 'c.codigo')
+                         ->where('c.empresa_id', '=', $this->empresa->id);
+                })
+                ->where('a.empresa_id', $this->empresa->id)
+                ->where(function($query) {
+                    $query->where('a.codigo', 'like', '%' . $this->datoBuscado . '%')
+                          ->orWhere('c.detalle', 'like', '%' . $this->datoBuscado . '%')
+                          ->orWhere('b.nombre', 'like', '%' . $this->datoBuscado . '%');
+                })
+                ->groupBy('a.codigo', 'c.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
+                ->orderBy('sumStock')
+                ->paginate(10) ,
             ])        
         ->extends('layouts.app')
         ->section('main'); 
@@ -205,3 +210,34 @@ class VerStock extends Component
 //                         a.deposito_id,a.empresa_id
 //                     ORDER BY a.stock '
 //                 )->paginate(3)
+
+
+// DB::table('stocks as a')
+// ->select('a.codigo', 'c.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
+// ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
+// ->join('inventarios as c', 'a.codigo', '=', 'c.codigo')
+
+// ->where('a.empresa_id', $this->empresa->id)
+// ->where(function($query) {
+// $query->where('a.codigo', 'like', '%' . $this->datoBuscado . '%')
+// ->orWhere('c.detalle', 'like', '%' . $this->datoBuscado . '%')
+// ->orWhere('b.nombre', 'like', '%' . $this->datoBuscado . '%');
+// })
+// ->groupBy('a.codigo', 'c.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
+// ->orderBy('sumStock')
+// ->paginate(10)
+
+
+// DB::table('stocks as a')
+// ->select('a.codigo', 'c.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
+// ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
+// ->join('inventarios as c', 'a.codigo', '=', 'c.codigo')
+// ->where('a.empresa_id', $this->empresa->id)
+// ->where(function($query) {
+// $query->where('a.codigo', 'like', '%' . $this->datoBuscado . '%')
+// ->orWhere('c.detalle', 'like', '%' . $this->datoBuscado . '%')
+// ->orWhere('b.nombre', 'like', '%' . $this->datoBuscado . '%');
+// })
+// ->groupBy('a.codigo', 'c.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
+// ->orderBy('sumStock')
+// ->paginate(10);

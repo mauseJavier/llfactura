@@ -7,6 +7,7 @@ use Livewire\Component;
 use Livewire\Attributes\Validate;
 use Livewire\WithPagination;
 
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -32,6 +33,9 @@ class VerInventario extends Component
     public $modal = 'close';
     public $masDatos = false;
     public $modalStock = 'close';
+
+    public $ordenarPor = 'created_at';
+    public $acendenteDecendente= 'DESC';
 
 
     #[Validate('required', message: 'Requerido')]
@@ -370,6 +374,18 @@ class VerInventario extends Component
         $this->modal='close';
     }
 
+    public function ordenarGrilla($ordenarPor){
+
+        $this->ordenarPor = $ordenarPor;
+
+        if($this->acendenteDecendente == 'DESC'){
+
+            $this->acendenteDecendente = 'ASC';
+        }else {
+            $this->acendenteDecendente = 'DESC';
+        }
+        
+    }
 
     public function render()
     {
@@ -385,7 +401,8 @@ class VerInventario extends Component
                                     'rubro',
                                     'proveedor',
                                     'marca'
-                                ], 'LIKE', "%$this->datoBuscado%")                                
+                                ], 'LIKE', "%$this->datoBuscado%")        
+                                ->orderBy($this->ordenarPor,$this->acendenteDecendente)                        
                                 ->paginate(30),
 
             'listaPrecios' => ListaPrecio::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),

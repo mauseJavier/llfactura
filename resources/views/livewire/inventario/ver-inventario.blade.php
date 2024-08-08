@@ -64,12 +64,60 @@
                 
         </article>
      
-        <fieldset>
-            <label>
-              <input wire:model.live="masDatos" name="detalles" type="checkbox" role="switch" />
-              Ver mas Datos
-            </label>
-        </fieldset>
+        <div class="grid">
+            <div class="col">
+                <fieldset>
+            
+                    <label>
+                      <input wire:model.live="masDatos" name="detalles" type="checkbox" role="switch" />
+                      Ver mas Datos
+                    </label>
+        
+                </fieldset>
+
+            </div>
+            <div class="col">
+                <fieldset>
+
+                    <p>Orden:  
+                        @switch($ordenarPor)
+                            @case('detalle')
+                                Detalle
+                                @break
+                            @case('precio1')
+                                Precio
+                                @break
+                            @case('costo')
+                                Costo
+                                @break
+                            @case('rubro')
+                                Rubro
+                                @break
+                            @case('proveedor')
+                                Proveedor
+                                @break
+                            @case('marca')
+                                Marca
+                                @break
+                            @case('created_at')
+                                Creado
+                                @break
+                            @case('updatad_at')
+                                Actualizado
+                                @break
+                        
+                        @default
+                            
+                    @endswitch
+                    
+                    {{ $acendenteDecendente == 'DESC' ? 'Descendente' : 'Ascendente'}}</p>
+        
+                    
+                </fieldset>
+
+            </div>
+        </div>
+
 
         <div class="overflow-auto">
             <table class="striped">
@@ -77,19 +125,19 @@
                   <tr>
                     {{-- <th scope="col">id</th> --}}
                     <th scope="col">Codigo</th>
-                    <th scope="col">Detalle</th>
-                    <th scope="col">Precio</th>
+                    <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('detalle')">Detalle</a></th>
+                    <th scope="col"><a  data-tooltip="Ordenar Precio 1 Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('precio1')">Precio</a></th>
                     @if ($masDatos)                        
-                        <th scope="col">Costo</th>
+                        <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('costo')">Costo</a></th>
                         <th scope="col">Iva</th>
-                        <th scope="col">Rubro</th>
-                        <th scope="col">Proveedor</th>
-                        <th scope="col">Marca</th>
+                        <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('rubro')">Rubro</a></th>
+                        <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('proveedor')">Proveedor</a></th>
+                        <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('marca')">Marca</a></th>
                         <th scope="col">Control Stock</th>
                         <th scope="col">Pesable</th>
                         <th scope="col">Imagen</th>
-                        <th scope="col">Creado</th>
-                        <th scope="col">Actualizado</th>
+                        <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('created_at')">Creado</a></th>
+                        <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('updated_at')">Actualizado</a></th>
                     @endif
                   </tr>
                 </thead>
@@ -249,7 +297,7 @@
                 <div class="grid">
                     <div class="col">
                         <label for="">Precio 1
-                            <input type="text" wire:model.live="precio1"
+                            <input type="text" wire:model.live="precio1" 
                             @error('precio1') aria-invalid="true" @enderror
                             />
                             @error('precio1') 

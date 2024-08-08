@@ -36,7 +36,7 @@
 
               <div class="overflow-auto" >
                   <table style="font-size: 15px;" style="height: 10px;"  id="tablaCarrito">
-                      <thead>
+                      {{-- <thead>
                         <tr>
                           
                           <th scope="col"  style="text-align: center;">Codigo-Borrar</th>
@@ -48,12 +48,14 @@
                           <th scope="col">Sub Total</th>
 
                         </tr>
-                      </thead>
+                      </thead> --}}
                       <tbody>
 
 
                           @foreach ($carrito['carrito'] as $key => $articulo)
-                            <tr>                            
+                            <tr>               
+                              
+                              <th scope="row" >{{$articulo['cantidad']}}</th>   
                               
                                 <th scope="row">
 
@@ -81,7 +83,7 @@
                                   </p>
                                 </th>
                                 <th scope="row" >${{$articulo['precio']}}</th>  
-                                <th scope="row" >{{$articulo['cantidad']}}</th>                            
+                                                          
 
                                 {{-- <td><input class="seleccionarTodo" style="text-align: right;" type="text" value="{{$articulo['precio']}}" name="precio" style="min-width: 300px;" ></td>
                                 

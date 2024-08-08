@@ -317,7 +317,8 @@ class Venta extends Component
                                         'detalle',
                                         'rubro',
                                         'proveedor'
-                                    ], 'LIKE', "%{$this->datoBuscado}%")                                
+                                    ], 'LIKE', "%{$this->datoBuscado}%")     
+                                    ->orderBy('created_at','DESC')                           
                                     ->paginate(30),
             ])        
         ->extends('layouts.app')
@@ -361,9 +362,9 @@ class Venta extends Component
         $maximoFilas = 4;
         if($cantidadArticulos <= $maximoFilas){
 
-            $this->tamañoGrillaVenta =  20 +($cantidadArticulos * 70);
+            $this->tamañoGrillaVenta =  20 +($cantidadArticulos * 50);
         }else{
-            $this->tamañoGrillaVenta = 20 + $maximoFilas * 70;
+            $this->tamañoGrillaVenta = 20 + $maximoFilas * 50;
         }
 
     }

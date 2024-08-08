@@ -19,6 +19,12 @@ class FormaPagoSeeder extends Seeder
     {
         //
         DB::table('forma_pagos')->insert([
+            'id' => 0,
+            'nombre' => 'Cuenta Corriente',
+            'comentario' => 'sin comentarios',
+        ]);
+
+        DB::table('forma_pagos')->insert([
             'nombre' => 'Efectivo',
             'comentario' => 'sin comentarios',
         ]);
