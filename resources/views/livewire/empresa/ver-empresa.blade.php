@@ -33,6 +33,7 @@
             <table class="striped">
                 <thead>
                   <tr>
+                    <th scope="col">ELIMINAR</th>
                     <th scope="col">Razon Social</th>
                     <th scope="col">Titular</th>
                     <th scope="col">Cuit</th>
@@ -47,13 +48,19 @@
                     <th scope="col">Telefono</th>
                     <th scope="col">Correo</th>
 
+
                   </tr>
                 </thead>
                 <tbody>
                     @foreach ($empresas as $e)
                         <tr>
                         <th scope="row">
-                            <button wire:click="editarId({{$e->id}})"> <i class="fa-regular fa-pen-to-square"></i> {{$e->razonSocial}}</button>     
+                            <button  wire:click="eliminarEmpresa({{$e->id}},'ver')" class="outline">VER baseDatos</button>     
+                            <button wire:confirm="Esta seguro?"  wire:click="eliminarEmpresa({{$e->id}},'eliminar')" class="outline" style="color: red;"> ELIMINAR </button>    
+                        </th>
+
+                        <th scope="row">
+                            <button wire:click="editarId({{$e->id}})"> <i class="fa-regular fa-pen-to-square"></i>({{$e->id}}) {{$e->razonSocial}}</button>     
                         </th>
                         <th scope="row">
                             <button  wire:click="datosEmpresa({{$e->id}})" class="outline"> <i class="fa-solid fa-list"></i> {{$e->titular}}</button>     
@@ -70,6 +77,7 @@
                         <td>{{$e->domicilio}}</td>
                         <td>{{$e->telefono}}</td>
                         <td>{{$e->correo}}</td>
+
                         
                         </tr>
                         

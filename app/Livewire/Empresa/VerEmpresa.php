@@ -10,6 +10,10 @@ use Afip;
 
 use Illuminate\Support\Carbon;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
+
 
 use Livewire\Attributes\Validate;
 use Livewire\WithPagination;
@@ -139,11 +143,12 @@ class VerEmpresa extends Component
 
         $this->preloader = 'open';
 
-        $this->validate();
+        // $this->validate();
 
         $nuevaEmpresa = Empresa::updateOrCreate(
-            ['cuit' => $this->cuit, 'razonSocial' => $this->razonSocial],
+            ['cuit' => $this->cuit, ],
             [
+                'razonSocial' => $this->razonSocial,
                 'claveFiscal'=> $this->claveFiscal,
                 'domicilio'=> $this->domicilio,
                 'fe'=> $this->fe,
@@ -265,6 +270,98 @@ class VerEmpresa extends Component
 
     }
 
+    public function eliminarEmpresa($empresa_id,$accion){
+
+        $empresa = Empresa::find($empresa_id);
+        // dd($empresa->cuit);
+
+        $tables = DB::select('SHOW TABLES');
+        $tables = array_map('current', $tables);
+
+        
+        if($accion == 'ver'){
+
+            dump($empresa);
+            
+            
+            foreach ($tables as $table) {
+                
+                if($table == 'empresas'){
+                    
+                    // SOLO PARA LA TABLA EMPRESAS QUE ES LA DE ID EMPRESA
+                    $datos = DB::table($table)->where('id', $empresa_id)->get();    
+                    dump(array($table,$datos,count($datos)));
+    
+                }else{
+    
+                    // Verifica si la tabla tiene la columna empresa_id antes de intentar borrar
+        
+                    if (Schema::hasColumn($table, 'empresa_id')) {
+                        $datos = DB::table($table)->where('empresa_id', $empresa_id)->get();    
+                        dump(array($table,$datos,count($datos)));
+                    }
+                    else{
+                        // dump($table);
+                    }
+                }
+            }
+
+        }else{
+
+            DB::transaction(function () use ($tables,$empresa_id) {
+                foreach ($tables as $table) {
+
+                    if($table == 'empresas'){
+                        DB::table($table)->where('id', $empresa_id)->delete();
+                    }else{
+
+                        if (Schema::hasColumn($table, 'empresa_id')) {
+                            DB::table($table)->where('empresa_id', $empresa_id)->delete();
+                        }
+                    }
+                }
+            });
+
+
+            // COMPROBAMOS QUE SE ELIMINO TODO 
+            foreach ($tables as $table) {
+                
+                if($table == 'empresas'){
+                    
+                    // SOLO PARA LA TABLA EMPRESAS QUE ES LA DE ID EMPRESA
+                    $datos = DB::table($table)->where('id', $empresa_id)->get();    
+                    dump(array($table,$datos,count($datos)));
+    
+                }else{
+    
+                    // Verifica si la tabla tiene la columna empresa_id antes de intentar borrar
+        
+                    if (Schema::hasColumn($table, 'empresa_id')) {
+                        $datos = DB::table($table)->where('empresa_id', $empresa_id)->get();    
+                        dump(array($table,$datos,count($datos)));
+                    }
+                    else{
+                        // dump($table);
+                    }
+                }
+            }
+
+
+            // Storage::put('public/'.$empresa->cuit.'/key.key', $res->key);
+
+            $directoryPath= 'public/'.$empresa->cuit.'';
+            if (Storage::exists($directoryPath)) {
+                Storage::deleteDirectory($directoryPath);
+            }
+
+
+        }
+
+        
+        
+
+    }
+
     public function render()
     {
         return view('livewire.empresa.ver-empresa',
@@ -274,7 +371,8 @@ class VerEmpresa extends Component
                                 'titular',
                                 'cuit',
                                 'correo'
-                            ], 'LIKE', "%$this->datoBuscado%")                                
+                            ], 'LIKE', "%$this->datoBuscado%")    
+                            ->orderBy('created_at','DESC')                            
                             ->paginate(30),
         ])
         ->extends('layouts.app')
