@@ -10,6 +10,7 @@
                     <a role="button" wire:navigate href="{{route('stock')}}">Stock</a>
                 </div>
                 <div class="col">
+                    Desde
                     <input type="date" name="date" wire:model.live="fechaFiltro" aria-label="Date" />
                 </div>
             </div>

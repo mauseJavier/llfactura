@@ -148,6 +148,7 @@ class VerEmpresa extends Component
         $nuevaEmpresa = Empresa::updateOrCreate(
             ['cuit' => $this->cuit, ],
             [
+                 
                 'razonSocial' => $this->razonSocial,
                 'claveFiscal'=> $this->claveFiscal,
                 'domicilio'=> $this->domicilio,
@@ -217,6 +218,7 @@ class VerEmpresa extends Component
         //     "created_at" => "2024-05-20 17:19:06"
         //     "updated_at" => "2024-05-20 17:19:06"
         // ]
+
 
         $this->razonSocial= $empresa->razonSocial;
         $this->titular= $empresa->titular;

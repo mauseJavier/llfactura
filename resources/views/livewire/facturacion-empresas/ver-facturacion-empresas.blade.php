@@ -31,6 +31,33 @@
             +"forma_pago_nombre": "Efectivo"
           } --}}
 
+          <article>
+            <div class="grid">
+                <div class="col">
+
+                    <fieldset class="grid">
+                        <select name="favorite-cuisine"  wire:model.live="razonSocial">
+                            <option value="">Todo</option>
+                            @foreach ($empresas as $item)
+                                <option value="{{$item->razonSocial}}">{{$item->razonSocial}}</option>
+                            @endforeach
+    
+                          </select>
+                          <input type="text" wire:model.live="razonSocial" data-tooltip="Filtro Empresa RazonSocial CUIT" placeholder="Filtro Empresa RazonSocial CUIT">
+                      </fieldset>
+
+
+
+
+                </div>
+                <div class="col">
+                    Fecha Desde:
+                    <input type="date" name="date" aria-label="Date" wire:model.live="fechaDesde"  data-tooltip="Fecha Desde">
+
+                </div>
+            </div>
+          </article>
+
 
         <div class="overflow-auto">
             <table>

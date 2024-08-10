@@ -52,7 +52,7 @@ class HistoricoEnvio extends Component
                 DB::raw('(SELECT nombre FROM depositos WHERE id = envio_stocks.depositoDestino_id) AS depositoDestino'),
             ])
             ->where('empresa_id', 1)
-            ->whereDate('created_at','=', $this->fechaFiltro)
+            ->whereDate('created_at','>=', $this->fechaFiltro)
             ->orderBy('envio_stocks.created_at','DESC')
             ->paginate(10),
         ])
