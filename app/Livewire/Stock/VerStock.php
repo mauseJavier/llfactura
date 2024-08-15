@@ -22,7 +22,9 @@ class VerStock extends Component
 
     public $empresa;
     public $depositos;
-    // public $stock;
+    public $todosDepositos;
+    public $nombreDepositoUsuario;
+    public $idDepositoUsuario;
     public $movimientosArticulo=[];
 
     //variables para el deposito nuevo 
@@ -35,6 +37,8 @@ class VerStock extends Component
     //variables para los envios
     public $cantidadEnviar=1;
     public $depositoDestino_id;
+
+    // public $stock;
 
 
     public function enviarArticulo($depositoOrigen_id,$codigo,$detalle){
@@ -102,42 +106,80 @@ class VerStock extends Component
 
         $this->datoBuscado = '';
 
+        
         $this->empresa = Empresa::find(Auth::user()->empresa_id);
+        
+        $this->todosDepositos = Deposito::where('empresa_id',$this->empresa->id)
+        ->get();
+
+        $depositoUsuario = (array_filter($this->todosDepositos->toArray(), function($k) {
+            return $k['id'] == Auth::user()->deposito_id;
+        }));
+
+        foreach ($depositoUsuario as $key => $value) {
+            $this->nombreDepositoUsuario = $value['nombre'];
+            $this->idDepositoUsuario = $value['id'];
+        }
+
 
         $this->depositos = Deposito::where('empresa_id',$this->empresa->id)
-                                     ->where('id','!=', Auth::user()->deposito_id ) //para que no se pueda enviar al mismo deposito
-                                    ->get();
-                    
+        ->where('id','!=', Auth::user()->deposito_id ) //para que no se pueda enviar al mismo deposito
+        ->get();
+        
         if($this->depositos->isEmpty()){
-
+            
             $this->depositos = Deposito::where('empresa_id',$this->empresa->id)->get();
-
+            
             if($this->depositos->isEmpty()){
-
+                
                 $this->depositos = Deposito::create([
                     'nombre'=> 'General',
                     'comentario'=> 'General',
                     'empresa_id'=> Auth::user()->empresa_id,
                 ]);
-
+                
                 $this->depositos = NULL;
-
+                
             }else{// SIGNIFICA QUE NO ESTA BASIO PERO TIENE UN SOLO DEPOSITO Y NO SE PUEDEN HACER ENVIOS 
 
                 $this->depositos = NULL;
             }
-
-
+            
+            
         }else{//AK TIEEN MAS DE UN DEPOSITO Y SE PUEDEN HACER ENVIOS 
-
+            
             $this->depositoDestino_id = $this->depositos[0]['id'];
         }
+        
+
+        // $this->stock();
+        
+
+        
+    }
+    
+
+    public function traerStock(){ // ESTE NO FUNCIONA EN PRODUCCION 
+
+
+        $this->stock = DB::table('stocks as a')
+        ->select('a.codigo', 'a.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
+        ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
+        
+        ->where('a.empresa_id', $this->empresa->id)
+        ->where('b.empresa_id', $this->empresa->id)
+        
+        ->where(function($query) {
+            $query->where('a.codigo', 'like', '%' . $this->datoBuscado . '%')
+                  ->orWhere('a.detalle', 'like', '%' . $this->datoBuscado . '%');
+        })
+        ->groupBy('a.codigo', 'a.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
+        ->orderBy('sumStock')
+        ->get();
 
 
 
     }
-
-
 
 
     public function guardarDeposito(){
@@ -168,31 +210,71 @@ class VerStock extends Component
     public function render()
     {
         return view('livewire.stock.ver-stock',[     
-                'stock'=>     DB::table('stocks as a')
-                ->select('a.codigo', 'c.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
-                ->join('depositos as b', function($join) {
-                    $join->on('a.deposito_id', '=', 'b.id')
-                         ->where('b.empresa_id', '=', $this->empresa->id);
-                })
-                ->join('inventarios as c', function($join) {
-                    $join->on('a.codigo', '=', 'c.codigo')
-                         ->where('c.empresa_id', '=', $this->empresa->id);
-                })
+                // 'stock'=>  DB::table('stocks as a')
+                // ->select('a.codigo', 'c.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
+                // ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
+                // ->join('inventarios as c', 'a.codigo', '=', 'c.codigo')
+                // ->where('a.empresa_id', $this->empresa->id)
+                // ->where('b.empresa_id', $this->empresa->id)
+                // ->where('c.empresa_id', $this->empresa->id)
+                // ->where(function($query) {
+                //     $query->where('a.codigo', 'like', '%' . $this->datoBuscado . '%')
+                //           ->orWhere('c.detalle', 'like', '%' . $this->datoBuscado . '%')
+                //           ->orWhere('b.nombre', 'like', '%' . $this->datoBuscado . '%');
+                // })
+                // ->groupBy('a.codigo', 'c.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
+                // ->orderBy('sumStock')
+                // ->paginate(10) ,
+
+                'stock'=>  DB::table('stocks as a')
+                ->select('a.id','a.codigo', 'a.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
+                ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
+                
                 ->where('a.empresa_id', $this->empresa->id)
+                ->where('b.empresa_id', $this->empresa->id)
+                
                 ->where(function($query) {
                     $query->where('a.codigo', 'like', '%' . $this->datoBuscado . '%')
-                          ->orWhere('c.detalle', 'like', '%' . $this->datoBuscado . '%')
-                          ->orWhere('b.nombre', 'like', '%' . $this->datoBuscado . '%');
+                          ->orWhere('a.detalle', 'like', '%' . $this->datoBuscado . '%');
                 })
-                ->groupBy('a.codigo', 'c.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
+                ->when($this->idDepositoUsuario, function ($query, $idDeposito) {
+                    return $query->where('a.deposito_id', $idDeposito);
+                })
+
+
+                ->groupBy('a.codigo', 'a.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
                 ->orderBy('sumStock')
                 ->paginate(10) ,
+
+
             ])        
         ->extends('layouts.app')
         ->section('main'); 
  
     }
 }
+
+//  ESTA ES LA ULTIMA CONSULTA
+//         DB::table('stocks as a')
+//         ->select('a.codigo', 'c.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
+//         ->join('depositos as b', function($join) {
+//         $join->on('a.deposito_id', '=', 'b.id')
+//         ->where('b.empresa_id', '=', $this->empresa->id);
+//         })
+//         ->join('inventarios as c', function($join) {
+//         $join->on('a.codigo', '=', 'c.codigo')
+//         ->where('c.empresa_id', '=', $this->empresa->id);
+//         })
+//         ->where('a.empresa_id', $this->empresa->id)
+//         ->where(function($query) {
+//         $query->where('a.codigo', 'like', '%' . $this->datoBuscado . '%')
+//         ->orWhere('c.detalle', 'like', '%' . $this->datoBuscado . '%')
+//         ->orWhere('b.nombre', 'like', '%' . $this->datoBuscado . '%');
+//         })
+//         ->groupBy('a.codigo', 'c.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
+//         ->orderBy('sumStock')
+//         ->paginate(10)
+
 
 
 // DB::select('select a.codigo,a.detalle, sum(a.stock) as sumStock, b.nombre as nombreDeposito,

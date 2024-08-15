@@ -23,9 +23,10 @@ class MovimientoStock extends Component
 
     public $depositoId;
 
-    public function mount(){
+    public function mount(Stock $stock_id){
 
 
+        $this->codigo = $stock_id->codigo;
         $this->empresa = Empresa::find(Auth::user()->empresa_id);
         $this->depositoId = 'todo';
 

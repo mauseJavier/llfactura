@@ -41,7 +41,7 @@ use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\ReciboPdfController;
 
-
+use App\Models\Stock; //PARA PRUEBAS
 use Illuminate\Support\Facades\Auth; //PARA PRUEBA
 use Illuminate\Support\Facades\Storage; // para pruebas 
 use Barryvdh\DomPDF\Facade\Pdf; //para pruebas
@@ -119,7 +119,7 @@ use Illuminate\Http\Request;
         Route::get('/stock', VerStock::class)->name('stock');
         Route::get('/recibirstock', RecibirStock::class)->name('recibirstock');
         Route::get('/historicoenvio', HistoricoEnvio::class)->name('historicoenvio');
-        Route::get('/movimientostock/{codigo?}', MovimientoStock::class)->name('movimientostock');
+        Route::get('/movimientostock/{stock_id?}', MovimientoStock::class)->name('movimientostock');
         Route::get('/importarstock', ImportarStock::class)->name('importarstock');
         Route::get('/cliente', VerCliente::class)->name('cliente');
         Route::get('/cuentaCorriente/{cliente}', CuentaCorriente::class)->name('cuentaCorriente');
@@ -168,6 +168,58 @@ use Illuminate\Http\Request;
                 ->update(['domicilio' => $value->domicilio]);
 
                 dump('actualizado '. $affected);
+            }
+
+            
+        });
+
+
+
+        Route::get('/pasarStock', function () {
+
+            $articulos= DB::table('producto_comprobantes')
+                        ->where('empresa_id' , 30)
+                        ->where('fecha' ,'2024-08-12')
+                        
+                        ->get();
+
+            // +"id": 1236
+            // +"comprobante_id": 1067
+            // +"comprobante_numero": 1067
+            // +"codigo": "H4BULB         "
+            // +"detalle": "LAMPARA H4 BULB PREMIUM                 "
+            // +"precio": 1.0
+            // +"iva": 21.0
+            // +"cantidad": 2.0
+            // +"rubro": "General"
+            // +"proveedor": " ACME "
+            // +"controlStock": "no"
+            // +"fecha": "2024-08-12"
+            // +"tipoComp": "remito"
+            // +"idFormaPago": 1
+            // +"ptoVta": 0
+            // +"usuario": "Perulan Sergio"
+            // +"empresa_id": 30
+
+            foreach ($articulos as $key => $value) {
+                // dump($value->codigo .' '.$value->detalle .' '.$value->cantidad.' '.$value->comprobante_numero);
+
+                $deposito_id = User::where('name',$value->usuario)->get();
+                // dump($deposito_id[0]->deposito_id);
+
+                // dd();
+
+                $nuevo = Stock::create([
+                    'codigo'=>$value->codigo,
+                    'detalle'=>$value->detalle,
+                    'deposito_id'=>$deposito_id[0]->deposito_id,
+                    'stock'=> $value->cantidad * -1 ,
+                    'comentario'=>'Venta '.$value->tipoComp.'  N-'.$value->comprobante_numero,
+                    'usuario'=>$value->usuario,
+                    'empresa_id'=>$value->empresa_id,
+                ]);
+
+                dump($nuevo);
             }
 
             

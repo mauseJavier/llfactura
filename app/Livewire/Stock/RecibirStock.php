@@ -64,7 +64,7 @@ class RecibirStock extends Component
                 'envio_stocks.empresa_id',
                 'envio_stocks.created_at AS fechaHora',
             ])
-            ->where('envio_stocks.empresa_id', 1)
+            ->where('envio_stocks.empresa_id', Auth::user()->empresa_id)
             ->where('envio_stocks.estado', 'enviado')
             ->where('envio_stocks.depositoDestino_id', Auth::user()->deposito_id)
             ->orderBy('envio_stocks.created_at')

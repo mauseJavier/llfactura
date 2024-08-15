@@ -2,7 +2,11 @@
     {{-- @dump(        $stock    ) --}}
 
     <div class="container">
-        <h1>Stock</h1>
+      <hgroup>
+        <h2>Stock</h2>
+        <p>Deposito Usuario ({{$idDepositoUsuario}}){{$nombreDepositoUsuario}}</p>
+      </hgroup>
+
       <article>
           <div class="grid">
                 <div class="col">
@@ -12,6 +16,8 @@
 
 
                 <div class="col">
+                
+                  <fieldset role="group">
                     <input
                         type="search"
                         name="buscar"
@@ -19,6 +25,22 @@
                         aria-label="Search"
                         wire:model.live="datoBuscado"
                     />
+                    <select wire:model.live="idDepositoUsuario">
+                      <option value="">Todo</option>
+
+                      @foreach ($todosDepositos as $item)
+                         
+                          <option value="{{$item->id}}">({{$item->id}}) {{$item->nombre}}</option>
+
+                      @endforeach
+
+                    </select>
+
+                  </fieldset>
+
+                    
+            
+
 
                 </div>
           </div>
@@ -54,63 +76,68 @@
         @endif
 
 
-        <div class="overflow-auto">
-            <table class="striped">
-                <thead>
-                  <tr>
-
-                    <th scope="col">Codigo</th>
-                    <th scope="col">Detalle</th>
-                    <th scope="col">Deposito</th>
-                    <th scope="col">stock</th>
-                    {{-- si no existen depositos no se puede enviar --}}
-                    @if ($depositos) 
-                      <th scope="col">Enviar</th>
-                    @endif
-                  </tr>
-                </thead>
-                <tbody>
-                    @foreach ($stock as $item)
-
-                    <tr>
-                        
-                        <td>
-                          <a wire:navigate href="{{route('movimientostock',['codigo'=>$item->codigo])}}">{{$item->codigo}}</a>
- 
-                        </td>
-                        <td>{{$item->detalle}}</td>
-                        <td>{{$item->nombreDeposito}}</td>
-                        <td>{{$item->sumStock}}</td>
+        @if ($stock)
+            
+           <div class="overflow-auto">
+                  <table class="striped">
+                      <thead>
+                        <tr>
+      
+                          <th scope="col">Codigo</th>
+                          <th scope="col">Detalle</th>
+                          <th scope="col">Deposito</th>
+                          <th scope="col">stock</th>
                           {{-- si no existen depositos no se puede enviar --}}
-                          @if ($depositos)
-                            <td>
-                              <form wire:submit="enviarArticulo({{$item->depositoId}},'{{$item->codigo}}','{{$item->detalle}}')" wire:confirm="Seguro de Enviar?">
-                                <div class="grid">
-                                  <div>
-                                    <input type="text" wire:model="cantidadEnviar" placeholder="Cantidad Enviar">
-                                      @error('cantidadEnviar')
-                                        <small id="invalid-helper" style="color: red;">
-                                          {{ $message }}
-                                        </small>  
-                                      @enderror
-                                  </div>
-                                  <div>
-                                    <input type="submit" value="Enviar">
-                                  </div>
-                                </div>
-                              </form>
-                            </td>                            
+                          @if ($depositos)  
+                            <th scope="col">Enviar</th>
                           @endif
-                      </tr>
-                        
-                    @endforeach
-
-                </tfoot>
-              </table>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          @foreach ($stock as $item)
+      
+                          <tr>
+                              
+                              <td>
+                                <a wire:navigate href="{{route('movimientostock',['stock_id'=>$item->id])}}">{{$item->codigo}}</a>
+      
+                              </td>
+                              <td>{{$item->detalle}}</td>
+                              <td>{{$item->nombreDeposito}}</td>
+                              <td>{{$item->sumStock}}</td>
+                                {{-- si no existen depositos no se puede enviar --}}
+                              @if ($depositos) 
+                                  <td>
+                                    <form wire:submit="enviarArticulo({{$item->depositoId}},'{{$item->codigo}}','{{$item->detalle}}')" wire:confirm="Seguro de Enviar?">
+                                      <div class="grid">
+                                        <div>
+                                          <input type="text" wire:model="cantidadEnviar" placeholder="Cantidad Enviar">
+                                            @error('cantidadEnviar')
+                                              <small id="invalid-helper" style="color: red;">
+                                                {{ $message }}
+                                              </small>  
+                                            @enderror
+                                        </div>
+                                        <div>
+                                          <input type="submit" value="Enviar">
+                                        </div>
+                                      </div>
+                                    </form>
+                                  </td>                            
+                                @endif
+                            </tr>
+                              
+                          @endforeach
+      
+                      </tfoot>
+                    </table>
+                </div>
+      
+                {{ $stock->links('vendor.livewire.bootstrap') }}
           </div>
-
-          {{ $stock->links('vendor.livewire.bootstrap') }}
-    </div>
+            
+        
+        @endif
 
     <dialog x-bind:open="modalOpen">
         <article>
