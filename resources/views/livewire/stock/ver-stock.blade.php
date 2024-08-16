@@ -4,7 +4,7 @@
     <div class="container">
       <hgroup>
         <h2>Stock</h2>
-        <p>Deposito Usuario ({{$idDepositoUsuario}}){{$nombreDepositoUsuario}}</p>
+        <p>Deposito Usuario {{$nombreDepositoUsuario}}</p>
       </hgroup>
 
       <article>

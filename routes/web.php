@@ -48,6 +48,9 @@ use Barryvdh\DomPDF\Facade\Pdf; //para pruebas
 use chillerlan\QRCode\{QRCode, QROptions}; //PRUEBASSS
 use App\Models\User; //PRUEBAS
 use Illuminate\Support\Facades\DB; //PRUEBAS
+use App\Models\Rubro; 
+use App\Models\Proveedor;
+
 
 
 use Illuminate\Http\Request;
@@ -175,51 +178,31 @@ use Illuminate\Http\Request;
 
 
 
-        Route::get('/pasarStock', function () {
+        Route::get('/pasarRubros', function () {
 
-            $articulos= DB::table('producto_comprobantes')
+            $articulos= DB::table('inventarios')
                         ->where('empresa_id' , 30)
-                        ->where('fecha' ,'2024-08-12')
                         
                         ->get();
 
-            // +"id": 1236
-            // +"comprobante_id": 1067
-            // +"comprobante_numero": 1067
-            // +"codigo": "H4BULB         "
-            // +"detalle": "LAMPARA H4 BULB PREMIUM                 "
-            // +"precio": 1.0
-            // +"iva": 21.0
-            // +"cantidad": 2.0
-            // +"rubro": "General"
-            // +"proveedor": " ACME "
-            // +"controlStock": "no"
-            // +"fecha": "2024-08-12"
-            // +"tipoComp": "remito"
-            // +"idFormaPago": 1
-            // +"ptoVta": 0
-            // +"usuario": "Perulan Sergio"
-            // +"empresa_id": 30
+
+            // dd($articulos[0]->rubro);
 
             foreach ($articulos as $key => $value) {
-                // dump($value->codigo .' '.$value->detalle .' '.$value->cantidad.' '.$value->comprobante_numero);
 
-                $deposito_id = User::where('name',$value->usuario)->get();
-                // dump($deposito_id[0]->deposito_id);
+                // dump($value->rubro .' '.$value->proveedor);
 
-                // dd();
+                $r = Rubro::updateOrCreate(
+                    ['nombre' => $value->rubro, ],
+                    ['empresa_id' => Auth::user()->empresa_id,]
+                );
 
-                $nuevo = Stock::create([
-                    'codigo'=>$value->codigo,
-                    'detalle'=>$value->detalle,
-                    'deposito_id'=>$deposito_id[0]->deposito_id,
-                    'stock'=> $value->cantidad * -1 ,
-                    'comentario'=>'Venta '.$value->tipoComp.'  N-'.$value->comprobante_numero,
-                    'usuario'=>$value->usuario,
-                    'empresa_id'=>$value->empresa_id,
-                ]);
+                $p = Proveedor::updateOrCreate(
+                    ['nombre' => $value->proveedor, ],
+                    ['empresa_id' => Auth::user()->empresa_id,]
+                );
 
-                dump($nuevo);
+
             }
 
             
