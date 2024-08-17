@@ -1,4 +1,4 @@
-<div x-data="{ modalOpen: false }">
+<div x-data="{ modalOpen: false, modalStock: false }">
     {{-- @dump(        $stock    ) --}}
 
     <div class="container">
@@ -87,6 +87,9 @@
                           <th scope="col">Detalle</th>
                           <th scope="col">Deposito</th>
                           <th scope="col">stock</th>
+                          @if ($usuario->role_id == 2 || $usuario->role_id == 3 )  
+                            <th scope="col">Modificar</th>
+                          @endif
                           {{-- si no existen depositos no se puede enviar --}}
                           @if ($depositos)  
                             <th scope="col">Enviar</th>
@@ -105,6 +108,12 @@
                               <td>{{$item->detalle}}</td>
                               <td>{{$item->nombreDeposito}}</td>
                               <td>{{$item->sumStock}}</td>
+
+                              {{-- PARA EL AUMENTO DE STOCK --}}
+                              @if ($usuario->role_id == 2 || $usuario->role_id == 3 )  
+                                <td><button wire:click="asignarCodigoDetalle('{{$item->codigo}}','{{$item->detalle}}','{{$item->depositoId}}')" @click=" modalStock = !modalStock" ><i class="fa fa-plus" aria-hidden="true"></i></button></td>
+                              @endif
+
                                 {{-- si no existen depositos no se puede enviar --}}
                               @if ($depositos) 
                                   <td>
@@ -139,7 +148,7 @@
         
         @endif
 
-    <dialog x-bind:open="modalOpen">
+  <dialog x-bind:open="modalOpen">
         <article>
             <header>
                 <button @click=" modalOpen = !modalOpen" aria-label="Close" rel="prev"></button>
@@ -186,7 +195,97 @@
 
           <button @click=" modalOpen = !modalOpen">Cerrar</button>
         </article>
-      </dialog>
+  </dialog>
+
+  <dialog x-bind:open="modalStock">
+    <article>
+        <header>
+            <button @click=" modalStock = !modalStock" aria-label="Close" rel="prev"></button>
+            <p>
+                <strong>Modificar Stock</strong>
+            </p>
+        </header>
+        @if (session()->has('mensaje'))          
+            <p style="color: rgb(0, 137, 90);">
+                {{ session('mensaje') }}
+            </p>          
+        @endif
+
+        
+        @if (session()->has('modificarStock'))          
+        <p style="color: rgb(0, 137, 90);">
+            {{ session('modificarStock') }}
+        </p>          
+    @endif
+    @error('codigo') 
+        <small id="invalid-helper">
+            Codigo {{ $message }} 
+        </small>                               
+    @enderror
+    @error('detalle') 
+        <small id="invalid-helper">
+            Detalle {{ $message }} 
+        </small>                               
+    @enderror
+
+    <form wire:submit="modificarStockArticulo">
+        <p>({{$codigo}}) {{$detalle}}</p>
+        
+    <fieldset>
+
+        <select wire:model="idDepositoGuardar" name="idDepositoGuardar" aria-label="">
+            @foreach ($todosDepositos as $item)
+                <option value="{{$item->id}}">({{$item->id}}) {{$item->nombre}}</option>                        
+            @endforeach
+          </select>
+
+
+        <label>
+        Stock
+        <input
+            wire:model.live="nuevoStock"
+            name="nuevoStock"
+            placeholder="Stock"
+            autocomplete="nuevoStock"
+            @error('nuevoStock') aria-invalid="true" @enderror
+        />
+            @error('nuevoStock') 
+            <small id="invalid-helper">
+                {{ $message }} 
+                </small>
+            @enderror
+        
+        </label>
+
+        <label>
+          Comentario
+          <input
+              wire:model.live="comentario"
+              name="comentario"
+              placeholder="Comentario"
+              autocomplete="comentario"
+              @error('comentario') aria-invalid="true" @enderror
+          />
+              @error('comentario') 
+              <small id="invalid-helper">
+                  {{ $message }} 
+                  </small>
+              @enderror
+          
+          </label>
+
+    </fieldset>
+    
+    <input
+        type="submit"
+        value="Guardar Stock"
+    />
+    </form>
+
+
+      <button @click=" modalStock = !modalStock">Cerrar</button>
+    </article>
+</dialog>
 
 
 

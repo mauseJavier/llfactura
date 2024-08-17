@@ -21,6 +21,8 @@ class VerStock extends Component
     use WithPagination;
 
     public $empresa;
+    public $usuario;
+
     public $depositos;
     public $todosDepositos;
     public $nombreDepositoUsuario;
@@ -38,7 +40,12 @@ class VerStock extends Component
     public $cantidadEnviar=1;
     public $depositoDestino_id;
 
-    // public $stock;
+    // DATOS PARA LA MODIFICACION DE STOCK
+    public $codigo;
+    public $detalle;
+    public $nuevoStock=1;
+    public $idDepositoGuardar;
+    public $comentario;
 
 
     public function enviarArticulo($depositoOrigen_id,$codigo,$detalle){
@@ -106,7 +113,7 @@ class VerStock extends Component
 
         $this->datoBuscado = '';
 
-        
+        $this->usuario = Auth::user();
         $this->empresa = Empresa::find(Auth::user()->empresa_id);
         
         $this->todosDepositos = Deposito::where('empresa_id',$this->empresa->id)
@@ -120,6 +127,8 @@ class VerStock extends Component
             $this->nombreDepositoUsuario = $value['nombre'];
             $this->idDepositoUsuario = $value['id'];
         }
+
+        $this->idDepositoGuardar =$this->idDepositoUsuario ;
 
 
         $this->depositos = Deposito::where('empresa_id',$this->empresa->id)
@@ -205,6 +214,50 @@ class VerStock extends Component
         $this->comentarioDeposito='';
 
         session()->flash('mensaje', 'Guardado.');
+    }
+
+    public function asignarCodigoDetalle($codigo,$detalle,$despositoId){
+
+        // dump($codigo .' '.$detalle);
+        $this->codigo=$codigo;
+        $this->detalle=$detalle;
+        $this->idDepositoGuardar = $despositoId;
+
+    }
+    public function modificarStockArticulo(){
+
+        // dump($this->codigo);
+        // dump($this->detalle);
+        // dump($this->idDepositoGuardar);
+        // dump($this->nuevoStock);
+
+        // dd();
+        $validated = $this->validate([ 
+            'codigo' => 'required|min:1',
+            'detalle' => 'required|min:1',
+            'nuevoStock'=>'numeric',
+            'comentario'=> 'max:200'
+        ]);
+
+
+        $n = Stock::create([
+            'codigo'=>$this->codigo,
+            'detalle'=>$this->detalle,
+            'deposito_id'=>$this->idDepositoGuardar,
+            'stock'=>$this->nuevoStock,
+            'comentario'=> $this->nuevoStock > 0 ? 'Ingreso '. $this->comentario : 'Descuento '. $this->comentario ,
+            'usuario'=>$this->usuario->name,
+            'empresa_id'=> $this->empresa->id,
+        ]);
+
+        $this->nuevoStock = 1;
+        $this->comentario = '';
+
+
+        session()->flash('modificarStock', 'Stock Guardado. id-'. $n->id);
+
+
+
     }
 
     public function render()

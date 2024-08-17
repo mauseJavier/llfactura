@@ -30,11 +30,22 @@ class Update extends Component
 
         $empresa = Empresa::find($idEmpresa);
 
-        $afip = $this->objetoAfip($empresa);
 
-        return $afip->ElectronicBilling->GetSalesPoints();
-        // dump($sales_points[0]->Nro);
-        // dump($sales_points[0]->EmisionTipo);
+
+        if($empresa->fe == 'si'){
+
+            $afip = $this->objetoAfip($empresa);
+
+            return $afip->ElectronicBilling->GetSalesPoints();
+            // dump($sales_points[0]->Nro);
+            // dump($sales_points[0]->EmisionTipo);
+        }else{
+
+            $dato[0] = (object) array('Nro' => 0,'EmisionTipo'=>'Nada');
+            
+            return $dato;
+        }
+
 
     }
 
@@ -124,8 +135,21 @@ class Update extends Component
         
         $this->deposito_id = $this->depositos[0]->id;
 
-        $this->listaPuntoVenta = $this->datosEmpresa($this->empresa_id);
-        $this->puntoVenta = $this->listaPuntoVenta[0]->Nro;
+
+        $empresa = Empresa::find($this->empresa_id);
+
+
+        if($empresa->fe == 'si'){
+
+            $this->listaPuntoVenta = $this->datosEmpresa($this->empresa_id);
+            $this->puntoVenta = $this->listaPuntoVenta[0]->Nro;
+        }else{
+
+            $dato[0] = (object) array('Nro' => 0,'EmisionTipo'=>'Nada');
+            $this->listaPuntoVenta = $dato;
+            $this->puntoVenta = 0;
+        }
+        
         $domicilio = Empresa::select('domicilio')->where('id',$this->empresa_id)->get();
         $this->domicilio = $domicilio[0]->domicilio;
 
