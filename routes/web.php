@@ -181,7 +181,7 @@ use Illuminate\Http\Request;
         Route::get('/pasarRubros', function () {
 
             $articulos= DB::table('inventarios')
-                        ->where('empresa_id' , 30)
+                        ->where('empresa_id' , Auth::user()->empresa_id)
                         
                         ->get();
 
