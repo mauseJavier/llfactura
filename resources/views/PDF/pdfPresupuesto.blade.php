@@ -136,9 +136,10 @@
       <tr  style="">
         <th>#</th>
         <th>Descripcion</th>
-        <th>Cantidad</th>
-        <th>Precio U. $</th>
-        <th>Total $</th>
+        <th>Cant.</th>
+        <th>Precio U.$</th>
+        <th>Bon.$</th>
+        <th>Sub.Total.$</th>
       </tr>
     </thead>
 
@@ -151,8 +152,12 @@
   <th scope="row">{{$item->codigo}}</th>
   <td>{{$item->detalle}}</td>
   <td align="right">{{$item->cantidad}}</td>
-  <td align="right">{{$item->precio}}</td>
-  <td align="right">{{$item->precio * $item->cantidad}}</td>
+  <td align="right">{{$item->precioLista}}</td>
+  <td align="right">
+    {{$item->porcentaje < 0 ? $item->descuento * $item->cantidad : '0'}}
+    {{$item->porcentaje < 0 ? '('.$item->porcentaje.'%)' : ''}}
+  </td>
+  <td align="right">{{$item->precioLista * $item->cantidad}}</td>
 </tr>
     
 @endforeach
@@ -172,14 +177,27 @@
 
   
     </tbody>
-
+    <tr>
+      <td colspan="2"></td>
+      <td colspan="4"><hr></td>
+    </tr>
     <tfoot>
 
-        <tr>
-            <td colspan="3"></td>
-            <td align="right">Total $</td>
-            <td align="right" class="gray">$ {{$totalVenta}}</td>
-        </tr>
+      <tr>
+          <td colspan="4"></td>
+          <td align="right">Sub.Total</td>
+          <td align="right">${{$subTotalPrecioLista}}</td>
+      </tr>
+      <tr>
+          <td colspan="4"></td>
+          <td align="right">Bon.</td>
+          <td align="right">${{$totalDescuento}}</td>
+      </tr>
+      <tr>
+          <td colspan="2"></td>
+          <td align="right">Total $</td>
+          <td colspan="3" align="right" class="gray">$ {{$totalVenta}}</td>
+      </tr>
 
         <tr class="bill-row row-details">
           <td>

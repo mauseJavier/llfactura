@@ -197,6 +197,12 @@ class NuevoComprobante extends Component
                 $this->carrito['carrito'][] = array(
                     'codigo'=>'varios',
                     'detalle'=>'varios',
+
+                    'porcentaje'=> 0,
+                    'precioLista'=> round($total,2) ,
+                    'descuento'=> 0 ,
+
+                    
                     'precio'=> round($this->total,2),
                     'iva'=>$this->empresa->ivaDefecto,
                     'cantidad'=>1,
@@ -685,6 +691,12 @@ class NuevoComprobante extends Component
                     $this->carrito['carrito'][] = array(
                         'codigo'=>'varios',
                         'detalle'=>'varios',
+
+                        'porcentaje'=> 0,
+                        'precioLista'=> round($total,2) ,
+                        'descuento'=> 0 ,
+
+
                         'precio'=> round($total,2),
                         'iva'=>$this->empresa->ivaDefecto,
                         'cantidad'=>1,
@@ -904,6 +916,12 @@ class NuevoComprobante extends Component
                 $this->carrito['carrito'][] = array(
                     'codigo'=>'varios',
                     'detalle'=>'varios',
+
+                    'porcentaje'=> 0,
+                    'precioLista'=> round($total,2) ,
+                    'descuento'=> 0 ,
+
+
                     'precio'=> round($total,2),
                     'iva'=>$this->empresa->ivaDefecto,
                     'cantidad'=>1,
@@ -1134,6 +1152,12 @@ class NuevoComprobante extends Component
                 $this->carrito['carrito'][] = array(
                     'codigo'=>'varios',
                     'detalle'=>'varios',
+
+                    'porcentaje'=> 0,
+                    'precioLista'=> round($total,2) ,
+                    'descuento'=> 0 ,
+
+                    
                     'precio'=> round($total,2),
                     'iva'=>$this->empresa->ivaDefecto,
                     'cantidad'=>1,
@@ -1373,6 +1397,12 @@ class NuevoComprobante extends Component
                             'comprobante_numero'=>$comprobante->numero,
                             'codigo'=>$value['codigo'],
                             'detalle'=>$value['detalle'],
+
+                            'porcentaje'=> $value['porcentaje'],
+                            'precioLista'=> $value['precioLista'] ,
+                            'descuento'=> $value['descuento'] ,
+
+
                             'precio'=>$value['precio'],
                             'iva'=>$value['iva'],
                             'cantidad'=>$value['cantidad'],
@@ -1496,6 +1526,12 @@ class NuevoComprobante extends Component
                         'presupuesto_numero'=>$presupuestoGuardado->numero,
                         'codigo'=>$value['codigo'],
                         'detalle'=>$value['detalle'],
+
+                        'porcentaje'=> $value['porcentaje'],
+                        'precioLista'=> $value['precioLista'] ,
+                        'descuento'=> $value['descuento'] ,
+
+
                         'precio'=>$value['precio'],
                         'iva'=>$value['iva'],
                         'cantidad'=>$value['cantidad'],

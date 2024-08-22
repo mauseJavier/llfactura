@@ -65,6 +65,12 @@ class VerPresupuesto extends Component
                 $this->carrito['carrito'][] = array(
                     'codigo'=>$value->codigo,
                     'detalle'=>$value->detalle,
+
+                    'porcentaje'=> $value->porcentaje,
+                    'precioLista'=> $value->precioLista ,
+                    'descuento'=> $value->descuento ,
+
+
                     'precio'=> round( $value->precio,2),
                     'iva'=>$value->iva,
                     'cantidad'=>$value->cantidad,

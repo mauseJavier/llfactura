@@ -42,55 +42,22 @@ class PresupuestoController extends Controller
         //para saber si es negativo en las notas de credito y pasarlo a positivo
         $totalRevisado = floatval(($presupuesto[0]->total) > 0 ? $presupuesto[0]->total : ($presupuesto[0]->total * -1)); 
       
-        // $importe_gravado_al21=0;
-        // $importe_iva_al21=0;
-        // $importe_gravado_al105=0;
-        // $importe_iva_al105=0;
 
-        // // dd(count($productos));
+        $totalDescuento=0;
+        $subTotalPrecioLista=0;
 
-        // if(count($productos)== 0){
-        //     $productos = null;
-           
-        // }else{
-        //     foreach ($productos as $key => $value) {     
-                
-        //         //     #attributes: array:8 [▼
-        //         //     "id" => 9
-        //         //     "comprobante_id" => 12
-        //         //     "comprobante_numero" => 101
-        //         //     "codigo" => "71697413"
-        //         //     "detalle" => "laudantium"
-        //         //     "precio" => 30.61
-        //         //     "iva" => 10.5
-        //         //     "cantidad" => 1.0
-        //         // ]
-
-        //         if($value->iva == 21){
-                    
-        //             $importe_gravado_al21 += round($value->precio * $value->cantidad / 1.21,2);
-        //             $importe_iva_al21 += round($value->precio * $value->cantidad - ($value->precio * $value->cantidad / 1.21),2);
-
-        //             if($comprobante[0]->tipoComp == 1){
-        //                 $productos[$key]->precio = round($value->precio / 1.21,2);
-        //             }
-                    
-        //         }elseif($value->iva == 10.5){
-                    
-        //             $importe_gravado_al105 += round($value->precio * $value->cantidad / 1.105,2);
-        //             $importe_iva_al105 += round($value->precio * $value->cantidad -($value->precio * $value->cantidad / 1.105),2);
-
-        //             if($comprobante[0]->tipoComp == 1){
-        //                 $productos[$key]->precio = round($value->precio / 1.105,2);
-        //             }
-        //         }
-        //     }
-
+        foreach ($productos as $key => $value) {     
             
-        // }
+            $totalDescuento += round($value->descuento * $value->cantidad,2);
+            $subTotalPrecioLista += round($value->precioLista * $value->cantidad,2);
 
-        //para pruebas
-        // $productos = null;
+
+
+        }
+
+
+
+
 
              
         if (Storage::disk('local')->exists( 'public/'.$empresa->cuit.'/logo/logo.png')) {
@@ -158,6 +125,9 @@ class PresupuestoController extends Controller
                 'leyenda'=>$presupuesto[0]->leyenda,
                 'nombreFormaPago'=>$nombreFormaPago->nombre,
                 'producto'=> $productos,
+
+                'subTotalPrecioLista'=>$subTotalPrecioLista,
+                'totalDescuento'=> number_format($totalDescuento, 2) ,
  
                 'totalVenta'=> number_format($totalRevisado, 2) ,
 

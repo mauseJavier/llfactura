@@ -172,11 +172,12 @@
 
 
                 <div x-data>
-                    <label for="">Numero de Documento</label>
+                    <label for="">Numero de Documento <small style="color: red">(Buscar para Cuenta Corriente)</small></label>
                     <fieldset role="group">                       
 
                         <input  
-                            wire:model.live ="cuit" 
+                            wire:model="cuit" 
+                            {{-- wire:focusout="buscarCuit" --}}
                             wire:keydown.enter="buscarCliente"
                             {{-- wire:focusout="buscarCliente" por si no queda bien que rederise a cada rato--}}
                             {{-- wire:keyup ="buscarCliente" --}}

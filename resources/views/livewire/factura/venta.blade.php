@@ -1,4 +1,5 @@
 <div>
+
     {{-- The whole world belongs to you. --}}
     <style>
       .bg-default {
@@ -11,6 +12,7 @@
 
 
       <div class="container" style="margin-top: -2%;">
+
 
         <div style="justify-content: center; align-items: center; ">
 
@@ -79,7 +81,7 @@
                                     style="cursor: pointer; font-size: 15px;"
                                     >
                                       <i class="fa-regular fa-pen-to-square"></i>
-                                      {{$articulo['detalle']}}
+                                      {{$articulo['detalle']}} {{$articulo['porcentaje'] < 0 ? '('.$articulo['porcentaje'].'%)' : ''}}
                                   </p>
                                 </th>
                                 <th scope="row" >${{$articulo['precio']}}</th>  

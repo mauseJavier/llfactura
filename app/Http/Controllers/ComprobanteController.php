@@ -45,6 +45,9 @@ class ComprobanteController extends Controller
         $importe_iva_al21=0;
         $importe_gravado_al105=0;
         $importe_iva_al105=0;
+        $totalDescuento=0;
+        $subTotalPrecioLista=0;
+
 
         // dd(count($productos));
 
@@ -65,6 +68,9 @@ class ComprobanteController extends Controller
                 //     "cantidad" => 1.0
                 // ]
 
+
+                // dump($totalDescuento);
+
                 if($value->iva == 21){
                     
                     $importe_gravado_al21 += round($value->precio * $value->cantidad / 1.21,2);
@@ -72,6 +78,10 @@ class ComprobanteController extends Controller
 
                     if($comprobante[0]->tipoComp == 1){
                         $productos[$key]->precio = round($value->precio / 1.21,2);
+
+                        $productos[$key]->precioLista = round($value->precioLista / 1.21,2);
+                        $productos[$key]->descuento = round($value->descuento / 1.21,2);
+
                     }
                     
                 }elseif($value->iva == 10.5){
@@ -81,10 +91,20 @@ class ComprobanteController extends Controller
 
                     if($comprobante[0]->tipoComp == 1){
                         $productos[$key]->precio = round($value->precio / 1.105,2);
+
+                        $productos[$key]->precioLista = round($value->precioLista / 1.105,2);
+                        $productos[$key]->descuento = round($value->descuento / 1.105,2);
+
                     }
                 }
+
+                $totalDescuento += round($productos[$key]->descuento * $value->cantidad,2);
+                $subTotalPrecioLista += round($productos[$key]->precioLista * $value->cantidad,2);
+
+
             }
 
+            // dd($totalDescuento);
             
         }
 
@@ -293,9 +313,11 @@ class ComprobanteController extends Controller
                 'nombreFormaPago'=>$nombreFormaPago->nombre,
                 'producto'=> $productos,
                 'subtotal'=> $subtotal,
+                'subTotalPrecioLista'=>$subTotalPrecioLista,
                 'iva105'=> $iva105 ,
                 'iva21'=> $iva21 ,
                 'totalVenta'=> number_format($totalRevisado, 2) ,
+                'totalDescuento'=> number_format($totalDescuento, 2) ,
                 'cae'=>$comprobante[0]->cae,
                 'vtocae'=>date('d-m-Y', strtotime($comprobante[0]->fechaVencimiento)),
                 'qr'=>$qrcode,

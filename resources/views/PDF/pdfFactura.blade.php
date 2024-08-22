@@ -140,9 +140,10 @@
       <tr  style="">
         <th>#</th>
         <th>Descripcion</th>
-        <th>Cantidad</th>
-        <th>Precio U. $</th>
-        <th>Total $</th>
+        <th>Cant.</th>
+        <th>Precio U.$</th>
+        <th>Bon.$</th>
+        <th>Sub.Total.$</th>
       </tr>
     </thead>
 
@@ -155,8 +156,12 @@
   <th scope="row">{{$item->codigo}}</th>
   <td>{{$item->detalle}}</td>
   <td align="right">{{$item->cantidad}}</td>
-  <td align="right">{{$item->precio}}</td>
-  <td align="right">{{$item->precio * $item->cantidad}}</td>
+  <td align="right">{{$item->precioLista}}</td>
+  <td align="right">
+    {{$item->porcentaje < 0 ? $item->descuento * $item->cantidad : '0'}}
+    {{$item->porcentaje < 0 ? '('.$item->porcentaje.'%)' : ''}}
+  </td>
+  <td align="right">{{$item->precioLista * $item->cantidad}}</td>
 </tr>
     
 @endforeach
@@ -176,17 +181,33 @@
 
   
     </tbody>
+    <tr>
+      <td colspan="2"></td>
+      <td colspan="4"><hr></td>
+    </tr>
+    
+  <tfoot>
+    <tr>
+        <td colspan="4"></td>
+        <td align="right">Sub.Total</td>
+        <td align="right">${{$subTotalPrecioLista}}</td>
+    </tr>
 
-    <tfoot>
+    <tr>
+        <td colspan="4"></td>
+        <td align="right">Bon.</td>
+        <td align="right">${{$totalDescuento}}</td>
+    </tr>
+
       @if ($codigoFactura == 1 OR $codigoFactura == 3)
-        <tr>
-            <td colspan="3"></td>
+        {{-- <tr>
+            <td colspan="4"></td>
             <td align="right">Subtotal $</td>
             <td align="right">{{$subtotal}}</td>
-        </tr>
+        </tr> --}}
         @if ($iva105 > 0)
           <tr>
-              <td colspan="3"></td>
+              <td colspan="4"></td>
               <td align="right">iva 10.5 $</td>
               <td align="right">{{$iva105}}</td>
           </tr>
@@ -194,7 +215,7 @@
         @endif
         @if ($iva21 > 0)
           <tr>
-            <td colspan="3"></td>
+            <td colspan="4"></td>
             <td align="right">iva 21 $</td>
             <td align="right">{{$iva21}}</td>
           </tr>
@@ -202,7 +223,7 @@
         @endif
       @endif
         <tr>
-            <td colspan=""></td>
+            <td colspan="2"></td>
             <td align="right">Total $</td>
             <td colspan="3" align="right" class="gray">$ {{$totalVenta}}</td>
         </tr>

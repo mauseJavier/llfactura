@@ -109,6 +109,11 @@ class Venta extends Component
             $nuevoArticulo = array(
                 'codigo'=>$articulo[0]->codigo,
                 'detalle'=>$articulo[0]->detalle,
+
+                'porcentaje'=> $this->porcentaje,
+                'precioLista'=> $this->porcentaje < 0 ? $articulo[0]->precio :  round(($articulo[0]->precio * $this->porcentaje / 100 + $articulo[0]->precio),2),
+                'descuento'=> $this->porcentaje < 0 ? round($articulo[0]->precio * $this->porcentaje / 100 ,2) : 0 ,
+
                 'precio'=> round(($articulo[0]->precio * $this->porcentaje / 100 + $articulo[0]->precio),2),
                 'iva'=>$articulo[0]->iva,
                 'cantidad'=>$this->cantidad,
@@ -169,7 +174,16 @@ class Venta extends Component
             $precio = $this->carrito['carrito'][$key]['precio'];
             $cantidad = $this->carrito['carrito'][$key]['cantidad'];
 
+            $this->carrito['carrito'][$key]['porcentaje']= $this->porcentaje;
+            $this->carrito['carrito'][$key]['precioLista']= $this->porcentaje < 0 ? $precio : round($precio+($precio * $this->porcentaje /100),2);
+            $this->carrito['carrito'][$key]['descuento']= $this->porcentaje < 0 ? round(($precio * $this->porcentaje /100),2) : 0;
+
+
+
             $precio =round($precio+($precio * $this->porcentaje /100),2);
+
+
+
 
             $this->carrito['carrito'][$key]['precio'] = $precio ;
             $this->carrito['carrito'][$key]['subtotal'] = round($precio * $cantidad,2);
@@ -362,9 +376,9 @@ class Venta extends Component
         $maximoFilas = 4;
         if($cantidadArticulos <= $maximoFilas){
 
-            $this->tamañoGrillaVenta =  20 +($cantidadArticulos * 50);
+            $this->tamañoGrillaVenta =  25 +($cantidadArticulos * 50);
         }else{
-            $this->tamañoGrillaVenta = 20 + $maximoFilas * 50;
+            $this->tamañoGrillaVenta = 25 + $maximoFilas * 50;
         }
 
     }
