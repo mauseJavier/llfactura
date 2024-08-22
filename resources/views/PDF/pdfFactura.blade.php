@@ -50,12 +50,12 @@
     <tr style="align-content: center; align-items: center;">
 
       <td  style="width: 250px; "  >
-          <img src="{{$logo}}"  alt="" width="50%" style="margin-top: -30px; margin-left: auto;"/>
+          <img src="{{$logo}}"  alt="" width="80%" style="margin-top: -30px; margin-left: auto;"/>
 
           <table style="text-align: center;">
-            <tr>
+            {{-- <tr>
               <td><h1>{{$empresaNombre}}</h1></td>              
-            </tr>
+            </tr> --}}
             <tr>
               <td>{{$empresaIva}}</td>
            </tr>
@@ -138,7 +138,7 @@
   <table width="100%">
     <thead style="background-color: lightgray;">
       <tr  style="">
-        <th>#</th>
+        <th>Cod.</th>
         <th>Descripcion</th>
         <th>Cant.</th>
         <th>Precio U.$</th>
@@ -190,13 +190,13 @@
     <tr>
         <td colspan="4"></td>
         <td align="right">Sub.Total</td>
-        <td align="right">${{$subTotalPrecioLista}}</td>
+        <td align="right">$ {{$subTotalPrecioLista}}</td>
     </tr>
 
     <tr>
         <td colspan="4"></td>
         <td align="right">Bon.</td>
-        <td align="right">${{$totalDescuento}}</td>
+        <td align="right">$ {{$totalDescuento}}</td>
     </tr>
 
       @if ($codigoFactura == 1 OR $codigoFactura == 3)
@@ -208,23 +208,23 @@
         @if ($iva105 > 0)
           <tr>
               <td colspan="4"></td>
-              <td align="right">iva 10.5 $</td>
-              <td align="right">{{$iva105}}</td>
+              <td align="right">iva 10.5 </td>
+              <td align="right">$ {{$iva105}}</td>
           </tr>
             
         @endif
         @if ($iva21 > 0)
           <tr>
             <td colspan="4"></td>
-            <td align="right">iva 21 $</td>
-            <td align="right">{{$iva21}}</td>
+            <td align="right">iva 21 </td>
+            <td align="right">$ {{$iva21}}</td>
           </tr>
             
         @endif
       @endif
         <tr>
             <td colspan="2"></td>
-            <td align="right">Total $</td>
+            <td align="right">Total :</td>
             <td colspan="3" align="right" class="gray">$ {{$totalVenta}}</td>
         </tr>
 

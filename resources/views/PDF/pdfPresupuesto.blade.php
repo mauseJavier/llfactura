@@ -186,16 +186,16 @@
       <tr>
           <td colspan="4"></td>
           <td align="right">Sub.Total</td>
-          <td align="right">${{$subTotalPrecioLista}}</td>
+          <td align="right">$ {{$subTotalPrecioLista}}</td>
       </tr>
       <tr>
           <td colspan="4"></td>
           <td align="right">Bon.</td>
-          <td align="right">${{$totalDescuento}}</td>
+          <td align="right">$ {{$totalDescuento}}</td>
       </tr>
       <tr>
           <td colspan="2"></td>
-          <td align="right">Total $</td>
+          <td align="right">Total :</td>
           <td colspan="3" align="right" class="gray">$ {{$totalVenta}}</td>
       </tr>
 

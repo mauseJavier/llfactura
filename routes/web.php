@@ -53,6 +53,7 @@ use App\Models\Proveedor;
 
 
 
+
 use Illuminate\Http\Request;
  
 
@@ -204,6 +205,20 @@ use Illuminate\Http\Request;
 
 
             }
+
+            
+        });
+
+
+        Route::get('/pasarPrecioLista', function () {
+
+
+            $affectedRows = DB::table('producto_comprobantes')
+            ->where('precioLista', 0)
+            ->update(['precioLista' => DB::raw('precio')]);
+        
+            echo "Filas afectadas: " . $affectedRows;
+            
 
             
         });
