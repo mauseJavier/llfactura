@@ -257,6 +257,8 @@ class Venta extends Component
 
         $this->carrito['carrito'][$this->modificarKey]['detalle'] = $this->modificarDetalle ;
         $this->carrito['carrito'][$this->modificarKey]['precio'] =    round(floatval($this->modificarPrecio),2) ; 
+        $this->carrito['carrito'][$this->modificarKey]['precioLista'] =    round(floatval($this->modificarPrecio),2) ; 
+
         $this->carrito['carrito'][$this->modificarKey]['cantidad'] =  round(floatval($this->modificarCantidad),2) ;    
         $this->carrito['carrito'][$this->modificarKey]['subtotal'] =  round( floatval($this->modificarPrecio) * floatval($this->modificarCantidad),2) ;   
 

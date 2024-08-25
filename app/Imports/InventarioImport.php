@@ -3,6 +3,9 @@
 namespace App\Imports;
 
 use App\Models\Inventario;  
+use App\Models\Rubro; 
+use App\Models\Proveedor;
+use App\Models\ListaPrecio; 
 
 
 
@@ -59,6 +62,9 @@ class InventarioImport implements ToCollection,WithHeadingRow
                     'precio1'   => (isset($row[$this->columnas['precio1']])) ? round( floatval($row[$this->columnas['precio1']]),2)  : 0 ,
                     'precio2'   => (isset($row[$this->columnas['precio2']])) ? round( floatval($row[$this->columnas['precio2']]),2)  : 0 ,
                     'precio3'   => (isset($row[$this->columnas['precio3']])) ? round( floatval($row[$this->columnas['precio3']]),2)  : 0 ,
+                    'porcentaje'   => (isset($row[$this->columnas['porcentaje']])) ? round( floatval($row[$this->columnas['porcentaje']]),2)  : 0 ,
+
+
                     'iva'       => (isset($row[$this->columnas['iva']])) ? round( floatval($row[$this->columnas['iva']]),2)  : $this->columnas['ivaDefecto'] ,
 
                     'rubro'    => (isset($row[$this->columnas['rubro']])) ? $row[$this->columnas['rubro']] : 'General' ,
@@ -68,6 +74,40 @@ class InventarioImport implements ToCollection,WithHeadingRow
                     'imagen'    => (isset($row[$this->columnas['imagen']])) ?  $row[$this->columnas['imagen']] : '' ,
                 ]
             );
+
+            if(isset($row[$this->columnas['rubro']])){
+
+                $r = Rubro::updateOrCreate(
+                    ['nombre' => $row[$this->columnas['rubro']], ],
+                    ['empresa_id' => $this->columnas['empresa_id'],]
+                );
+            }
+
+            if(isset($row[$this->columnas['proveedor']])){
+
+                $p = Proveedor::updateOrCreate(
+                    ['nombre' => $row[$this->columnas['proveedor']], ],
+                    ['empresa_id' => $this->columnas['empresa_id'],]
+                );
+
+            }
+
+            $nombreLista = (isset($row[$this->columnas['nombreLista']])) ?  $row[$this->columnas['nombreLista']] : $row[$this->columnas['porcentaje']] ;
+
+            if(isset($row[$this->columnas['porcentaje']])){
+
+                $p = ListaPrecio::updateOrCreate(
+                    ['nombre' => $nombreLista ,
+                     'empresa_id' => $this->columnas['empresa_id']],
+                    [
+                     'porcentaje' => $row[$this->columnas['porcentaje']],
+                    ]
+                );
+
+            }
+
+
+
 
         }
     }

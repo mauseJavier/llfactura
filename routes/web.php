@@ -212,12 +212,19 @@ use Illuminate\Http\Request;
 
         Route::get('/pasarPrecioLista', function () {
 
+            dd('habilitar del codigo');
 
             $affectedRows = DB::table('producto_comprobantes')
             ->where('precioLista', 0)
             ->update(['precioLista' => DB::raw('precio')]);
         
-            echo "Filas afectadas: " . $affectedRows;
+            echo "Filas afectadas: producto_comprobantes" . $affectedRows;
+
+            $affectedRows = DB::table('producto_presupuestos')
+            ->where('precioLista', 0)
+            ->update(['precioLista' => DB::raw('precio')]);
+        
+            echo "Filas afectadas: producto_presupuestos" . $affectedRows;
             
 
             

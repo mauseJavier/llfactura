@@ -172,17 +172,19 @@
                         
                     </div>
 
+
+
                 </div>
                 
                 <div class="grid">
+
                     <div class="col">
-                        <input type="text" name="stock" id=""
-                        wire:model="CAMPOstock"
-                        placeholder="Stock (DISABLED)"
-                        disabled
-                        @error('CAMPOstock')aria-invalid="true" @enderror                        
+                        <input type="text" name="nombreLista" id=""
+                        wire:model="CAMPOnombreLista"
+                        placeholder="Nombre Lista por defecto PORCENTAJE"
+                        @error('CAMPOnombreLista')aria-invalid="true" @enderror                        
                         >
-                        @error('CAMPOstock') 
+                        @error('CAMPOnombreLista') 
                             <small id="invalid-helper">
                                 {{ $message }} 
                             </small>
@@ -191,19 +193,20 @@
                     </div>
 
                     <div class="col">
-                        <input type="text" name="deposito" id=""
-                        wire:model="CAMPOdeposito"
-                        placeholder="Deposito (DISABLED)"
-                        disabled
-                        @error('CAMPOdeposito')aria-invalid="true" @enderror                        
+                        <input type="text" name="porcentaje" id=""
+                        wire:model="CAMPOporcentaje"
+                        placeholder="Porcentaje por defecto 0"
+                        @error('CAMPOporcentaje')aria-invalid="true" @enderror                        
                         >
-                        @error('CAMPOdeposito') 
+                        @error('CAMPOporcentaje') 
                             <small id="invalid-helper">
                                 {{ $message }} 
                             </small>
                         @enderror
                         
                     </div>
+
+
 
                 </div>
 

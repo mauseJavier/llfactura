@@ -41,7 +41,7 @@ class Update extends Component
             // dump($sales_points[0]->EmisionTipo);
         }else{
 
-            $dato[0] = (object) array('Nro' => 0,'EmisionTipo'=>'Nada');
+            $dato[0] = (object) array('Nro' => 1,'EmisionTipo'=>'Nada');
             
             return $dato;
         }
@@ -145,7 +145,7 @@ class Update extends Component
             $this->puntoVenta = $this->listaPuntoVenta[0]->Nro;
         }else{
 
-            $dato[0] = (object) array('Nro' => 0,'EmisionTipo'=>'Nada');
+            $dato[0] = (object) array('Nro' => 1,'EmisionTipo'=>'Nada');
             $this->listaPuntoVenta = $dato;
             $this->puntoVenta = 0;
         }

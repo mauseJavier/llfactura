@@ -50,7 +50,7 @@
     <tr style="align-content: center; align-items: center;">
 
       <td  style="width: 250px; "  >
-          <img src="{{$logo}}"  alt="" width="80%" style="margin-top: -30px; margin-left: auto;"/>
+          <img src="{{$logo}}"  alt="" width="60%" style="margin-top: -30px; margin-left: auto;"/>
 
           <table style="text-align: center;">
             {{-- <tr>

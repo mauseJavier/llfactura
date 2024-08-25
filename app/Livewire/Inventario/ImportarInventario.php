@@ -34,6 +34,8 @@ class ImportarInventario extends Component
     public $CAMPOimagen;
     public $CAMPOstock;
     public $CAMPOdeposito;
+    public $CAMPOporcentaje="porcentaje";
+    public $CAMPOnombreLista="nombrelista";
  
 
     public $archivo;
@@ -66,6 +68,10 @@ class ImportarInventario extends Component
             'imagen'=>$this->CAMPOimagen,
             'stock' => $this->CAMPOstock,
             'deposito' => $this->CAMPOdeposito,
+            'porcentaje' => $this->CAMPOporcentaje,
+            'nombreLista' => $this->CAMPOnombreLista,
+
+
         ]);
 
         Excel::import($import, $this->archivo);
