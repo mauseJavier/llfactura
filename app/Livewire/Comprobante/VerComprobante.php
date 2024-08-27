@@ -57,6 +57,13 @@ class VerComprobante extends Component
 
 
     }
+
+       // Método para actualizar las fechas desde Alpine.js
+       public function actualizarFechas($fechaDesde, $fechaHasta)
+       {
+           $this->fechaFiltroDesde = $fechaDesde;
+           $this->fechaFiltroHasta = $fechaHasta;
+       }
     
     public function render()
     {
