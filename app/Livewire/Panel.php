@@ -17,19 +17,9 @@ class Panel extends Component
 {
 
 
-    public function mount()
-    {
-        
-
-    }
 
 
 
- 
-    public function cambio() 
-    {
-
-    }
 
     // #[Layout('layouts.app')] 
     public function render()

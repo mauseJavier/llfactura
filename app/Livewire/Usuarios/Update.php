@@ -147,7 +147,7 @@ class Update extends Component
 
             $dato[0] = (object) array('Nro' => 1,'EmisionTipo'=>'Nada');
             $this->listaPuntoVenta = $dato;
-            $this->puntoVenta = 0;
+            $this->puntoVenta = 1;
         }
         
         $domicilio = Empresa::select('domicilio')->where('id',$this->empresa_id)->get();

@@ -33,6 +33,7 @@
                     x-on:blur="event.target.value = formatCurrency(event.target.value)"
                     placeholder="$0,00"
                     wire:model="total"
+                    wire:keydown.enter="facturar"
                     {{$modificarImporte}}
 
                     @if ($errors->has('total'))

@@ -104,7 +104,19 @@
 
 
 
-    
+        <!-- Agregamos el script para capturar los eventos keyup -->
+        <script>
+            document.addEventListener('keyup', function(event) {
+                // Emitir el evento de Livewire con la tecla presionada
+                if(event.code == 'Enter'){
+
+                    
+                    
+
+                }
+
+            });
+        </script>
     
 
 </div>

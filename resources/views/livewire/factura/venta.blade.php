@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ focusInput() { this.$nextTick(() => { this.$refs.inputField.focus(); }); } }">
 
     {{-- The whole world belongs to you. --}}
     <style>
@@ -169,6 +169,7 @@
                   autocomplete="off"
                   style="font-size: 15px;"
                   autofocus
+                  x-ref="inputField"
                />
               
               <button type="submit" ><i class="fa-solid fa-magnifying-glass" style="font-size: 15px;"></i></button>
@@ -223,13 +224,16 @@
                       <tr x-data="{ isFocused: false }">
                         <th scope="row">
                             <button 
+                            @click="focusInput()"
                               :class="{ 'bg-default': !isFocused, 'bg-focus': isFocused }" 
                               @focus="isFocused = true" 
                               @blur="isFocused = false"
                               class="bg-default"
                               wire:keydown.prevent.down="restarCantidad"
                               wire:keydown.prevent.up="sumarCantidad"
-                              wire:click="cargar({{$i->id}})" style="font-size: 15px;">{{$i->codigo}}
+                              wire:click="cargar({{$i->id}})" style="font-size: 15px;"
+                              >
+                                {{$i->codigo}}                              
                             </button> 
                         </th>
                         <td >{{$i->detalle}}</td>
