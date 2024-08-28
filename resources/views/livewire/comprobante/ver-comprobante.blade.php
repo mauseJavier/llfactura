@@ -368,7 +368,11 @@
 
                                 lunes = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + (today.getDate() + diffToMonday) ).slice(-2) ;
 
-                                const diffToSunday = 7 - dayOfWeek;
+                                endOfWeek = new Date(lunes + 1);
+
+                                console.log(endOfWeek);
+
+                                endOfWeek.setDate(startDate.getDate() + 6);
 
                                 domingo = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + (today.getDate() + diffToSunday) ).slice(-2) ;
 
