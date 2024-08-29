@@ -57,16 +57,82 @@ class Venta extends Component
     }
 
 
+    function dePruebaCodigoPesable(){
+
+        if (strlen($txtProducto) == 13) {
+            // Pregunta si el primer carácter es "2"
+            if ($txtProducto[0] == '2') {
+                $peso = true;
+    
+                // ################## P E S A B L E ##################################
+                if ($peso) {
+                    // Asignamos el valor de las variables con peso codbar
+                    // TOMA EL PLU
+                    $plu = substr($txtProducto, 2, 5); // 5 CIFRAS CODIGO
+                    // TOMA EL PESO
+                    $pesoCodBar = substr($txtProducto, 7, 1) . '.' . substr($txtProducto, 9, 1) . substr($txtProducto, 10, 1);
+                    $peso = false; // Volvemos a dejar en falso el peso
+    
+                    // Asignar valores a las variables
+                    $request->merge(['txt_cantidad' => $pesoCodBar, 'Txt_Producto' => $plu]);
+                    // Simular el envío del formulario
+                    return redirect()->route('ruta.donde.se.envia', ['txt_cantidad' => $pesoCodBar, 'Txt_Producto' => $plu]);
+                }
+            } else {
+                // Asignamos el valor de las variables
+                $codigo = $rs->codigo; // Suponiendo que $rs es el resultado de una consulta
+                $detalle = $rs->detalle; // detalle
+                $cantidad = (float)$txtCantidad; // cantidad
+                $costo = $rs->costo; // costo
+                $iva = $rs->iva; // IVA
+            }
+        }
+    
+
+
+    }
+
 
     public function buscarCargar()
     {
-        $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock')
-                        ->where('codigo', $this->datoBuscado)
-                        ->where('empresa_id', Auth::user()->empresa_id)
-                        ->get();
-        
 
-        // dd(count($articulo));
+        if (strlen($this->datoBuscado) == 13 AND $this->datoBuscado[0] == '2') {
+
+                
+    
+
+                    // Asignamos el valor de las variables con peso codbar
+                    // TOMA EL PLU
+                    $plu =ltrim(substr($this->datoBuscado, 2, 5), '0') ; // 5 CIFRAS CODIGO
+                    // TOMA EL PESO
+                    // Extraer los últimos 4 dígitos $numero = "2000110012250";
+                    $parteDecimal = substr($this->datoBuscado, 9,3);
+                    $parteEntera = substr($this->datoBuscado, 7,2);
+
+                    // Convertir a formato decimal 1.225
+                    $this->cantidad = floatval($parteEntera .'.'.$parteDecimal);
+
+
+                    $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock')
+                    ->where('codigo', $plu)
+                    ->where('empresa_id', Auth::user()->empresa_id)
+                    ->get();
+
+                    // dd($parteEntera .'.'.$parteDecimal);
+            
+            
+        }else{
+
+            $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock')
+                            ->where('codigo', $this->datoBuscado)
+                            ->where('empresa_id', Auth::user()->empresa_id)
+                            ->get();
+            // dd('no pesable');
+        }
+
+
+
+        // dd($articulo);
         if(count($articulo) > 0){
 
             $this->crearCarrito($articulo);

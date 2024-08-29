@@ -330,48 +330,98 @@
         
         <script>
             function fechaHandler() {
-                let today = new Date();
+
+              var hoy = today = new Date()
+              var horaInicio =  '00:' + '00' ;
+              var horaFin =  '23:' + '59' ;
+
+              fechaHoy = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + hoy.getDate()).slice(-2) ;
+
 
                 return {
-                    fechaDesde: today.toISOString().slice(0, 16), // Inicializar con el día de hoy
-                    fechaHasta: today.toISOString().slice(0, 16), // Inicializar con el día de hoy
+
+
+                    fechaDesde: fechaHoy +'T'+ horaInicio, // Inicializar con el día de hoy
+                    fechaHasta: fechaHoy +'T'+ horaFin, // Inicializar con el día de hoy
                     selectedOption: 'hoy', // Por defecto seleccionamos "Hoy"
 
                     setFecha(option) {
-                        let startDate, endDate;
+                        let startDate, endDate,principioMes, primerDiaDelSiguienteMes,ultimoDiaDelMes,finMes;
 
                         switch (option) {
                             case 'hoy':
-                                startDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-                                endDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-                                break;
-                            case 'semana':
-                                // Obtener el lunes de la semana actual
-                                let startOfWeek = new Date(today.setDate(today.getDate() - today.getDay() + (today.getDay() === 0 ? -6 : 1)));
-                                startDate = new Date(startOfWeek.getFullYear(), startOfWeek.getMonth(), startOfWeek.getDate());
 
-                                // Sumar 6 días para obtener el domingo de la misma semana
-                                let endOfWeek = new Date(startDate);
-                                endOfWeek.setDate(startDate.getDate() + 6);
-                                endDate = new Date(endOfWeek.getFullYear(), endOfWeek.getMonth(), endOfWeek.getDate());
+                                 fecha = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + hoy.getDate()).slice(-2) ;
+
+
+                                //  hora = ('0' + hoy.getHours()).slice(-2) + ':' + ('0' + hoy.getMinutes()).slice(-2);
+
+
+                                 startDate = fecha +'T'+ horaInicio;
+                                 endDate = fecha +'T'+ horaFin;
+
+                            break;
+
+                            case 'semana':
+
+                                // Obtener el día de la semana actual (0 = Domingo, 1 = Lunes, ..., 6 = Sábado)
+                                const dayOfWeek = today.getDay();
+
+                                // Calcular la diferencia en días hasta el lunes (si today es lunes, la diferencia será 0)
+                                const diffToMonday = (dayOfWeek === 0 ? -6 : 1) - dayOfWeek;
+
+                                lunes = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + (today.getDate() + diffToMonday) ).slice(-2) ;
+
+                                // Crear una nueva fecha (puedes cambiar la fecha según tus necesidades)
+                                let domingo = new Date(lunes);
+
+                                // Sumar 6 días a la fecha
+                                domingo.setDate(domingo.getDate() + 7);
+                                
+
+                                domingo = hoy.getFullYear() + '-' + ('0' + (domingo.getMonth() + 1)).slice(-2) + '-' + ('0' + domingo.getDate() ).slice(-2) ;
+
+
+                                 startDate = lunes +'T'+ horaInicio;
+                                 endDate = domingo +'T'+ horaFin;
+
+
                                 break;
                             case 'mes':
-                                let startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                                startDate = startOfMonth;
-                                let endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1);
-                                endDate = endOfMonth;
+                                // let startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                                principioMes = today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('01').slice(-2) ;
+
+                                primerDiaDelSiguienteMes = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+
+                                // Restar un día para obtener el último día del mes actual
+                                ultimoDiaDelMes = new Date(primerDiaDelSiguienteMes - 1);
+
+                                finMes = hoy.getFullYear() + '-' + ('0' + (ultimoDiaDelMes.getMonth()+1)).slice(-2) + '-' + ('0'+ (ultimoDiaDelMes.getDate()) ).slice(-2) ;
+                             
+
+                                startDate = principioMes +'T'+ horaInicio;
+                                endDate = finMes +'T'+ horaFin;
                                 break;
                             case 'mesPasado':
-                                let startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1);
-                                startDate = startOfLastMonth;
-                                let endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-                                endDate = endOfLastMonth;
+                                // let startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                                 principioMes = today.getFullYear() + '-' + ('0' + (today.getMonth())).slice(-2) + '-' + ('01').slice(-2) ;
+
+                                 primerDiaDelSiguienteMes = new Date(today.getFullYear(), today.getMonth() , 1);
+
+                                // Restar un día para obtener el último día del mes actual
+                                 ultimoDiaDelMes = new Date(primerDiaDelSiguienteMes - 1);
+
+                                 finMes = hoy.getFullYear() + '-' + ('0' + (ultimoDiaDelMes.getMonth()+1)).slice(-2) + '-' + ('0'+ (ultimoDiaDelMes.getDate()) ).slice(-2) ;
+                             
+
+                                startDate = principioMes +'T'+ horaInicio;
+                                endDate = finMes +'T'+ horaFin;
                                 break;
                         }
 
                         // Convertir a ISO string sin cambiar a UTC
-                        this.fechaDesde = startDate.toISOString().slice(0, 16);
-                        this.fechaHasta = endDate.toISOString().slice(0, 16);
+                        this.fechaDesde = startDate;
+                        this.fechaHasta = endDate;
 
                         // Despachar evento para actualizar Livewire
                         this.$dispatch('actualizar-fechas', { fechaDesde: this.fechaDesde, fechaHasta: this.fechaHasta });
