@@ -332,23 +332,27 @@
             function fechaHandler() {
 
               var hoy = today = new Date()
+              var horaInicio =  '00:' + '00' ;
+              var horaFin =  '23:' + '59' ;
+
+              fechaHoy = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + hoy.getDate()).slice(-2) ;
+
 
                 return {
 
 
-                    fechaDesde: today.toISOString().slice(0, 16), // Inicializar con el día de hoy
-                    fechaHasta: today.toISOString().slice(0, 16), // Inicializar con el día de hoy
+                    fechaDesde: fechaHoy +'T'+ horaInicio, // Inicializar con el día de hoy
+                    fechaHasta: fechaHoy +'T'+ horaFin, // Inicializar con el día de hoy
                     selectedOption: 'hoy', // Por defecto seleccionamos "Hoy"
 
                     setFecha(option) {
-                        let startDate, endDate;
+                        let startDate, endDate,principioMes, primerDiaDelSiguienteMes,ultimoDiaDelMes,finMes;
 
                         switch (option) {
                             case 'hoy':
 
                                  fecha = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + hoy.getDate()).slice(-2) ;
-                                 horaInicio =  '00:' + '00' ;
-                                 horaFin =  '23:' + '59' ;
+
 
                                 //  hora = ('0' + hoy.getHours()).slice(-2) + ':' + ('0' + hoy.getMinutes()).slice(-2);
 
@@ -368,23 +372,14 @@
 
                                 lunes = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + (today.getDate() + diffToMonday) ).slice(-2) ;
 
-                                endOfWeek = new Date(lunes + 1);
+                                // Crear una nueva fecha (puedes cambiar la fecha según tus necesidades)
+                                let domingo = new Date(lunes);
 
-                                console.log(endOfWeek);
-
-                                endOfWeek.setDate(startDate.getDate() + 6);
-
-                                domingo = hoy.getFullYear() + '-' + ('0' + (hoy.getMonth() + 1)).slice(-2) + '-' + ('0' + (today.getDate() + diffToSunday) ).slice(-2) ;
-
-
-                                 
-
-                                // console.log(((Date(hoy.getFullYear(), hoy.getMonth() + 1)).slice(-2) + 1, 0).getDate());
+                                // Sumar 6 días a la fecha
+                                domingo.setDate(domingo.getDate() + 7);
                                 
-                                horaInicio =  '00:' + '00' ;
-                                horaFin =  '23:' + '59' ;
 
-                                //  hora = ('0' + hoy.getHours()).slice(-2) + ':' + ('0' + hoy.getMinutes()).slice(-2);
+                                domingo = hoy.getFullYear() + '-' + ('0' + (domingo.getMonth() + 1)).slice(-2) + '-' + ('0' + domingo.getDate() ).slice(-2) ;
 
 
                                  startDate = lunes +'T'+ horaInicio;
@@ -393,16 +388,34 @@
 
                                 break;
                             case 'mes':
-                                let startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-                                startDate = startOfMonth;
-                                let endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1);
-                                endDate = endOfMonth;
+                                // let startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                                principioMes = today.getFullYear() + '-' + ('0' + (today.getMonth()+1)).slice(-2) + '-' + ('01').slice(-2) ;
+
+                                primerDiaDelSiguienteMes = new Date(today.getFullYear(), today.getMonth() + 1, 1);
+
+                                // Restar un día para obtener el último día del mes actual
+                                ultimoDiaDelMes = new Date(primerDiaDelSiguienteMes - 1);
+
+                                finMes = hoy.getFullYear() + '-' + ('0' + (ultimoDiaDelMes.getMonth()+1)).slice(-2) + '-' + ('0'+ (ultimoDiaDelMes.getDate()) ).slice(-2) ;
+                             
+
+                                startDate = principioMes +'T'+ horaInicio;
+                                endDate = finMes +'T'+ horaFin;
                                 break;
                             case 'mesPasado':
-                                let startOfLastMonth = new Date(today.getFullYear(), today.getMonth() - 1);
-                                startDate = startOfLastMonth;
-                                let endOfLastMonth = new Date(today.getFullYear(), today.getMonth(), 0);
-                                endDate = endOfLastMonth;
+                                // let startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                                 principioMes = today.getFullYear() + '-' + ('0' + (today.getMonth())).slice(-2) + '-' + ('01').slice(-2) ;
+
+                                 primerDiaDelSiguienteMes = new Date(today.getFullYear(), today.getMonth() , 1);
+
+                                // Restar un día para obtener el último día del mes actual
+                                 ultimoDiaDelMes = new Date(primerDiaDelSiguienteMes - 1);
+
+                                 finMes = hoy.getFullYear() + '-' + ('0' + (ultimoDiaDelMes.getMonth()+1)).slice(-2) + '-' + ('0'+ (ultimoDiaDelMes.getDate()) ).slice(-2) ;
+                             
+
+                                startDate = principioMes +'T'+ horaInicio;
+                                endDate = finMes +'T'+ horaFin;
                                 break;
                         }
 
