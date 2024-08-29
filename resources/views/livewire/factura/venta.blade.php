@@ -37,7 +37,7 @@
 
 
               <div class="overflow-auto" >
-                  <table style="font-size: 15px;" style="height: 10px;"  id="tablaCarrito">
+                  <table style="font-size: 20px; height: 10px;"  id="tablaCarrito">
                       {{-- <thead>
                         <tr>
                           
@@ -61,12 +61,14 @@
                               
                                 <th scope="row">
 
+                                  <p style="display: inline-block;">
+                                    <i class="fa-solid fa-trash"></i>
+                                  </p>
                                   <p 
                                     wire:click="borrarArticulo({{$key}})" 
-                                    style="cursor: pointer; font-size: 15px;"
+                                    style="display: inline-block;cursor: pointer; font-size: 15px;"
                                   >
                                   
-                                    <i class="fa-solid fa-trash"></i>
                                     {{$articulo['codigo']}}
                                   </p>
 
@@ -75,12 +77,13 @@
 
                                 <th >
 
+                                  <p style="display: inline-block;">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                  </p>
                                   <p
-                                    wire:click="abrirModal({{$key}})" 
-                                   
-                                    style="cursor: pointer; font-size: 15px;"
+                                    wire:click="abrirModal({{$key}})"                                    
+                                    style="display: inline-block;cursor: pointer; font-size: 20px;"
                                     >
-                                      <i class="fa-regular fa-pen-to-square"></i>
                                       {{$articulo['detalle']}} {{$articulo['porcentaje'] < 0 ? '('.$articulo['porcentaje'].'%)' : ''}}
                                   </p>
                                 </th>
@@ -115,18 +118,18 @@
 
     </div>
 
-    <div class="grid">
+    <div class="grid"  >
 
       <div >
             
  
-        <div class="grid">
+        <div class="grid" >
 
           @if ($carrito)
 
 
 
-            <div class="div">
+            <div class="div" style="transform: scale(0.8, 0.8); margin-bottom: -10px;">
 
               <fieldset role="group">
 
@@ -153,7 +156,7 @@
 
 
 
-          <div class="div">
+          <div class="div" style="transform: scale(0.9, 0.9);margin-bottom: -10px;">
             <form role="search"  wire:submit="buscarCargar" >        
               <input style="text-align: center; width: 20%;" class="seleccionarTodo" 
                 wire:model.live="cantidad"
