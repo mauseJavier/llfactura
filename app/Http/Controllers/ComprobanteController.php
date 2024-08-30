@@ -99,10 +99,15 @@ class ComprobanteController extends Controller
                 }
 
                 $totalDescuento += round($productos[$key]->descuento * $value->cantidad,2);
-                $subTotalPrecioLista += round($productos[$key]->precioLista * $value->cantidad,2);
-
+                $subTotalPrecioLista += round(($productos[$key]->precioLista * $value->cantidad),2);
 
             }
+
+            //
+            // REVISAR QUE ENVIA A FACTURAR (FACTURA DE JOFRE)
+            //
+            //EXISTE UNA DIFERENCIA CON LA MULTIPLICACION DE LOS ARTICULOS POR ESO ES NECESARIO REALIZAR ESTA OPERACION PARA QUE CONINCIDA LOS IMPORTES 
+            $subTotalPrecioLista +=  ($totalRevisado - $totalDescuento)-$subTotalPrecioLista;
 
             // dd($totalDescuento);
             
@@ -313,7 +318,7 @@ class ComprobanteController extends Controller
                 'nombreFormaPago'=>$nombreFormaPago->nombre,
                 'producto'=> $productos,
                 'subtotal'=> $subtotal,
-                'subTotalPrecioLista'=>$subTotalPrecioLista,
+                'subTotalPrecioLista'=>number_format($subTotalPrecioLista, 2) ,
                 'iva105'=> $iva105 ,
                 'iva21'=> $iva21 ,
                 'totalVenta'=> number_format($totalRevisado, 2) ,
