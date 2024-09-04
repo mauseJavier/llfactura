@@ -120,7 +120,7 @@
                                     <form wire:submit="enviarArticulo({{$item->depositoId}},'{{$item->codigo}}','{{$item->detalle}}')" wire:confirm="Seguro de Enviar?">
                                       <div class="grid">
                                         <div>
-                                          <input type="text" wire:model="cantidadEnviar" placeholder="Cantidad Enviar">
+                                          <input type="text" wire:model="cantidadEnviar" placeholder="Cantidad Enviar" style="min-width: 80px">
                                             @error('cantidadEnviar')
                                               <small id="invalid-helper" style="color: red;">
                                                 {{ $message }}
@@ -200,7 +200,7 @@
   <dialog x-bind:open="modalStock">
     <article>
         <header>
-            <button @click=" modalStock = !modalStock" aria-label="Close" rel="prev"></button>
+            <button @keydown.escape.window="if(modalStock) modalStock = false" @click=" modalStock = !modalStock" aria-label="Close" rel="prev"></button>
             <p>
                 <strong>Modificar Stock</strong>
             </p>
