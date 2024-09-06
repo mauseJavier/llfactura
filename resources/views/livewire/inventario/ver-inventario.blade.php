@@ -39,6 +39,9 @@
                                     <li>
                                         <a role="button" class="outline" wire:navigate href="{{route('importarInventario')}}">Importar</a>
                                     </li>
+                                    <li>
+                                        <a role="button" class="outline" wire:navigate href="{{route('codigoBarra')}}">Codigo Barra</a>
+                                    </li>
                                 </ul>
                             </details>
                         </div>

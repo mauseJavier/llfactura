@@ -16,6 +16,8 @@ use App\Livewire\Usuarios\Update;
 use App\Livewire\Inventario\VerInventario;
 use App\Livewire\Inventario\ImportarInventario;
 use App\Livewire\Inventario\EdicionMultiple;
+use App\Livewire\Inventario\CodigoBarra;
+
 use App\Livewire\Empresa\VerEmpresa;
 use App\Livewire\Stock\VerStock;
 use App\Livewire\Stock\MovimientoStock;
@@ -40,6 +42,7 @@ use App\Http\Controllers\ComprobanteController;
 use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\ReciboPdfController;
+use App\Http\Controllers\CodigoDeBarraController;
 
 use App\Models\Stock; //PARA PRUEBAS
 use Illuminate\Support\Facades\Auth; //PARA PRUEBA
@@ -127,8 +130,12 @@ use Illuminate\Http\Request;
         Route::get('/importarstock', ImportarStock::class)->name('importarstock');
         Route::get('/cliente', VerCliente::class)->name('cliente');
         Route::get('/cuentaCorriente/{cliente}', CuentaCorriente::class)->name('cuentaCorriente');
+        Route::get('/codigoBarra', CodigoBarra::class)->name('codigoBarra');
+
 
         Route::get('/reciboPdf/{recibo_id?}', [ReciboPdfController::class, 'imprimir'])->name('reciboPdf');
+        Route::get('/codigoBarraPdf', [CodigoDeBarraController::class, 'imprimir'])->name('codigoBarraPdf');
+
 
         
 
