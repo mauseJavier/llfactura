@@ -3,12 +3,16 @@
 
     <div class="container">
         <h3>Codigos de Barra</h3>
+
+        <div wire:loading> 
+            Saving post...
+        </div>
         
         @if (count($arrayInventario)>0)
             <article>
                     
                 <details close>
-                    <summary>Ver Cargados {{ isset($arrayInventario) ? '|| Articulos:'.count($arrayInventario) : ''}}</summary>
+                    <summary>Ver Cargados {{ isset($arrayInventario) ? '|| Articulos: '.count($arrayInventario) : ''}}</summary>
                     
                     <table>
                         <thead>
@@ -47,8 +51,26 @@
 
         <article>
             <p>Inventario</p>
-            <button wire:click="borrar()">Borrar Codigos</button>
-            <a href="{{route('codigoBarraPdf')}}" role="button">Generar PDF</a>
+            <div class="grid">
+                <div class="col">
+                    <button wire:click="borrar()" style="background-color: red;">Borrar Todos los Codigos</button>
+                    <a href="{{route('codigoBarraPdf')}}" role="button">Generar PDF</a>
+
+                </div>
+                <div class="col">
+                    <input
+                        type="search"
+                        name="search"
+                        placeholder="Buscar"
+                        aria-label="Search"
+                        wire:model.live="datoBuscado"
+                    />
+
+                </div>
+            </div>
+
+
+
             <hr>
 {{-- 
             "id" => 1
@@ -89,9 +111,9 @@
                             <tr>
                                 <td >{{$item->codigo}}</td>
                                 <td>{{$item->detalle}}</td>
-                                <td><button wire:click="cargarArticulo({{$item->id}},'precio1')">${{$item->precio1}}</button></td>
-                                <td><button wire:click="cargarArticulo({{$item->id}},'precio2')">${{$item->precio2}}</button></td>
-                                <td><button wire:click="cargarArticulo({{$item->id}},'precio3')">${{$item->precio3}}</button></td>
+                                <td><button data-tooltip="Agregar Precio 1" wire:click="cargarArticulo({{$item->id}},'precio1')">${{$item->precio1}}</button></td>
+                                <td><button data-tooltip="Agregar Precio 2" wire:click="cargarArticulo({{$item->id}},'precio2')">${{$item->precio2}}</button></td>
+                                <td><button data-tooltip="Agregar Precio 3" wire:click="cargarArticulo({{$item->id}},'precio3')">${{$item->precio3}}</button></td>
 
 
                             </tr>
@@ -105,6 +127,11 @@
             
         </article>
 
+
+    </div>
+
+    <div class="container">
+        {{ $inventario->links('vendor.livewire.bootstrap') }}
 
     </div>
 </div>

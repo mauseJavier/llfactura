@@ -4,6 +4,7 @@ namespace App\Livewire\Inventario;
 
 use Livewire\Component;
 
+
 use Livewire\Attributes\Validate;
 use Livewire\WithPagination;
 
@@ -20,8 +21,13 @@ use App\Models\Inventario;
 class CodigoBarra extends Component
 {
 
+    use WithPagination;
+
+
     #[Session(key: 'arrayInventario')] 
     public $arrayInventario=[];
+
+    public $datoBuscado;
 
 
     public function borrar(){
@@ -101,8 +107,16 @@ class CodigoBarra extends Component
     public function render()
     {
         return view('livewire.inventario.codigo-barra',[
-            'inventario'=> Inventario::where('empresa_id',Auth::user()->empresa_id)->get(),
-            'user'=>Auth::user()->empresa_id,
+            'inventario'=> Inventario::where('empresa_id',Auth::user()->empresa_id)
+                            ->whereAny([
+                                'codigo',
+                                'detalle',
+                                'rubro',
+                                'proveedor',
+                                'marca',
+                            ], 'like', '%'.$this->datoBuscado.'%')
+                            ->paginate(10),
+            
         ])
         ->extends('layouts.app')
         ->section('main');

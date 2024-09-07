@@ -100,7 +100,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Grilla de Tarjetas</title>
+    <title>Codigo De Barras</title>
 
     <style>
         body {
@@ -128,9 +128,10 @@
     }
 
     .item {
-        padding: 10px;
+        
+        padding: 5px;
         text-align: center;
-        border: 1px solid #ddd;
+        border: 1px solid black;
         border-radius: 5px;
     }
 
@@ -140,14 +141,21 @@
     }
 
     .item p {
-        margin: 8px 0;
+        margin: 2px 0;
         font-weight: bold;
+        font-size: 12px;
     }
 
     .item span {
         display: block;
-        margin-top: 5px;
+        margin-top: 2px;
         font-size: 10px;
+    }
+    tr.{
+        width: 100%;
+    }
+    td.{
+        width: 33%;
     }
 
     </style>

@@ -14,17 +14,22 @@ class CodigoDeBarraController extends Controller
         $arrayInventario = $request->session()->get('arrayInventario');
 
 
+        if(isset($arrayInventario) AND count($arrayInventario)>0){
 
-        $pdf = Pdf::loadView('PDF.pdfCodigoBarra',compact('arrayInventario'));
-        // $pdf->set_paper(array(0,0,250,300), 'portrait');
+            $pdf = Pdf::loadView('PDF.pdfCodigoBarra',compact('arrayInventario'));
+            // $pdf->set_paper(array(0,0,250,300), 'portrait');
+    
+            // Forget a single key...
+            $request->session()->forget('arrayInventario');
+    
+    
+            $nombreArchivo= 'CodigoBarra.pdf';
+            // return $pdf->download($nombreArchivo);
+            return $pdf->stream($nombreArchivo);    
+        }else{
+            return redirect()->route('codigoBarra');
+        }
 
-        // Forget a single key...
-        $request->session()->forget('arrayInventario');
-
-
-        $nombreArchivo= 'CodigoBarra.pdf';
-        // return $pdf->download($nombreArchivo);
-        return $pdf->stream($nombreArchivo);    
 
     }
 }
