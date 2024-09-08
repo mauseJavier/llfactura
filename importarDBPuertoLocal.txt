@@ -5,7 +5,7 @@ php artisan serve --host=192.168.68.121 --port=8080
 
 php artisan make:migration add_new_column_to_users_table --table=users
 
-sudo  /opt/lampp/bin/mysql -h localhost -u root -p --default-character-set=utf8 facturaApp</home/mause/Descargas/4llfactura.sql
+sudo  /opt/lampp/bin/mysql -h localhost -u root -p --default-character-set=utf8 facturaApp</home/mause/Descargas/10llfactura.sql
 
 
 sudo  /opt/lampp/bin/mysql -h localhost -u root -p --default-character-set=utf8 facturaApp</home/mause/Descargas/

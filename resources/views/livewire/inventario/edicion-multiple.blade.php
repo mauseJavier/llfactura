@@ -95,7 +95,7 @@
 
         @if (session('mensaje'))
         
-            <article>
+            <article style="color: red;">
                 {{ session('mensaje') }}
             </article>
         @endif
@@ -127,6 +127,8 @@
                     @endif
                     
                     <th scope="col">Costo</th>
+                    <th scope="col">X {{$porcentaje1}}%</th>
+
                     <th scope="col">Iva</th>
                     <th scope="col">Rubro</th>
                     <th scope="col">Proveedor</th>
@@ -149,7 +151,9 @@
                         <td style="color: red;">${{$i->NuevoPrecio2}}</td>
                         <td style="color: green;">${{$i->precio3}}</td>
                         <td style="color: red;">${{$i->NuevoPrecio3}}</td>                                                 
-                        <td>{{$i->costo}}</td>
+                        <td style="color: green;">${{$i->costo}}</td>
+                        <td style="color: red;">${{$i->NuevoCosto}}</td>
+
                         <td>{{$i->iva}}</td>
                         <td>{{$i->rubro}}</td>
                         <td>{{$i->proveedor}}</td>

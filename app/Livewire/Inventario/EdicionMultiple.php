@@ -124,6 +124,8 @@ class EdicionMultiple extends Component
                         ->update(['precio1' => DB::raw('round(precio1 + ( precio1 * '.$this->porcentaje1.'/100),2)'),
                                     'precio2' => DB::raw('round(precio2 + ( precio2 * '.$this->porcentaje2.'/100),2)'),
                                     'precio3' => DB::raw('round(precio3 + ( precio3 * '.$this->porcentaje3.'/100),2)'),
+                                    'costo' => DB::raw('round(costo + ( costo * '.$this->porcentaje1.'/100),2)'),
+
                                     'updated_at'=> Carbon::now()]);
         }
                
@@ -138,7 +140,9 @@ class EdicionMultiple extends Component
                ];
                
         
+            $this->render();
             $this->redirectRoute('reporteEdicionMultiple');
+
 
         }else{
 
@@ -187,7 +191,10 @@ class EdicionMultiple extends Component
                 'inventario'=> DB::table('inventarios')
                                     ->select('*',DB::raw('round('.$this->precioFijo1.',2) as NuevoPrecio1'),
                                                     DB::raw('round('.$this->precioFijo2.',2) as NuevoPrecio2'),
-                                                    DB::raw('round('.$this->precioFijo3.',2) as NuevoPrecio3'),)
+                                                    DB::raw('round('.$this->precioFijo3.',2) as NuevoPrecio3'),
+                                                    DB::raw('costo as NuevoCosto'),
+
+                                            )
                                     ->where('empresa_id', Auth::user()->empresa_id)
                                     ->where($this->criterioFiltro,$this->datoFiltro)
     
@@ -203,7 +210,10 @@ class EdicionMultiple extends Component
                 'inventario'=> DB::table('inventarios')
                                     ->select('*',DB::raw('round(precio1 + ( precio1 * '.$this->porcentaje1.'/100),2) as NuevoPrecio1'),
                                                     DB::raw('round(precio2 + ( precio2 * '.$this->porcentaje2.'/100),2) as NuevoPrecio2'),
-                                                    DB::raw('round(precio3 + ( precio3 * '.$this->porcentaje3.'/100),2) as NuevoPrecio3'),)
+                                                    DB::raw('round(precio3 + ( precio3 * '.$this->porcentaje3.'/100),2) as NuevoPrecio3'),
+                                                    DB::raw('round(costo + ( costo * '.$this->porcentaje1.'/100),2) as NuevoCosto'),
+
+                                            )
                                     ->where('empresa_id', Auth::user()->empresa_id)
                                     ->where($this->criterioFiltro,$this->datoFiltro)
     
