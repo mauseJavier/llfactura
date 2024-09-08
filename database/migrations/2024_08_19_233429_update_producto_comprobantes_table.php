@@ -33,9 +33,9 @@ return new class extends Migration
         //
         Schema::table('producto_comprobantes', function (Blueprint $table) {
 
-            $table->dropColumn('porcentaje');
-            $table->dropColumn('precioLista');
-            $table->dropColumn('descuento');
+            $table->dropIfExists('porcentaje');
+            $table->dropIfExists('precioLista');
+            $table->dropIfExists('descuento');
 
         });
     }

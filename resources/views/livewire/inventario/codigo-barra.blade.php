@@ -14,32 +14,35 @@
                 <details close>
                     <summary>Ver Cargados {{ isset($arrayInventario) ? '|| Articulos: '.count($arrayInventario) : ''}}</summary>
                     
-                    <table>
-                        <thead>
-                        <tr>
-                            <th scope="col">Codigo</th>
-                            <th scope="col">Detalle</th>
-                            <th scope="col">Precio</th>
-                            <th>Tipo</th>
-                            <th>Borrar</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($arrayInventario as $key => $item)
-                                
-                                <tr>
-                                    <th scope="row">{{$item['codigo']}}</th>
-                                    <td>{{$item['detalle']}}</td>
-                                    <td>${{$item['precio']}}</td>
-                                    <td>{{$item['tipo']}}</td>
+                    <div class="overflow-auto">
 
-                                    <td wire:click="borrarArticulo({{$key}})"><i class="fa-solid fa-trash"></i></td>
-                                </tr>
-                            @endforeach
-
-                        </tbody>
-
-                    </table>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th scope="col">Codigo</th>
+                                <th scope="col">Detalle</th>
+                                <th scope="col">Precio</th>
+                                <th>Tipo</th>
+                                <th>Borrar</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($arrayInventario as $key => $item)
+                                    
+                                    <tr>
+                                        <th scope="row">{{$item['codigo']}}</th>
+                                        <td>{{$item['detalle']}}</td>
+                                        <td>${{$item['precio']}}</td>
+                                        <td>{{$item['tipo']}}</td>
+    
+                                        <td wire:click="borrarArticulo({{$key}})"><i class="fa-solid fa-trash"></i></td>
+                                    </tr>
+                                @endforeach
+    
+                            </tbody>
+    
+                        </table>
+                    </div>
         
                 </details>
             </article>

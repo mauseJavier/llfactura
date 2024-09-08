@@ -23,7 +23,7 @@ return new class extends Migration
     {
         //
         Schema::table('producto_comprobantes', function (Blueprint $table) {
-            $table->dropColumn('controlStock');
+            $table->dropIfExists('controlStock');
         });
     }
 };
