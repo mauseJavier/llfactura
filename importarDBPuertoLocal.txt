@@ -10,7 +10,3 @@ sudo  /opt/lampp/bin/mysql -h localhost -u root -p --default-character-set=utf8 
 
 sudo  /opt/lampp/bin/mysql -h localhost -u root -p --default-character-set=utf8 facturaApp</home/mause/Descargas/
 
-
-ssh -p 65002 u808595508@89.117.9.48
-
-b6RZi_2yy?!w-C+
