@@ -119,9 +119,7 @@
         <td>  
             <ul style="list-style-type: none;">
                 <li><strong>{{$tipoContribuyente}}</strong></li>
-                <li>{{$leyenda}}</li>
-                <li>{{$nombreFormaPago}}</li>
-                
+                <li>{{$leyenda}}</li>                
 
             </ul>
         </td>

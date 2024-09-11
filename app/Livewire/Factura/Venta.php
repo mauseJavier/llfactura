@@ -23,7 +23,7 @@ class Venta extends Component
 
     public $datoBuscado = '';
     public $cantidad = 1;
-    public $seleccionPrecio = 'precio1';
+    public $seleccionPrecio;
     public $estadoModal = '';
     public $porcentaje=0;
 
@@ -53,6 +53,9 @@ class Venta extends Component
             $this->tamañoGrillaVenta(count($this->carrito['carrito']));
         }else{
         }
+
+        //POR QUE JAVIER CONTRERAS UTILIZA EL PRECIO 2 CON EL 10 POR CIENTO 
+        $this->seleccionPrecio = (Auth::user()->empresa_id == 26) ? 'precio2' : 'precio1';
 
     }
 

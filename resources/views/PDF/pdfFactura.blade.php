@@ -63,11 +63,15 @@
                <td>{{$direccionEmpresa}}</td>
             </tr>
             <tr>
-              <td> {{$telefonoEmpresa}}</td>
+              <td>Tel: {{$telefonoEmpresa}}</td>
+            </tr>
+            <tr>
+              <td>Correo: {{$empresaCorreo}}</td>
             </tr>
             <tr>
                <td>DE: {{$titularEmpresa}}</td>
             </tr>
+            
           </table>
 
       </td>

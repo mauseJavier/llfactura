@@ -298,6 +298,8 @@ class ComprobanteController extends Controller
                 'numeroFactura'=> sprintf("%04d", $comprobante[0]->ptoVta)  .'-'. sprintf("%08d", $comprobante[0]->numero),
                 'cuitEmpresa'=>$empresa->cuit,
                 'empresaIva'=>$empresaIva,
+                'empresaCorreo'=>$empresa->correo,
+
 
                 'inicioActividades'=> date('d-m-Y', strtotime($empresa->inicioActividades)) ,
                 'fechaFactura'=>date('d-m-Y', strtotime($comprobante[0]->fecha)),
