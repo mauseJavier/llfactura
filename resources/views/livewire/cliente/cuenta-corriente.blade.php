@@ -1,14 +1,16 @@
 <div x-data="{ modalPago: false }">
 
+    {{-- @dd($saldo) --}}
+
     <div class="container">
         <h3>Cuenta Corriente</h3>
-        <h6>{{$cliente->razonSocial}} (${{$saldo[0]->saldo}})</h6>
+        <h6>{{$cliente->razonSocial}} (${{$saldo}})</h6>
 
         <article>
             <div class="grid">
                 <div class="col">
                     <h3>Saldo</h3>
-                    <h1 style="color: red;">${{$saldo[0]->saldo}}</h1>
+                    <h1 style="color: red;">${{$saldo}}</h1>
                 </div>
                 <div class="col">
                     <label for="">

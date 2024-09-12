@@ -13,6 +13,7 @@ use Carbon\Carbon;
 
 use App\Models\Empresa;
 
+
 use App\Models\Cliente;
 // use App\Models\CuentaCorriente;
 
@@ -81,6 +82,26 @@ class CuentaCorriente extends Component
     }
 
 
+    public function getSaldo()
+    {
+        // Obtener el saldo de la cuenta corriente o devolver 0 si no se encuentra el registro.
+        $saldo = DB::table('cuenta_corrientes')
+            ->select('saldo')
+            ->where('cliente_id', $this->cliente->id)
+            ->orderBy('created_at','DESC')->limit(1)->get();
+
+        // Si $saldo es null, significa que no se encontró el registro, así que devolvemos 0.
+        // $saldo ?? ($saldo[0]['saldo'] = 0) : ($saldo[0]['saldo'] = $saldo);
+        // dd($saldo);
+        if(count($saldo) > 0){
+            $resulado = $saldo[0]->saldo;
+        }else{
+            $resulado = 0;
+        }
+
+        return $resulado;
+    }
+
     public function render()
     {
         return view('livewire.cliente.cuenta-corriente',[
@@ -88,9 +109,21 @@ class CuentaCorriente extends Component
                 ->where('cliente_id',$this->cliente->id)
                 ->where('created_at','>=',$this->fechaDesde)
                 ->orderBy('created_at','DESC')->paginate(5),
-            'saldo' => DB::table('cuenta_corrientes')->select('saldo')->where('cliente_id',$this->cliente->id)->orderBy('created_at','DESC')->limit(1)->get(),
+            'saldo' => $this->getSaldo(),
         ])
         ->extends('layouts.app')
         ->section('main');
     }
 }
+
+
+// nueva consulta 
+// DB::table('cuenta_corrientes')
+// ->select('saldo')
+// ->where('cliente_id', $this->cliente->id)
+// ->orderBy('created_at', 'DESC')
+// ->limit(1)
+// ->firstOr(new stdClass(['saldo' => 0]))
+
+// vieja consulta 
+// DB::table('cuenta_corrientes')->select('saldo')->where('cliente_id',$this->cliente->id)->orderBy('created_at','DESC')->limit(1)->get()

@@ -214,6 +214,13 @@ class ComprobanteController extends Controller
                     $iva21 =$importe_iva_al21;
                     $subtotal = $importe_gravado_al21 + $importe_gravado_al105;
                     break;
+                case 51:
+                    $tipoComprobante = 'Factura';
+                    $abreviatura = 'M';
+                    $iva105 = $importe_iva_al105;
+                    $iva21 =$importe_iva_al21;
+                    $subtotal = $importe_gravado_al21 + $importe_gravado_al105;
+                    break;
                 case 6:
                     $tipoComprobante = 'Factura';
                     $abreviatura = 'B';
@@ -249,6 +256,14 @@ class ComprobanteController extends Controller
                 case 3:
                     $tipoComprobante = 'NOTA CREDITO A';
                     $abreviatura = 'NCA';
+
+                    $iva105 = $importe_iva_al105;
+                    $iva21 =$importe_iva_al21;
+                    $subtotal = $importe_gravado_al21 + $importe_gravado_al105;
+                    break;
+                case 53:
+                    $tipoComprobante = 'NOTA CREDITO M';
+                    $abreviatura = 'NCM';
 
                     $iva105 = $importe_iva_al105;
                     $iva21 =$importe_iva_al21;

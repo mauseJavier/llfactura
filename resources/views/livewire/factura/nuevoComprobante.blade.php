@@ -81,12 +81,15 @@
                             @endif                            
                             @if ($empresa->iva == 'RI' AND $empresa->fe == 'si')
                                 <option value="6">Factura B</option>
-                                <option value="1">Factura A</option>                        
+                                <option value="1">Factura A</option>   
+                                <option value="51">Factura M</option>                        
+                     
                             @endif      
                             @if ($empresa->razonSocial == 'Empresa Prueba' )
                                 <option value="11">Factura C</option>
                                 <option value="6">Factura B</option>
-                                <option value="1">Factura A</option>                                  
+                                <option value="1">Factura A</option>    
+                                <option value="51">Factura M</option>                                
                             @endif   
                             @isset($carrito['carrito'])
                             <option value="presupuesto">Presupuesto</option>               

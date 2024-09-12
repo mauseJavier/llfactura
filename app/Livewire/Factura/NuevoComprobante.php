@@ -115,12 +115,12 @@ class NuevoComprobante extends Component
                 'numeric',
                 function ($attribute, $value, $fail) {
 
-                    if($this->tipoComprobante == 1){
+                    if($this->tipoComprobante == 1 OR $this->tipoComprobante == 51){
 
                         if(strlen($value) == 11) {
                             return true;
                         }else{
-                            $fail('Para Factura A. ingrese CUIT del Cliente');
+                            $fail('Para Factura A o M ingrese CUIT del Cliente');
                         }
 
                     }else{
@@ -177,6 +177,11 @@ class NuevoComprobante extends Component
             $nuevoComprobante = $this->crearComprobanteA($this->total,$this->tipoDocumento,$this->cuit);
             $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
 
+        }elseif($this->tipoComprobante == 51){
+            $descripcionTipoComp = 'Factura M';
+            $nuevoComprobante = $this->crearComprobanteM($this->total,$this->tipoDocumento,$this->cuit);
+            $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
+
         }elseif($this->tipoComprobante == 'remito'){
             $descripcionTipoComp = 'Remito';
 
@@ -199,7 +204,7 @@ class NuevoComprobante extends Component
                     'detalle'=>'varios',
 
                     'porcentaje'=> 0,
-                    'precioLista'=> round($total,2) ,
+                    'precioLista'=> round($this->total,2) ,
                     'descuento'=> 0 ,
 
                     
@@ -1097,6 +1102,244 @@ class NuevoComprobante extends Component
              * Tipo de factura
              **/
             $tipo_de_factura = 1; // 1 = Factura A
+
+            /**
+             * Número de la ultima Factura A
+             **/
+            $last_voucher = $afip->ElectronicBilling->GetLastVoucher($punto_de_venta, $tipo_de_factura);
+
+            /**
+             * Concepto de la factura
+             *
+             * Opciones:
+             *
+             * 1 = Productos 
+             * 2 = Servicios 
+             * 3 = Productos y Servicios
+             **/
+            $concepto = 1;
+
+            /**
+             * Tipo de documento del comprador
+             *
+             * Opciones:
+             *
+             * 80 = CUIT 
+             * 86 = CUIL 
+             * 96 = DNI
+             * 99 = Consumidor Final 
+             **/
+            $tipo_de_documento = $tipoDocumento;
+
+            /**
+             * Numero de documento del comprador (0 para consumidor final)
+             **/
+            $numero_de_documento =$cuit;
+
+            /**
+             * Numero de factura
+             **/
+            $numero_de_factura = $last_voucher+1;
+
+            /**
+             * Fecha de la factura en formato aaaa-mm-dd (hasta 10 dias antes y 10 dias despues)
+             **/
+            $fecha = $this->fechaHoy; // date('Y-m-d');
+
+            $importe_gravado_al21=0;
+            $importe_iva_al21=0;
+            $importe_gravado_al105=0;
+            $importe_iva_al105=0;
+
+           
+            if( !isset($this->carrito['total'])){
+
+                $this->carrito['carrito'][] = array(
+                    'codigo'=>'varios',
+                    'detalle'=>'varios',
+
+                    'porcentaje'=> 0,
+                    'precioLista'=> round($total,2) ,
+                    'descuento'=> 0 ,
+
+                    
+                    'precio'=> round($total,2),
+                    'iva'=>$this->empresa->ivaDefecto,
+                    'cantidad'=>1,
+                    'rubro'=>'General',
+                    'proveedor'=>'General',
+                    'controlStock'=>'no',
+                    'subtotal'=>  round($total,2),
+    
+                    ) ;
+                $this->carrito['total']= round($total,2);
+            }
+
+           
+            foreach ( $this->carrito['carrito'] as $key => $value) {
+                // array:6 [▼ // app/Livewire/Factura/NuevoComprobante.php:815
+                //     "codigo" => "06323325"
+                //     "detalle" => "ipsa"
+                //     "precio" => 65.67
+                //     "iva" => 10.5
+                //     "cantidad" => 1
+                //     "subtotal" => 65.67
+                // ]
+                
+                if($value['iva'] == 21){
+
+                    $importe_gravado_al21 += round($value['precio'] * $value['cantidad'] / 1.21,2);
+                    $importe_iva_al21 += round($value['precio'] * $value['cantidad'] - ($value['precio'] * $value['cantidad'] / 1.21),2);
+
+                }elseif($value['iva'] == 10.5){
+
+                    $importe_gravado_al105 += round($value['precio'] * $value['cantidad'] / 1.105,2);
+                    $importe_iva_al105 += round($value['precio'] * $value['cantidad'] - ($value['precio'] * $value['cantidad'] / 1.105),2);
+                }
+
+                // dump($importe_gravado);
+                // dump($importe_iva);
+            }
+            
+                /** 
+             * Importe sujeto al IVA (sin icluir IVA)
+             **/
+            $importe_gravado = round($importe_gravado_al21 + $importe_gravado_al105,2); //  dato ejemplo 100;
+
+            /**
+             * Importe exento al IVA
+             **/
+            $importe_exento_iva = 0;
+
+            /**
+             * Importe de IVA
+             **/
+            $importe_iva = round($importe_iva_al21 + $importe_iva_al105,2); //  dato ejemplo 21;
+
+            if($importe_gravado_al21 > 0){
+                $arrayIva[] =// Alícuotas asociadas al factura
+                    array(
+                        'Id' 		=> 5, // Id del tipo de IVA (5 = 21%)
+                        'BaseImp' 	=> round($importe_gravado_al21,2),
+                        'Importe' 	=> round($importe_iva_al21,2) 
+                    
+                    
+                    );
+
+            }
+
+            if($importe_gravado_al105 > 0){
+                $arrayIva[] = // Alícuotas asociadas al factura
+                    
+                    array(
+                        'Id' 		=> 4, // Id del tipo de IVA (4 = 105%)
+                        'BaseImp' 	=> round($importe_gravado_al105,2),
+                        'Importe' 	=> round($importe_iva_al105,2)
+                    
+                    );
+
+            }
+
+
+            // dd($arrayIva);
+
+            /**
+             * Los siguientes campos solo son obligatorios para los conceptos 2 y 3
+             **/
+            if ($concepto === 2 || $concepto === 3) {
+                /**
+                 * Fecha de inicio de servicio en formato aaaammdd
+                 **/
+                $fecha_servicio_desde = intval(date('Ymd'));
+
+                /**
+                 * Fecha de fin de servicio en formato aaaammdd
+                 **/
+                $fecha_servicio_hasta = intval(date('Ymd'));
+
+                /**
+                 * Fecha de vencimiento del pago en formato aaaammdd
+                 **/
+                $fecha_vencimiento_pago = intval(date('Ymd'));
+            }
+            else {
+                $fecha_servicio_desde = null;
+                $fecha_servicio_hasta = null;
+                $fecha_vencimiento_pago = null;
+            }
+
+            // 1. Alícuotas de IVA
+            // CÓDIGO DESCRIPCIÓN
+            // 0003 0,00 %
+            // 0004 10,50 %
+            // 0005 21,00 %
+            // 0006 27,00 %
+            // 0008 5,00 %
+            // 0009 2,50 %
+
+            $data = array(
+                'CantReg' 	=> 1, // Cantidad de facturas a registrar
+                'PtoVta' 	=> $punto_de_venta,
+                'CbteTipo' 	=> $tipo_de_factura, 
+                'Concepto' 	=> $concepto,
+                'DocTipo' 	=> $tipo_de_documento,
+                'DocNro' 	=> $numero_de_documento,
+                'CbteDesde' => $numero_de_factura,
+                'CbteHasta' => $numero_de_factura,
+                'CbteFch' 	=> intval(str_replace('-', '', $fecha)),
+                'FchServDesde'  => $fecha_servicio_desde,
+                'FchServHasta'  => $fecha_servicio_hasta,
+                'FchVtoPago'    => $fecha_vencimiento_pago,
+                'ImpTotal' 	=> round($importe_gravado + $importe_iva + $importe_exento_iva,2),
+                'ImpTotConc'=> 0, // Importe neto no gravado
+                'ImpNeto' 	=> $importe_gravado,
+                'ImpOpEx' 	=> $importe_exento_iva,
+                'ImpIVA' 	=> $importe_iva,
+                'ImpTrib' 	=> 0, //Importe total de tributos
+                'MonId' 	=> 'PES', //Tipo de moneda usada en la factura ('PES' = pesos argentinos) 
+                'MonCotiz' 	=> 1, // Cotización de la moneda usada (1 para pesos argentinos)  
+                'Iva' 		=> $arrayIva, 
+            );
+            // dd($data);
+
+            /** 
+             * Creamos la Factura 
+             **/
+            $res = $afip->ElectronicBilling->CreateVoucher($data,TRUE);
+
+            /**
+             * Mostramos por pantalla los datos de la nueva Factura 
+             **/
+            // dd(array(
+            //     'cae' => $res['CAE'], //CAE asignado a la Factura
+            //     'vencimiento' => $res['CAEFchVto'], //Fecha de vencimiento del CAE
+            //     'res'=>$res,
+            // ));
+
+            return $res;
+    }
+
+
+    //FACTURAS M CODIGO 51 NOTA DE CREDITO M 53
+    function crearComprobanteM($total,$tipoDocumento,$cuit,){
+
+        if($this->empresa->fe == 'si'){
+
+            $afip = $this->objetoAfip();
+
+        }else{
+            //cuit de pruebas 
+            $afip = new Afip(array('CUIT' => 20409378472));
+        }
+        /**
+             * Numero del punto de venta
+             **/
+            $punto_de_venta = $this->usuario->puntoVenta;
+
+            /**
+             * Tipo de factura
+             **/
+            $tipo_de_factura = 51; // 51 = Factura M, 1 = Factura A
 
             /**
              * Número de la ultima Factura A
