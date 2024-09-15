@@ -25,6 +25,88 @@ class VerComprobante extends Component
     public $tipoComp;
     public $usuarioFiltro;
     public $numeroComprobanteFiltro;
+    public $clienteComprobanteFiltro;
+
+
+    public function modificarFechas($dato){
+
+        
+        if($dato != ''){
+
+            $this->tipoComp='';
+            $this->usuarioFiltro='';
+            $this->numeroComprobanteFiltro='';
+            $this->clienteComprobanteFiltro='';
+            
+            if(is_numeric($dato)){
+
+                $this->numeroComprobanteFiltro = $dato;
+
+            }else
+            {
+                $this->clienteComprobanteFiltro = $dato;
+            }
+            $this->fechaFiltroDesde = '2020-01-01';
+        
+            $this->fechaFiltroHasta =  '2050-01-01';
+
+        }else{
+
+            $this->fechaFiltroDesde = Carbon::now();
+            $this->fechaFiltroDesde->setTime(0, 0);
+            $this->fechaFiltroDesde = $this->fechaFiltroDesde->format('Y-m-d\TH:i');
+            
+            $this->fechaFiltroHasta = Carbon::now()->addDay()->format('Y-m-d\TH:i');
+
+        }
+    }
+
+    public function agregarDia(){
+
+        // Convierte la fecha a una instancia de Carbon
+        $carbonFecha = Carbon::parse($this->fechaFiltroDesde);
+
+        // Agrega un día
+        $carbonFecha->addDay();
+
+        // Actualiza la propiedad con la nueva fecha
+        $this->fechaFiltroDesde = $carbonFecha->format('Y-m-d\TH:i');
+
+        // Convierte la fecha a una instancia de Carbon
+        $carbonFecha = Carbon::parse($this->fechaFiltroHasta);
+
+        // Agrega un día
+        $carbonFecha->addDay();
+
+        // Actualiza la propiedad con la nueva fecha
+        $this->fechaFiltroHasta = $carbonFecha->format('Y-m-d\TH:i');
+
+
+    }
+
+    public function restarDia(){
+
+        // Convierte la fecha a una instancia de Carbon
+        $carbonFecha = Carbon::parse($this->fechaFiltroDesde);
+
+        // Agrega un día
+        $carbonFecha->subDay();
+
+        // Actualiza la propiedad con la nueva fecha
+        $this->fechaFiltroDesde = $carbonFecha->format('Y-m-d\TH:i');
+
+        // Convierte la fecha a una instancia de Carbon
+        $carbonFecha = Carbon::parse($this->fechaFiltroHasta);
+
+        // Agrega un día
+        $carbonFecha->subDay();
+
+        // Actualiza la propiedad con la nueva fecha
+        $this->fechaFiltroHasta = $carbonFecha->format('Y-m-d\TH:i');;
+
+
+    }
+
 
     public function mount(){
 
@@ -79,8 +161,14 @@ class VerComprobante extends Component
                                                 return $query->where('tipoComp', $tipoComp);
                                             })
                                 ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-                                return $query->where('numero', '>=',$numeroComprobanteFiltro);
+                                return $query->where('numero', '=',$numeroComprobanteFiltro);
                                 })
+
+                                ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+                                return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+                                })
+
+
                                             ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
                                             ->orderByDesc('created_at')
                                             ->paginate(15),
@@ -92,8 +180,14 @@ class VerComprobante extends Component
                                             return $query->where('tipoComp', $tipoComp);
                                         })
                                 ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-                                return $query->where('numero', '>=',$numeroComprobanteFiltro);
+                                return $query->where('numero', '=',$numeroComprobanteFiltro);
                                 })
+
+                                ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+                                return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+                                })
+
+
                                         ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
                                         ->sum('total'),
 
@@ -105,8 +199,14 @@ class VerComprobante extends Component
                                             return $query->where('tipoComp', $tipoComp);
                                         })
                                 ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-                                return $query->where('numero', '>=',$numeroComprobanteFiltro);
+                                return $query->where('numero', '=',$numeroComprobanteFiltro);
                                 })
+
+                                ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+                                return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+                                })
+
+
                                         ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
                                         ->groupBy('tipoComp')
                                         ->get(),
@@ -121,8 +221,14 @@ class VerComprobante extends Component
                                             return $query->where('comprobantes.tipoComp', $tipoComp);
                                         })
                                 ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-                                return $query->where('numero', '>=',$numeroComprobanteFiltro);
+                                return $query->where('numero', '=',$numeroComprobanteFiltro);
                                 })
+
+                                ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+                                return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+                                })
+
+
                                         ->groupBy('comprobantes.idFormaPago','forma_pagos.nombre')
                                         ->get(),
 

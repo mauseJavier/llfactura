@@ -59,22 +59,56 @@
         </div>
 
         <article>
+          <label for="">Total: ${{number_format($sumTotal, 2, ',', '.')}}</label>
+
           <div class="grid">
-            <small>
-              <label for="">De: {{date("d-m-Y H:i:s", strtotime($fechaFiltroDesde)) }} A: {{date("d-m-Y H:i:s", strtotime($fechaFiltroHasta))}}</label>
-            </small>
+            
+            <div class="col" style="text-align: center;" wire:click="restarDia()">
+              <i class="fa-solid fa-arrow-left"></i>
+            </div>
+            <div class="col" style="text-align: center;">
+              <small>
+                <label  for="">De: {{date("d-m-Y H:i:s", strtotime($fechaFiltroDesde)) }} A: {{date("d-m-Y H:i:s", strtotime($fechaFiltroHasta))}}</label>
+              </small>
+
+            </div>
+            <div class="col" style="text-align: center;" wire:click="agregarDia()">
+              <i class="fa-solid fa-arrow-right"></i>
+
+            </div>
+            
+            
+            
+              
+              
+      
+            
+            
+
           </div>
 
-          <label for="">Total: ${{number_format($sumTotal, 2, ',', '.')}}</label>
         </article>
           
           <hr />
-          <fieldset>
-            <label>
-              <input name="terms" type="checkbox" role="switch" @click="modalFiltro = !modalFiltro" x-bind:checked="modalFiltro" />
-              Filtros
-            </label>
-          </fieldset>
+
+          <div class="grid">
+            <div class="col">
+
+              <fieldset>
+                <label>
+                  <input name="terms" type="checkbox" role="switch" @click="modalFiltro = !modalFiltro" x-bind:checked="modalFiltro" />
+                  Filtros
+                </label>
+              </fieldset>
+            </div>
+            <div class="col">
+
+
+                  <input  style="width: 50%; height: 50%;" type="text"  wire:keyup="modificarFechas($event.target.value)" name="numeroComprobanteFiltro" placeholder="Numero o Cliente" />
+       
+            </div>
+          </div>
+
 
           <div class="overflow-auto">
             <table class="striped">
@@ -319,7 +353,7 @@
                     </div>
                     <div class="col">
                       <label for="">
-                          Numero ">="
+                          Numero "="
                           <input type="text" wire:model.live="numeroComprobanteFiltro" name="numeroComprobanteFiltro" placeholder="Numero" />
                       </label>
                   </div>
