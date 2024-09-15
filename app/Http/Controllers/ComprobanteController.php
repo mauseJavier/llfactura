@@ -49,7 +49,7 @@ class ComprobanteController extends Controller
         $subTotalPrecioLista=0;
 
 
-        // dd(count($productos));
+        // dd(($productos));
 
         if(count($productos)== 0){
             $productos = null;
@@ -107,7 +107,7 @@ class ComprobanteController extends Controller
             // REVISAR QUE ENVIA A FACTURAR (FACTURA DE JOFRE)
             //
             //EXISTE UNA DIFERENCIA CON LA MULTIPLICACION DE LOS ARTICULOS POR ESO ES NECESARIO REALIZAR ESTA OPERACION PARA QUE CONINCIDA LOS IMPORTES 
-            $subTotalPrecioLista +=  ($totalRevisado - $totalDescuento)-$subTotalPrecioLista;
+            // $subTotalPrecioLista +=  ($totalRevisado - $totalDescuento)-$totalRevisado;
 
             // dd($totalDescuento);
             
@@ -128,6 +128,19 @@ class ComprobanteController extends Controller
         }else{
             $url = 'sin Imagen';
             $path ='sin Imagen';
+        }
+
+        if (Storage::disk('local')->exists( 'public/'.$empresa->cuit.'/logo/logoAgua.png')) {
+            // ...
+            $urlAgua = Storage::url( 'public/'.$empresa->cuit.'/logo/logoAgua.png');
+            $logoAgua = Storage::path('public/'.$empresa->cuit.'/logo/logoAgua.png');
+            // $url = Storage::get('public/'.$empresa->cuit.'/logo/logo.png');
+            // return  asset($url);
+            // return $path;
+            
+        }else{
+            $urlAgua = '';
+            $logoAgua ='';
         }
 
 
@@ -309,6 +322,8 @@ class ComprobanteController extends Controller
 
             $info = [
                 'logo'=>$path,
+                'logoAgua'=>$logoAgua,
+
                 'empresaNombre'=>$empresa->razonSocial,
                 'numeroFactura'=> sprintf("%04d", $comprobante[0]->ptoVta)  .'-'. sprintf("%08d", $comprobante[0]->numero),
                 'cuitEmpresa'=>$empresa->cuit,

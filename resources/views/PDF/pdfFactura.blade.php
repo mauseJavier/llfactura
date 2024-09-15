@@ -34,10 +34,26 @@
         }
 
 
+
+
 </style>
 
 </head>
-<body>
+<body >
+
+  <img style="
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 50%;
+  height: 50%;
+  z-index: -1; /* Behind the content */
+  opacity: 0.5; /* Set the transparency */
+  transform: translate(-50%, -50%); /* Moves the image back to the exact center */
+  background-size: cover;
+  background-position: center;
+" src="{{$logoAgua}}" alt="">
+
 
   <table width="100%">
 
@@ -78,15 +94,23 @@
         
       <td colspan="3" class="centered-cell" style="text-align: center; padding-top: 0%;">
         
-          <h1 class="centered-cell" style=" width: 100px; height: 50px; margin-top: -20px;" >{{$abreviatura}}</h1> 
-          <small style="text-align: center; margin-top: -30px;">Cod.{{$codigoFactura}}</small> 
-
+          <h1 class="centered-cell" style=" width: 100px; height: 50px; margin-top: -20px; font-size: 60px; padding-bottom: 10px;" >{{$abreviatura}}</h1> 
+          <small style="text-align: center; margin-top: -60px;">Cod.{{$codigoFactura}}</small> 
 
       </td> 
 
 
       <td class="centered-cell">  
-        <h2 style="font-size: 300%; margin-top: -30px; margin-left: auto;">{{$tipoFactura}}</h2>    
+        <ul style="list-style: none;"">
+          <li>
+            <h2 style="font-size: 300%; margin-top: -40px; margin-left: auto; padding-bottom: -50px;">{{$tipoFactura}}
+              <br>
+            <small style="font-size: 10px;">Original</small>
+          </li>
+
+        </ul>
+          
+        </h2>    
           <ul style="list-style: none; font-size: 80%;   margin-left: auto;">
             <li>
               NRO: {{$numeroFactura}}
@@ -158,7 +182,12 @@
 
 <tr>
   <th scope="row">{{$item->codigo}}</th>
-  <td>{{$item->detalle}}</td>
+  <td>
+    {{$item->detalle}}
+    @if ($codigoFactura == 1 OR $codigoFactura == 51)
+      ({{$item->iva}}%)
+    @endif
+  </td>
   <td align="right">{{$item->cantidad}}</td>
   <td align="right">{{$item->precioLista}}</td>
   <td align="right">

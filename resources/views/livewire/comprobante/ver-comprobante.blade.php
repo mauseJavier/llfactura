@@ -29,6 +29,9 @@
                   @case(11)
                     <label for="">Factura C: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
                   @break
+                  @case(51)
+                    <label for="">Factura M: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                  @break
 
                   @case('remito')
                     <label for="">Remito: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
@@ -120,6 +123,9 @@
                                       @break
                                   @case(1)
                                       A
+                                      @break
+                                  @case(51)
+                                      M
                                       @break
                                   @case('remito')
                                       R
@@ -311,6 +317,13 @@
                             <input type="text" wire:model.live="usuarioFiltro" name="usuario" placeholder="Usuario" />
                         </label>
                     </div>
+                    <div class="col">
+                      <label for="">
+                          Numero ">="
+                          <input type="text" wire:model.live="numeroComprobanteFiltro" name="numeroComprobanteFiltro" placeholder="Numero" />
+                      </label>
+                  </div>
+                    
                 </div>
         
                 <label for="">

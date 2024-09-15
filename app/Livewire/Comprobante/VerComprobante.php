@@ -24,6 +24,7 @@ class VerComprobante extends Component
 
     public $tipoComp;
     public $usuarioFiltro;
+    public $numeroComprobanteFiltro;
 
     public function mount(){
 
@@ -35,12 +36,15 @@ class VerComprobante extends Component
 
         $this->tipoComp = '';
         $this->usuarioFiltro = '';
+        $this->numeroComprobanteFiltro="";
 
 
         $array1 = [
             '1'=>'Factura A',
             '6'=>'Factura B',
             '11'=>'Factura C',
+            '51'=>'Factura M',
+
             'remito'=>'Remito',
         ];
         $array2=array();
@@ -74,6 +78,9 @@ class VerComprobante extends Component
                                             ->when($this->tipoComp, function ($query, $tipoComp) {
                                                 return $query->where('tipoComp', $tipoComp);
                                             })
+                                ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+                                return $query->where('numero', '>=',$numeroComprobanteFiltro);
+                                })
                                             ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
                                             ->orderByDesc('created_at')
                                             ->paginate(15),
@@ -84,6 +91,9 @@ class VerComprobante extends Component
                                         ->when($this->tipoComp, function ($query, $tipoComp) {
                                             return $query->where('tipoComp', $tipoComp);
                                         })
+                                ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+                                return $query->where('numero', '>=',$numeroComprobanteFiltro);
+                                })
                                         ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
                                         ->sum('total'),
 
@@ -94,6 +104,9 @@ class VerComprobante extends Component
                                         ->when($this->tipoComp, function ($query, $tipoComp) {
                                             return $query->where('tipoComp', $tipoComp);
                                         })
+                                ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+                                return $query->where('numero', '>=',$numeroComprobanteFiltro);
+                                })
                                         ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
                                         ->groupBy('tipoComp')
                                         ->get(),
@@ -107,6 +120,9 @@ class VerComprobante extends Component
                                         ->when($this->tipoComp, function ($query, $tipoComp) {
                                             return $query->where('comprobantes.tipoComp', $tipoComp);
                                         })
+                                ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+                                return $query->where('numero', '>=',$numeroComprobanteFiltro);
+                                })
                                         ->groupBy('comprobantes.idFormaPago','forma_pagos.nombre')
                                         ->get(),
 

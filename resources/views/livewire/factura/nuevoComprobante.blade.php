@@ -16,39 +16,61 @@
         </article>
         @endif
 
-        <article style="text-align: center;">
+        <article style="text-align: center;" x-data="{ valor1:{{$total}}, valor2: 0 }">
 
-            <div x-data="{ 
-                    formatCurrency(value) { 
-                        let number = parseFloat(value.replace(/,/g, ''));
-                        if (isNaN(number)) return '';
-                        return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(number); 
-                    } 
-                }">
-                <input 
-                    style="text-align: center; font-size:50px; width: 80%; height: 80%" 
-                    type="text" 
-                    x-ref="inputText" 
-                    x-on:focus="$refs.inputText.select()" 
-                    x-on:blur="event.target.value = formatCurrency(event.target.value)"
-                    placeholder="$0,00"
-                    wire:model="total"
-                    wire:keydown.enter="facturar"
-                    {{$modificarImporte}}
+            <div class="grid">
 
-                    @if ($errors->has('total'))
-                        aria-invalid="true"
-                    @else  
-                        aria-invalid="" 
+                <div x-data="{ 
+                        formatCurrency(value) { 
+                            let number = parseFloat(value.replace(/,/g, ''));
+                            if (isNaN(number)) return '';
+                            return new Intl.NumberFormat('es-AR', { style: 'currency', currency: 'ARS' }).format(number); 
+                        } 
+                    }">
+
+                    <input 
+                        style="text-align: center; font-size:50px; width: 80%; height: 80%" 
+                        type="text" 
+                        x-ref="inputText" 
+                        x-model.number="valor1"
+                        x-on:focus="$refs.inputText.select()" 
+                        x-on:blur="event.target.value = formatCurrency(event.target.value)"
+                        placeholder="$0,00"
+                        wire:model="total"
+                        wire:keydown.enter="facturar"
+                        {{$modificarImporte}}
+    
+                        @if ($errors->has('total'))
+                            aria-invalid="true"
+                        @else  
+                            aria-invalid="" 
+                        @endif
+    
+                    >
+                        @error('total')
+                            <small id="invalid-helper">
+                                {{ $message }}                          
+                            </small>
+                         @enderror
+                    </div>
+
+                    @if ($idFormaPago == 1)
+                        
+                    <div>
+                         <label for="input2">Efectivo <small>(Calcular Vuelto)</small></label>
+                         <input   style="text-align: center; font-size:50px; " 
+                         type="text" id="input2" x-model.number="valor2" x-on:focus="$refs.inputText.select()"   x-ref="inputText"  
+                            x-on:blur="event.target.value = formatCurrency(event.target.value)"
+                         
+                         >
+                         <p :style="(valor1 - valor2) > 0 ? 'color:red; font-size: 50px;' : 'color:green; font-size: 50px;' " >
+                             <span x-text="(valor1 - valor2) > 0 ? 'Falta $'+(valor1 - valor2).toFixed(2) : 'Vuelto $'+(valor1 - valor2).toFixed(2)"></span>
+                         </p>
+                     </div>
                     @endif
 
-                    >
-                    @error('total')
-                        <small id="invalid-helper">
-                            {{ $message }}                          
-                        </small>
-                     @enderror
             </div>
+
             
         </article>
 
@@ -102,7 +124,7 @@
                 </div>
                 <div>
 
-                        <select name="" aria-label=""  required wire:model="idFormaPago">         
+                        <select name="" aria-label=""  required wire:model.live="idFormaPago">         
                             @foreach ($formaPago as $item)
                                 @if ($item->id !== 0) 
                                     {{-- PARA QUE NO MUESTRE EL CUENTA CORRIENTE DE LA BASE                               --}}
