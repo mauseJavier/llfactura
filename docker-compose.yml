@@ -1,0 +1,52 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: llfactura_app
+    volumes:
+      - .:/var/www
+    ports:
+      - "8000:80"
+    networks:
+      - laravel
+
+    environment:
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=llfacturaLocal
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
+
+  mysql:
+    image: mysql:8.0
+    container_name: llfactura_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: llfacturaLocal
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - laravel
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin_app
+    restart: always
+    ports:
+      - 8080:80
+    networks:
+      - laravel
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
+
+networks:
+  laravel:
+
+volumes:
+  mysql_data:

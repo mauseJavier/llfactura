@@ -265,6 +265,9 @@ class Venta extends Component
         $this->carrito['total']= round($totalSubtotal,2);
         $this->carrito['articulos']=  $cantidadArticulos;
 
+        $this->porcentaje=0;
+
+
         $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
 
 
@@ -386,6 +389,8 @@ class Venta extends Component
 
         $this->dispatch('actualizarCarrito', total: 0 , articulos: 0);
         $this->tamañoGrillaVenta(0);
+
+        $this->porcentaje=0;
 
 
     }

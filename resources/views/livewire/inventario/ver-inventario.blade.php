@@ -142,6 +142,8 @@
                         <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('created_at')">Creado</a></th>
                         <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('updated_at')">Actualizado</a></th>
                     @endif
+                    <th scope="col">Eliminar</th>
+
                   </tr>
                 </thead>
                 <tbody>
@@ -179,6 +181,7 @@
                             <td>{{$i->created_at}}</td>
                             <td>{{$i->updated_at}}</td>
                         @endif
+                        <td style="text-align: center;color: red;"><i wire:click="eliminarInventario({{$i->id}})" wire:confirm="Seguro de Eliminar" class="fa-solid fa-trash fa-xl"></i></td>
                         </tr>
                     @endforeach
 

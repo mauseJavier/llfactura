@@ -1,6 +1,6 @@
 IMPORTAR MYSQL
 
-php artisan serve --host=192.168.68.121 --port=8080
+php artisan serve --host=192.168.1.111--port=8080
 
 
 php artisan make:migration add_new_column_to_users_table --table=users

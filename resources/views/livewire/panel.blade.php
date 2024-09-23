@@ -1,7 +1,5 @@
 <div>
 
-
-
     @if (session('mensaje'))
         <article>
             {{ session('mensaje') }}

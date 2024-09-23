@@ -1,0 +1,81 @@
+Bash
+
+docker-compose up -d --build
+
+Este comando construirá las imágenes, iniciará los contenedores y los ejecutará en segundo plano.
+
+Bash
+
+docker-compose down
+
+BORRADO DE VOLUMENES 
+docker-compose down
+docker volume ls
+docker volume rm my_data_volume
+docker-compose up -d
+
+
+¡Claro! Aquí tienes los 10 comandos de Docker más utilizados y una breve explicación de cada uno:
+
+### Los 10 Comandos Docker más Utilizados
+
+1. **docker run:**
+   * **Función:** Crea un nuevo contenedor a partir de una imagen existente y lo ejecuta.
+   * **Ejemplo:** `docker run -d -p 80:80 nginx` (Crea un contenedor en segundo plano con Nginx expuesto en el puerto 80 del host.)
+
+2. **docker ps:**
+   * **Función:** Lista todos los contenedores en ejecución.
+   * **Ejemplo:** `docker ps` (Muestra una tabla con los ID, nombres, estado y otros detalles de los contenedores.)
+
+3. **docker images:**
+   * **Función:** Lista todas las imágenes almacenadas localmente.
+   * **Ejemplo:** `docker images` (Muestra una lista de imágenes con sus etiquetas, tamaño y otras propiedades.)
+
+4. **docker pull:**
+   * **Función:** Descarga una imagen de un registro (por ejemplo, Docker Hub).
+   * **Ejemplo:** `docker pull ubuntu` (Descarga la imagen oficial de Ubuntu.)
+
+5. **docker stop:**
+   * **Función:** Detiene un contenedor en ejecución.
+   * **Ejemplo:** `docker stop my_container` (Detiene el contenedor con el nombre "my_container".)
+
+6. **docker start:**
+   * **Función:** Inicia un contenedor detenido.
+   * **Ejemplo:** `docker start my_container` (Inicia el contenedor "my_container".)
+
+7. **docker rm:**
+   * **Función:** Elimina uno o más contenedores.
+   * **Ejemplo:** `docker rm my_container` (Elimina el contenedor "my_container".)
+
+8. **docker rmi:**
+   * **Función:** Elimina una o más imágenes.
+   * **Ejemplo:** `docker rmi ubuntu` (Elimina la imagen de Ubuntu.)
+
+9. **docker exec:**
+   * **Función:** Ejecuta un comando dentro de un contenedor en ejecución.
+   * **Ejemplo:** `docker exec my_container bash` (Abre un shell bash dentro del contenedor "my_container".)
+
+10. **docker build:**
+    * **Función:** Construye una nueva imagen a partir de un Dockerfile.
+    * **Ejemplo:** `docker build -t my_image .` (Construye una imagen a partir del Dockerfile en el directorio actual y la etiqueta como "my_image".)
+
+### ¿Qué hacen estos comandos?
+
+* Los comandos **run**, **pull** y **build** se utilizan para crear y gestionar imágenes y contenedores.
+* Los comandos **ps**, **images**, **stop**, **start**, **rm** y **rmi** se utilizan para ver y administrar los recursos de Docker (contenedores e imágenes).
+* El comando **exec** permite interactuar con un contenedor en ejecución.
+
+### ¿Quieres aprender más?
+
+Estos son solo algunos de los comandos más comunes. Docker ofrece una amplia gama de opciones y funcionalidades. Para profundizar en el tema, te recomiendo consultar la documentación oficial de Docker: [https://docs.docker.com/](https://docs.docker.com/)
+
+**¿Tienes alguna pregunta específica sobre estos comandos o sobre Docker en general?** Estaré encantado de ayudarte.
+
+**Algunos temas que podrías querer explorar:**
+
+* **Docker Compose:** Para definir y ejecutar aplicaciones multi-contenedor.
+* **Docker Swarm:** Para crear clústers de Docker.
+* **Docker Volumes:** Para persistir datos fuera de los contenedores.
+* **Docker Networks:** Para configurar redes entre contenedores.
+
+**¿En qué te gustaría profundizar?**

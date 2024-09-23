@@ -80,6 +80,8 @@ class VerInventario extends Component
     public $pesable = 'no';
     public $controlStock = 'no';
     public $imagen;
+    public $idArticulo;
+
 
     public $ivaIncluido = false;
 
@@ -100,6 +102,11 @@ class VerInventario extends Component
     #[Validate('numeric', message: 'Solo Numeros')]
     public $nuevoStock=1;
 
+
+    public function eliminarInventario(Inventario $articulo){
+        // dd($articulo);
+        $articulo->delete();
+    }
 
     public function cambiarModalStock($codigo = '',$detalle=''){        
         if($this->modalStock == 'open'){
@@ -296,6 +303,7 @@ class VerInventario extends Component
         //     "updated_at" => "2024-05-20 17:19:06"
         // ]
 
+        $this->idArticulo= $articulo->id;
         $this->codigo= $articulo->codigo;
         $this->detalle=$articulo->detalle;
         $this->costo=$articulo->costo;
@@ -318,24 +326,26 @@ class VerInventario extends Component
 
         $this->validate();
 
-        $nuevoArticulo = inventario::updateOrCreate(
-            ['codigo' => $this->codigo, 'empresa_id' => $this->empresa->id],
-            [
-                'detalle'=> $this->detalle,
-                'costo'=> round($this->costo,2),
-                'precio1'=> round($this->precio1,2),
-                'precio2'=> round($this->precio2,2),
-                'precio3'=> round($this->precio3,2),
-                'porcentaje'=> round($this->porcentaje1,2),
-                'iva'=> round($this->iva,2),
-                'rubro'=> $this->rubro,
-                'proveedor'=> $this->proveedor,
-                'marca'=> $this->marca,
-                'pesable'=> $this->pesable,
-                'controlStock'=> $this->controlStock,
-                'imagen'=> $this->imagen,
-            ]
-        );
+            $nuevoArticulo = inventario::updateOrCreate(
+                ['id' => $this->idArticulo, 'empresa_id' => $this->empresa->id],
+                [
+                    'codigo' => $this->codigo,
+                    'detalle'=> $this->detalle,
+                    'costo'=> round($this->costo,2),
+                    'precio1'=> round($this->precio1,2),
+                    'precio2'=> round($this->precio2,2),
+                    'precio3'=> round($this->precio3,2),
+                    'porcentaje'=> round($this->porcentaje1,2),
+                    'iva'=> round($this->iva,2),
+                    'rubro'=> $this->rubro,
+                    'proveedor'=> $this->proveedor,
+                    'marca'=> $this->marca,
+                    'pesable'=> $this->pesable,
+                    'controlStock'=> $this->controlStock,
+                    'imagen'=> $this->imagen,
+                ]
+            );
+
 
         // $nuevoArticulo = inventario::create([
         //     'codigo'=> $this->codigo,
@@ -353,6 +363,7 @@ class VerInventario extends Component
         //     'imagen'=> $this->imagen,
         // ]);
 
+        $this->idArticulo=0;
         $this->codigo='';
         $this->detalle='';
         $this->costo=0;

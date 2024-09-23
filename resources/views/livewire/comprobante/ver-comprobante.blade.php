@@ -68,7 +68,7 @@
             </div>
             <div class="col" style="text-align: center;">
               <small>
-                <label  for="">De: {{date("d-m-Y H:i:s", strtotime($fechaFiltroDesde)) }} A: {{date("d-m-Y H:i:s", strtotime($fechaFiltroHasta))}}</label>
+                <label  for="">De: {{date("d-m-Y", strtotime($fechaFiltroDesde)) }} A: {{date("d-m-Y", strtotime($fechaFiltroHasta))}}</label>
               </small>
 
             </div>
