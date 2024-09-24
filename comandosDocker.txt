@@ -1,10 +1,23 @@
-Bash
++++DETENER TODOS LOS CONTENEDORES 
 
-docker-compose up -d --build
+   docker stop $(docker ps -a -q)
+
++++ BORRAR TODOS LOS CONTENEDORES 
+
+   docker rm $(docker ps -a -q)
+
++++Eliminar imágenes: Si también deseas eliminar las imágenes no utilizadas, puedes usar el comando 
+   docker image prune -a
++++Eliminar volúmenes: Para eliminar volúmenes no utilizados, usa 
+   docker volume prune
+
+
++++ARMAR Y CORRER CONTENEDORES 
+   docker-compose up -d --build
 
 Este comando construirá las imágenes, iniciará los contenedores y los ejecutará en segundo plano.
 
-Bash
+
 
 docker-compose down
 

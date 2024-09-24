@@ -61,7 +61,9 @@
                               
                                 <th scope="row">
 
-                                  <p style="display: inline-block;">
+                                  <p  wire:click="borrarArticulo({{$key}})" 
+                                      style="display: inline-block;cursor: pointer; font-size: 15px;"
+                                  >
                                     <i class="fa-solid fa-trash"></i>
                                   </p>
                                   <p 
@@ -77,7 +79,9 @@
 
                                 <th >
 
-                                  <p style="display: inline-block;">
+                                  <p  wire:click="abrirModal({{$key}})"                                    
+                                      style="display: inline-block;cursor: pointer; font-size: 20px;"
+                                  >
                                     <i class="fa-regular fa-pen-to-square"></i>
                                   </p>
                                   <p

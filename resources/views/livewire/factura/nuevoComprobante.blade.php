@@ -89,7 +89,7 @@
                     </button>
                 </div>
                 <div>
-                        <select name="" aria-label=""  required wire:model.blur="tipoComprobante" @change="buttonText = 'Finalizar ' + $event.target.options[$event.target.selectedIndex].text"
+                        <select name="" aria-label=""  required wire:model.live="tipoComprobante" @change="buttonText = 'Finalizar ' + $event.target.options[$event.target.selectedIndex].text"
 
                         @if ($errors->has('cuit'))
                             aria-invalid="true"

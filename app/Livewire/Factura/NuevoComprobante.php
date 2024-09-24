@@ -101,6 +101,9 @@ class NuevoComprobante extends Component
         $this->tipoContribuyente = $cliente->tipoContribuyente;
         $this->cuit = $cliente->numeroDocumento;
 
+        $this->cambiarFactura();
+
+
 
     }
 
@@ -565,12 +568,35 @@ class NuevoComprobante extends Component
             $this->tipoDocumento = $clienteBuscado->tipoDocumento;
             $this->razonSocial = $clienteBuscado->razonSocial;
             $this->tipoContribuyente = $clienteBuscado->tipoContribuyente;
+
         }else{
             $this->buscarCuit();
         }
 
+        $this->cambiarFactura();
+
         // 
 
+    }
+
+    public function cambiarFactura(){
+        // <option value="5">Consumidor Final</option>
+        // <option value="13">Monotributista</option>
+        // <option value="6">Responsable Inscripto</option>
+        // <option value="4">Exento</option>
+
+        // <option value="11">Factura C</option>
+        // <option value="6">Factura B</option>
+        // <option value="1">Factura A</option>    
+        // <option value="51">Factura M</option>   
+
+        // dd($this->empresa->iva);
+        if($this->tipoContribuyente == 6 AND $this->empresa->iva == 'RI'){
+            $this->tipoComprobante = 1;
+            // dd('entra');
+        }else {
+            // dd('hola');
+        }
     }
 
     function objetoAfip(){

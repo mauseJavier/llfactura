@@ -32,7 +32,6 @@ RUN chown -R www-data:www-data /var/www \
 RUN composer install --no-scripts --no-autoloader
 
 
-
 # Establecer permisos durante la construcción de la imagen
 RUN chown -R www-data:www-data /var/www/ /var/www/
 RUN chmod -R 777 /var/www/ /var/www/

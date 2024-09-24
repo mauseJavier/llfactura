@@ -62,7 +62,29 @@
                         </td>
                         <td>{{$c->tipoDocumento}}</td>
                         <td>{{$c->numeroDocumento}}</td>
-                        <td>{{$c->tipoContribuyente}}</td>
+                        <td>
+                            {{-- <option value="5">Consumidor Final</option>
+                            <option value="13">Monotributista</option>
+                            <option value="6">Responsable Inscripto</option>
+                            <option value="4">Exento</option> --}}
+                            @switch($c->tipoContribuyente)
+                                @case(4)
+                                IVA Sujeto Exento      
+                                    @break
+                                @case(13)
+                                Monotributista
+                                    @break
+                                @case(5)
+                                Consumidor Final
+                                    @break
+                                @case(6)
+                                Responsable Inscripto
+                                    @break
+                                @default
+                                    
+                            @endswitch
+                            ({{$c->tipoContribuyente}})
+                        </td>
                         <td>{{$c->correo}}</td>
                         <td>{{$c->domicilio}}</td>
                         <td><a href="{{route('cuentaCorriente',['cliente'=>$c->id])}}">${{($c->saldo) ? $c->saldo : 0}}</a></td>

@@ -181,7 +181,13 @@
                             <td>{{$i->created_at}}</td>
                             <td>{{$i->updated_at}}</td>
                         @endif
-                        <td style="text-align: center;color: red;"><i wire:click="eliminarInventario({{$i->id}})" wire:confirm="Seguro de Eliminar" class="fa-solid fa-trash fa-xl"></i></td>
+                            <td style="text-align: center;color: red; "  title="Eliminar">
+                                <i wire:click="eliminarInventario({{$i->id}})" 
+                                    wire:confirm="Seguro de Eliminar" 
+                                    class="fa-solid fa-trash fa-xl" 
+                                    style="cursor: pointer;" >
+                                </i>
+                            </td>
                         </tr>
                     @endforeach
 
