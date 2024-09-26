@@ -6,7 +6,7 @@
             <h1><span aria-busy="true">Cargando Datos....</span></h1>
         </div>
     </div> --}}
-    <div class="container" >
+    <div class="container" x-data="{ valor1:{{$total}}, valor2: 0 }">
 
         @if (\Session::has('mensaje'))
         <article>
@@ -16,7 +16,7 @@
         </article>
         @endif
 
-        <article style="text-align: center;" x-data="{ valor1:{{$total}}, valor2: 0 }">
+        <article style="text-align: center;" >
 
             <div class="grid">
 
@@ -52,26 +52,39 @@
                                 {{ $message }}                          
                             </small>
                          @enderror
-                    </div>
+                </div>
 
-                    @if ($idFormaPago == 1)
-                        
-                    <div>
-                         <label for="input2">Efectivo <small>(Calcular Vuelto)</small></label>
-                         <input   style="text-align: center; font-size:50px; " 
-                         type="text" id="input2" x-model.number="valor2" x-on:focus="$refs.inputText.select()"   x-ref="inputText"  
-                            x-on:blur="event.target.value = formatCurrency(event.target.value)"
-                         
-                         >
-                         <p :style="(valor1 - valor2) > 0 ? 'color:red; font-size: 50px;' : 'color:green; font-size: 50px;' " >
-                             <span x-text="(valor1 - valor2) > 0 ? 'Falta $'+(valor1 - valor2).toFixed(2) : 'Vuelto $'+(valor1 - valor2).toFixed(2)"></span>
-                         </p>
-                     </div>
-                    @endif
+
 
             </div>
 
             
+            @if ($idFormaPago == 1)
+                    
+
+                    <div class="grid" style="text-align: center;">
+                        <div>
+                            <label for="input2">Efectivo <small>(Calcular Vuelto)</small></label>
+                            <input   
+                                style="text-align: center; font-size:50px; " 
+                                type="text" id="input2" x-model.number="valor2" x-on:focus="$refs.inputText.select()"   x-ref="inputText"  
+                                x-on:blur="event.target.value = formatCurrency(event.target.value)"
+                            >
+                        </div>
+                        
+                        <div>
+                            <p :style="(valor1 - valor2) > 0 ? 'color:red; font-size: 50px;' : 'color:green; font-size: 50px;' " >
+                            <span x-text="(valor1 - valor2) > 0 ? 'Falta $'+(valor1 - valor2).toFixed(2) : 'Vuelto $'+(valor1 - valor2).toFixed(2)"></span>
+                            </p>
+                        </div>
+
+                    </div>
+
+                
+            @endif
+
+
+
         </article>
 
         <article wire:loading>
@@ -80,7 +93,7 @@
 
 
 
-        <article wire:loading.remove x-data="{ buttonText: 'Finalizar Facturar' }">
+        <article wire:loading.remove x-data="{ buttonText: 'Finalizar' }" style="width: 100%">
             {{-- ////////// BOTONES DE LA FACTURACION --}}
             <div class="grid" style="text-align: center;" >
                 <div>
@@ -89,7 +102,9 @@
                     </button>
                 </div>
                 <div>
-                        <select name="" aria-label=""  required wire:model.live="tipoComprobante" @change="buttonText = 'Finalizar ' + $event.target.options[$event.target.selectedIndex].text"
+                        <select name="" aria-label=""  required wire:model.live="tipoComprobante" 
+                            {{-- ESTA FUNCION DE ALPINE ES PARA CAMBIAR EL NOMBRE DEL BOTON FINALIZAR --}}
+                            @change="buttonText = 'Finalizar ' + $event.target.options[$event.target.selectedIndex].text"
 
                         @if ($errors->has('cuit'))
                             aria-invalid="true"
@@ -147,7 +162,7 @@
 
 
 
-        <article style="text-align: center;" wire:loading.remove>
+        <article style="text-align: center; width: 100%;" wire:loading.remove>
             <div class="grid">
 
                 <div class="col">

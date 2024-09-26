@@ -13,19 +13,25 @@
 
 
 +++ARMAR Y CORRER CONTENEDORES 
-   docker-compose up -d --build
+   docker compose up -d --build
 
 Este comando construirá las imágenes, iniciará los contenedores y los ejecutará en segundo plano.
 
 
++++Borrar contenedores
+docker compose down
 
-docker-compose down
++++Si el directorio storage es montado desde el sistema host, 
+   asegúrate de que el sistema host también tiene los PERMISOS correctos. Usa los siguientes comandos en el host:
 
-BORRADO DE VOLUMENES 
-docker-compose down
-docker volume ls
-docker volume rm my_data_volume
-docker-compose up -d
+sudo chown -R $(id -u):$(id -g) storage
+sudo chmod -R 775 storage
+
++++BORRADO DE VOLUMENES 
+   docker-compose down
+   docker volume ls
+   docker volume rm my_data_volume
+   docker-compose up -d
 
 
 ¡Claro! Aquí tienes los 10 comandos de Docker más utilizados y una breve explicación de cada uno:
@@ -66,7 +72,7 @@ docker-compose up -d
 
 9. **docker exec:**
    * **Función:** Ejecuta un comando dentro de un contenedor en ejecución.
-   * **Ejemplo:** `docker exec my_container bash` (Abre un shell bash dentro del contenedor "my_container".)
+   * **Ejemplo:** `docker exec -it my_container bash` (Abre un shell bash dentro del contenedor "my_container".)
 
 10. **docker build:**
     * **Función:** Construye una nueva imagen a partir de un Dockerfile.

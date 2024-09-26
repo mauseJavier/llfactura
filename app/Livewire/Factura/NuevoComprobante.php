@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Factura;
 
+
 use Afip;
 use Carbon\Carbon;
 
@@ -1096,6 +1097,7 @@ class NuevoComprobante extends Component
              * Creamos la Factura 
              **/
             $res = $afip->ElectronicBilling->CreateVoucher($data,TRUE);
+            
 
             /**
              * Mostramos por pantalla los datos de la nueva Factura 

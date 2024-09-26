@@ -45,7 +45,7 @@ class ImportarInventario extends Component
         $validated = $this->validate([ 
             'CAMPOcodigo' => 'required',
             'CAMPOdetalle' => 'required',
-            'archivo'=> 'required|file|mimes:xlsx',
+            // 'archivo'=> 'required|file|mimes:xlsx',
         ]);
 
 

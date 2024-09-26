@@ -1,48 +1,54 @@
-# Usa una imagen oficial de PHP con Apache
 FROM php:8.2-apache
 
-# Instala extensiones de PHP necesarias para Laravel
 RUN apt-get update && apt-get install -y \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
+    libpq-dev \
     libonig-dev \
-    libxml2-dev \
+    libzip-dev \
     zip \
+    libcurl4 \
+    libcurl4-openssl-dev \ 
     unzip \
-    git \
-    curl \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+    libxml2-dev 
 
-# Instala Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Establece el directorio de trabajo
+RUN a2enmod rewrite
+
+COPY ./docker/apache/apache-config.conf /etc/apache2/sites-available/000-default.conf
+
+ENV APACHE_DOCUMENT_ROOT /var/www/public
+
+RUN sed -ri -e 's!/var/www!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+RUN docker-php-ext-install pdo_mysql zip curl \
+    xml 
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg 
+
+USER root
+
+# RUN cp .env.example .env
+
+
 WORKDIR /var/www
-
-# Copia los archivos del proyecto
 COPY . .
 
-# Otorga permisos a los archivos
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN composer install
+
 RUN chown -R www-data:www-data /var/www \
-    && a2enmod rewrite
+    && chmod 775 -R /var/www 
+    
 
-# Instala las dependencias del proyecto
-RUN composer install --no-scripts --no-autoloader
+RUN chmod -R 777 /var/www/storage
 
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Establecer permisos durante la construcción de la imagen
-RUN chown -R www-data:www-data /var/www/ /var/www/
-RUN chmod -R 777 /var/www/ /var/www/
+USER www-data
 
-# RUN php artisan migrate --seed
-
-# Copia el archivo de configuración de Apache
-COPY ./docker/apache/vhost.conf /etc/apache2/sites-available/000-default.conf
-
-# Expone el puerto 80 para HTTP
+# Expose port 80 for Apache.
 EXPOSE 80
 
-# Define el comando por defecto a ejecutar cuando inicie el contenedor
-CMD ["apache2-foreground"]
+# Start Apache web server.
+CMD ["/usr/sbin/apachectl", "-D", "FOREGROUND"]

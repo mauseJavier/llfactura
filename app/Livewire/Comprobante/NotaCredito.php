@@ -256,7 +256,10 @@ class NotaCredito extends Component
 
                 if($this->imprimir){
 
-                    $this->redirectRoute('formatoPDF',['comprobante_id'=>$notaGuardada->id]);
+                    $this->redirectRoute('formatoPDF',['comprobante_id'=>$notaGuardada->id,'tipo'=>'factura']);
+
+                    // $this->redirectRoute('formatoPDF',['comprobante_id'=>$comprobanteId,
+                    // 'tipo'=>'presupuesto']);
         
                 }else{
         
