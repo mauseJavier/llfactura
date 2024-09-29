@@ -378,6 +378,44 @@
                     </div>
                 </div>
 
+            <hr>
+
+                {{-- NUEVO STOCK --}}
+                <div class="grid">                   
+    
+                        <div class="col">
+                            Depositos
+                            <select wire:model="idDeposito" name="idDeposito" aria-label="">
+                                @foreach ($depositos as $item)
+                                    <option value="{{$item->id}}">{{$item->nombre}}</option>                        
+                                @endforeach
+                            </select>
+                        </div>
+    
+                        <div class="col">
+    
+                            <label>
+                            Stock (0=Sin Control)
+                            <input
+                                wire:model.live="nuevoStock"
+                                name="nuevoStock"
+                                placeholder="Stock"
+                                autocomplete="nuevoStock"
+                                @error('nuevoStock') aria-invalid="true" @enderror
+                            />
+                                @error('nuevoStock') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                    </small>
+                                @enderror
+                            
+                            </label>
+                        </div>
+    
+    
+    
+                   
+                </div>
 
             <hr />
 
@@ -394,14 +432,7 @@
                             </select>
                         </label>
                     </div>
-                    <div class="col">
-                        <label for="">Control Stock?
-                            <select name="" id="" wire:model="controlStock">
-                                <option value="no" selected>No</option>
-                                <option value="si">Si</option>
-                            </select>
-                        </label>
-                    </div>
+
                     <div class="col">
                         <label for="">Imagen
                             <input type="text" wire:model="imagen">
@@ -516,21 +547,7 @@
               <strong>Stock</strong>
             </p>
           </header>
-            @if (session()->has('modificarStock'))          
-                <p style="color: rgb(0, 137, 90);">
-                    {{ session('modificarStock') }}
-                </p>          
-            @endif
-            @error('codigo') 
-                <small id="invalid-helper">
-                    Codigo {{ $message }} 
-                </small>                               
-            @enderror
-            @error('detalle') 
-                <small id="invalid-helper">
-                    Detalle {{ $message }} 
-                </small>                               
-            @enderror
+
 
             <form wire:submit="modificarStockArticulo">
                 <p>({{$codigo}}) {{$detalle}}</p>
@@ -562,6 +579,22 @@
                 </label>
 
             </fieldset>
+
+            @if (session()->has('modificarStock'))          
+                <p style="color: rgb(0, 137, 90);">
+                    {{ session('modificarStock') }}
+                </p>          
+            @endif
+            @error('codigo') 
+                <small id="invalid-helper">
+                    Codigo {{ $message }} 
+                </small>                               
+            @enderror
+            @error('detalle') 
+                <small id="invalid-helper">
+                    Detalle {{ $message }} 
+                </small>                               
+            @enderror
             
             <input
                 type="submit"

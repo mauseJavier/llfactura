@@ -100,7 +100,7 @@ class VerInventario extends Component
     #[Validate('required', message: 'Requerido')]
     #[Validate('min:0', message: 'Mayor a 0')]
     #[Validate('numeric', message: 'Solo Numeros')]
-    public $nuevoStock=1;
+    public $nuevoStock=0;
 
 
     public function eliminarInventario(Inventario $articulo){
@@ -112,7 +112,7 @@ class VerInventario extends Component
         if($this->modalStock == 'open'){
             $this->modalStock = 'close';
 
-            $this->nuevoStock = 1;
+            $this->nuevoStock = 0;
             $this->codigo = '';
             $this->detalle = '';
 
@@ -136,21 +136,28 @@ class VerInventario extends Component
 
         $this->validate();
 
+        if($this->nuevoStock > 0){
 
-        $n = Stock::create([
-            'codigo'=>$this->codigo,
-            'detalle'=>$this->detalle,
-            'deposito_id'=>$this->idDeposito,
-            'stock'=>$this->nuevoStock,
-            'comentario'=>'Ingreso',
-            'usuario'=>$this->usuario->name,
-            'empresa_id'=> $this->empresa->id,
-        ]);
+            $n = Stock::create([
+                'codigo'=>$this->codigo,
+                'detalle'=>$this->detalle,
+                'deposito_id'=>$this->idDeposito,
+                'stock'=>$this->nuevoStock,
+                'comentario'=>'Ingreso',
+                'usuario'=>$this->usuario->name,
+                'empresa_id'=> $this->empresa->id,
+            ]);
+    
+            $this->nuevoStock = 0;
+    
+            session()->flash('modificarStock', 'Stock Guardado. id-'. $n->id);
 
-        $this->nuevoStock = 1;
+        }else{
 
-        session()->flash('modificarStock', 'Stock Guardado. id-'. $n->id);
+            session()->flash('modificarStock', 'Stock NO puede ser 0.');
 
+            
+        }    
 
 
     }
@@ -326,6 +333,8 @@ class VerInventario extends Component
 
         $this->validate();
 
+        $this->controlStock = $this->nuevoStock > 0 ? 'si' : 'no';
+
             $nuevoArticulo = inventario::updateOrCreate(
                 ['id' => $this->idArticulo, 'empresa_id' => $this->empresa->id],
                 [
@@ -346,6 +355,7 @@ class VerInventario extends Component
                 ]
             );
 
+            $this->nuevoStock > 0 ? $this->modificarStockArticulo() : '';
 
         // $nuevoArticulo = inventario::create([
         //     'codigo'=> $this->codigo,
