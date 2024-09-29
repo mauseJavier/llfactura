@@ -6,9 +6,15 @@ RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
     libcurl4 \
-    libcurl4-openssl-dev \ 
+    libcurl4-openssl-dev \
     unzip \
-    libxml2-dev 
+    libxml2-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd
+
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 

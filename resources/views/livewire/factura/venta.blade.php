@@ -30,6 +30,8 @@
 
       </div>
 
+      {{-- @dump($carrito) --}}
+
     <div class="grid">
       
       @if ($carrito)
@@ -288,6 +290,10 @@
             <label>
               Cantidad
               <input type="text" wire:model="modificarCantidad" wire:keydown.enter="modificarCarrito">
+            </label>
+            <label>
+              Porcentaje (-Descuento +Incremento)
+              <input type="text" wire:model="modificarPorcentaje" wire:keydown.enter="modificarCarrito">
             </label>
           </fieldset>
 

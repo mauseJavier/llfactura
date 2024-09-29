@@ -32,6 +32,7 @@ class Venta extends Component
     public $modificarDetalle;
     public $modificarPrecio;
     public $modificarCantidad;
+    public $modificarPorcentaje=0;
     public $modificarKey;
 
     public $checkPrecio1;
@@ -331,12 +332,19 @@ class Venta extends Component
 
     public function modificarCarrito(){
 
+        $precio =round($this->modificarPrecio+($this->modificarPrecio * $this->modificarPorcentaje /100),2);
+
+
         $this->carrito['carrito'][$this->modificarKey]['detalle'] = $this->modificarDetalle ;
-        $this->carrito['carrito'][$this->modificarKey]['precio'] =    round(floatval($this->modificarPrecio),2) ; 
-        $this->carrito['carrito'][$this->modificarKey]['precioLista'] =    round(floatval($this->modificarPrecio),2) ; 
+        $this->carrito['carrito'][$this->modificarKey]['precio'] =    $precio ; 
+        $this->carrito['carrito'][$this->modificarKey]['precioLista'] = $this->modificarPorcentaje < 0 ? round(floatval($this->modificarPrecio),2) : round($this->modificarPrecio+($this->modificarPrecio * $this->modificarPorcentaje /100),2);
+
 
         $this->carrito['carrito'][$this->modificarKey]['cantidad'] =  round(floatval($this->modificarCantidad),2) ;    
-        $this->carrito['carrito'][$this->modificarKey]['subtotal'] =  round( floatval($this->modificarPrecio) * floatval($this->modificarCantidad),2) ;   
+        $this->carrito['carrito'][$this->modificarKey]['subtotal'] =  round( floatval($precio) * floatval($this->modificarCantidad),2) ;   
+
+        $this->carrito['carrito'][$this->modificarKey]['descuento']= $this->modificarPorcentaje < 0 ? round(($this->modificarPrecio * $this->modificarPorcentaje /100),2) : 0;
+        $this->carrito['carrito'][$this->modificarKey]['porcentaje']= $this->modificarPorcentaje;
 
         $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
         $cantidadArticulos = 0 ;
@@ -371,6 +379,7 @@ class Venta extends Component
         }
 
 
+        $this->modificarPorcentaje=0;
         $this->checkPrecio1 = false;
         $this->checkPrecio2 = false;
         $this->checkPrecio3 = false;

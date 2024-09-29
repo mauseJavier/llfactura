@@ -160,9 +160,9 @@ class EdicionMultiple extends Component
         // $this->validate();
 
         $validated = $this->validate([ 
-            'porcentajePrecio1' => 'required|min:0|numeric',
-            'porcentajePrecio2' => 'required|min:0|numeric',
-            'porcentajePrecio3' => 'required|min:0|numeric',
+            'porcentajePrecio1' => 'required|numeric',
+            'porcentajePrecio2' => 'required|numeric',
+            'porcentajePrecio3' => 'required|numeric',
 
             'fijo1' => 'required|min:0|numeric',
             'fijo2' => 'required|min:0|numeric',
