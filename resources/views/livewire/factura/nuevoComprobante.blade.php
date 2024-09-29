@@ -59,22 +59,28 @@
             </div>
 
             
-            @if ($idFormaPago == 1)
+
+            
+            
+
+        </article>
+
+        @if ($idFormaPago == 1)
                     
 
-                    <div class="grid" style="text-align: center;">
+                    <div class="grid" style="text-align: center; transform: scale(0.7); transform-origin: top center;">
                         <div>
                             <label for="input2">Efectivo <small>(Calcular Vuelto)</small></label>
                             <input   
-                                style="text-align: center; font-size:50px; " 
+                                style="text-align: center; font-size:45px;" 
                                 type="text" id="input2" x-model.number="valor2" x-on:focus="$refs.inputText.select()"   x-ref="inputText"  
                                 x-on:blur="event.target.value = formatCurrency(event.target.value)"
                             >
                         </div>
                         
-                        <div>
-                            <p :style="(valor1 - valor2) > 0 ? 'color:red; font-size: 50px;' : 'color:green; font-size: 50px;' " >
-                            <span x-text="(valor1 - valor2) > 0 ? 'Falta $'+(valor1 - valor2).toFixed(2) : 'Vuelto $'+(valor1 - valor2).toFixed(2)"></span>
+                        <div style="text-align: center; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <p :style="(valor1 - valor2) > 0 ? 'color:red; font-size: 45px; margin: 0;' : 'color:green; font-size: 45px; margin: 0;'" >
+                                <span x-text="(valor1 - valor2) > 0 ? 'Falta $'+(valor1 - valor2).toFixed(2) : 'Vuelto $'+(valor1 - valor2).toFixed(2)"></span>
                             </p>
                         </div>
 
@@ -82,10 +88,6 @@
 
                 
             @endif
-
-
-
-        </article>
 
         <article wire:loading>
             <span aria-busy="true">Procesando la Informacion...</span>

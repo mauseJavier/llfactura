@@ -279,6 +279,8 @@ class Venta extends Component
     {
             $array = $this->carrito['carrito'];
 
+            session()->flash('mensaje', 'Artículo eliminado: ' . $this->carrito['carrito'][$index]['detalle']);
+
             unset($array[$index]);//esto borra el elemento 
             $array = array_values($array);//esto acomoda los index            
 
@@ -296,7 +298,7 @@ class Venta extends Component
             $this->carrito['total']= round($totalSubtotal,2);
             $this->carrito['articulos']=  $cantidadArticulos;
 
-            if($totalSubtotal == 0){
+            if($cantidadArticulos == 0){
                 $this->borrarCarrito();
 
                 $this->dispatch('actualizarCarrito', total: 0 , articulos: 0);
@@ -306,8 +308,10 @@ class Venta extends Component
                 $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
 
                 $this->tamañoGrillaVenta(count($this->carrito['carrito']));
+            
             }
 
+            //dump($this->carrito);
 
 
     }

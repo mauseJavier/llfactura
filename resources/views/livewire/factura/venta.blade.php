@@ -15,6 +15,11 @@
 
 
         <div style="justify-content: center; align-items: center; ">
+        @if (session()->has('mensaje'))
+            <div class="alert alert-success" role="alert">
+                {{ session('mensaje') }}
+            </div>
+        @endif
 
         
         </div>
@@ -25,7 +30,6 @@
 
       </div>
 
-
     <div class="grid">
       
       @if ($carrito)
@@ -33,7 +37,8 @@
 
           <div style=" 
                         height: {{$tamañoGrillaVenta}}px; /* Fija la altura deseada */
-                        overflow: auto; /* Permite el desplazamiento */">
+                        overflow: auto; /* Permite el desplazamiento */"
+               wire:key="grilla-{{$tamañoGrillaVenta}}">
 
 
               <div class="overflow-auto" >

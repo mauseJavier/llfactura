@@ -31,7 +31,7 @@ class MenuPrincipal extends Component
     #[On('actualizarCarrito')] 
     public function actualizarCarrito($total,$articulos){
 
-        // dd($carrito);
+        // dd($carrito);            
         $this->total = $total;
         $this->articulos = $articulos;
 

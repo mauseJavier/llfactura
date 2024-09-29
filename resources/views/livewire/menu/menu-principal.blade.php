@@ -20,7 +20,7 @@
         </ul>
 
 
-        @if ($total != 0)
+        @if ($articulos != 0)
           <article style="
     
                   align-items: center;
