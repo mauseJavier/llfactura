@@ -9,3 +9,38 @@ sudo  /opt/lampp/bin/mysql -h localhost -u root -p --default-character-set=utf8 
 
 
 sudo  /opt/lampp/bin/mysql -h localhost -u root -p --default-character-set=utf8 llfacturaLocal</home/mause/Descargas/
+
+Para ejecutar ese código dentro de un contenedor Docker que tiene una instancia de MySQL, sigue estos pasos:
+
+1. **Asegúrate de tener el archivo SQL dentro del contenedor**: Si el archivo `1llfactura.sql` está en tu máquina local, debes montarlo o copiarlo dentro del contenedor.
+
+2. **Ejecutar el comando desde dentro del contenedor**: Puedes acceder al contenedor de MySQL y luego ejecutar el comando SQL.
+
+### Paso 1: Copiar el archivo SQL al contenedor (si no está dentro)
+Si necesitas copiar el archivo SQL dentro del contenedor, puedes hacerlo usando `docker cp`:
+
+```bash
+docker cp /home/mause/Descargas/1llfactura.sql <nombre_contenedor_mysql>:/1llfactura.sql
+```
+
+### Paso 2: Acceder al contenedor
+Ahora entra en el contenedor de MySQL:
+
+```bash
+docker exec -it <nombre_contenedor_mysql> bash
+```
+
+### Paso 3: Ejecutar el comando de MySQL
+Una vez dentro del contenedor, ejecuta el comando que mencionaste:
+
+```bash
+mysql -u root -p --default-character-set=utf8 llfacturaLocal < /1llfactura.sql
+```
+
+Si `localhost` es el host de la base de datos y estás corriendo MySQL dentro del mismo contenedor, no necesitas usar `-h localhost`. Simplemente elimina esa parte del comando:
+
+```bash
+mysql -u root -p --default-character-set=utf8 llfacturaLocal < /1llfactura.sql
+```
+
+Luego ingresa la contraseña de `root` cuando te la pida.

@@ -73,33 +73,35 @@ class ComprobanteController extends Controller
 
                 if($value->iva == 21){
                     
-                    $importe_gravado_al21 += round($value->precio * $value->cantidad / 1.21,2);
-                    $importe_iva_al21 += round($value->precio * $value->cantidad - ($value->precio * $value->cantidad / 1.21),2);
+                    $importe_gravado_al21 += round($value->precio * $value->cantidad / 1.21,3);
+                    $importe_iva_al21 += round($value->precio * $value->cantidad - ($value->precio * $value->cantidad / 1.21),3);
 
-                    if($comprobante[0]->tipoComp == 1){
-                        $productos[$key]->precio = round($value->precio / 1.21,2);
+                    if($comprobante[0]->tipoComp == 1 OR $comprobante[0]->tipoComp == 51){
 
-                        $productos[$key]->precioLista = round($value->precioLista / 1.21,2);
-                        $productos[$key]->descuento = round($value->descuento / 1.21,2);
+                        $productos[$key]->precio = round($value->precio / 1.21,3);
+
+                        $productos[$key]->precioLista = round($value->precioLista / 1.21,3);
+                        $productos[$key]->descuento = round($value->descuento / 1.21,3);
 
                     }
                     
                 }elseif($value->iva == 10.5){
                     
-                    $importe_gravado_al105 += round($value->precio * $value->cantidad / 1.105,2);
-                    $importe_iva_al105 += round($value->precio * $value->cantidad -($value->precio * $value->cantidad / 1.105),2);
+                    $importe_gravado_al105 += round($value->precio * $value->cantidad / 1.105,3);
+                    $importe_iva_al105 += round($value->precio * $value->cantidad -($value->precio * $value->cantidad / 1.105),3);
 
-                    if($comprobante[0]->tipoComp == 1){
-                        $productos[$key]->precio = round($value->precio / 1.105,2);
+                    if($comprobante[0]->tipoComp == 1 OR $comprobante[0]->tipoComp == 51){
 
-                        $productos[$key]->precioLista = round($value->precioLista / 1.105,2);
-                        $productos[$key]->descuento = round($value->descuento / 1.105,2);
+                        $productos[$key]->precio = round($value->precio / 1.105,3);
+
+                        $productos[$key]->precioLista = round($value->precioLista / 1.105,3);
+                        $productos[$key]->descuento = round($value->descuento / 1.105,3);
 
                     }
                 }
 
-                $totalDescuento += round($productos[$key]->descuento * $value->cantidad,2);
-                $subTotalPrecioLista += round(($productos[$key]->precioLista * $value->cantidad),2);
+                $totalDescuento += round($productos[$key]->descuento * $value->cantidad,3);
+                $subTotalPrecioLista += round(($productos[$key]->precioLista * $value->cantidad),3);
 
             }
 
@@ -349,10 +351,10 @@ class ComprobanteController extends Controller
                 'leyenda'=>$comprobante[0]->leyenda,
                 'nombreFormaPago'=>$nombreFormaPago->nombre,
                 'producto'=> $productos,
-                'subtotal'=> $subtotal,
+                'subtotal'=> number_format($subtotal,2),
                 'subTotalPrecioLista'=>number_format($subTotalPrecioLista, 2) ,
-                'iva105'=> $iva105 ,
-                'iva21'=> $iva21 ,
+                'iva105'=> number_format($iva105,2) ,
+                'iva21'=> number_format($iva21 ,2),
                 'totalVenta'=> number_format($totalRevisado, 2) ,
                 'totalDescuento'=> number_format($totalDescuento, 2) ,
                 'cae'=>$comprobante[0]->cae,

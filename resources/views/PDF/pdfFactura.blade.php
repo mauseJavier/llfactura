@@ -46,11 +46,12 @@
   top: 50%;
   left: 50%;
   width: 50%;
-  height: 50%;
+  /* height: 50%; */
   z-index: -1; /* Behind the content */
   opacity: 0.5; /* Set the transparency */
-  transform: translate(-50%, -50%); /* Moves the image back to the exact center */
-  background-size: cover;
+  transform: translate(-50%, -50%); 
+  /* Moves the image back to the exact center */
+  background-size: 50% 50%;
   background-position: center;
 " src="{{$logoAgua}}" alt="">
 
@@ -63,12 +64,12 @@
             <small style="text-align: center;">Cod.11</small> 
         </td> 
     </tr> --}}
-    <tr style="align-content: center; align-items: center;">
+    <tr aa="align-content: center; align-items: center;">
 
       <td  style="width: 250px; "  >
-          <img src="{{$logo}}"  alt="" width="60%" style="margin-top: -30px; margin-left: auto;"/>
+          <img src="{{$logo}}"  alt="" style="width: 300px; margin-top: -30px; margin-left: auto; background-size: cover;"/>
 
-          <table style="text-align: center;">
+          <table aa="text-align: center;">
             {{-- <tr>
               <td><h1>{{$empresaNombre}}</h1></td>              
             </tr> --}}
@@ -150,9 +151,9 @@
         </td>
         <td>  
             <ul style="list-style-type: none;">
-                <li><strong>{{$tipoContribuyente}}</strong></li>
+                <li>Condicion IVA: <strong>{{$tipoContribuyente}}</strong></li>
                 <li>{{$leyenda}}</li>
-                <li>{{$nombreFormaPago}}</li>
+                <li>Forma de Pago: {{$nombreFormaPago}}</li>
                 
 
             </ul>
@@ -170,7 +171,8 @@
         <th>Descripcion</th>
         <th>Cant.</th>
         <th>Precio U.$</th>
-        <th>Bon.$</th>
+        <th>Bon.%</th>
+        <th>Precio B.$</th>
         <th>Sub.Total.$</th>
       </tr>
     </thead>
@@ -178,26 +180,27 @@
     <tbody>
 
 @if ($producto)
-@foreach ($producto as $item)
+  @foreach ($producto as $item)
 
-<tr>
-  <th scope="row">{{$item->codigo}}</th>
-  <td>
-    {{$item->detalle}}
-    @if ($codigoFactura == 1 OR $codigoFactura == 51)
-      ({{$item->iva}}%)
-    @endif
-  </td>
-  <td align="right">{{$item->cantidad}}</td>
-  <td align="right">{{$item->precioLista}}</td>
-  <td align="right">
-    {{$item->porcentaje < 0 ? $item->descuento * $item->cantidad : '0'}}
-    {{$item->porcentaje < 0 ? '('.$item->porcentaje.'%)' : ''}}
-  </td>
-  <td align="right">{{$item->precioLista * $item->cantidad}}</td>
-</tr>
-    
-@endforeach
+  <tr>
+    <th scope="row">{{$item->codigo}}</th>
+    <td>
+      {{$item->detalle}}
+      @if ($codigoFactura == 1 OR $codigoFactura == 51)
+        ({{$item->iva}}%)
+      @endif
+    </td>
+    <td align="right">{{$item->cantidad}}</td>
+    <td align="right">{{number_format($item->precioLista,2)}}</td>
+    <td align="right">
+      {{$item->porcentaje < 0 ? $item->porcentaje : ''}}
+    </td>
+    <td align="right">{{number_format($item->precio,2)}}</td>
+
+    <td align="right">{{ number_format($item->precio * $item->cantidad,2)}}</td>
+  </tr>
+      
+  @endforeach
     
 @else
 
@@ -216,11 +219,11 @@
     </tbody>
     <tr>
       <td colspan="2"></td>
-      <td colspan="4"><hr></td>
+      <td colspan="5"><hr></td>
     </tr>
     
   <tfoot>
-    <tr>
+    {{-- <tr>
         <td colspan="4"></td>
         <td align="right">Sub.Total</td>
         <td align="right">$ {{$subTotalPrecioLista}}</td>
@@ -230,9 +233,9 @@
         <td colspan="4"></td>
         <td align="right">Bon.</td>
         <td align="right">$ {{$totalDescuento}}</td>
-    </tr>
+    </tr> --}}
 
-      @if ($codigoFactura == 1 OR $codigoFactura == 3)
+      @if ($codigoFactura == 1 OR $codigoFactura == 3 OR $codigoFactura == 51)
         {{-- <tr>
             <td colspan="4"></td>
             <td align="right">Subtotal $</td>
@@ -240,7 +243,7 @@
         </tr> --}}
         @if ($iva105 > 0)
           <tr>
-              <td colspan="4"></td>
+              <td colspan="5"></td>
               <td align="right">iva 10.5 </td>
               <td align="right">$ {{$iva105}}</td>
           </tr>
@@ -248,7 +251,7 @@
         @endif
         @if ($iva21 > 0)
           <tr>
-            <td colspan="4"></td>
+            <td colspan="5"></td>
             <td align="right">iva 21 </td>
             <td align="right">$ {{$iva21}}</td>
           </tr>
@@ -258,7 +261,7 @@
         <tr>
             <td colspan="2"></td>
             <td align="right">Total :</td>
-            <td colspan="3" align="right" class="gray">$ {{$totalVenta}}</td>
+            <td colspan="4" align="right" class="gray">$ {{$totalVenta}}</td>
         </tr>
 
         <tr class="bill-row row-details">
