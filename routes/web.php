@@ -33,6 +33,9 @@ use App\Livewire\Presupuesto\VerPresupuesto;
 
 use App\Livewire\FacturacionEmpresas\VerFacturacionEmpresas;
 
+use App\Livewire\Ventas\VerVentasArticulos;
+
+
 
 use App\Models\Empresa;
 use App\Models\FormaPago;
@@ -104,6 +107,8 @@ use Illuminate\Http\Request;
             Route::get('/edicionMultiple', EdicionMultiple::class)->name('edicionMultiple');
             Route::get('/reporteEdicionMultiple', [InventarioController::class, 'remporteEdicionMultiple'])->name('reporteEdicionMultiple');
             Route::get('/proveedor', VerProveedor::class)->name('proveedor');
+
+            Route::get('/ventasArticulos', VerVentasArticulos::class)->name('ventasArticulos');
         
 
         });

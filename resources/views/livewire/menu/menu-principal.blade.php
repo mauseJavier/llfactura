@@ -86,6 +86,9 @@
                   <li>
                     <a wire:navigate href="{{route('inventario')}}">Inventario</a>
                   </li>
+                  <li>
+                    <a wire:navigate href="{{route('ventasArticulos')}}">Ventas por Art</a>
+                  </li>
                     
                 @endif
 
