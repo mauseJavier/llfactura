@@ -54,7 +54,37 @@
 
     </article>
 
-    @if ($tipo == 'factura')
+    @switch($tipo)
+        @case('factura')
+
+            <div class="grid">
+              <div class="col" x-show="selectedOption === 'ticket'">
+                <iframe width="100%" height="1000px" src="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'Ticket'])}}" frameborder="0"></iframe>
+              </div>
+              <div class="col" x-show="selectedOption === 'A4'">
+        
+                <iframe width="100%" height="1000px" src="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'A4'])}}" frameborder="0"></iframe>
+              </div>
+            </div>
+            
+            @break
+        @case('presupuesto')
+
+            <iframe width="100%" height="1000px" src="{{route('imprimirPresupuesto',['presupuesto_id'=>$comprobante_id,'formato'=>'A4'])}}" frameborder="0"></iframe>
+
+            
+            @break
+        @case('reciboPagoCC')
+            
+        
+            <iframe width="100%" height="1000px" src="{{route('reciboPdf',['recibo_id'=>$comprobante_id])}}" frameborder="0"></iframe>
+
+            @break
+        @default
+            <H1>default</H1>
+    @endswitch
+
+    {{-- @if ($tipo == 'factura')
         
     <div class="grid">
       <div class="col" x-show="selectedOption === 'ticket'">
@@ -71,7 +101,7 @@
       <iframe width="100%" height="1000px" src="{{route('imprimirPresupuesto',['presupuesto_id'=>$comprobante_id,'formato'=>'A4'])}}" frameborder="0"></iframe>
 
         
-    @endif
+    @endif --}}
 
 
 

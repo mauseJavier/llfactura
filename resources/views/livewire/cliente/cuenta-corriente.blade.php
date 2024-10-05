@@ -4,13 +4,13 @@
 
     <div class="container">
         <h3>Cuenta Corriente</h3>
-        <h6>{{$cliente->razonSocial}} (${{$saldo}})</h6>
+        <h6>{{$cliente->razonSocial}} (${{number_format($saldo, 2, ',', '.')}})</h6>
 
         <article>
             <div class="grid">
                 <div class="col">
                     <h3>Saldo</h3>
-                    <h1 style="color: red;">${{$saldo}}</h1>
+                    <h1 style="color: red;">${{number_format($saldo, 2, ',', '.')}}</h1>
                 </div>
                 <div class="col">
                     <label for="">
@@ -61,15 +61,20 @@
                             <td>{{$c->comprobante_id}}</td>
                             @if ($c->tipo == 'venta')
                                 
-                                <td><a target="_blank" rel="noopener noreferrer" href="{{route('reciboPdf',['recibo_id'=>$c->id])}}">Ver Comp. {{$c->comprobante_id}}</a> </td>
+                                <td><a rel="noopener noreferrer" href="{{route('productosComprobante',['idComprobante'=>$c->comprobante_id])}}">Ver Comp. {{$c->comprobante_id}}</a> </td>
                             @else
-                                <td><a target="_blank" rel="noopener noreferrer" href="{{route('reciboPdf',['recibo_id'=>$c->id])}}">Ver Pago {{$c->id}}</a> </td>
+                                <td>
+                                    
+                                    <a wire:click="imprimirPagoCC({{$c->id}})" >Ver Pago {{$c->id}}</a>
+                                    {{-- <button wire:click="imprimirPagoCC({{$c->id}})">Ver Pago {{$c->id}}</button> --}}
+                                </td>
+
                                 
                             @endif
                             <td>{{$c->comentario}}</td>
-                            <td>{{$c->debe}}</td>
-                            <td>{{$c->haber}}</td>
-                            <td>{{$c->saldo}}</td>
+                            <td>{{number_format($c->debe, 2, ',', '.')}}</td>
+                            <td>{{number_format($c->haber, 2, ',', '.')}}</td>
+                            <td>{{number_format($c->saldo, 2, ',', '.')}}</td>
                             <td>{{$c->usuario}}</td>
 
     
@@ -95,7 +100,7 @@
           <header>
             <button aria-label="Close" rel="prev" @click="modalPago = !modalPago"></button>
             <p>
-              <strong>Realizar un Pago</strong>
+              <strong>Realizar un Pago Saldo:</strong>(${{$saldo}})
             </p>
           </header>
             <form wire:submit="pagar">

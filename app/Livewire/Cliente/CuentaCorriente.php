@@ -54,6 +54,11 @@ class CuentaCorriente extends Component
 
     }
 
+    public function imprimirPagoCC($idPago){
+        $this->redirectRoute('formatoPDF',['comprobante_id'=>$idPago,
+        'tipo'=>'reciboPagoCC']);
+    }
+
     public function pagar(){
 
         $validated = $this->validate([ 
