@@ -370,7 +370,7 @@ class ComprobanteController extends Controller
                 //tamaño custom, se especifica en puntos, lo que en CSS se escribe como pt
                 
                 $pdf = Pdf::loadView('PDF.pdfFacturaTicket',$info);
-                $pdf->set_paper(array(0,0,250,(550 + (count($productos) * 25))), 'portrait');
+                $pdf->set_paper(array(0,0,250,(600 + (count($productos) * 47.5))), 'portrait');
             }else{
 
                 $pdf = Pdf::loadView('PDF.pdfFactura',$info);

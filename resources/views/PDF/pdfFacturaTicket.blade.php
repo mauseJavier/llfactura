@@ -9,6 +9,8 @@
 			-moz-user-select: none; /* Firefox 2+ */
 			-ms-user-select: none; /* IE 10+ */
 			user-select: none; /* Standard syntax */
+			/* font-family: Arial, sans-serif,Verdana; */
+			font-size: 14px;
 		}
 
 		.bill-container{
@@ -122,8 +124,8 @@
 							<td colspan="2">{{$item->detalle}}</td>
 						</tr>
                         <tr>                        
-							<td align="right">{{$item->cantidad}}</td>
-							<td align="right">${{$item->precio}}</td>
+							<td align="right" style="text-align: center;">{{$item->cantidad}}</td>
+							<td align="right" style="text-align: center;">${{$item->precio}}</td>
 							<td align="right">${{$item->precio * $item->cantidad}}</td>
                         </tr>
                             

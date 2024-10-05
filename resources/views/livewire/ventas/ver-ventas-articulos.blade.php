@@ -38,48 +38,57 @@
 
             </fieldset>
           </form>
+
+          <h3>Suma de Venta: ${{$precioVenta}}</h3>
+
     </article>
 
-    <article>
+    {{-- <article>
         <h3>Suma de Venta: ${{$precioVenta}}</h3>
-    </article>
+    </article> --}}
 
-    <table class="striped">
-        <thead>
-          <tr>
-            <th scope="col">Codigo</th>
-            <th scope="col">Detalle</th>
-            <th scope="col">Cant.</th>
-            <th scope="col">P. Lista</th>
-            <th scope="col">P. Venta</th>
-            <th scope="col">Descuento</th>
-            <th scope="col">Rubro</th>
-            <th scope="col">Proveedor</th>
-          </tr>
-        </thead>
-        <tbody>
-            @foreach ($articulos as $a)
-                
-            <tr>
-              <th scope="row">{{$a->codigo}}</th>
-              <td>{{$a->detalle}}</td>
-              <td>{{$a->cantidad}}</td>
+    <div class="overflow-auto">
+        <table class="striped">
+            <thead>
 
-              <td>{{$a->precioLista}}</td>
-              <td>{{$a->precio}}</td>
-              <td>{{$a->descuento}}</td>
-              <td>{{$a->rubro}}</td>
-              <td>{{$a->proveedor}}</td>
-            </tr>
-            @endforeach
+              <tr>
+                <th scope="col">Codigo</th>
+                <th scope="col">Detalle</th>
+                <th scope="col">Cant.</th>
+                <th scope="col">P. Lista</th>
+                <th scope="col">P. Venta</th>
+                <th scope="col">Descuento</th>
+                <th scope="col">Rubro</th>
+                <th scope="col">Proveedor</th>
+              </tr>
+            </thead>
+            <tbody>
+                @foreach ($articulos as $a)
+                    
+                <tr>
+                  <th scope="row">{{$a->codigo}}</th>
+                  <td>{{$a->detalle}}</td>
+                  <td>{{$a->cantidad}}</td>
+    
+                  <td>{{$a->precioLista}}</td>
+                  <td>{{$a->precio}}</td>
+                  <td>{{$a->descuento}}</td>
+                  <td>{{$a->rubro}}</td>
+                  <td>{{$a->proveedor}}</td>
+                </tr>
+                @endforeach
+    
+            </tbody>
+            <tfoot>
+              <tr>
+    
+              </tr>
+            </tfoot>
+          </table>
+      </div>
+      
 
-        </tbody>
-        <tfoot>
-          <tr>
-
-          </tr>
-        </tfoot>
-      </table>
+ 
 
       {{ $articulos->links('vendor.livewire.bootstrap') }}
 
