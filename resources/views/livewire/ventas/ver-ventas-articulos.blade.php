@@ -35,11 +35,18 @@
                     Proveedor
                     <input type="text" wire:model.live="proveedor" placeholder="Proveedor" wire:keyup="calcularVenta()">
                 </label>
+                <label for="">
+                    Marca
+                    <input type="text" wire:model.live="marca" placeholder="Marca" wire:keyup="calcularVenta()">
+                </label>
 
             </fieldset>
           </form>
 
           <h3>Suma de Venta: ${{$precioVenta}}</h3>
+          <h4>Suma de Costo: ${{$costoVenta}}</h4>
+          <h4>Resultado: ${{$resultadoVenta}}</h4>
+
 
     </article>
 
@@ -55,27 +62,54 @@
                 <th scope="col">Codigo</th>
                 <th scope="col">Detalle</th>
                 <th scope="col">Cant.</th>
-                <th scope="col">P. Lista</th>
-                <th scope="col">P. Venta</th>
+                <th scope="col">P.Lista</th>
+                <th scope="col">P.Venta</th>
+                <th scope="col">Costo</th>
                 <th scope="col">Descuento</th>
                 <th scope="col">Rubro</th>
                 <th scope="col">Proveedor</th>
+                <th scope="col">Marca</th>
+                <th scope="col">Fecha</th>
+
+
               </tr>
             </thead>
             <tbody>
                 @foreach ($articulos as $a)
                     
-                <tr>
-                  <th scope="row">{{$a->codigo}}</th>
-                  <td>{{$a->detalle}}</td>
-                  <td>{{$a->cantidad}}</td>
-    
-                  <td>{{$a->precioLista}}</td>
-                  <td>{{$a->precio}}</td>
-                  <td>{{$a->descuento}}</td>
-                  <td>{{$a->rubro}}</td>
-                  <td>{{$a->proveedor}}</td>
-                </tr>
+                    {{-- 3, 8, 13, "notaRemito" documentos de nota de credito --}}
+                    @if ($a->tipoComp == 3 OR $a->tipoComp == 8 OR $a->tipoComp == 13 OR $a->tipoComp == "notaRemito")
+                        <tr>
+                            <th scope="row">{{$a->codigo}} ({{$a->tipoComp}})</th>
+                            <td>{{$a->detalle}}</td>
+                            <td>{{$a->cantidad}}</td>
+            
+                            <td>{{$a->precioLista}}</td>
+                            <td>{{$a->precio}}</td>
+                            <td>{{$a->costo}}</td>
+                            <td>{{$a->descuento}}</td>
+                            <td>{{$a->rubro}}</td>
+                            <td>{{$a->proveedor}}</td>
+                            <td>{{$a->marca}}</td>
+                            <td>{{$a->fecha}}</td>    
+                        </tr>
+                    @else
+                        
+                        <tr>
+                            <th scope="row">{{$a->codigo}}</th>
+                            <td>{{$a->detalle}}</td>
+                            <td>{{$a->cantidad}}</td>
+                
+                            <td>{{$a->precioLista}}</td>
+                            <td>{{$a->precio}}</td>
+                            <td>{{$a->costo}}</td>
+                            <td>{{$a->descuento}}</td>
+                            <td>{{$a->rubro}}</td>
+                            <td>{{$a->proveedor}}</td>
+                            <td>{{$a->marca}}</td>
+                            <td>{{$a->fecha}}</td>
+                        </tr>
+                    @endif
                 @endforeach
     
             </tbody>

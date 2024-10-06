@@ -117,7 +117,7 @@ class Venta extends Component
                     $this->cantidad = floatval($parteEntera .'.'.$parteDecimal);
 
 
-                    $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock')
+                    $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
                     ->where('codigo', $plu)
                     ->where('empresa_id', Auth::user()->empresa_id)
                     ->get();
@@ -127,7 +127,7 @@ class Venta extends Component
             
         }else{
 
-            $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock')
+            $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
                             ->where('codigo', $this->datoBuscado)
                             ->where('empresa_id', Auth::user()->empresa_id)
                             ->get();
@@ -148,7 +148,7 @@ class Venta extends Component
     
     public function cargar($id){
         
-        $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock')
+        $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
         ->where('id', $id)
         ->get();
         
@@ -185,10 +185,13 @@ class Venta extends Component
                 'descuento'=> $this->porcentaje < 0 ? round($articulo[0]->precio * $this->porcentaje / 100 ,2) : 0 ,
 
                 'precio'=> round(($articulo[0]->precio * $this->porcentaje / 100 + $articulo[0]->precio),2),
+                'costo'=>round($articulo[0]->costo,2),
                 'iva'=>$articulo[0]->iva,
                 'cantidad'=>$this->cantidad,
                 'rubro'=>$articulo[0]->rubro,
                 'proveedor'=>$articulo[0]->proveedor,
+                'marca'=>$articulo[0]->marca,
+
                 'controlStock'=>$articulo[0]->controlStock,
                 'subtotal'=> round(($articulo[0]->precio * $this->porcentaje / 100 + $articulo[0]->precio) * $this->cantidad,2) ,
 

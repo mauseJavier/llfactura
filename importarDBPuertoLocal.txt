@@ -20,7 +20,7 @@ Para ejecutar ese código dentro de un contenedor Docker que tiene una instancia
 Si necesitas copiar el archivo SQL dentro del contenedor, puedes hacerlo usando `docker cp`:
 
 ```bash
-docker cp /home/mause/Descargas/1llfactura.sql <nombre_contenedor_mysql>:/1llfactura.sql
+docker cp /home/mause/Descargas/1llfactura.sql <nombre_contenedor_mysql>:/2llfactura.sql
 ```
 
 ### Paso 2: Acceder al contenedor
@@ -34,7 +34,7 @@ docker exec -it <nombre_contenedor_mysql> bash
 Una vez dentro del contenedor, ejecuta el comando que mencionaste:
 
 ```bash
-mysql -u root -p --default-character-set=utf8 llfacturaLocal < /1llfactura.sql
+mysql -u root -p --default-character-set=utf8 llfacturaLocal < /2llfactura.sql
 ```
 
 Si `localhost` es el host de la base de datos y estás corriendo MySQL dentro del mismo contenedor, no necesitas usar `-h localhost`. Simplemente elimina esa parte del comando:

@@ -221,10 +221,14 @@ class NotaCredito extends Component
                         'codigo'=>$value['codigo'],
                         'detalle'=>$value['detalle'],
                         'precio'=>$value['precio'],
+                        'costo'=>$value['costo'],
+
                         'iva'=>$value['iva'],
                         'cantidad'=>$value['cantidad'],
                         'rubro'=>$value['rubro'],
                         'proveedor'=>$value['proveedor'],
+                        'marca'=>$value['marca'],
+
                         'tipoComp'=>$notaGuardada->tipoComp,
                         'fecha'=>$notaGuardada->fecha,
                         'idFormaPago'=>$notaGuardada->idFormaPago,

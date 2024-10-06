@@ -19,11 +19,13 @@ class VerVentasArticulos extends Component
 {
     use WithPagination;
 
-    public $fechaDesde,$fechaHasta, $precioVenta,
+    public $fechaDesde,$fechaHasta, $precioVenta, $costoVenta,$resultadoVenta,
     $codigo,
     $detalle,
     $rubro,
-    $proveedor;
+    $proveedor,
+    $marca,
+    $colorRojo='red';
 
 
     public function mount(){
@@ -46,31 +48,47 @@ class VerVentasArticulos extends Component
         $detalle = $this->detalle;
         $rubro = $this->rubro;
         $proveedor = $this->proveedor;
+        $marca = $this->marca;
+
 
         $res = DB::table('producto_comprobantes')
-            ->select(DB::raw('SUM(CASE 
-                        WHEN tipoComp IN (3, 8, 13,"notaRemito") THEN -precio * cantidad
-                        ELSE precio * cantidad
-                      END) as total_precio'))
-            ->where('empresa_id',Auth::user()->empresa_id)
-            ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+        ->select(DB::raw('
+            SUM(CASE 
+                WHEN tipoComp IN (3, 8, 13, "notaRemito") THEN -precio * cantidad
+                ELSE precio * cantidad
+            END) as total_precio,
+            SUM(CASE 
+                WHEN tipoComp IN (3, 8, 13, "notaRemito") THEN -costo * cantidad
+                ELSE costo * cantidad
+            END) as total_costo
+        '))
+        ->where('empresa_id', Auth::user()->empresa_id)
+        ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+        ->when($codigo, function ($query) use ($codigo) {
+            return $query->where('codigo', 'like', '%' . $codigo . '%');
+        })
+        ->when($detalle, function ($query) use ($detalle) {
+            return $query->where('detalle', 'like', '%' . $detalle . '%');
+        })
+        ->when($rubro, function ($query) use ($rubro) {
+            return $query->where('rubro', 'like', '%' . $rubro . '%');
+        })
+        ->when($proveedor, function ($query) use ($proveedor) {
+            return $query->where('proveedor', 'like', '%' . $proveedor . '%');
+        })
+        ->when($marca, function ($query) use ($marca) {
+            return $query->where('marca', 'like', '%' . $marca . '%');
+        })
+        ->first();
+    
 
-            ->when($codigo, function ($query) use ($codigo) {
-                return $query->where('codigo', 'like', '%' . $codigo . '%');
-            })
-            ->when($detalle, function ($query) use ($detalle) {
-                return $query->where('detalle', 'like', '%' . $detalle . '%');
-            })
-            ->when($rubro, function ($query) use ($rubro) {
-                return $query->where('rubro', 'like', '%' . $rubro . '%');
-            })
-            ->when($proveedor, function ($query) use ($proveedor) {
-                return $query->where('proveedor', 'like', '%' . $proveedor . '%');
-            })
-            ->first();
+            // dd($res);
 
             
             $this->precioVenta = $res->total_precio ?  number_format($res->total_precio, 2, ',', '.') :  number_format(0, 2, ',', '.');
+            $this->costoVenta = $res->total_costo ?  number_format($res->total_costo, 2, ',', '.') :  number_format(0, 2, ',', '.');
+
+            $this->resultadoVenta = number_format($res->total_precio - $res->total_costo, 2, ',', '.');
 
     }
 
@@ -81,6 +99,8 @@ class VerVentasArticulos extends Component
         $detalle = $this->detalle;
         $rubro = $this->rubro;
         $proveedor = $this->proveedor;
+        $marca = $this->marca;
+
 
         return view('livewire.ventas.ver-ventas-articulos',[
             'articulos'=> productoComprobante::where('empresa_id',Auth::user()->empresa_id)
@@ -97,6 +117,9 @@ class VerVentasArticulos extends Component
                         })
                         ->when($proveedor, function ($query) use ($proveedor) {
                             return $query->where('proveedor', 'like', '%' . $proveedor . '%');
+                        })
+                        ->when($marca, function ($query) use ($marca) {
+                            return $query->where('marca', 'like', '%' . $marca . '%');
                         })
                         
                         ->paginate(50)

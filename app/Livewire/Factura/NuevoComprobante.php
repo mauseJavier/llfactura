@@ -1672,6 +1672,8 @@ class NuevoComprobante extends Component
                             'porcentaje'=> $value['porcentaje'],
                             'precioLista'=> $value['precioLista'] ,
                             'descuento'=> $value['descuento'] ,
+                            'costo'=> $value['costo'] ,
+
 
 
                             'precio'=>$value['precio'],
@@ -1679,6 +1681,8 @@ class NuevoComprobante extends Component
                             'cantidad'=>$value['cantidad'],
                             'rubro'=>$value['rubro'],
                             'proveedor'=>$value['proveedor'],
+                            'marca'=>$value['marca'],
+
                             'controlStock'=>$value['controlStock'],
                             'tipoComp'=>$this->tipoComprobante,
                             'fecha'=>$this->fechaHoy,
