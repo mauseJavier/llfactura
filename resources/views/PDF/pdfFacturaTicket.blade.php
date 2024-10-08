@@ -92,7 +92,7 @@
 		<tr>
 			
 				<p>A {{$tipoContribuyente}}</p>
-				<p>R.SOCIAL {{$nombreCliente}}</p>
+				<p style="word-break: keep-all; width: 80%;">R.SOCIAL {{$nombreCliente}}</p>
 				<p>CUIT {{$cuitCliente}}</p>
 			
 		</tr>

@@ -236,32 +236,32 @@
     </tr> --}}
 
       @if ($codigoFactura == 1 OR $codigoFactura == 3 OR $codigoFactura == 51)
-        {{-- <tr>
-            <td colspan="4"></td>
-            <td align="right">Subtotal $</td>
-            <td align="right">{{$subtotal}}</td>
-        </tr> --}}
+        <tr>
+            <td colspan="2"></td>
+            <td align="right" colspan="2">Subtotal:</td>
+            <td align="right" colspan="3">${{$subtotal}}</td>
+        </tr>
         @if ($iva105 > 0)
           <tr>
-              <td colspan="5"></td>
-              <td align="right">iva 10.5 </td>
-              <td align="right">$ {{$iva105}}</td>
+              <td colspan="2"></td>
+              <td align="right" colspan="2">iva 10.5 </td>
+              <td align="right" colspan="3">${{$iva105}}</td>
           </tr>
             
         @endif
         @if ($iva21 > 0)
           <tr>
-            <td colspan="5"></td>
-            <td align="right">iva 21 </td>
-            <td align="right">$ {{$iva21}}</td>
+            <td colspan="2"></td>
+            <td align="right" colspan="2">iva 21 </td>
+            <td align="right" colspan="3">$ {{$iva21}}</td>
           </tr>
             
         @endif
       @endif
         <tr>
-            <td colspan="2"></td>
-            <td align="right">Total :</td>
-            <td colspan="4" align="right" class="gray">$ {{$totalVenta}}</td>
+            <td colspan="2" ></td>
+            <td colspan="2" align="right">Total :</td>
+            <td colspan="3" align="right" class="gray">$ {{$totalVenta}}</td>
         </tr>
 
         <tr class="bill-row row-details">

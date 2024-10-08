@@ -19,7 +19,7 @@ class VerVentasArticulos extends Component
 {
     use WithPagination;
 
-    public $fechaDesde,$fechaHasta, $precioVenta, $costoVenta,$resultadoVenta,
+    public $fechaDesde,$fechaHasta, $precioVenta, $costoVenta,$resultadoVenta,$resultadoPorcentaje,
     $codigo,
     $detalle,
     $rubro,
@@ -88,7 +88,10 @@ class VerVentasArticulos extends Component
             $this->precioVenta = $res->total_precio ?  number_format($res->total_precio, 2, ',', '.') :  number_format(0, 2, ',', '.');
             $this->costoVenta = $res->total_costo ?  number_format($res->total_costo, 2, ',', '.') :  number_format(0, 2, ',', '.');
 
-            $this->resultadoVenta = number_format($res->total_precio - $res->total_costo, 2, ',', '.');
+            $dif =$res->total_precio - $res->total_costo;
+            $this->resultadoVenta = number_format($dif, 2, ',', '.');
+            $por = $res->total_costo > 0 ? ($dif * 100)/$res->total_costo : 0;
+            $this->resultadoPorcentaje = number_format($por, 2, ',', '.');
 
     }
 

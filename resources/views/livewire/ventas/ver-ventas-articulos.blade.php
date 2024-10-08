@@ -45,7 +45,7 @@
 
           <h3>Suma de Venta: ${{$precioVenta}}</h3>
           <h4>Suma de Costo: ${{$costoVenta}}</h4>
-          <h4>Resultado: ${{$resultadoVenta}}</h4>
+          <h4>Resultado: ${{$resultadoVenta}} (%{{$resultadoPorcentaje}})</h4>
 
 
     </article>
@@ -62,10 +62,10 @@
                 <th scope="col">Codigo</th>
                 <th scope="col">Detalle</th>
                 <th scope="col">Cant.</th>
-                <th scope="col">P.Lista</th>
-                <th scope="col">P.Venta</th>
                 <th scope="col">Costo</th>
+                <th scope="col">P.Lista</th>
                 <th scope="col">Descuento</th>
+                <th scope="col">P.Venta</th>
                 <th scope="col">Rubro</th>
                 <th scope="col">Proveedor</th>
                 <th scope="col">Marca</th>
@@ -84,10 +84,10 @@
                             <td>{{$a->detalle}}</td>
                             <td>{{$a->cantidad}}</td>
             
-                            <td>{{$a->precioLista}}</td>
-                            <td>{{$a->precio}}</td>
-                            <td>{{$a->costo}}</td>
-                            <td>{{$a->descuento}}</td>
+                            <td>$-{{number_format($a->costo,2,',','.')}}</td>
+                            <td>$-{{number_format($a->precio,2,',','.')}}</td>
+                            <td>${{number_format($a->descuento)}}</td>
+                            <td>${{number_format($a->precioLista,2,',','.')}}</td>
                             <td>{{$a->rubro}}</td>
                             <td>{{$a->proveedor}}</td>
                             <td>{{$a->marca}}</td>
@@ -100,10 +100,10 @@
                             <td>{{$a->detalle}}</td>
                             <td>{{$a->cantidad}}</td>
                 
-                            <td>{{$a->precioLista}}</td>
-                            <td>{{$a->precio}}</td>
-                            <td>{{$a->costo}}</td>
-                            <td>{{$a->descuento}}</td>
+                            <td>${{number_format($a->costo,2,',','.')}}</td>
+                            <td>${{number_format($a->precioLista,2,',','.')}}</td>
+                            <td>${{number_format($a->descuento)}}</td>
+                            <td>${{number_format($a->precio,2,',','.')}}</td>
                             <td>{{$a->rubro}}</td>
                             <td>{{$a->proveedor}}</td>
                             <td>{{$a->marca}}</td>

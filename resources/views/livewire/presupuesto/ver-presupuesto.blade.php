@@ -48,7 +48,7 @@
                     <tbody>
                         @foreach ($presupuestos as $p)
                             <tr wire:click="traerProductos({{$p->id}})">
-                                <td>{{$p->numero}}</td>
+                                <td>{{$p->id}}</td>
                                 <td>{{$p->razonSocial}}</td>
                                 <td>{{$p->usuario}}</td>
                                 <td>${{$p->total}}</td>
@@ -73,9 +73,11 @@
 
             <div class="col">{{-- LISTA DE PRODUCTOS --}}
                 <article>
-                    <h6>Productos</h6>
+                    <h6>Productos <small>Pto.Nº {{$numeroPresupuesto}}</small></h6>
                     <button wire:click="cargarPresupuesto">Cargar</button>
                     <button wire:click="imprimirPresupuesto">Imprimir</button>
+                    <button style="background-color: red;" wire:click="borrarPresupuesto({{$numeroPresupuesto}})" wire:confirm="Seguro de ELIMINAR?">Borrar</button>
+
                 </article>
 
                 {{-- "id" => 1

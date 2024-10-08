@@ -279,6 +279,26 @@ class Venta extends Component
 
     }
 
+    public function quitarPorcentaje(){
+
+        // $precio =round($this->modificarPrecio+($this->modificarPrecio * $this->modificarPorcentaje /100),2);
+        // $this->carrito['carrito'][$this->modificarKey]['detalle'] = $this->modificarDetalle ;
+
+
+        $precio =  $this->carrito['carrito'][$this->modificarKey]['precioLista'] ; 
+        $this->carrito['carrito'][$this->modificarKey]['precio'] = $precio;
+        $this->modificarPrecio = $precio;
+        // $this->carrito['carrito'][$this->modificarKey]['precioLista'] = $this->modificarPorcentaje < 0 ? round(floatval($this->modificarPrecio),2) : round($this->modificarPrecio+($this->modificarPrecio * $this->modificarPorcentaje /100),2);
+
+
+        // $this->carrito['carrito'][$this->modificarKey]['cantidad'] =  round(floatval($this->modificarCantidad),2) ;    
+        $this->carrito['carrito'][$this->modificarKey]['subtotal'] =  round( floatval($precio) * floatval($this->modificarCantidad),2) ;   
+
+        $this->carrito['carrito'][$this->modificarKey]['descuento']= 0;
+        $this->carrito['carrito'][$this->modificarKey]['porcentaje']= 0;
+
+    }
+
     public function borrarArticulo($index)
     {
             $array = $this->carrito['carrito'];

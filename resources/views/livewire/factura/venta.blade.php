@@ -285,7 +285,7 @@
             </label>
             <label>
               Precio
-              <input type="text" wire:model="modificarPrecio" wire:keydown.enter="modificarCarrito">
+              <input type="text" wire:model.live="modificarPrecio" wire:keydown.enter="modificarCarrito">
             </label>
             <label>
               Cantidad
@@ -293,7 +293,11 @@
             </label>
             <label>
               Porcentaje (-Descuento +Incremento)
-              <input type="text" wire:model="modificarPorcentaje" wire:keydown.enter="modificarCarrito">
+              <fieldset role="group">
+                <input type="text" wire:model="modificarPorcentaje" wire:keydown.enter="modificarCarrito">
+                <input type="button" value="Quitar %" wire:click="quitarPorcentaje()">
+
+              </fieldset>
             </label>
           </fieldset>
 

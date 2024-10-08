@@ -17,9 +17,9 @@ return new class extends Migration
             // 'precioLista'=> $value['precioLista'] ,
             // 'descuento'=> $value['descuento'] ,
 
-            $table->double('porcentaje')->after('detalle')->default(0);
-            $table->double('precioLista')->after('porcentaje')->default(0);
-            $table->double('descuento')->after('precioLista')->default(0);
+            $table->double('costo')->after('cantidad')->default(0);
+            $table->string('marca')->after('proveedor')->default('General');
+
 
 
         });
@@ -33,9 +33,8 @@ return new class extends Migration
         //
         Schema::table('producto_presupuestos', function (Blueprint $table) {
 
-            $table->dropColumn('porcentaje');
-            $table->dropColumn('precioLista');
-            $table->dropColumn('descuento');
+            $table->dropIfExists('costo');
+            $table->dropIfExists('marca');
 
         });
     }

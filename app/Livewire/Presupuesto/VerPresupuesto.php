@@ -9,6 +9,8 @@ use Livewire\Attributes\Session;
 
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+
 
 use App\Models\Presupuesto;
 use App\Models\ProductoPresupuesto;
@@ -69,13 +71,16 @@ class VerPresupuesto extends Component
                     'porcentaje'=> $value->porcentaje,
                     'precioLista'=> $value->precioLista ,
                     'descuento'=> $value->descuento ,
-
-
                     'precio'=> round( $value->precio,2),
+
+                    'costo'=> $value->costo,
+
                     'iva'=>$value->iva,
                     'cantidad'=>$value->cantidad,
                     'rubro'=>$value->rubro,
                     'proveedor'=>$value->proveedor,
+                    'marca'=>$value->marca,
+
                     'controlStock'=>$value->controlStock,
                     'subtotal'=> round( $value->precio * $value->cantidad,2) ,
         
@@ -85,6 +90,8 @@ class VerPresupuesto extends Component
 
                 $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
                 $cantidadArticulos = 0 ;
+
+                // dd($this->carrito['carrito'] );
 
                 foreach ($this->carrito['carrito'] as $item) {
 
@@ -130,6 +137,20 @@ class VerPresupuesto extends Component
 
     }
 
+    public function borrarPresupuesto($numero){
+            
+        DB::transaction(function () use ($numero) {
+
+            $presupuestoEliminados = DB::table('presupuestos')->where('id',$numero)->where('empresa_id',Auth::user()->empresa_id)->delete();
+    
+            $productosEliminados = DB::table('producto_presupuestos')->where('presupuesto_id',$numero)->where('empresa_id',Auth::user()->empresa_id)->delete();
+        });
+
+
+        // dd('presupuesto '.$presupuestoEliminados .' productos'. $productosEliminados);
+        return redirect()->route('presupuesto');
+    }
+
     public function render()
     {
         return view('livewire.presupuesto.ver-presupuesto',[
@@ -140,6 +161,7 @@ class VerPresupuesto extends Component
                                             'usuario'
                                         ], 'LIKE', '%'.$this->datoBuscado.'%')->orderby('created_at','DESC')->get(),
             'productos'=> ProductoPresupuesto::where('presupuesto_id',$this->presupuesto->id)->get(),
+            'numeroPresupuesto'=>$this->presupuesto->id,
 
 
         ])

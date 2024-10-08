@@ -211,12 +211,16 @@ class NuevoComprobante extends Component
                     'precioLista'=> round($this->total,2) ,
                     'descuento'=> 0 ,
 
+                    'costo'=> 0 ,
+                    'marca'=>'General',
+
                     
                     'precio'=> round($this->total,2),
                     'iva'=>$this->empresa->ivaDefecto,
                     'cantidad'=>1,
                     'rubro'=>'General',
                     'proveedor'=>'General',
+
                     'controlStock'=>'no',
                     'subtotal'=>  round($this->total,2),
     
@@ -727,7 +731,8 @@ class NuevoComprobante extends Component
                         'porcentaje'=> 0,
                         'precioLista'=> round($total,2) ,
                         'descuento'=> 0 ,
-
+                        'costo'=> 0 ,
+                        'marca'=>'General',
 
                         'precio'=> round($total,2),
                         'iva'=>$this->empresa->ivaDefecto,
@@ -952,7 +957,8 @@ class NuevoComprobante extends Component
                     'porcentaje'=> 0,
                     'precioLista'=> round($total,2) ,
                     'descuento'=> 0 ,
-
+                    'costo'=> 0 ,
+                    'marca'=>'General',
 
                     'precio'=> round($total,2),
                     'iva'=>$this->empresa->ivaDefecto,
@@ -1190,6 +1196,8 @@ class NuevoComprobante extends Component
                     'precioLista'=> round($total,2) ,
                     'descuento'=> 0 ,
 
+                    'costo'=> 0 ,
+                    'marca'=>'General',
                     
                     'precio'=> round($total,2),
                     'iva'=>$this->empresa->ivaDefecto,
@@ -1347,7 +1355,6 @@ class NuevoComprobante extends Component
             return $res;
     }
 
-
     //FACTURAS M CODIGO 51 NOTA DE CREDITO M 53
     function crearComprobanteM($total,$tipoDocumento,$cuit,){
 
@@ -1428,7 +1435,9 @@ class NuevoComprobante extends Component
                     'precioLista'=> round($total,2) ,
                     'descuento'=> 0 ,
 
-                    
+                    'costo'=> 0 ,
+                    'marca'=>'General',
+
                     'precio'=> round($total,2),
                     'iva'=>$this->empresa->ivaDefecto,
                     'cantidad'=>1,
@@ -1805,13 +1814,17 @@ class NuevoComprobante extends Component
                         'porcentaje'=> $value['porcentaje'],
                         'precioLista'=> $value['precioLista'] ,
                         'descuento'=> $value['descuento'] ,
-
-
                         'precio'=>$value['precio'],
+
+                        'costo'=>$value['costo'],
+
+
                         'iva'=>$value['iva'],
                         'cantidad'=>$value['cantidad'],
                         'rubro'=>$value['rubro'],
                         'proveedor'=>$value['proveedor'],
+                        'marca'=>$value['marca'],
+
                         'controlStock'=>$value['controlStock'],
                         'tipoComp'=>$this->tipoComprobante,
                         'fecha'=>$presupuestoGuardado->fecha,

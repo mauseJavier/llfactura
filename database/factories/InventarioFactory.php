@@ -138,6 +138,8 @@ class InventarioFactory extends Factory
             'iva' => fake()->randomElement([21, 10.5]),
             'rubro' => fake()->randomElement(['General', 'Electrónica', 'Alimentación']),
             'proveedor' => fake()->randomElement(['General', 'Diarco', 'Vital','MAUSE']),
+            'marca' => fake()->randomElement(['Nike', 'Ford', 'Dell','MAUSE']),
+
             'pesable' => fake()->randomElement(['si', 'no']),
             'controlStock' => fake()->randomElement(['si', 'no']),
             'empresa_id' => 1,
