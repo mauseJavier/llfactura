@@ -100,7 +100,6 @@
                           @foreach ($stock as $item)
       
                           <tr>
-                              
                               <td>
                                 <a wire:navigate href="{{route('movimientostock',['stock_id'=>$item->id])}}">{{$item->codigo}}</a>
       
@@ -111,7 +110,22 @@
 
                               {{-- PARA EL AUMENTO DE STOCK --}}
                               @if ($usuario->role_id == 2 || $usuario->role_id == 3 )  
-                                <td><button wire:click="asignarCodigoDetalle('{{$item->codigo}}','{{$item->detalle}}','{{$item->depositoId}}')" @click=" modalStock = !modalStock" ><i class="fa fa-plus" aria-hidden="true"></i></button></td>
+                                {{-- <td>
+                                  <div role="group">
+                                    <button wire:click="asignarCodigoDetalle('{{$item->codigo}}','{{$item->detalle}}','{{$item->depositoId}}')" @click=" modalStock = !modalStock" ><i class="fa fa-plus" aria-hidden="true"></i></button>
+                                  
+                                    <button style="background-color: red;" wire:click="eliminarSockDeposito('{{$item->codigo}}','{{$item->depositoId}}')"  > <i class="fa-solid fa-trash"></i></button>
+                                  </div>
+                                </td> --}}
+
+                                <td>
+                                  <div role="group" title="Modificar / Eliminar">
+                                                                     
+                                    <i class="fa fa-plus" style="color:#4EB31B;" aria-hidden="true" wire:click="asignarCodigoDetalle('{{$item->codigo}}','{{$item->detalle}}','{{$item->depositoId}}')" @click=" modalStock = !modalStock"></i>
+                                    <i class="fa-solid fa-trash" style="color: red;" wire:click="eliminarSockDeposito('{{$item->codigo}}','{{$item->depositoId}}')" wire:confirm="Seguro de Eliminar TODO el Stock de {{$item->detalle}} de: {{$item->nombreDeposito}}??"></i>
+                                  </div>
+                                </td>
+
                               @endif
 
                                 {{-- si no existen depositos no se puede enviar --}}

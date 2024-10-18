@@ -260,24 +260,19 @@ class VerStock extends Component
 
     }
 
+    public function eliminarSockDeposito($codigo,$depositoId){
+
+        // dd($codigo,$depositoId);
+        $deleted = Stock::where('codigo', $codigo)->where('deposito_id',$depositoId)->delete();
+
+        // dd($deleted);
+        session()->flash('mensaje', 'Stock Eliminado. (Filas eliminadas: '.$deleted.')');
+
+    }
+
     public function render()
     {
         return view('livewire.stock.ver-stock',[     
-                // 'stock'=>  DB::table('stocks as a')
-                // ->select('a.codigo', 'c.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
-                // ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
-                // ->join('inventarios as c', 'a.codigo', '=', 'c.codigo')
-                // ->where('a.empresa_id', $this->empresa->id)
-                // ->where('b.empresa_id', $this->empresa->id)
-                // ->where('c.empresa_id', $this->empresa->id)
-                // ->where(function($query) {
-                //     $query->where('a.codigo', 'like', '%' . $this->datoBuscado . '%')
-                //           ->orWhere('c.detalle', 'like', '%' . $this->datoBuscado . '%')
-                //           ->orWhere('b.nombre', 'like', '%' . $this->datoBuscado . '%');
-                // })
-                // ->groupBy('a.codigo', 'c.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
-                // ->orderBy('sumStock')
-                // ->paginate(10) ,
 
                 'stock'=>  DB::table('stocks as a')
                 ->select('a.id','a.codigo', 'a.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')

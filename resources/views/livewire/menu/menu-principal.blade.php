@@ -77,6 +77,9 @@
                   <li>
                     <a wire:navigate href="{{route('facturacionempresas')}}">Facturacion Empresas</a>
                   </li>
+                  <li>
+                    <a wire:navigate href="{{route('EstadoEmpresa')}}">Estado Empresas</a>
+                  </li>
                     
                 @endif
 

@@ -5,61 +5,70 @@
 
         <h3>Ver Comprobantes</h3>
 
+        @if (Auth()->user()->role_id == 2 OR Auth()->user()->role_id == 3)
+            
+          <div class="grid">
+            <div class="col">
+              <article>
+                @foreach ($totales as $item)  
+                  <label for="">{{$item->nombre}}: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>                           
+                @endforeach   
+              </article>
+              
+            </div>
+            <div class="col">
+              <article>
+                @foreach ($sumComprobantes as $item)
 
-        <div class="grid">
-          <div class="col">
-            <article>
-              @foreach ($totales as $item)  
-                <label for="">{{$item->nombre}}: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>                           
-              @endforeach   
-            </article>
-             
+                  @switch($item->tipoComp)
+                    @case(1)
+                      <label for="">Factura A: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                    @break
+                    @case(6)
+                      <label for="">Factura B: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                    @break
+                    @case(11)
+                      <label for="">Factura C: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                    @break
+                    @case(51)
+                      <label for="">Factura M: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                    @break
+
+                    @case('remito')
+                      <label for="">Remito: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                    @break
+
+                    @case('3')
+                    <label for="">NC A: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                    @break
+                    @case('8')
+                      <label for="">NC B: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                    @break
+                    @case('13')
+                      <label for="">NC C: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                    @break
+                  @case('notaRemito')
+                      <label for="">NC R: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
+                    @break
+                  @default
+
+                  @endswitch
+                @endforeach
+              </article>
+
+            </div>
           </div>
-          <div class="col">
-            <article>
-              @foreach ($sumComprobantes as $item)
 
-                @switch($item->tipoComp)
-                  @case(1)
-                    <label for="">Factura A: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
-                  @break
-                  @case(6)
-                    <label for="">Factura B: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
-                  @break
-                  @case(11)
-                    <label for="">Factura C: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
-                  @break
-                  @case(51)
-                    <label for="">Factura M: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
-                  @break
+          <article>
 
-                  @case('remito')
-                    <label for="">Remito: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
-                  @break
+            <label for="">Total: ${{number_format($sumTotal, 2, ',', '.')}}</label>
+          </article>
 
-                  @case('3')
-                  <label for="">NC A: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
-                  @break
-                  @case('8')
-                    <label for="">NC B: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
-                  @break
-                  @case('13')
-                    <label for="">NC C: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
-                  @break
-                @case('notaRemito')
-                    <label for="">NC R: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>
-                  @break
-                @default
+        @endif
 
-                @endswitch
-              @endforeach
-            </article>
 
-          </div>
-        </div>
 
         <article>
-          <label for="">Total: ${{number_format($sumTotal, 2, ',', '.')}}</label>
 
           <div class="grid">
             
@@ -99,14 +108,19 @@
                   <input name="terms" type="checkbox" role="switch" @click="modalFiltro = !modalFiltro" x-bind:checked="modalFiltro" />
                   Filtros
                 </label>
+                
               </fieldset>
             </div>
             <div class="col">
+              <a wire:click="reporteVentaUsuario()">Reporte diario {{Auth()->user()->name}}</a>
 
-
-                  <input  style="width: 50%; height: 50%;" type="text"  wire:keyup="modificarFechas($event.target.value)" name="numeroComprobanteFiltro" placeholder="Numero o Cliente" />
-       
             </div>
+            <div class="col">              
+              
+              <input  style="width: 50%; height: 50%;" type="text"  wire:keyup="modificarFechas($event.target.value)" name="numeroComprobanteFiltro" placeholder="Filtro Numero o Cliente" />
+              
+            </div>
+
           </div>
 
 

@@ -20,7 +20,7 @@ Para ejecutar ese código dentro de un contenedor Docker que tiene una instancia
 Si necesitas copiar el archivo SQL dentro del contenedor, puedes hacerlo usando `docker cp`:
 
 ```bash
-docker cp /home/mause/Descargas/1llfactura.sql <nombre_contenedor_mysql>:/2llfactura.sql
+docker cp /home/mause/Descargas/4llfactura.sql <nombre_contenedor_mysql>:/4llfactura.sql
 ```
 
 ### Paso 2: Acceder al contenedor

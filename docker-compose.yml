@@ -1,5 +1,5 @@
 services:
-  app:
+  llfactura:
     build:
       context: .
       dockerfile: Dockerfile
@@ -7,9 +7,10 @@ services:
     volumes:
       - .:/var/www
     ports:
-      - "8000:80"
+      - "8001:80"
     networks:
-      - laravel
+      - llfactura-net
+      - evolution-net
 
     environment:
       - DB_HOST=mysql
@@ -17,35 +18,37 @@ services:
       - DB_DATABASE=llfacturaLocal
       - DB_USERNAME=root
       - DB_PASSWORD=root
+    restart: always  # Esta línea asegura que el contenedor arranque automáticamente
 
-  mysql:
-    image: mysql:8.0
-    container_name: llfactura_mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: llfacturaLocal
-      # MYSQL_USER: root
-      # MYSQL_PASSWORD: root
-    volumes:
-      - mysql_data:/var/lib/mysql
-    networks:
-      - laravel
-  phpmyadmin:
-    image: phpmyadmin
-    container_name: phpmyadmin_app
-    restart: always
-    ports:
-      - 8080:80
-    networks:
-      - laravel
-    environment:
-      - PMA_ARBITRARY=1
-      - PMA_HOST=mysql
-      - PMA_PORT=3306
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: llfactura_mysql
+  #   restart: unless-stopped
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: root
+  #     MYSQL_DATABASE: llfacturaLocal
+  #     # MYSQL_USER: root
+  #     # MYSQL_PASSWORD: root
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   networks:
+  #     - laravel
+  # phpmyadmin:
+  #   image: phpmyadmin
+  #   container_name: phpmyadmin_app
+  #   restart: always
+  #   ports:
+  #     - 8080:80
+  #   networks:
+  #     - llfactura-net
+  #   environment:
+  #     - PMA_ARBITRARY=1
+  #     - PMA_HOST=mysql
+  #     - PMA_PORT=3306
 
 networks:
-  laravel:
+  llfactura-net:
+    driver: bridge
+  evolution-net:
+    external: true # por que la red ya esta creada 
 
-volumes:
-  mysql_data:

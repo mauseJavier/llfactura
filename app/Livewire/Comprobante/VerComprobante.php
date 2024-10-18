@@ -4,6 +4,8 @@ namespace App\Livewire\Comprobante;
 
 use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf; 
+
 
 use Carbon\Carbon;
 
@@ -27,6 +29,14 @@ class VerComprobante extends Component
     public $numeroComprobanteFiltro;
     public $clienteComprobanteFiltro;
 
+
+    public function reporteVentaUsuario(){
+
+        $this->redirectRoute('reporteVentaUsuario');
+
+
+
+    }
 
     public function modificarFechas($dato){
 

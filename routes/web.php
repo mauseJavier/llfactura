@@ -32,6 +32,8 @@ use App\Livewire\Proveedor\VerProveedor;
 use App\Livewire\Presupuesto\VerPresupuesto;
 
 use App\Livewire\FacturacionEmpresas\VerFacturacionEmpresas;
+use App\Livewire\FacturacionEmpresas\EstadoEmpresa;
+
 
 use App\Livewire\Ventas\VerVentasArticulos;
 
@@ -46,6 +48,7 @@ use App\Http\Controllers\PresupuestoController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\ReciboPdfController;
 use App\Http\Controllers\CodigoDeBarraController;
+use App\Http\Controllers\ReporteVentaUsuarioController;
 
 use App\Models\Stock; //PARA PRUEBAS
 use Illuminate\Support\Facades\Auth; //PARA PRUEBA
@@ -90,6 +93,9 @@ use Illuminate\Http\Request;
 
             Route::get('/empresa', VerEmpresa::class)->name('empresa');
             Route::get('/facturacionempresas', VerFacturacionEmpresas::class)->name('facturacionempresas');
+
+            Route::get('/EstadoEmpresa', EstadoEmpresa::class)->name('EstadoEmpresa');
+
 
 
         
@@ -140,6 +146,7 @@ use Illuminate\Http\Request;
 
         Route::get('/reciboPdf/{recibo_id?}', [ReciboPdfController::class, 'imprimir'])->name('reciboPdf');
         Route::get('/codigoBarraPdf', [CodigoDeBarraController::class, 'imprimir'])->name('codigoBarraPdf');
+        Route::get('/reporteVentaUsuario', [ReporteVentaUsuarioController::class, 'imprimir'])->name('reporteVentaUsuario');
 
 
         

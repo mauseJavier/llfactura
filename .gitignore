@@ -19,3 +19,4 @@ yarn-error.log
 /.vscode
 importarDBPuertoLocal.txt
 envProduccion.txt
+llfactura.sql
