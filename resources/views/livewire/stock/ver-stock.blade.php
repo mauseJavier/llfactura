@@ -122,7 +122,8 @@
                                   <div role="group" title="Modificar / Eliminar">
                                                                      
                                     <i class="fa fa-plus" style="color:#4EB31B;" aria-hidden="true" wire:click="asignarCodigoDetalle('{{$item->codigo}}','{{$item->detalle}}','{{$item->depositoId}}')" @click=" modalStock = !modalStock"></i>
-                                    <i class="fa-solid fa-trash" style="color: red;" wire:click="eliminarSockDeposito('{{$item->codigo}}','{{$item->depositoId}}')" wire:confirm="Seguro de Eliminar TODO el Stock de {{$item->detalle}} de: {{$item->nombreDeposito}}??"></i>
+                                    {{-- //AL ELIMINAR EL STOCK SERGIO NO TIENE CONTROL POR QUE SUS EMPLEADOS SON TODOS ADMIN --}}
+                                    {{-- <i class="fa-solid fa-trash" style="color: red;" wire:click="eliminarSockDeposito('{{$item->codigo}}','{{$item->depositoId}}')" wire:confirm="Seguro de Eliminar TODO el Stock de {{$item->detalle}} de: {{$item->nombreDeposito}}??"></i> --}}
                                   </div>
                                 </td>
 
