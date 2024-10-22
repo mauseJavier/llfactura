@@ -182,10 +182,12 @@
                             <td>{{$i->updated_at}}</td>
                         @endif
                             <td style="text-align: center;color: red; "  title="Eliminar">
-                                <i wire:click="eliminarInventario({{$i->id}})" 
-                                    wire:confirm="Seguro de Eliminar" 
+                                <i 
+                                    {{-- wire:click="eliminarInventario({{$i->id}})"  --}}
+                                    wire:confirm="Momentaneamente deshabilitada" 
                                     class="fa-solid fa-trash fa-xl" 
-                                    style="cursor: pointer;" >
+                                    style="cursor: pointer;" 
+                                    title="Momentaneamente deshabilitada">
                                 </i>
                             </td>
                         </tr>
