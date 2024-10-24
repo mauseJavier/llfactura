@@ -262,11 +262,23 @@ class VerStock extends Component
 
     public function eliminarSockDeposito($codigo,$depositoId){
 
-        // dd($codigo,$depositoId);
-        $deleted = Stock::where('codigo', $codigo)->where('deposito_id',$depositoId)->delete();
+        if(auth()->user()->role_id == 4 OR auth()->user()->role_id == 3){
 
-        // dd($deleted);
-        session()->flash('mensaje', 'Stock Eliminado. (Filas eliminadas: '.$deleted.')');
+            // dd($codigo,$depositoId);
+            $deleted = Stock::where('codigo', $codigo)->where('deposito_id',$depositoId)->where('empresa_id',Auth::user()->empresa_id)->delete();
+    
+            // dd($deleted);
+            session()->flash('mensaje', 'Stock Eliminado. (Filas eliminadas: '.$deleted.')');
+
+        }else{
+
+            session()->flash('mensaje', 'Usuario No Autorizado Consultar Administrador. (Solo Admin-Plus)');
+
+
+        }
+
+
+
 
     }
 

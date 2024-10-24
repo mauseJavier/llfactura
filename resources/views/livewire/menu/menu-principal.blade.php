@@ -84,7 +84,7 @@
                 @endif
 
                 {{-- ADMIN USUARIO --}}
-                @if ((Auth::user()->role_id == 2 || Auth::User()->role_id == 3))
+                @if ((Auth::user()->role_id == 2 || Auth::User()->role_id == 3 || Auth::User()->role_id == 4))
 
                   <li>
                     <a wire:navigate href="{{route('inventario')}}">Inventario</a>

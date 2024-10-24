@@ -16,7 +16,7 @@ class ControlDeRolAdmin
     public function handle(Request $request, Closure $next): Response
     {
 
-        if (!($request->user()->role_id == 2 || $request->user()->role_id == 3)) {
+        if (!($request->user()->role_id == 2 || $request->user()->role_id == 3 || $request->user()->role_id == 4)) {
 
             return redirect()->route('panel')->with('mensaje','Usuario no Autorizado');
         }

@@ -87,7 +87,7 @@
                           <th scope="col">Detalle</th>
                           <th scope="col">Deposito</th>
                           <th scope="col">stock</th>
-                          @if ($usuario->role_id == 2 || $usuario->role_id == 3 )  
+                          @if ($usuario->role_id == 2 || $usuario->role_id == 3 || $usuario->role_id == 4 )  
                             <th scope="col">Modificar</th>
                           @endif
                           {{-- si no existen depositos no se puede enviar --}}
@@ -109,7 +109,7 @@
                               <td>{{$item->sumStock}}</td>
 
                               {{-- PARA EL AUMENTO DE STOCK --}}
-                              @if ($usuario->role_id == 2 || $usuario->role_id == 3 )  
+                              @if ($usuario->role_id == 2 || $usuario->role_id == 3 || $usuario->role_id == 4 )  
                                 {{-- <td>
                                   <div role="group">
                                     <button wire:click="asignarCodigoDetalle('{{$item->codigo}}','{{$item->detalle}}','{{$item->depositoId}}')" @click=" modalStock = !modalStock" ><i class="fa fa-plus" aria-hidden="true"></i></button>
@@ -122,8 +122,7 @@
                                   <div role="group" title="Modificar / Eliminar">
                                                                      
                                     <i class="fa fa-plus" style="color:#4EB31B;" aria-hidden="true" wire:click="asignarCodigoDetalle('{{$item->codigo}}','{{$item->detalle}}','{{$item->depositoId}}')" @click=" modalStock = !modalStock"></i>
-                                    {{-- //AL ELIMINAR EL STOCK SERGIO NO TIENE CONTROL POR QUE SUS EMPLEADOS SON TODOS ADMIN --}}
-                                    {{-- <i class="fa-solid fa-trash" style="color: red;" wire:click="eliminarSockDeposito('{{$item->codigo}}','{{$item->depositoId}}')" wire:confirm="Seguro de Eliminar TODO el Stock de {{$item->detalle}} de: {{$item->nombreDeposito}}??"></i> --}}
+                                    <i class="fa-solid fa-trash" style="color: red;" wire:click="eliminarSockDeposito('{{$item->codigo}}','{{$item->depositoId}}')" wire:confirm="Seguro de Eliminar TODO! el Stock de {{$item->detalle}} de: {{$item->nombreDeposito}}??"></i>
                                   </div>
                                 </td>
 

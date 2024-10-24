@@ -105,7 +105,18 @@ class VerInventario extends Component
 
     public function eliminarInventario(Inventario $articulo){
         // dd($articulo);
-        $articulo->delete();
+
+        if(auth()->user()->role_id == 4 OR auth()->user()->role_id == 3){
+
+            session()->flash('mensaje', 'Articulo Eliminado. ('.$articulo->codigo .') '.$articulo->detalle);
+            $articulo->delete();
+
+        }else{
+
+            session()->flash('mensaje', 'Usuario No Autorizado Consultar Administrador. (Solo Admin-Plus)');
+
+
+        }
     }
 
     public function cambiarModalStock($codigo = '',$detalle=''){        
@@ -406,6 +417,19 @@ class VerInventario extends Component
             $this->acendenteDecendente = 'DESC';
         }
         
+    }
+
+    public function cambioFavorito(Inventario $articulo,$favorito){
+        // dd($idArticulo .' - '. $favorito);
+
+        // $favorito ? dd($idArticulo .' - ES VERDADERO') : dd($idArticulo .' - ES FALSO');
+
+        $articulo->favorito = !$favorito;
+        $articulo->save();
+
+        $this->render();
+
+
     }
 
     public function render()

@@ -5,7 +5,7 @@
 
         <h3>Ver Comprobantes</h3>
 
-        @if (Auth()->user()->role_id == 2 OR Auth()->user()->role_id == 3)
+        @if (Auth()->user()->role_id == 2 OR Auth()->user()->role_id == 3 OR Auth()->user()->role_id == 4)
             
           <div class="grid">
             <div class="col">

@@ -9,6 +9,8 @@
     <div class="container"   >
         <h1>Inventario</h1>
         <article>
+
+
             
             <div class="grid">
 
@@ -122,6 +124,13 @@
         </div>
 
 
+        @if (session('mensaje'))
+            <div style="color: red;">
+                {{ session('mensaje') }}
+            </div>
+        @endif
+
+
         <div class="overflow-auto">
             <table class="striped">
                 <thead>
@@ -141,7 +150,11 @@
                         <th scope="col">Imagen</th>
                         <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('created_at')">Creado</a></th>
                         <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('updated_at')">Actualizado</a></th>
+                        
+                        <th scope="col">Favorito</th>
                     @endif
+                    
+                    
                     <th scope="col">Eliminar</th>
 
                   </tr>
@@ -180,14 +193,22 @@
                             <td>{{$i->imagen}}</td>
                             <td>{{$i->created_at}}</td>
                             <td>{{$i->updated_at}}</td>
+
+                            <td>    
+                                <input name="opt-in" type="checkbox" role="switch" {{ $i->favorito ? 'checked':''}} 
+                                        wire:click="cambioFavorito({{$i->id}},{{$i->favorito}})"
+                                />
+                                
+                            </td>
+
                         @endif
                             <td style="text-align: center;color: red; "  title="Eliminar">
                                 <i 
-                                    {{-- wire:click="eliminarInventario({{$i->id}})"  --}}
-                                    wire:confirm="Momentaneamente deshabilitada" 
+                                    wire:click="eliminarInventario({{$i->id}})" 
+                                    wire:confirm="Esta seguro de ELIMINAR este articulo?" 
                                     class="fa-solid fa-trash fa-xl" 
                                     style="cursor: pointer;" 
-                                    title="Momentaneamente deshabilitada">
+                                    >
                                 </i>
                             </td>
                         </tr>

@@ -72,7 +72,7 @@
 
         
         {{-- //una vista solo pra los admin y super  --}}
-        @if ((Auth::user()->role_id == 2 || Auth::User()->role_id == 3))
+        @if ((Auth::user()->role_id == 2 || Auth::User()->role_id == 3 || Auth::User()->role_id == 4))
 
             <div class="grid">
                 <div class="col" style="text-align: center;">

@@ -6,6 +6,19 @@
             <h1><span aria-busy="true">Cargando Datos....</span></h1>
         </div>
     </div> --}}
+
+    {{-- @dump($codigo)
+    @dump($detalle)
+    @dump($rubro)
+    @dump($proveedor)
+    @dump($marca)
+    @dump($ivaDefecto) --}}
+
+
+
+
+
+
     <div class="container" x-data="{ valor1:{{$total}}, valor2: 0 }">
 
         @if (\Session::has('mensaje'))
@@ -15,6 +28,41 @@
             </ul>
         </article>
         @endif
+
+        {{-- //////ESTE ES EL GRID DE LOS FAVORITOS  --}}
+        {{-- @dump($carrito) --}}
+        @if ($carrito == null)            
+            @foreach ($favoritos as $item)
+                @if ($loop->index % 3 == 0)
+                    @if (!$loop->first)
+                        </div> <!-- Cierra la grid anterior -->
+                    @endif
+                    <div class="grid"> <!-- Abre una nueva grid cada 6 elementos -->
+                @endif
+            
+                <div class="col">
+                    <article 
+                        x-data="{ codigo: '{{$item->codigo}}' }"
+                        :style="codigo == '{{$codigo}}' ? 'background-color: red; text-align: center;' : 'background-color: green; text-align: center;'" 
+                        wire:click="cargarFavorito(
+                                                    '{{$item->codigo}}',
+                                                    '{{$item->detalle}}',
+                                                    '{{$item->rubro}}',
+                                                    '{{$item->proveedor}}',
+                                                    '{{$item->marca}}',
+                                                    '{{$item->iva}}')"
+                        >
+                        {{$item->detalle}}
+                    </article>
+                </div>
+            
+                @if ($loop->last)
+                    </div> <!-- Cierra la última grid -->
+                @endif
+            @endforeach
+        @endif
+    
+        {{-- //////ESTE ES EL GRID DE LOS FAVORITOS  --}}
 
         <article style="text-align: center;" >
 

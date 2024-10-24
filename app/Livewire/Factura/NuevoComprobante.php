@@ -9,6 +9,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
+// use Illuminate\Support\Facades\DB;
+
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Session;
@@ -19,6 +21,8 @@ use App\Models\Empresa;
 use App\Models\Cliente;
 use App\Models\FormaPago;
 use App\Models\productoComprobante;
+use App\Models\Inventario;
+
 
 
 use App\Models\Presupuesto;
@@ -63,6 +67,13 @@ class NuevoComprobante extends Component
 
 
 
+    //VARIABLES PARA PARA LA VENTA RAPIDA DE ARTICULO FAVORITO
+    public $codigo ;
+    public $detalle ;
+    public $rubro ;
+    public $proveedor ;
+    public $marca;
+    public $ivaDefecto ;
 
 
     //para cuando el total viene del carrito no se pueda editar el monto a mano 
@@ -109,6 +120,18 @@ class NuevoComprobante extends Component
     }
 
 
+    public function cargarFavorito($codigo,$detalle,$rubro,$proveedor,$marca,$iva){
+
+        $this->codigo = $codigo ;
+        $this->detalle = $detalle ;
+        $this->rubro = $rubro ;
+        $this->proveedor = $proveedor ;
+        $this->marca = $marca;
+        $this->ivaDefecto = $iva ;
+
+
+        $this->render();
+    }
 
     public function facturar(Request $request)//este request es por la session 
     {
@@ -204,24 +227,24 @@ class NuevoComprobante extends Component
             if( !isset($this->carrito['total'])){
 
                 $this->carrito['carrito'][] = array(
-                    'codigo'=>'varios',
-                    'detalle'=>'varios',
-
+                    'codigo'=>$this->codigo,
+                    'detalle'=>$this->detalle,
+                    'rubro'=>$this->rubro,
+                    'proveedor'=>$this->proveedor,
+                    'marca'=>$this->marca,
+                    'iva'=>$this->ivaDefecto,
+                    
                     'porcentaje'=> 0,
                     'precioLista'=> round($this->total,2) ,
                     'descuento'=> 0 ,
-
-                    'costo'=> 0 ,
-                    'marca'=>'General',
+                    
+                    'costo'=> 0 , //SI CONTROLES DE COSTO Y STOCK POR QUE NO SABEMOS QUE CANTIDAD SE VENDE
+                    'controlStock'=>'no', //SI CONTROLES DE COSTO Y STOCK POR QUE NO SABEMOS QUE CANTIDAD SE VENDE
 
                     
                     'precio'=> round($this->total,2),
-                    'iva'=>$this->empresa->ivaDefecto,
                     'cantidad'=>1,
-                    'rubro'=>'General',
-                    'proveedor'=>'General',
 
-                    'controlStock'=>'no',
                     'subtotal'=>  round($this->total,2),
     
                     ) ;
@@ -356,7 +379,14 @@ class NuevoComprobante extends Component
             $this->idFormaPago = $this->cliente['idFormaPago'];
 
         }
-        
+
+        //variables venta favoritos 
+        $this->codigo = 'Varios';
+        $this->detalle = 'Varios';
+        $this->rubro = 'General';
+        $this->proveedor = 'General' ;
+        $this->marca = 'General' ;
+        $this->ivaDefecto = $this->empresa->ivaDefecto;
     
     }
 
@@ -372,6 +402,8 @@ class NuevoComprobante extends Component
             'fechaHoy'=> $this->fechaHoy,
             'fechaMin'=> $this->fechaMin ,
             'fechaMax'=> $this->fechaMax,
+            'favoritos'=> Inventario::where('empresa_id',Auth()->user()->empresa_id)
+                                    ->where('favorito',true)->get(),
             
             
             ])        
@@ -725,20 +757,20 @@ class NuevoComprobante extends Component
                 if( !isset($this->carrito['total'])){
 
                     $this->carrito['carrito'][] = array(
-                        'codigo'=>'varios',
-                        'detalle'=>'varios',
+                        'codigo'=>$this->codigo,
+                        'detalle'=>$this->detalle,
+                        'rubro'=>$this->rubro,
+                        'proveedor'=>$this->proveedor,
+                        'marca'=>$this->marca,
+                        'iva'=>$this->ivaDefecto,
 
                         'porcentaje'=> 0,
                         'precioLista'=> round($total,2) ,
                         'descuento'=> 0 ,
                         'costo'=> 0 ,
-                        'marca'=>'General',
 
                         'precio'=> round($total,2),
-                        'iva'=>$this->empresa->ivaDefecto,
                         'cantidad'=>1,
-                        'rubro'=>'General',
-                        'proveedor'=>'General',
                         'controlStock'=>'no',
                         'subtotal'=>  round($total,2),
         
@@ -951,20 +983,20 @@ class NuevoComprobante extends Component
             if( !isset($this->carrito['total'])){
 
                 $this->carrito['carrito'][] = array(
-                    'codigo'=>'varios',
-                    'detalle'=>'varios',
+                    'codigo'=>$this->codigo,
+                    'detalle'=>$this->detalle,
+                    'rubro'=>$this->rubro,
+                    'proveedor'=>$this->proveedor,
+                    'marca'=>$this->marca,
+                    'iva'=>$this->ivaDefecto,
 
                     'porcentaje'=> 0,
                     'precioLista'=> round($total,2) ,
                     'descuento'=> 0 ,
                     'costo'=> 0 ,
-                    'marca'=>'General',
 
                     'precio'=> round($total,2),
-                    'iva'=>$this->empresa->ivaDefecto,
                     'cantidad'=>1,
-                    'rubro'=>'General',
-                    'proveedor'=>'General',
                     'controlStock'=>'no',
                     'subtotal'=>  round($total,2),
     
@@ -1189,21 +1221,21 @@ class NuevoComprobante extends Component
             if( !isset($this->carrito['total'])){
 
                 $this->carrito['carrito'][] = array(
-                    'codigo'=>'varios',
-                    'detalle'=>'varios',
+                    'codigo'=>$this->codigo,
+                    'detalle'=>$this->detalle,
+                    'rubro'=>$this->rubro,
+                    'proveedor'=>$this->proveedor,
+                    'marca'=>$this->marca,
+                    'iva'=>$this->ivaDefecto,
 
                     'porcentaje'=> 0,
                     'precioLista'=> round($total,2) ,
                     'descuento'=> 0 ,
 
                     'costo'=> 0 ,
-                    'marca'=>'General',
                     
                     'precio'=> round($total,2),
-                    'iva'=>$this->empresa->ivaDefecto,
                     'cantidad'=>1,
-                    'rubro'=>'General',
-                    'proveedor'=>'General',
                     'controlStock'=>'no',
                     'subtotal'=>  round($total,2),
     
@@ -1428,21 +1460,21 @@ class NuevoComprobante extends Component
             if( !isset($this->carrito['total'])){
 
                 $this->carrito['carrito'][] = array(
-                    'codigo'=>'varios',
-                    'detalle'=>'varios',
+                    'codigo'=>$this->codigo,
+                    'detalle'=>$this->detalle,
+                    'rubro'=>$this->rubro,
+                    'proveedor'=>$this->proveedor,
+                    'marca'=>$this->marca,
+                    'iva'=>$this->ivaDefecto,
 
                     'porcentaje'=> 0,
                     'precioLista'=> round($total,2) ,
                     'descuento'=> 0 ,
 
                     'costo'=> 0 ,
-                    'marca'=>'General',
 
                     'precio'=> round($total,2),
-                    'iva'=>$this->empresa->ivaDefecto,
                     'cantidad'=>1,
-                    'rubro'=>'General',
-                    'proveedor'=>'General',
                     'controlStock'=>'no',
                     'subtotal'=>  round($total,2),
     
