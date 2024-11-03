@@ -25,7 +25,7 @@
         <article aria-busy="true" wire:loading></article>
     
         <article wire:loading.remove>
-            <form wire:submit="importarArchivo">
+            <form wire:submit="importarCsv">
 
                 <div class="grid">
                     <div class="col">

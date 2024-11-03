@@ -10,8 +10,13 @@
           <li>
             <hgroup>
               <a href="/nuevoComprobante" wire:navigate><h4 style="color: forestgreen">FacturaApp</h4></a>
-                  
-              <small><h6>{{$empresa->razonSocial}}</h6></small>
+              
+              <br>
+              <small>
+                <a href="/configuracion/basico" wire:navigate><h6>{{$empresa->razonSocial}}</h6></a>
+  
+              </small>
+              {{-- <small><h6>{{$empresa->razonSocial}}</h6></small> --}}
             </hgroup>
           </li>
 
@@ -45,6 +50,9 @@
         <ul>
           
           {{-- <li><a href="{{route('profile')}}" class="secondary">{{$name}}</a></li> --}}
+          <li>
+            <a wire:navigate href="/novedades"><i class="fa-solid fa-bell fa-xl" style="color: red;"></i></a>    
+          </li>
           <li>
             <a wire:navigate href="/panel"><i class="fa-solid fa-house fa-xl"></i></a>    
           </li>
@@ -91,6 +99,9 @@
                   </li>
                   <li>
                     <a wire:navigate href="{{route('ventasArticulos')}}">Ventas por Art</a>
+                  </li>
+                  <li>
+                    <a wire:navigate href="{{route('configuracionbasico')}}">Configuracion Basico</a>
                   </li>
                     
                 @endif

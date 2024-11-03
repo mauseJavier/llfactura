@@ -5,6 +5,10 @@ namespace App\Livewire\Comprobante;
 use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf; 
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Response;
+
+
 
 
 use Carbon\Carbon;
@@ -154,22 +158,237 @@ class VerComprobante extends Component
 
     }
 
-       // Método para actualizar las fechas desde Alpine.js
-       public function actualizarFechas($fechaDesde, $fechaHasta)
-       {
-           $this->fechaFiltroDesde = $fechaDesde;
-           $this->fechaFiltroHasta = $fechaHasta;
-       }
+    // Método para actualizar las fechas desde Alpine.js
+    public function actualizarFechas($fechaDesde, $fechaHasta)
+    {
+        $this->fechaFiltroDesde = $fechaDesde;
+        $this->fechaFiltroHasta = $fechaHasta;
+    }
+
+    public function exportarCSV(){
+
+
+        $filename = 'comprobantes'.Carbon::now().'.csv';
+
+        // Abrir o crear el archivo CSV
+        $handle = fopen($filename, 'w');
+
+        // "id" => 15650
+        // "tipoComp" => "11"
+        // "numero" => 2080
+        // "total" => 14560.0
+        // "cae" => 74432202688187
+        // "fechaVencimiento" => "2024-11-03"
+        // "fecha" => "2024-10-24 19:56:13"
+        // "ptoVta" => 1
+        // "deposito_id" => 1
+        // "DocTipo" => 99
+        // "cuitCliente" => 0
+        // "razonSocial" => "Consumidor Final"
+        // "tipoContribuyente" => 5
+        // "domicilio" => null
+        // "leyenda" => null
+        // "idFormaPago" => 5
+        // "remito" => "no"
+        // "empresa_id" => 1
+        // "usuario" => "JAVIER LLFACTURA"
+        // "created_at" => "2024-10-24 19:56:13"
+        // "updated_at" => "2024-10-24 19:56:13"
+
+        // Agregar los encabezados al archivo CSV
+        fputcsv($handle, ['ID','Fecha', 'tipoComp', 'Numero','Total','CAE','Ven.CAE','PtoVenta',
+                            'TipoDoc','NumDoc','RazonSocial','Domicilio','Leyenda','IdFpago','Usuario']);
+
+        // Ejecutar la consulta para obtener los datos
+        $comprobantes = Comprobante::where('empresa_id', Auth::user()->empresa_id)
+            ->where('created_at', '>=', $this->fechaFiltroDesde)
+            ->where('created_at', '<=', $this->fechaFiltroHasta)
+            ->when($this->tipoComp, function ($query, $tipoComp) {
+                return $query->where('tipoComp', $tipoComp);
+            })
+            ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+            return $query->where('numero', '=',$numeroComprobanteFiltro);
+            })
+
+            ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+            return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+            })
+            ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
+            ->orderByDesc('created_at')
+            ->get();
+
+            // dd($comprobantes);
+
+        // Escribir los datos de la consulta en el archivo CSV
+        foreach ($comprobantes as $item) {
+
+            switch ($item->tipoComp) {
+                case 1:
+                $tipoComp = 'Fac A';
+                break;
+                case 6:
+                $tipoComp = 'Fac B';
+                break;
+                case 11:
+                $tipoComp = 'Fac C';
+                break;
+                case 51:
+                $tipoComp = 'Fac M';
+                break;
+                case 'remito':
+                $tipoComp = 'Remito';
+                break;
+                case 3:
+                $tipoComp = 'NC A';
+                break;
+                case 8:
+                $tipoComp = 'NC B';
+                break;
+                case 13:
+                $tipoComp = 'NC C';
+                break;
+                case 'notaRemito':
+                $tipoComp = 'NC R';
+                break;
+                
+                default:
+                    # code...
+                    break;
+            }
+            fputcsv($handle, [
+                $item->id,
+                $item->fecha,
+                $tipoComp,
+                $item->numero,
+                str_replace('.',',',$item->total),
+                $item->cae,
+                $item->fechaVencimiento,
+                $item->ptoVta,
+                $item->DocTipo,
+                $item->cuitCliente,
+                $item->razonSocial,
+                $item->domicilio,
+                $item->leyenda,
+                $item->idFormaPago,
+                $item->usuario,
+
+            ]);
+        }
+
+        // Cerrar el archivo CSV
+        fclose($handle);
+
+        // Mensaje de confirmación
+        return response()->download($filename)->deleteFileAfterSend(true);
+
+    }
+
+
+    public function crearPDF(){
+
+
+
+        $fechas= array('fdesde'=>date('d/m/y',strtotime($this->fechaFiltroDesde)),'fhasta'=>date('d/m/y',strtotime($this->fechaFiltroHasta)));
+
+        // Ejecutar la consulta para obtener los datos
+        $comprobantes = Comprobante::where('empresa_id', Auth::user()->empresa_id)
+        ->where('created_at', '>=', $this->fechaFiltroDesde)
+        ->where('created_at', '<=', $this->fechaFiltroHasta)
+        ->when($this->tipoComp, function ($query, $tipoComp) {
+            return $query->where('tipoComp', $tipoComp);
+        })
+        ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+        return $query->where('numero', '=',$numeroComprobanteFiltro);
+        })
+
+        ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+        return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+        })
+        ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
+        ->orderByDesc('created_at')
+        ->get();
+
+
+        $sumComprobantes = Comprobante::select('tipoComp', DB::raw('SUM(total) as sumTotal'))
+        ->where('empresa_id', Auth::user()->empresa_id)
+        ->where('created_at', '>=', $this->fechaFiltroDesde)
+        ->where('created_at', '<=', $this->fechaFiltroHasta)
+        ->when($this->tipoComp, function ($query, $tipoComp) {
+        return $query->where('tipoComp', $tipoComp);
+        })
+        ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+        return $query->where('numero', '=',$numeroComprobanteFiltro);
+        })
+        ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+        return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+        })
+        ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
+        ->groupBy('tipoComp')
+        ->get();
+
+        $totales= Comprobante::select('comprobantes.idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.total) as sumTotal'))
+        ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
+        ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+        ->where('comprobantes.created_at', '>=', $this->fechaFiltroDesde)
+        ->where('comprobantes.created_at', '<=', $this->fechaFiltroHasta)
+        ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
+        ->when($this->tipoComp, function ($query, $tipoComp) {
+        return $query->where('comprobantes.tipoComp', $tipoComp);
+        })
+        ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+        return $query->where('numero', '=',$numeroComprobanteFiltro);
+        })
+        ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+        return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+        })
+        ->groupBy('comprobantes.idFormaPago','forma_pagos.nombre')
+        ->get();
+
+        $sumTotal = Comprobante::where('empresa_id', Auth::user()->empresa_id)
+        ->where('created_at', '>=', $this->fechaFiltroDesde)
+        ->where('created_at', '<=', $this->fechaFiltroHasta)
+        ->when($this->tipoComp, function ($query, $tipoComp) {
+        return $query->where('tipoComp', $tipoComp);
+        })
+        ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+        return $query->where('numero', '=',$numeroComprobanteFiltro);
+        })
+        ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+        return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+        })
+        ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
+        ->sum('total');
+
+
+        // Nombre del archivo
+        $nombreArchivo = 'comprobantes'.Carbon::now().'.pdf';
+
+        $pdf = Pdf::loadView('PDF.pdfReporteComprobantes',compact('fechas','comprobantes','sumComprobantes','totales','sumTotal'));    
+
+        // Guardar el PDF en el almacenamiento en 'public'
+        $rutaArchivo = 'public/pdf/' . $nombreArchivo;
+        Storage::put($rutaArchivo, $pdf->output());
+
+        // Generar la URL de descarga
+        $rutaDescarga = Storage::path($rutaArchivo);
+
+        // dd($rutaDescarga);
+
+        // Crear la respuesta para la descarga
+        return Response::download($rutaDescarga)->deleteFileAfterSend(true);
+
+
+    }
     
     public function render()
     {
         return view('livewire.comprobante.ver-comprobante',[
             'comprobantes' => Comprobante::where('empresa_id', Auth::user()->empresa_id)
-                                            ->where('created_at', '>=', $this->fechaFiltroDesde)
-                                            ->where('created_at', '<=', $this->fechaFiltroHasta)
-                                            ->when($this->tipoComp, function ($query, $tipoComp) {
-                                                return $query->where('tipoComp', $tipoComp);
-                                            })
+                                ->where('created_at', '>=', $this->fechaFiltroDesde)
+                                ->where('created_at', '<=', $this->fechaFiltroHasta)
+                                ->when($this->tipoComp, function ($query, $tipoComp) {
+                                    return $query->where('tipoComp', $tipoComp);
+                                })
                                 ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
                                 return $query->where('numero', '=',$numeroComprobanteFiltro);
                                 })
@@ -177,11 +396,9 @@ class VerComprobante extends Component
                                 ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
                                 return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
                                 })
-
-
-                                            ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
-                                            ->orderByDesc('created_at')
-                                            ->paginate(15),
+                                ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
+                                ->orderByDesc('created_at')
+                                ->paginate(15),
 
             'sumTotal' => Comprobante::where('empresa_id', Auth::user()->empresa_id)
                                         ->where('created_at', '>=', $this->fechaFiltroDesde)

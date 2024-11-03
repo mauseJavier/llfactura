@@ -69,6 +69,7 @@ class InventarioImport implements ToCollection,WithHeadingRow
 
                     'rubro'    => (isset($row[$this->columnas['rubro']])) ? $row[$this->columnas['rubro']] : 'General' ,
                     'proveedor'    => (isset($row[$this->columnas['proveedor']])) ?  $row[$this->columnas['proveedor']] : 'General' ,
+                    'marca'=>'General',
 
                     'pesable'    => (isset($row[$this->columnas['pesable']])) ?  $row[$this->columnas['pesable']] : 'no' ,
                     'imagen'    => (isset($row[$this->columnas['imagen']])) ?  $row[$this->columnas['imagen']] : '' ,

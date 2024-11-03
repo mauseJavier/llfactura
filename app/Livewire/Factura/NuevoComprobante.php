@@ -62,7 +62,7 @@ class NuevoComprobante extends Component
     public $usuario;
 
 
-    public $imprimir = true;
+    public $imprimir;
     public $remitoEntrega;
 
 
@@ -363,7 +363,9 @@ class NuevoComprobante extends Component
 
 
         $this->formaPago = FormaPago::all();
-        $this->idFormaPago = 1;
+        $this->idFormaPago = $this->empresa->idFormaPago;
+        $this->imprimir = $this->empresa->imprimirSiNo;
+
         $this->remitoEntrega = 'no'; //no (se entrega en el momento ) si (se entrega posterior)
 
 

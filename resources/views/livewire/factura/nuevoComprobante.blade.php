@@ -189,7 +189,7 @@
                 </div>
                 <div>
 
-                        <select name="" aria-label=""  required wire:model.live="idFormaPago">         
+                        <select name="" aria-label="" wire:model.live="idFormaPago">         
                             @foreach ($formaPago as $item)
                                 @if ($item->id !== 0) 
                                     {{-- PARA QUE NO MUESTRE EL CUENTA CORRIENTE DE LA BASE                               --}}
@@ -219,7 +219,7 @@
                     <fieldset style="width: 100%;   display: flex; justify-content: center; align-items: center;">
                         <label>                      
                             <h4>Imprimir?</h4>
-                            <input name="" type="checkbox" role="switch" wire:model="imprimir" />
+                            <input name="" type="checkbox" @checked($imprimir) role="switch" wire:model="imprimir" />
                         </label>
                     </fieldset>
 

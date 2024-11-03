@@ -2,7 +2,7 @@
 
 @section('main')
 
-<div class="container" x-data="{ selectedOption: 'ticket' }">
+<div class="container" x-data="{ selectedOption: '{{$formato}}' }">
 
 
     <article>
@@ -43,7 +43,7 @@
       <fieldset>
         <legend>Formato Imprecion:</legend>
         <label>
-          <input type="radio" name="language" value="ticket" x-model="selectedOption" />
+          <input type="radio" name="language" value="T" x-model="selectedOption" />
           Tiket
         </label>
         <label>
@@ -58,7 +58,7 @@
         @case('factura')
 
             <div class="grid">
-              <div class="col" x-show="selectedOption === 'ticket'">
+              <div class="col" x-show="selectedOption === 'T'">
                 <iframe width="100%" height="1000px" src="{{route('imprimirComprobante',['comprobante_id'=>$comprobante_id,'formato'=>'Ticket'])}}" frameborder="0"></iframe>
               </div>
               <div class="col" x-show="selectedOption === 'A4'">

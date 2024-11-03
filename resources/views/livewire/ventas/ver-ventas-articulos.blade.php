@@ -44,8 +44,14 @@
           </form>
 
           <h3>Suma de Venta: ${{$precioVenta}}</h3>
+          <h4>IVA: ${{$iva}}</h4>
           <h4>Suma de Costo: ${{$costoVenta}}</h4>
           <h4>Resultado: ${{$resultadoVenta}} (%{{$resultadoPorcentaje}})</h4>
+
+
+          <hr>
+          <button wire:click="crearPDF()">Crear PDF</button>
+          <button wire:click="exportarCSV()">Exportar CSV</button>
 
 
     </article>

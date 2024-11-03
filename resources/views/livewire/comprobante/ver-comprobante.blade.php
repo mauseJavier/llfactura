@@ -62,6 +62,9 @@
           <article>
 
             <label for="">Total: ${{number_format($sumTotal, 2, ',', '.')}}</label>
+            <hr>
+            <button wire:click="crearPDF()">Crear PDF</button>
+            <button wire:click="exportarCSV()">Exportar CSV</button>
           </article>
 
         @endif

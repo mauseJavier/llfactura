@@ -28,6 +28,9 @@ use App\Livewire\Remito\VerRemito;
 use App\Livewire\Cliente\VerCliente;
 use App\Livewire\Cliente\CuentaCorriente;
 
+use App\Livewire\Novedades\Novedades;
+
+
 use App\Livewire\Proveedor\VerProveedor;
 use App\Livewire\Presupuesto\VerPresupuesto;
 
@@ -36,6 +39,9 @@ use App\Livewire\FacturacionEmpresas\EstadoEmpresa;
 
 
 use App\Livewire\Ventas\VerVentasArticulos;
+
+use App\Livewire\Configuracion\Basico;
+
 
 
 
@@ -115,6 +121,9 @@ use Illuminate\Http\Request;
             Route::get('/proveedor', VerProveedor::class)->name('proveedor');
 
             Route::get('/ventasArticulos', VerVentasArticulos::class)->name('ventasArticulos');
+
+            Route::get('/configuracion/basico', Basico::class)->name('configuracionbasico');
+
         
 
         });
@@ -154,6 +163,9 @@ use Illuminate\Http\Request;
 
         Route::get('/presupuesto', VerPresupuesto::class)->name('presupuesto');
 
+        Route::get('/novedades', Novedades::class)->name('novedades');
+
+
 
 
 
@@ -161,8 +173,10 @@ use Illuminate\Http\Request;
 
             if($comprobante_id){
 
+                $empresa= Empresa::find(Auth::user()->empresa_id);
+
                 return view('comprobante.formatoPDF',['comprobante_id'=>$comprobante_id,
-                                                        'tipo'=>$tipo])->render();               
+                                                        'tipo'=>$tipo,'formato'=>$empresa->formatoImprecion])->render();               
 
             }else{
                 return redirect('comprobante')->with('mensaje', 'Sin elementos para mostrar factura');
