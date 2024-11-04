@@ -24,6 +24,8 @@ class ImportarInventario extends Component
     use WithFileUploads;
 
     public $empresa;
+
+    #[Validate('required|mimes:csv')]
     public $archivo;
 
     public $procesados;
@@ -35,6 +37,10 @@ class ImportarInventario extends Component
     {
 
         // dd($this->archivo);
+
+        // 'photo' => 'mimes:jpg,bmp,png'
+
+        $this->validate();
 
         $empresa = Empresa::find(auth()->user()->empresa_id);
 
