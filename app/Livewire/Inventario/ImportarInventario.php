@@ -24,25 +24,9 @@ class ImportarInventario extends Component
     use WithFileUploads;
 
     public $empresa;
-
-    public $CAMPOcodigo= 'codigo';
-    public $CAMPOdetalle='detalle';
-    public $CAMPOcosto='costo';
-    public $CAMPOprecio1='precio1';
-    public $CAMPOprecio2;
-    public $CAMPOprecio3;
-    public $CAMPOiva='iva';
-    public $CAMPOrubro='rubro';
-    public $CAMPOproveedor='proveedor';
-    public $CAMPOpesable;
-    public $CAMPOimagen;
-    public $CAMPOstock;
-    public $CAMPOdeposito;
-    public $CAMPOporcentaje="porcentaje";
-    public $CAMPOnombreLista="nombrelista";
- 
-
     public $archivo;
+
+    public $procesados;
 
 
 
@@ -51,6 +35,8 @@ class ImportarInventario extends Component
     {
 
         // dd($this->archivo);
+
+        $empresa = Empresa::find(auth()->user()->empresa_id);
 
         $rutaArchivo = $this->archivo->store('importaciones'); // Almacena el archivo temporalmente en 'storage/app/importaciones'
         // $this->importarCsv($rutaArchivo);
@@ -65,18 +51,18 @@ class ImportarInventario extends Component
         $archivo = fopen(storage_path('app/' . $rutaArchivo), 'r');
 
 
-        $fila = 1;
-        if (($gestor = fopen(storage_path('app/' . $rutaArchivo), 'r')) !== FALSE) {
-            while (($datos = fgetcsv($gestor, 1000, ",")) !== FALSE) {
-                $numero = count($datos);
-                echo "<p> $numero de campos en la línea $fila: <br /></p>\n";
-                $fila++;
-                for ($c=0; $c < $numero; $c++) {
-                    echo $datos[$c] . "<br />\n";
-                }
-            }
-            fclose($gestor);
-        }
+        // $fila = 1;
+        // if (($gestor = fopen(storage_path('app/' . $rutaArchivo), 'r')) !== FALSE) {
+        //     while (($datos = fgetcsv($gestor, 1000, ",")) !== FALSE) {
+        //         $numero = count($datos);
+        //         echo "<p> $numero de campos en la línea $fila: <br /></p>\n";
+        //         $fila++;
+        //         for ($c=0; $c < $numero; $c++) {
+        //             echo $datos[$c] . "<br />\n";
+        //         }
+        //     }
+        //     fclose($gestor);
+        // }
 
         
 
@@ -94,28 +80,49 @@ class ImportarInventario extends Component
                 continue;
             }
             
-            dd($row);
+            // dump(str_replace(',','.',$row[2]));
+            // dump($row[7]);
+            // dump($row[7] !='' ? round(floatval(str_replace(',','.',$row[7])), 2) : 'hola');
+
+
             // Crear o actualizar el inventario
-            // Inventario::updateOrCreate(
-            //     [
-            //         'codigo' => $row[$this->columnas['codigo']],
-            //         'empresa_id' => $this->columnas['empresa_id']
-            //     ],
-            //     [
-            //         'detalle'    => $row[$this->columnas['detalle']],
-            //         'costo'      => isset($row[$this->columnas['costo']]) ? round(floatval($row[$this->columnas['costo']]), 2) : 0,
-            //         'precio1'    => isset($row[$this->columnas['precio1']]) ? round(floatval($row[$this->columnas['precio1']]), 2) : 0,
-            //         'precio2'    => isset($row[$this->columnas['precio2']]) ? round(floatval($row[$this->columnas['precio2']]), 2) : 0,
-            //         'precio3'    => isset($row[$this->columnas['precio3']]) ? round(floatval($row[$this->columnas['precio3']]), 2) : 0,
-            //         'porcentaje' => isset($row[$this->columnas['porcentaje']]) ? round(floatval($row[$this->columnas['porcentaje']]), 2) : 0,
-            //         'iva'        => isset($row[$this->columnas['iva']]) ? round(floatval($row[$this->columnas['iva']]), 2) : $this->columnas['ivaDefecto'],
-            //         'rubro'      => isset($row[$this->columnas['rubro']]) ? $row[$this->columnas['rubro']] : 'General',
-            //         'proveedor'  => isset($row[$this->columnas['proveedor']]) ? $row[$this->columnas['proveedor']] : 'General',
-            //         'marca'      => 'General',
-            //         'pesable'    => isset($row[$this->columnas['pesable']]) ? $row[$this->columnas['pesable']] : 'no',
-            //         'imagen'     => isset($row[$this->columnas['imagen']]) ? $row[$this->columnas['imagen']] : '',
-            //     ]
-            // );
+
+            if($row[0]!='' and $row[1]!=''){
+
+               $nuevo= Inventario::updateOrCreate(
+                    [
+                        'codigo' => $row[0],
+                        'empresa_id' => auth()->user()->empresa_id,
+                    ],
+                    [
+                        'detalle'    => $row[1],
+    
+                        'costo'      => $row[2]!='' ? round(floatval(str_replace(',','.',$row[2])), 2) : 0,
+    
+                        'precio1'    =>  $row[3]!='' ? round(floatval(str_replace(',','.',$row[3])), 2) : 0,
+                        'precio2'    =>  $row[4]!='' ? round(floatval(str_replace(',','.',$row[4])), 2) : 0,
+                        'precio3'    =>  $row[5]!='' ? round(floatval(str_replace(',','.',$row[5])), 2) : 0,
+                        
+                        'porcentaje' =>  $row[6]!='' ? round(floatval(str_replace(',','.',$row[6])), 2) : 0,
+    
+                        'iva'        =>  $row[7]!='' ? round(floatval(str_replace(',','.',$row[7])), 2) : $empresa->ivaDefecto,
+    
+                        'rubro'      => $row[8]!='' ? $row[8] : 'General',
+                        'proveedor'  => $row[9]!='' ? $row[9] : 'General',
+                        'marca'      => $row[10]!='' ? $row[10] : 'General',
+    
+                        'pesable'    => strtolower($row[11]) == 'si' ? 'si' : 'no',
+                        'imagen'     => $row[12]!='' ? $row[12] : '',
+                    ]
+                );
+
+            }else{
+
+
+            }
+
+           
+            $this->procesados[]=$nuevo;
         }
 
         // Cerrar el archivo
@@ -124,7 +131,7 @@ class ImportarInventario extends Component
         // Eliminar el archivo después de la importación
         Storage::delete($rutaArchivo);
 
-        return ['success' => 'Archivo importado y eliminado correctamente.'];
+        session()->flash('mensaje', 'Importacion Correcta.');
     }
 
 

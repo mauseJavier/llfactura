@@ -6,7 +6,6 @@
             
             <hgroup>
                 <h1>Importar Inventario</h1>
-                <p>Ingrese nombre de las columnas TODO EN MINUSCULA!</p>
             </hgroup>
         </article>
 
@@ -23,11 +22,63 @@
         @endif
 
         <article aria-busy="true" wire:loading></article>
+
+        <article>
+            <p>Formato de la informacion en el archivo CSV</p>
+            <div class="overflow-auto">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Codigo</th>
+                            <th>Detalle</th>
+                            <th>Costo</th>
+                            <th>Precio1</th>
+                            <th>Precio2</th>
+                            <th>Precio3</th>
+                            <th>Porcentaje</th>
+                            <th>Iva</th>
+                            <th>Rubro</th>
+                            <th>Proveedor</th>
+                            <th>Marca</th>
+                            <th>Pesable</th>
+                            <th>Imagen</th>
+    
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @isset($procesados)
+                            @foreach ($procesados as $item)
+
+                                <tr>
+                                    <td>{{$item->codigo}}</td>
+                                    <td>{{$item->detalle}}</td>
+                                    <td>{{$item->costo}}</td>
+                                    <td>{{$item->precio1}}</td>
+                                    <td>{{$item->precio2}}</td>
+                                    <td>{{$item->precio3}}</td>
+                                    <td>{{$item->porcentaje}}</td>
+                                    <td>{{$item->iva}}</td>
+                                    <td>{{$item->rubro}}</td>
+                                    <td>{{$item->proveedor}}</td>
+                                    <td>{{$item->marca}}</td>
+                                    <td>{{$item->pesable}}</td>
+                                    <td>{{$item->imagen}}</td>
+
+                                </tr>
+                                
+                            @endforeach
+                            
+                        @endisset
+                    </tbody>
+                </table>
+            </div>
+        </article>
     
         <article wire:loading.remove>
             <form wire:submit="importarCsv">
 
-                <div class="grid">
+                {{-- <div class="grid">
                     <div class="col">
                         <input
                             type="text"
@@ -210,7 +261,7 @@
 
                 </div>
 
-
+ --}}
 
 
                 <input type="file" wire:model="archivo"
