@@ -10,7 +10,7 @@
       <article>
           <div class="grid">
                 <div class="col">
-                  <button @click=" modalOpen = !modalOpen" >Nuevo Deposito</button>
+                  <button @click=" modalOpen = !modalOpen" >Nuevo Local</button>
                   <a wire:navigate role="button" href="{{route('importarstock')}}">Importar Stock</a>
                 </div>
 
@@ -167,7 +167,7 @@
             <header>
                 <button @click=" modalOpen = !modalOpen" aria-label="Close" rel="prev"></button>
                 <p>
-                    <strong>Nuevo Deposito</strong>
+                    <strong>Nuevo Local</strong>
                 </p>
             </header>
             @if (session()->has('mensaje'))          
@@ -182,7 +182,7 @@
                 <input
                     tipe="text"
                   name="nombreDeposito"
-                  placeholder="Nombre Deposito"
+                  placeholder="Nombre Local"
                   autocomplete="nombreDeposito"
                   wire:model="nombreDeposito"
                   @error('nombreDeposito')  aria-invalid="true" @enderror

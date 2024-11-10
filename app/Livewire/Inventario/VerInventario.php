@@ -31,6 +31,8 @@ class VerInventario extends Component
     public $depositos;
     public $datoBuscado ='' ;
     public $modal = 'close';
+    public $modalEditar = 'close';
+
     public $masDatos = false;
     public $modalStock = 'close';
 
@@ -38,44 +40,51 @@ class VerInventario extends Component
     public $acendenteDecendente= 'DESC';
 
 
-    #[Validate('required', message: 'Requerido')]
-    #[Validate('min:1', message: 'Minimo 1 caracter')]
-    #[Validate('max:250', message: 'Maximo 250 caracter')]
+    // #[Validate('required', message: 'Requerido')]
+    // #[Validate('min:1', message: 'Minimo 1 caracter')]
+    // #[Validate('max:250', message: 'Maximo 250 caracter')]
     public $codigo;
-    #[Validate('required', message: 'Requerido')]
-    #[Validate('min:1', message: 'Minimo 1 caracter')]
-    #[Validate('max:250', message: 'Maximo 250 caracter')]
+    // #[Validate('required', message: 'Requerido')]
+    // #[Validate('min:1', message: 'Minimo 1 caracter')]
+    // #[Validate('max:250', message: 'Maximo 250 caracter')]
     public $detalle;
-    #[Validate('required', message: 'Requerido')]
-    #[Validate('min:0', message: 'Minimo 0')]
-    #[Validate('numeric', message: 'Solo Numeros')]
+    // #[Validate('required', message: 'Requerido')]
+    // #[Validate('min:0', message: 'Minimo 0')]
+    // #[Validate('numeric', message: 'Solo Numeros')]
     public $costo=0; //'required|numeric|min:0',
-    #[Validate('required', message: 'Requerido')]
-    #[Validate('min:0', message: 'Minimo 0')]
-    #[Validate('numeric', message: 'Solo Numeros')]
+    // #[Validate('required', message: 'Requerido')]
+    // #[Validate('min:0', message: 'Minimo 0')]
+    // #[Validate('numeric', message: 'Solo Numeros')]
     public $porcentaje1 =0;
-    #[Validate('required', message: 'Requerido')]
-    #[Validate('min:0', message: 'Minimo 0')]
-    #[Validate('numeric', message: 'Solo Numeros')]
+    // #[Validate('required', message: 'Requerido')]
+    // #[Validate('min:0', message: 'Minimo 0')]
+    // #[Validate('numeric', message: 'Solo Numeros')]
     public $precio1=0;
-    #[Validate('required', message: 'Requerido')]
-    #[Validate('min:0', message: 'Minimo 0')]
-    #[Validate('numeric', message: 'Solo Numeros')]
+    // #[Validate('required', message: 'Requerido')]
+    // #[Validate('min:0', message: 'Minimo 0')]
+    // #[Validate('numeric', message: 'Solo Numeros')]
     public $precio2=0;
-    #[Validate('required', message: 'Requerido')]
-    #[Validate('min:0', message: 'Minimo 0')]
-    #[Validate('numeric', message: 'Solo Numeros')]
+    // #[Validate('required', message: 'Requerido')]
+    // #[Validate('min:0', message: 'Minimo 0')]
+    // #[Validate('numeric', message: 'Solo Numeros')]
     public $precio3=0;    
-    #[Validate('required', message: 'Requerido')]
-    #[Validate('min:0', message: 'Mayor a 0')]
-    #[Validate('numeric', message: 'Solo Numeros')]
+    // #[Validate('required', message: 'Requerido')]
+    // #[Validate('min:0', message: 'Mayor a 0')]
+    // #[Validate('numeric', message: 'Solo Numeros')]
     public $iva;
     
-    #[Validate('required', message: 'Requerido')]
+    // #[Validate('required', message: 'Requerido')]
     public $rubro='General';
-    #[Validate('required', message: 'Requerido')]
+    // #[Validate('required', message: 'Requerido')]
     public $proveedor='General';
-    #[Validate('required', message: 'Requerido')]
+    // #[Validate('required', message: 'Requerido')]
+
+    // #[Validate('required', message: 'Requerido')]
+    // #[Validate('min:0', message: 'Mayor a 0')]
+    // #[Validate('numeric', message: 'Solo Numeros')]
+    public $nuevoStock=0;
+
+
     public $marca='General';
     public $pesable = 'no';
     public $controlStock = 'no';
@@ -97,10 +106,7 @@ class VerInventario extends Component
 
     //MODIFICAR EL STOCK
 
-    #[Validate('required', message: 'Requerido')]
-    #[Validate('min:0', message: 'Mayor a 0')]
-    #[Validate('numeric', message: 'Solo Numeros')]
-    public $nuevoStock=0;
+
 
 
     public function eliminarInventario(Inventario $articulo){
@@ -145,12 +151,27 @@ class VerInventario extends Component
         // dump($this->idDeposito);
         // dump($this->nuevoStock);
 
-        $this->validate();
+               // Validaciones generales
+               $this->validate([
+                'codigo' => [
+                    'required',
+                    'min:1',
+                    'max:250',
+                ],
+                'detalle' => 'required|min:1|max:250',
+                'nuevoStock' => 'required|numeric|min:0',
+            ], [
+                // Mensajes personalizados
+                'required' => 'Requerido',
+                'min' => 'Minimo :min',
+                'max' => 'Maximo :max caracteres',
+                'numeric' => 'Solo Números',
+            ]);
 
         if($this->nuevoStock > 0){
 
             $n = Stock::create([
-                'codigo'=>$this->codigo,
+                'codigo'=>trim($this->codigo),
                 'detalle'=>$this->detalle,
                 'deposito_id'=>$this->idDeposito,
                 'stock'=>$this->nuevoStock,
@@ -282,7 +303,23 @@ class VerInventario extends Component
 
         // dd($this->ivaIncluido);
 
-        $this->validate();
+                // Validaciones generales
+                $this->validate([
+
+                    'costo' => 'required|numeric|min:0',
+                    'porcentaje1' => 'required|numeric|min:0',
+                    'precio1' => 'required|numeric|min:0',
+                    'precio2' => 'required|numeric|min:0',
+                    'precio3' => 'required|numeric|min:0',
+                    'iva' => 'required|numeric|min:0',
+  
+                ], [
+                    // Mensajes personalizados
+                    'required' => 'Requerido',
+                    'min' => 'Minimo :min',
+                    'max' => 'Maximo :max caracteres',
+                    'numeric' => 'Solo Números',
+                ]);
 
         if($this->ivaIncluido){
 
@@ -337,19 +374,87 @@ class VerInventario extends Component
         $this->imagen=$articulo->imagen;
 
 
-        $this->modal="open";
+        $this->modalEditar="open";
+    }
+
+
+    public function buscarCodigoDuplicado(){
+
+        $duplicado = Inventario::select('detalle')
+        ->where('codigo', $this->codigo)
+        ->where('empresa_id', $this->empresa->id)
+        ->where('id','!=', $this->idArticulo)
+
+        ->get();
+        
+        if(count($duplicado) > 0){
+            
+            $detalles='';
+            foreach ($duplicado as $key => $value) {
+                # code...
+                $detalles .= $value->detalle .', ';
+            }
+
+            session()->flash('codigoDuplicado', 'Codigo duplicado. Articulos: '.$detalles);
+        }
+
+
     }
 
     public function guardarArticulo(){
 
-        $this->validate();
+        // Validaciones generales
+        $this->validate([
+            'codigo' => [
+                'required',
+                'min:1',
+                'max:250',
+                function ($attribute, $value, $fail) {
+                    // Validación adicional para códigos duplicados si empresa_id es 37
+                    
+                        $exists = Inventario::
+                            where('codigo', $value)
+                            ->where('empresa_id', $this->empresa->id)
+                            ->exists();
+
+                            // dd($exists);
+                        if ($exists) {
+                            $exists = Inventario::select('detalle')
+                            ->where('codigo', $value)
+                            ->where('empresa_id', $this->empresa->id)
+                            ->get();
+                            $fail("El código '{$value}' ya existe en el Inventario. Articulo: '{$exists[0]->detalle}'");
+                        }
+                    
+                },
+            ],
+            'detalle' => 'required|min:1|max:250',
+            'costo' => 'required|numeric|min:0',
+            'porcentaje1' => 'required|numeric|min:0',
+            'precio1' => 'required|numeric|min:0',
+            'precio2' => 'required|numeric|min:0',
+            'precio3' => 'required|numeric|min:0',
+            'iva' => 'required|numeric|min:0',
+            'rubro' => 'required',
+            'proveedor' => 'required',
+            'nuevoStock' => 'required|numeric|min:0',
+        ], [
+            // Mensajes personalizados
+            'required' => 'Requerido',
+            'min' => 'Minimo :min',
+            'max' => 'Maximo :max caracteres',
+            'numeric' => 'Solo Números',
+        ]);
+
 
         $this->controlStock = $this->nuevoStock > 0 ? 'si' : 'no';
 
-            $nuevoArticulo = inventario::updateOrCreate(
-                ['id' => $this->idArticulo, 'empresa_id' => $this->empresa->id],
+            $nuevoArticulo = inventario::create(
                 [
-                    'codigo' => $this->codigo,
+                    // 'id' => $this->idArticulo, 
+                    'codigo' => trim($this->codigo),
+                    'empresa_id' => $this->empresa->id,
+
                     'detalle'=> $this->detalle,
                     'costo'=> round($this->costo,2),
                     'precio1'=> round($this->precio1,2),
@@ -404,6 +509,105 @@ class VerInventario extends Component
 
         $this->datoBuscado= $nuevoArticulo->codigo;
         $this->modal='close';
+    }
+
+    public function editarArticulo(){
+
+        // Validaciones generales
+        $this->validate([
+            'codigo' => [
+                'required',
+                'min:1',
+                'max:250',
+                function ($attribute, $value, $fail) {
+                    // Validación adicional para códigos duplicados si empresa_id es 37
+                    
+                        $exists = Inventario::
+                            where('codigo', $value)
+                            ->where('empresa_id', $this->empresa->id)
+                            ->where('id','!=', $this->idArticulo)
+                            ->exists();
+
+                            // dd($exists);
+                        if ($exists) {
+                            $exists = Inventario::select('detalle')
+                            ->where('codigo', $value)
+                            ->where('empresa_id', $this->empresa->id)
+                            ->get();
+                            $fail("El código '{$value}' ya existe en el Inventario. Articulo: '{$exists[0]->detalle}'");
+                        }
+                    
+                },
+            ],
+            'detalle' => 'required|min:1|max:250',
+            'costo' => 'required|numeric|min:0',
+            'porcentaje1' => 'required|numeric|min:0',
+            'precio1' => 'required|numeric|min:0',
+            'precio2' => 'required|numeric|min:0',
+            'precio3' => 'required|numeric|min:0',
+            'iva' => 'required|numeric|min:0',
+            'rubro' => 'required',
+            'proveedor' => 'required',
+            'nuevoStock' => 'required|numeric|min:0',
+        ], [
+            // Mensajes personalizados
+            'required' => 'Requerido',
+            'min' => 'Minimo :min',
+            'max' => 'Maximo :max caracteres',
+            'numeric' => 'Solo Números',
+        ]);
+
+
+        $this->controlStock = $this->nuevoStock > 0 ? 'si' : 'no';
+
+        $articulo = Inventario::find($this->idArticulo);
+ 
+
+        $articulo->codigo  = trim($this->codigo);
+        $articulo->detalle = $this->detalle;
+        $articulo->costo = round($this->costo,2);
+        $articulo->precio1 = round($this->precio1,2);
+        $articulo->precio2 = round($this->precio2,2);
+        $articulo->precio3 = round($this->precio3,2);
+        $articulo->porcentaje = round($this->porcentaje1,2);
+        $articulo->iva = round($this->iva,2);
+        $articulo->rubro = $this->rubro;
+        $articulo->proveedor = $this->proveedor;
+        $articulo->marca = $this->marca;
+        $articulo->pesable = $this->pesable;
+        $articulo->controlStock = $this->controlStock;
+        $articulo->imagen = $this->imagen;
+        
+        $articulo->save();
+
+
+            $this->nuevoStock > 0 ? $this->modificarStockArticulo() : '';
+
+        //PARA ACTUALIZAR EL DETALLE DEL CODIGO EN LA TABLA STOCK Y NO SE GENERE MAL LA INFORMACION
+        Stock::where('codigo', $this->codigo)
+        ->where('empresa_id', $this->empresa->id)
+        ->update(['detalle' => $this->detalle]);
+
+        $this->idArticulo=0;
+        $this->codigo='';
+        $this->detalle='';
+        $this->costo=0;
+        $this->porcentaje1 =0;
+        $this->precio1=0;
+        $this->precio2=0;
+        $this->precio3=0;
+        $this->porcentaje1=0;
+        $this->iva = $this->empresa->ivaDefecto;
+        $this->rubro='General';
+        $this->proveedor='General';
+        $this->marca='General';
+        $this->pesable = 'no';
+        $this->controlStock = 'no';
+        $this->imagen='';
+        $this->ivaIncluido=false;
+
+        $this->datoBuscado= $articulo->codigo;
+        $this->modalEditar='close';
     }
 
     public function ordenarGrilla($ordenarPor){
@@ -465,6 +669,30 @@ class VerInventario extends Component
             $this->modal = 'open';
         }else{
             $this->modal = 'close';
+
+            $this->codigo='';
+            $this->detalle='';
+            $this->costo=0;
+            $this->porcentaje1 =0;
+            $this->precio1=0;
+            $this->precio2=0;
+            $this->precio3=0;
+            $this->iva = $this->empresa->ivaDefecto;
+            $this->rubro='General';
+            $this->proveedor='General';
+            $this->pesable = 'no';
+            $this->imagen='';
+            $this->ivaIncluido= false;
+            
+        }
+    }
+
+    public function cambiarModalEditar(){
+
+        if($this->modalEditar == 'close'){
+            $this->modalEditar = 'open';
+        }else{
+            $this->modalEditar = 'close';
 
             $this->codigo='';
             $this->detalle='';

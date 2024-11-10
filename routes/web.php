@@ -65,6 +65,8 @@ use App\Models\User; //PRUEBAS
 use Illuminate\Support\Facades\DB; //PRUEBAS
 use App\Models\Rubro; 
 use App\Models\Proveedor;
+use App\Models\Inventario;
+
 
 
 
@@ -104,6 +106,177 @@ use Illuminate\Http\Request;
 
 
 
+
+
+            Route::get('/pasarDomicilio', function () {
+
+                $empresas= Empresa::all();
+
+                foreach ($empresas as $key => $value) {
+                    dump($value->domicilio .' '.$value->razonSocial);
+
+                    $affected = DB::table('users')
+                    ->where('empresa_id',$value->id)
+                    ->update(['domicilio' => $value->domicilio]);
+
+                    dump('actualizado '. $affected);
+                }
+
+                
+            });
+
+
+            Route::get('/buscarDuplicados', function () {
+
+                $empresas= Empresa::all();
+
+                // ESTE CODIGO PARA BUSCAR LOS DUPLICADOS;
+
+                foreach ($empresas as $key => $value) {
+                    dump($value->id .' '.$value->razonSocial);
+
+                    $affected = DB::select('                    
+                        SELECT detalle, codigo, empresa_id, COUNT(*) AS cantidad
+                        FROM inventarios
+                        WHERE empresa_id = ?
+                        GROUP BY codigo
+                        HAVING cantidad > 1', 
+                        [$value->id]);
+
+
+
+                    dump(count($affected));
+
+                    dump($affected);
+
+
+                    
+                    
+                }
+
+
+                
+            });
+
+            Route::get('/eliminarDuplicados/{idEmpresa}', function ($idEmpresa) {
+
+                $empresa= Empresa::find($idEmpresa);
+
+                dump('Empresa id: '.$empresa->id .' Nombre: '.$empresa->razonSocial);
+
+
+                // ESTE CODIGO PARA ELIMINAR LOS DUPLICADOS COMPLETAR CON EL ID EMPRESA PARA NO ERRRAR 
+                
+                // Encuentra todos los registros duplicados excepto uno por grupo
+                    $idEmpresaParaEliminarDuplicados = $idEmpresa;
+                    $duplicados = Inventario::select('codigo', 'empresa_id', DB::raw('MIN(id) as id'))
+                    ->where('empresa_id', $idEmpresaParaEliminarDuplicados)
+                    ->groupBy('codigo', 'empresa_id')
+                    ->pluck('id');
+
+                // Elimina los registros que no están en la lista de IDs únicos
+
+                $resultadoEliminado = Inventario::where('empresa_id', $idEmpresaParaEliminarDuplicados)
+                    ->whereNotIn('id', $duplicados)
+                    ->delete();
+
+                dump('Cantidad de eliminados: '.$resultadoEliminado);
+                
+            });
+
+
+
+            Route::get('/pasarRubros', function () {
+
+                $articulos= DB::table('inventarios')
+                            ->where('empresa_id' , Auth::user()->empresa_id)
+                            
+                            ->get();
+
+
+                // dd($articulos[0]->rubro);
+
+                foreach ($articulos as $key => $value) {
+
+                    // dump($value->rubro .' '.$value->proveedor);
+
+                    $r = Rubro::updateOrCreate(
+                        ['nombre' => $value->rubro, ],
+                        ['empresa_id' => Auth::user()->empresa_id,]
+                    );
+
+                    $p = Proveedor::updateOrCreate(
+                        ['nombre' => $value->proveedor, ],
+                        ['empresa_id' => Auth::user()->empresa_id,]
+                    );
+
+
+                }
+
+                
+            });
+
+
+            Route::get('/pasarPrecioLista', function () {
+
+                dd('habilitar del codigo');
+
+                $affectedRows = DB::table('producto_comprobantes')
+                ->where('precioLista', 0)
+                ->update(['precioLista' => DB::raw('precio')]);
+            
+                echo "Filas afectadas: producto_comprobantes" . $affectedRows;
+
+                $affectedRows = DB::table('producto_presupuestos')
+                ->where('precioLista', 0)
+                ->update(['precioLista' => DB::raw('precio')]);
+            
+                echo "Filas afectadas: producto_presupuestos" . $affectedRows;
+                
+
+                
+            });
+
+            Route::get('/detalleStock/{idEmpresa}', function ($idEmpresa) {
+
+                $inventario= Inventario::where('empresa_id',$idEmpresa)->get();
+
+                // dump($inventario);
+
+                foreach ($inventario as $key => $value) {
+                    # code...
+                    // dump($value->detalle);
+
+                    Stock::where('codigo', $value->codigo)
+                    ->where('empresa_id', $idEmpresa)
+                    ->update(['detalle' => $value->detalle]);
+
+
+                }
+
+                dump('listo');
+
+                // dump('Empresa id: '.$empresa->id .' Nombre: '.$empresa->razonSocial);
+
+
+                // // ESTE CODIGO PARA ELIMINAR LOS DUPLICADOS COMPLETAR CON EL ID EMPRESA PARA NO ERRRAR 
+                
+                // // Encuentra todos los registros duplicados excepto uno por grupo
+                //     $idEmpresaParaEliminarDuplicados = $idEmpresa;
+                //     $duplicados = Inventario::select('codigo', 'empresa_id', DB::raw('MIN(id) as id'))
+                //     ->where('empresa_id', $idEmpresaParaEliminarDuplicados)
+                //     ->groupBy('codigo', 'empresa_id')
+                //     ->pluck('id');
+
+                // // Elimina los registros que no están en la lista de IDs únicos
+
+                // $resultadoEliminado = Inventario::where('empresa_id', $idEmpresaParaEliminarDuplicados)
+                //     ->whereNotIn('id', $duplicados)
+                //     ->delete();
+
+                // dump('Cantidad de eliminados: '.$resultadoEliminado);
+                
+            });
         
 
         });
@@ -191,77 +364,6 @@ use Illuminate\Http\Request;
 
 
 
-
-
-        Route::get('/pasarDomicilio', function () {
-
-            $empresas= Empresa::all();
-
-            foreach ($empresas as $key => $value) {
-                dump($value->domicilio .' '.$value->razonSocial);
-
-                $affected = DB::table('users')
-                ->where('empresa_id',$value->id)
-                ->update(['domicilio' => $value->domicilio]);
-
-                dump('actualizado '. $affected);
-            }
-
-            
-        });
-
-
-
-        Route::get('/pasarRubros', function () {
-
-            $articulos= DB::table('inventarios')
-                        ->where('empresa_id' , Auth::user()->empresa_id)
-                        
-                        ->get();
-
-
-            // dd($articulos[0]->rubro);
-
-            foreach ($articulos as $key => $value) {
-
-                // dump($value->rubro .' '.$value->proveedor);
-
-                $r = Rubro::updateOrCreate(
-                    ['nombre' => $value->rubro, ],
-                    ['empresa_id' => Auth::user()->empresa_id,]
-                );
-
-                $p = Proveedor::updateOrCreate(
-                    ['nombre' => $value->proveedor, ],
-                    ['empresa_id' => Auth::user()->empresa_id,]
-                );
-
-
-            }
-
-            
-        });
-
-
-        Route::get('/pasarPrecioLista', function () {
-
-            dd('habilitar del codigo');
-
-            $affectedRows = DB::table('producto_comprobantes')
-            ->where('precioLista', 0)
-            ->update(['precioLista' => DB::raw('precio')]);
-        
-            echo "Filas afectadas: producto_comprobantes" . $affectedRows;
-
-            $affectedRows = DB::table('producto_presupuestos')
-            ->where('precioLista', 0)
-            ->update(['precioLista' => DB::raw('precio')]);
-        
-            echo "Filas afectadas: producto_presupuestos" . $affectedRows;
-            
-
-            
-        });
 
 
     });

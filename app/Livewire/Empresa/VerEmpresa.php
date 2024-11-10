@@ -375,7 +375,7 @@ class VerEmpresa extends Component
                                 'correo'
                             ], 'LIKE', "%$this->datoBuscado%")    
                             ->orderBy('created_at','DESC')                            
-                            ->paginate(30),
+                            ->paginate(500),
         ])
         ->extends('layouts.app')
         ->section('main');

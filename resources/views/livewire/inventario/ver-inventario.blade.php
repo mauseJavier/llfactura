@@ -476,6 +476,265 @@
         </article>
     </dialog>
 
+    <dialog {{$modalEditar}}>
+        <article>
+          <header>
+            <button aria-label="Close" rel="prev" wire:click="cambiarModalEditar"></button>
+            <p>
+              <strong>Editar Articulo</strong>
+            </p>
+          </header>
+
+          <form wire:submit="editarArticulo">
+            <fieldset>
+              <label>
+                Codigo (ID {{$idArticulo}})
+                    <input
+                    name="codigo"
+                    placeholder="Codigo"
+                    autocomplete="codigo"
+                    wire:model.blur="codigo"
+                    wire:blur="buscarCodigoDuplicado()"
+                    @error('codigo') aria-invalid="true" @enderror
+                    />
+                    @error('codigo') 
+                        <small id="invalid-helper">
+                            {{ $message }} 
+                        </small>                               
+                    @enderror
+
+                    @if (session('codigoDuplicado'))
+                        <p style="color: red;">
+                            {{ session('codigoDuplicado') }}
+                        </p>    
+                    @endif
+              </label>
+              <label>
+                Detalle
+                <input
+                  type="text"
+                  name="detalle"
+                  placeholder="Detalle"
+                  autocomplete="detalle"
+                  wire:model.blur="detalle"
+                  @error('detalle') aria-invalid="true" @enderror
+                  />
+                  @error('detalle') 
+                      <small id="invalid-helper">
+                          {{ $message }} 
+                      </small>                               
+                  @enderror
+              </label>
+            </fieldset>
+
+
+
+                <div class="grid">
+
+                    <div class="col">                    
+                            <fieldset>
+                                <label>
+                                    IVA Incluido?
+                                </label>
+                                <input name="ivaIncluido" wire:model.live="ivaIncluido" wire:click="calcularPrecios" type="checkbox" role="switch" />
+                            </fieldset>                   
+                    </div>
+                    <div class="col">
+                        <label for="algo">Costo
+                            <input type="text" wire:model.live="costo" wire:keydown="calcularPrecios" name="" id=""
+                            @error('costo') aria-invalid="true" @enderror
+                            />
+                            @error('costo') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="algo">Iva
+                            <input type="text" wire:model.blur="iva" wire:keydown="calcularPrecios" name="" id=""
+                                @error('iva') aria-invalid="true" @enderror
+                            >
+                            @error('iva') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
+                </div>
+                <div class="grid">
+                    <div class="col">
+                        <label for="">Lista
+                            <select name="" wire:model.blur="porcentaje1" wire:change="calcularPrecios">
+                                <option value="0">% 0</option>
+                                @foreach ($listaPrecios as $precio)
+                                    <option value="{{$precio->porcentaje}}">{{$precio->nombre}} ({{$precio->porcentaje}}%)</option>
+                                @endforeach
+                               </select>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="algo">Porcentaje
+                            <input type="text" wire:model.blur="porcentaje1" wire:keydown="calcularPrecios" name="" id=""
+                            @error('porcentaje1') aria-invalid="true" @enderror
+                            />
+                            @error('porcentaje1') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
+                </div>
+                <div class="grid">
+                    <div class="col">
+                        <label for="">Precio 1
+                            <input type="text" wire:model.live="precio1" 
+                            @error('precio1') aria-invalid="true" @enderror
+                            />
+                            @error('precio1') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="">P.2 ({{$empresa->precio2}}% de P1)
+                            <input type="text" wire:model.blur="precio2"
+                            @error('precio2') aria-invalid="true" @enderror
+                            />
+                            @error('precio2') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="">P.3 ({{$empresa->precio3}}% de P1)
+                            <input type="text" wire:model.blur="precio3"
+                            @error('precio3') aria-invalid="true" @enderror
+                            />
+                            @error('precio3') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                </small>                               
+                            @enderror
+                        </label>
+                    </div>
+                </div>
+
+                <div class="grid">
+                    <div class="col">
+                        <label for="">Rubro
+                            <select name="" id="" wire:model="rubro">
+                                <option value="General">General</option>
+                                @foreach ($listaRubros as $rubro)
+                                    <option value="{{$rubro->nombre}}">{{$rubro->nombre}}</option>                                
+                                @endforeach
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="">Proveedor
+                            <select name="" id="" wire:model="proveedor">
+                                <option value="General">General</option>
+                                @foreach ($listaProveedores as $pro)
+                                    <option value="{{$pro->nombre}}">{{$pro->nombre}}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                    </div>
+                    <div class="col">
+                        <label for="">Marca
+                            <select name="" id="" wire:model="marca">
+                                <option value="General">General</option>
+                                @foreach ($listaMarcas as $mar)
+                                    <option value="{{$mar->nombre}}">{{$mar->nombre}}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+            <hr>
+
+                {{-- NUEVO STOCK --}}
+                <div class="grid">                   
+    
+                        <div class="col">
+                            Depositos
+                            <select wire:model="idDeposito" name="idDeposito" aria-label="">
+                                @foreach ($depositos as $item)
+                                    <option value="{{$item->id}}">{{$item->nombre}}</option>                        
+                                @endforeach
+                            </select>
+                        </div>
+    
+                        <div class="col">
+    
+                            <label>
+                            Stock (0=Sin Control)
+                            <input
+                                wire:model.live="nuevoStock"
+                                name="nuevoStock"
+                                placeholder="Stock"
+                                autocomplete="nuevoStock"
+                                @error('nuevoStock') aria-invalid="true" @enderror
+                            />
+                                @error('nuevoStock') 
+                                <small id="invalid-helper">
+                                    {{ $message }} 
+                                    </small>
+                                @enderror
+                            
+                            </label>
+                        </div>
+    
+    
+    
+                   
+                </div>
+
+            <hr />
+
+            <details >
+                <summary>Mas:</summary>
+
+
+                <div class="grid">
+                    <div class="col">
+                        <label for="">Pesable
+                            <select name="" id="" wire:model="pesable">
+                                <option value="no" selected>No</option>
+                                <option value="si">Si</option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="col">
+                        <label for="">Imagen
+                            <input type="text" wire:model="imagen">
+                        </label>
+                    </div>
+                </div>
+
+            </details>
+
+
+            <input
+              type="submit"
+              value="Guardar"
+            />
+          </form>
+          <button wire:click="cambiarModalEditar" class="outline">Cancelar</button>
+
+        </article>
+    </dialog>
+
     <dialog x-bind:open="isOpenRubro">
         <article>
           <header>

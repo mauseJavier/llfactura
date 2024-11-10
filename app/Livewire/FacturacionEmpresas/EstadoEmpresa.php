@@ -80,7 +80,7 @@ class EstadoEmpresa extends Component
                 )
                 ->groupBy('empresas.id')
                 ->orderBy('totalFacturado','DESC')
-                ->paginate(100)
+                ->paginate(500)
             
         ,
 
