@@ -141,29 +141,44 @@ class VerVentasArticulos extends Component
         fputcsv($handle, ['Fecha','Codigo','Detalle', 'Cantidad', 
                             'Costo','PLista','Descuento',
                             'PVenta','Rubro',
-                            'Proveedor','Marca',
+                            'Proveedor','Marca','FP Uno','FP Dos',
                             'TipoComp','PtoVenta','Usuario',]);
 
         // Ejecutar la consulta para obtener los datos
-        $articulos= productoComprobante::where('empresa_id',Auth::user()->empresa_id)
-        ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+        $articulos= productoComprobante::                        
+                select(
+                    'producto_comprobantes.*',
+                    'fp1.nombre as nombreFormaPago1',
+                    'fp2.nombre as nombreFormaPago2'
+                )
+                ->join('forma_pagos as fp1', 'producto_comprobantes.idFormaPago', '=', 'fp1.id')
+                ->join('forma_pagos as fp2', 'producto_comprobantes.idFormaPago2', '=', 'fp2.id')
 
-        ->when($codigo, function ($query) use ($codigo) {
-            return $query->where('codigo', 'like', '%' . $codigo . '%');
-        })
-        ->when($detalle, function ($query) use ($detalle) {
-            return $query->where('detalle', 'like', '%' . $detalle . '%');
-        })
-        ->when($rubro, function ($query) use ($rubro) {
-            return $query->where('rubro', 'like', '%' . $rubro . '%');
-        })
-        ->when($proveedor, function ($query) use ($proveedor) {
-            return $query->where('proveedor', 'like', '%' . $proveedor . '%');
-        })
-        ->when($marca, function ($query) use ($marca) {
-            return $query->where('marca', 'like', '%' . $marca . '%');
-        })        
-        ->get();
+
+                ->selectRaw(DB::raw('round(precio/(iva/100+1),2) as precioSINiva'))
+                ->where('empresa_id',Auth::user()->empresa_id)
+                ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+
+                ->when($codigo, function ($query) use ($codigo) {
+                    return $query->where('codigo', 'like', '%' . $codigo . '%');
+                })
+                ->when($detalle, function ($query) use ($detalle) {
+                    return $query->where('detalle', 'like', '%' . $detalle . '%');
+                })
+                ->when($rubro, function ($query) use ($rubro) {
+                    return $query->where('rubro', 'like', '%' . $rubro . '%');
+                })
+                ->when($proveedor, function ($query) use ($proveedor) {
+                    return $query->where('proveedor', 'like', '%' . $proveedor . '%');
+                })
+                ->when($marca, function ($query) use ($marca) {
+                    return $query->where('marca', 'like', '%' . $marca . '%');
+                })
+
+                ->orderByDesc('producto_comprobantes.id')
+
+                
+                ->get();
 
             // dd($articulos);
 
@@ -218,6 +233,11 @@ class VerVentasArticulos extends Component
                 $item->rubro,
                 $item->proveedor,
                 $item->marca,
+
+                $item->nombreFormaPago1,
+                $item->nombreFormaPago2,
+
+
                 $tipoComp,
                 $item->ptoVta,
                 $item->usuario,
@@ -255,26 +275,40 @@ class VerVentasArticulos extends Component
 
 
         // Ejecutar la consulta para obtener los datos
-        $articulos= productoComprobante::where('empresa_id',Auth::user()->empresa_id)
-        ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+        $articulos= productoComprobante::                        
+            select(
+                'producto_comprobantes.*',
+                'fp1.nombre as nombreFormaPago1',
+                'fp2.nombre as nombreFormaPago2'
+            )
+            ->join('forma_pagos as fp1', 'producto_comprobantes.idFormaPago', '=', 'fp1.id')
+            ->join('forma_pagos as fp2', 'producto_comprobantes.idFormaPago2', '=', 'fp2.id')
 
-        ->when($codigo, function ($query) use ($codigo) {
-            return $query->where('codigo', 'like', '%' . $codigo . '%');
-        })
-        ->when($detalle, function ($query) use ($detalle) {
-            return $query->where('detalle', 'like', '%' . $detalle . '%');
-        })
-        ->when($rubro, function ($query) use ($rubro) {
-            return $query->where('rubro', 'like', '%' . $rubro . '%');
-        })
-        ->when($proveedor, function ($query) use ($proveedor) {
-            return $query->where('proveedor', 'like', '%' . $proveedor . '%');
-        })
-        ->when($marca, function ($query) use ($marca) {
-            return $query->where('marca', 'like', '%' . $marca . '%');
-        })
-        
-        ->get();
+
+            ->selectRaw(DB::raw('round(precio/(iva/100+1),2) as precioSINiva'))
+            ->where('empresa_id',Auth::user()->empresa_id)
+            ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+
+            ->when($codigo, function ($query) use ($codigo) {
+                return $query->where('codigo', 'like', '%' . $codigo . '%');
+            })
+            ->when($detalle, function ($query) use ($detalle) {
+                return $query->where('detalle', 'like', '%' . $detalle . '%');
+            })
+            ->when($rubro, function ($query) use ($rubro) {
+                return $query->where('rubro', 'like', '%' . $rubro . '%');
+            })
+            ->when($proveedor, function ($query) use ($proveedor) {
+                return $query->where('proveedor', 'like', '%' . $proveedor . '%');
+            })
+            ->when($marca, function ($query) use ($marca) {
+                return $query->where('marca', 'like', '%' . $marca . '%');
+            })
+
+            ->orderByDesc('producto_comprobantes.id')
+
+            
+            ->get();
 
         $iva= productoComprobante::                        
         select(DB::raw('SUM(round( precio - (precio / (iva / 100 + 1)), 3)) as totalSINiva'))
@@ -331,8 +365,17 @@ class VerVentasArticulos extends Component
 
 
         return view('livewire.ventas.ver-ventas-articulos',[
-            'articulos'=> productoComprobante::
-                        select('*')
+
+            'articulos'=> productoComprobante::                        
+                        select(
+                            'producto_comprobantes.*',
+                            'fp1.nombre as nombreFormaPago1',
+                            'fp2.nombre as nombreFormaPago2'
+                        )
+                        ->join('forma_pagos as fp1', 'producto_comprobantes.idFormaPago', '=', 'fp1.id')
+                        ->join('forma_pagos as fp2', 'producto_comprobantes.idFormaPago2', '=', 'fp2.id')
+
+
                         ->selectRaw(DB::raw('round(precio/(iva/100+1),2) as precioSINiva'))
                         ->where('empresa_id',Auth::user()->empresa_id)
                         ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
@@ -352,6 +395,9 @@ class VerVentasArticulos extends Component
                         ->when($marca, function ($query) use ($marca) {
                             return $query->where('marca', 'like', '%' . $marca . '%');
                         })
+
+                        ->orderByDesc('producto_comprobantes.id')
+
                         
                         ->paginate(50),
 

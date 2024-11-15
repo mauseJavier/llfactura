@@ -48,8 +48,8 @@ class PresupuestoController extends Controller
 
         foreach ($productos as $key => $value) {     
             
-            $totalDescuento += round($value->descuento * $value->cantidad,2);
-            $subTotalPrecioLista += round($value->precioLista * $value->cantidad,2);
+            $totalDescuento += round($value->descuento * $value->cantidad,3);
+            $subTotalPrecioLista += round($value->precioLista * $value->cantidad,3);
 
 
 

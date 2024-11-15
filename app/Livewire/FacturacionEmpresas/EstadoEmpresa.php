@@ -36,26 +36,35 @@ class EstadoEmpresa extends Component
         $handle = fopen($filename, 'w');
 
         // Agregar los encabezados al archivo CSV
-        fputcsv($handle, ['ID Empresa', 'Nombre Empresa', 'Total Facturado']);
+        fputcsv($handle, ['ID Empresa', 'Nombre Empresa', 'Total Facturado','Vencimiento','Pago']);
 
-        // Ejecutar la consulta para obtener los datos
-        $empresas = DB::table('empresas')
-            ->join('comprobantes', 'empresas.id', '=', 'comprobantes.empresa_id')
-            ->select(
-                'empresas.id',
-                'empresas.razonSocial',
-                DB::raw('SUM(CASE WHEN comprobantes.fecha BETWEEN "' . Carbon::now()->startOfMonth() . '" AND "' . Carbon::now()->endOfMonth() . '" THEN comprobantes.total ELSE 0 END) as totalFacturado')
-            )
-            ->groupBy('empresas.id')
-            ->orderBy('totalFacturado','DESC')
-            ->get();
+        // Obtener todas las empresas
+        $empresas = DB::table('empresas')->get()->toArray();
+
+        // Recorrer cada empresa para calcular el total facturado del mes actual
+        foreach ($empresas as $key => $empresa) {
+            $totalFacturado = DB::table('comprobantes')
+                ->where('empresa_id', $empresa->id)
+                ->whereBetween('fecha', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
+                ->sum('total');
+
+            $empresas[$key]->totalFacturado = $totalFacturado;
+        }
+
+        // Ordenar las empresas por total facturado de forma descendente
+        usort($empresas, function($a, $b) {
+            return $b->totalFacturado <=> $a->totalFacturado;
+        });
 
         // Escribir los datos de la consulta en el archivo CSV
         foreach ($empresas as $empresa) {
             fputcsv($handle, [
                 $empresa->id,
                 $empresa->razonSocial,
-                $empresa->totalFacturado
+                $empresa->totalFacturado,
+                $empresa->vencimientoPago,
+                $empresa->pagoServicio == 1 ?  'SI' : 'NO',
+
             ]);
         }
 
@@ -67,22 +76,88 @@ class EstadoEmpresa extends Component
 
     }
 
+
+    public function modificarFechaVencimientoPago(Empresa $empresa,$fecha){
+
+
+        $empresa->vencimientoPago=$fecha;
+        $empresa->save();
+
+
+        session()->flash('mensaje', 'Fecha Actualizada. '. $empresa->razonSocial .' Fecha: '. $fecha);
+
+
+    }
+
+    public function pagarEmpresa(Empresa $empresa,$fecha){
+
+
+
+        $empresa->vencimientoPago=$fecha;
+        $empresa->pagoServicio= $empresa->pagoServicio == 1 ?  0 : 1;
+
+        $empresa->save();
+
+        $this->render();
+
+        session()->flash('mensaje', 'Pago Realizado. '. $empresa->razonSocial .' Fecha: '. $fecha);
+
+
+    }
+
+
+    public function reiniciarPagos(){
+
+        // Crea una instancia de Carbon para la fecha actual
+            $fechaActual = Carbon::now();
+
+            // Modifica el día a 10
+            $dia10 = $fechaActual->setDay(10);
+
+            // Formatea la fecha al formato deseado: '2024-11-01'
+            $fechaFormateada = $dia10->format('Y-m-d');
+
+            $affected = DB::table('empresas')
+              ->update(['vencimientoPago' => $fechaFormateada,
+              'pagoServicio'=>0]);
+
+
+                session()->flash('mensaje', 'Riniciado mes actual. '. $affected);
+
+
+    }
+
     public function render()
     {
+
+        // Obtener todas las empresas
+        $empresas = DB::table('empresas')->get()->toArray();
+
+        // Recorrer cada empresa para calcular el total facturado del mes actual
+        foreach ($empresas as $key => $empresa) {
+            $totalFacturado = DB::table('comprobantes')
+                ->where('empresa_id', $empresa->id)
+                ->whereBetween('fecha', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
+                ->sum('total');
+
+            $empresas[$key]->totalFacturado = $totalFacturado;
+        }
+
+        // Ordenar las empresas por total facturado de forma descendente
+        usort($empresas, function($a, $b) {
+            return $b->totalFacturado <=> $a->totalFacturado;
+        });
+
+        // Ahora $empresas está ordenado por totalFacturado en orden descendente
         
+        // dd($empresas);
+
         return view('livewire.facturacion-empresas.estado-empresa',[
             'empresas'=> 
-            $empresas = DB::table('empresas')
-                ->join('comprobantes', 'empresas.id', '=', 'comprobantes.empresa_id')
-                ->select(
-                    'empresas.*',
-                    DB::raw('SUM(CASE WHEN comprobantes.fecha BETWEEN "' . Carbon::now()->startOfMonth() . '" AND "' . Carbon::now()->endOfMonth() . '" THEN comprobantes.total ELSE 0 END) as totalFacturado')
-                )
-                ->groupBy('empresas.id')
-                ->orderBy('totalFacturado','DESC')
-                ->paginate(500)
-            
-        ,
+                    $empresas            
+                ,
+
+                'usuario'=>'usuario'
 
         ])
         ->extends('layouts.app')

@@ -372,6 +372,8 @@ class VerInventario extends Component
         $this->pesable = $articulo->pesable;
         $this->controlStock = $articulo->controlStock;
         $this->imagen=$articulo->imagen;
+        $this->marca=$articulo->marca;
+
 
 
         $this->modalEditar="open";

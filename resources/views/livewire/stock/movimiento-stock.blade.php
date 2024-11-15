@@ -9,6 +9,9 @@
                     <a wire:navigate role="button" href="{{route('stock')}}">Stock</a>
                 </div>
                 <div class="col">
+                    <label for="">
+                        Buscar Local
+                    </label>
 
                     <!-- Select -->
                     <select wire:model.live="depositoId">
@@ -20,6 +23,9 @@
                     </select>
                 </div>
                 <div class="col">
+                    <label for="">
+                        Si el codigo no es "=" utiliza "LIKE"
+                    </label>
                     <input
                         type="search"
                         name="buscar"

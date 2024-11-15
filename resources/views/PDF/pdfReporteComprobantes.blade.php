@@ -84,8 +84,8 @@
         <div class="col">
           <article>
             @foreach ($totales as $item)  
-              <label for="">{{$item->nombre}}: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>  
-              <br>                         
+            <label for="">{{$item['nombre']}}: ${{number_format($item['total'], 2, ',', '.')}}</label>                           
+            <br>                         
             @endforeach   
           </article>
 

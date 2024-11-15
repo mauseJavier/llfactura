@@ -55,8 +55,15 @@ class NuevoComprobante extends Component
     public $domicilio;
     public $correoCliente;
     public $leyenda;
+
     public $formaPago;
+    public $formaPago2;
+
     public $idFormaPago;
+    public $idFormaPago2;
+
+    public $importeUno;
+    public $importeDos;
 
     public $empresa;
     public $usuario;
@@ -88,6 +95,21 @@ class NuevoComprobante extends Component
 
   
 
+    public function igualarTotal(){
+        $this->importeUno = $this->total;
+        $this->importeDos = 0;
+        $this->idFormaPago2 = 'NO';
+
+
+    }
+
+    public function igualarTotalImporteUno(){
+
+        $this->importeUno = $this->total;
+        $this->importeDos = 0;
+        $this->idFormaPago2 = 'NO';
+
+    }
 
 
     #[On('seleccionarCliente')] 
@@ -136,6 +158,8 @@ class NuevoComprobante extends Component
     public function facturar(Request $request)//este request es por la session 
     {
 
+        // dd($this->importeUno .' '. $this->importeDos);
+
         $validated = $this->validate([
             'cuit' => [
                 'required',
@@ -166,7 +190,9 @@ class NuevoComprobante extends Component
 
                 },
             ],
-            'total' => [
+
+
+            'importeUno' => [
                 'required',
                 'numeric',
                 function ($attribute, $value, $fail) {
@@ -174,7 +200,37 @@ class NuevoComprobante extends Component
                         $fail('El número debe ser mayor a 0.');
                     }
                 },
+
             ],
+
+            'importeDos' => [
+                'required',
+                'numeric',
+
+            ],
+
+            'total' => [
+                'required',
+                'numeric',
+                function ($attribute, $value, $fail) {
+                    if ($value == 0) {
+                        $fail('El número debe ser mayor a 0.');
+                    }
+                    // Validación para verificar que total >= (importeUno + importeDos)
+                    if(is_numeric($this->importeUno) AND is_numeric($this->importeDos)){
+
+                        if ((doubleVal($value) - doubleVal($this->importeUno + $this->importeDos)) != 0) {
+                            $fail('Diferencia : $'.number_format ($value - ($this->importeUno + $this->importeDos),2) .' en la Pago. El PAGO debe ser justo.' );
+                        }
+                    }
+                    else{
+                        $fail('Importe Uno y Dos Numerico');
+
+                    }
+
+                },
+            ],
+
             'razonSocial' => [
                 'required',
                 'min:1',
@@ -188,6 +244,7 @@ class NuevoComprobante extends Component
             'required' => 'El campo :attribute es obligatorio.',
             'numeric' => 'El campo :attribute debe ser un numero válido.',
         ]);
+
 
 
         // AK TENEMOS QUE SABER SI VAMOS A HACER A B C O REMITO PRESUPUESTO    
@@ -281,7 +338,7 @@ class NuevoComprobante extends Component
         }elseif($this->tipoComprobante == 'presupuesto'){
             $comprobanteId = $this->finalizarPresupuesto(); 
         }else{
-            dd($this->tipoComprobante);
+            dd('Tipo de comprobante erroneo: '.$this->tipoComprobante);
         }
 
 
@@ -317,6 +374,13 @@ class NuevoComprobante extends Component
 
 
 
+    public function modificarFormaPago2(){
+
+        $this->formaPago2 = FormaPago::where('id','!=',$this->idFormaPago)                                        
+        ->get();
+
+    }
+
     public function mount (){
 
         //datos del cliente
@@ -328,10 +392,16 @@ class NuevoComprobante extends Component
             $this->total = $this->carrito['total'];
             $this->modificarImporte='disabled';
 
+            $this->importeUno = $this->carrito['total'];
+
+
         }else{
             $this->total = 0;
+            $this->importeUno = 0;
+
         }
 
+        $this->importeDos = 0;
 
         // $now = Carbon::now()->format('Y-m-d H:i:s');
         // echo $now->format('Y-m-d H:i:s'); 
@@ -364,7 +434,13 @@ class NuevoComprobante extends Component
 
         $this->formaPago = FormaPago::all();
         $this->idFormaPago = $this->empresa->idFormaPago;
+        $this->idFormaPago2 = 'NO';
+
         $this->imprimir = $this->empresa->imprimirSiNo;
+
+        $this->formaPago2 = FormaPago::where('id','!=',$this->idFormaPago)                                        
+                                        ->get();
+
 
         $this->remitoEntrega = 'no'; //no (se entrega en el momento ) si (se entrega posterior)
 
@@ -1656,6 +1732,7 @@ class NuevoComprobante extends Component
                     }
                 }';
          
+
         
                 // Post::create($validated);
                 $comprobante = Comprobante::create([
@@ -1673,12 +1750,19 @@ class NuevoComprobante extends Component
                     'tipoComp'=>$this->tipoComprobante,
                     'fecha'=> Carbon::now()->format('Y-m-d H:i:s'),
                     'leyenda'=> $this->leyenda,
+
                     'idFormaPago'=>$this->idFormaPago,
+                    'importeUno'=>$this->importeUno,
+                    'idFormaPago2'=>($this->idFormaPago2 == 'NO')? $this->idFormaPago :  $this->idFormaPago2 ,
+                    'importeDos'=>($this->idFormaPago2 == 'NO')? 0 :$this->importeDos ,
+
+
                     'ptoVta'=>$nuevoComprobante->FeCabResp->PtoVta,
                     'deposito_id'=>$this->usuario->deposito_id,
                     'usuario'=> $this->usuario->name,
                     'remito'=>  $this->remitoEntrega, //no (se entrega en el momento ) si (se entrega posterior)
                 ]);
+
         
         
                 $cliente = Cliente::updateOrCreate(
@@ -1719,7 +1803,7 @@ class NuevoComprobante extends Component
 
 
 
-                            'precio'=>$value['precio'],
+                            'precio'=>round($value['precio'] * $value['cantidad'],2),
                             'iva'=>$value['iva'],
                             'cantidad'=>$value['cantidad'],
                             'rubro'=>$value['rubro'],
@@ -1730,6 +1814,8 @@ class NuevoComprobante extends Component
                             'tipoComp'=>$this->tipoComprobante,
                             'fecha'=>$this->fechaHoy,
                             'idFormaPago'=>$this->idFormaPago,
+                            'idFormaPago2'=>($this->idFormaPago2 == 'NO')? $this->idFormaPago :  $this->idFormaPago2,
+
                             'ptoVta'=>$nuevoComprobante->FeCabResp->PtoVta,
                             'usuario'=> $this->usuario->name,
                             'empresa_id'=> $this->empresa->id,
@@ -1755,6 +1841,7 @@ class NuevoComprobante extends Component
                     
                 }
 
+                
                 if($this->idFormaPago == 0){  //aplica el saldo a cuenta corriente
                     //AK APLICA EL SALDO AL CLIENTE
                     SaldoCuentaCorriente::dispatch([
@@ -1763,7 +1850,7 @@ class NuevoComprobante extends Component
                         'comprobante_id'=>$comprobante->id,
                         'tipo'=>'venta',
                         'comentario'=>'un comentario',
-                        'debe'=>round($this->total,2),
+                        'debe'=>round($this->importeUno,2),
                         'haber'=>0,
                         'usuario'=>$this->usuario->name,
                         // 'saldo'=>round($this->total,2), el saldo se calcula en listener 

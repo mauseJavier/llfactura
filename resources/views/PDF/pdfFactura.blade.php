@@ -141,7 +141,7 @@
 
   <table width="100%" style="text-align: center;">
     <tr>
-        <td>  
+        <td align="left">  
             <ul style="list-style-type: none;">
                 <li><small> <strong>Cliente: </strong>{{$nombreCliente}}</small></li>
                 <li><small>Cuit: <strong>{{$cuitCliente}}</strong></small></li>
@@ -149,11 +149,11 @@
 
             </ul>
         </td>
-        <td>  
+        <td align="left">  
             <ul style="list-style-type: none;">
                 <li>Condicion IVA: <strong>{{$tipoContribuyente}}</strong></li>
                 <li>{{$leyenda}}</li>
-                <li>Forma de Pago: {{$nombreFormaPago}}</li>
+                <li>Forma de Pago: {{$nombreFormaPago}}/{{$nombreFormaPago2}}</li>
                 
 
             </ul>
@@ -234,6 +234,40 @@
         <td align="right">Bon.</td>
         <td align="right">$ {{$totalDescuento}}</td>
     </tr> --}}
+
+    <tr>
+        <td colspan="5" align="right" >Importe sin Descuento: </td>
+
+
+        <td colspan="2" align="right">${{$subTotalPrecioLista}}</td>
+
+    </tr>
+
+
+    <tr>
+        <td colspan="5" align="right" >Importe Descuento: </td>
+        <td colspan="2" align="right">${{$totalDescuento}}</td>
+       
+    </tr>
+
+
+    <tr>
+        <td colspan="5" align="right" >Importe con Descuento: </td>
+
+        <td colspan="2" align="right">
+          @if ($codigoFactura == 1 OR $codigoFactura == 51)
+                ${{$subtotal}} {{-- Subtotal por que le agrega el iva despues en fac a y m   --}}
+          @else
+                ${{$totalVenta}} {{-- ak tenes todo los impuesto incluidos --}}
+          @endif
+
+        </td>
+
+    </tr>
+
+    <tr>
+      <td colspan="7"><hr></td>
+    </tr>
 
       @if ($codigoFactura == 1 OR $codigoFactura == 3 OR $codigoFactura == 51)
         <tr>

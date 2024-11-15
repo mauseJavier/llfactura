@@ -2,7 +2,6 @@
   {{-- ESN ESTE COMPONENTE UTILIZO ALPINE JS PARA LOS MODALES ABRIR Y CERRAR  --}}
     <div class="container" x-data="{ modalFiltro: false }">
 
-
         <h3>Ver Comprobantes</h3>
 
         @if (Auth()->user()->role_id == 2 OR Auth()->user()->role_id == 3 OR Auth()->user()->role_id == 4)
@@ -11,7 +10,7 @@
             <div class="col">
               <article>
                 @foreach ($totales as $item)  
-                  <label for="">{{$item->nombre}}: ${{number_format($item->sumTotal, 2, ',', '.')}}</label>                           
+                  <label for="">{{$item['nombre']}}: ${{number_format($item['total'], 2, ',', '.')}}</label>                           
                 @endforeach   
               </article>
               

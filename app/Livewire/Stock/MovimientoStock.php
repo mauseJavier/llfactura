@@ -32,23 +32,41 @@ class MovimientoStock extends Component
 
 
     }
+
     public function render()
     {
-        return view('livewire.stock.movimiento-stock',[
-            'registros'=> DB::table('stocks as a')
+        // Primera consulta: buscar por código exacto
+        $registros = DB::table('stocks as a')
             ->select('a.*', 'b.nombre as nombreDeposito')
             ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
-            ->where('a.codigo', 'like', '%' . $this->codigo . '%')
             ->where('a.empresa_id', $this->empresa->id)
             ->when($this->depositoId !== 'todo', function ($query) {
                 return $query->where('a.deposito_id', $this->depositoId);
             })
-            ->paginate(10),
-            'depositos'=> Deposito::where('empresa_id',$this->empresa->id)->get(),
+            ->where('a.codigo', $this->codigo)
+            ->paginate(50);
+
+        // Si no hay resultados, buscar con LIKE
+        if ($registros->isEmpty()) {
+            $registros = DB::table('stocks as a')
+                ->select('a.*', 'b.nombre as nombreDeposito')
+                ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
+                ->where('a.empresa_id', $this->empresa->id)
+                ->when($this->depositoId !== 'todo', function ($query) {
+                    return $query->where('a.deposito_id', $this->depositoId);
+                })
+                ->where('a.codigo', 'like', '%' . $this->codigo . '%')
+                ->paginate(50); // Asegúrate de paginar aquí
+        }
+
+        return view('livewire.stock.movimiento-stock', [
+            'registros' => $registros,
+            'depositos' => Deposito::where('empresa_id', $this->empresa->id)->get(),
         ])
         ->extends('layouts.app')
-        ->section('main'); 
+        ->section('main');
     }
+
 }
 
 

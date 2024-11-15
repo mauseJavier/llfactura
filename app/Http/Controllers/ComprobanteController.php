@@ -320,6 +320,8 @@ class ComprobanteController extends Controller
 
 
             $nombreFormaPago = FormaPago::find($comprobante[0]->idFormaPago);
+            $nombreFormaPago2 = FormaPago::find($comprobante[0]->idFormaPago2);
+
 
 
             $info = [
@@ -350,6 +352,8 @@ class ComprobanteController extends Controller
                 'tipoContribuyente'=>$tipoContribuyenteCliente,
                 'leyenda'=>$comprobante[0]->leyenda,
                 'nombreFormaPago'=>$nombreFormaPago->nombre,
+                'nombreFormaPago2'=>$nombreFormaPago2->nombre,
+
                 'producto'=> $productos,
                 'subtotal'=> number_format($subtotal,2),
                 'subTotalPrecioLista'=>number_format($subTotalPrecioLista, 2) ,

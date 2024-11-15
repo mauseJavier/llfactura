@@ -112,6 +112,10 @@
                         <th scope="col">Rubro</th>
                         <th scope="col">Proveedor</th>
                         <th scope="col">Marca</th>
+
+                        <th scope="col">FP Uno</th>
+                        <th scope="col">FP Dos</th>
+
                         <th scope="col">Fecha</th>
         
         
@@ -134,6 +138,10 @@
                                     <td>{{$a->rubro}}</td>
                                     <td>{{$a->proveedor}}</td>
                                     <td>{{$a->marca}}</td>
+
+                                    <td>{{$a->nombreFormaPago1}}</td>
+                                    <td>{{$a->nombreFormaPago2}}</td>
+
                                     <td>{{$a->fecha}}</td>    
                                 </tr>
                             @else
@@ -150,6 +158,8 @@
                                     <td>{{$a->rubro}}</td>
                                     <td>{{$a->proveedor}}</td>
                                     <td>{{$a->marca}}</td>
+                                    <td>{{$a->nombreFormaPago1}}</td>
+                                    <td>{{$a->nombreFormaPago2}}</td>
                                     <td>{{$a->fecha}}</td>
                                 </tr>
                             @endif

@@ -50,30 +50,41 @@
       @yield('main')
     </main>
 
-    <dialog id="modal-example">
-      <article>
-        <header>
-          <button
-            aria-label="Close"
-            rel="prev"
-            data-target="modal-example"
-            onclick="toggleModal(event)">
-          </button>
-          <p>
-            <strong>🗓️ Thank You for Registering!</strong>
-          </p>
-        </header>
-        <p>
-          We're excited to have you join us for our
-          upcoming event. Please arrive at the museum 
-          on time to check in and get started.
-        </p>
-        <ul>
-          <li>Date: Saturday, April 15</li>
-          <li>Time: 10:00am - 12:00pm</li>
-        </ul>
-      </article>
-    </dialog>    
+
+    <dialog id="modal-example" 
+        @if (
+              $generalEmpresa->where('id', Auth()->user()->empresa_id)->pluck('pagoServicio')[0] == 0 
+              AND 
+              $generalEmpresa->where('id', Auth()->user()->empresa_id)->pluck('vencimientoPago')[0] < date('Y-m-d') 
+            )
+            open
+        @endif
+          >
+            <article>
+              <header>
+                <button
+                  aria-label="Close"
+                  rel="prev"
+                  onclick="document.getElementById('modal-example').close()">
+                  
+                </button>
+                <p><strong>🗓️ Pago de Servicio Vencido!</strong></p>
+              </header>
+              <p>
+                  Para continuar con el sistema, abone el servicio, gracias. ! 
+
+              </p>
+
+              <ul>
+                <li>Javier Nicolas Desmaret</li>
+                <li>CVU: 0000003100044706159615</li>
+                <li>Alias: llfactura.com</li>
+                <li>CUIT/CUIL: 20358337164</li>
+                <li>Mercado Pago</li>
+              </ul>
+            </article>
+      </dialog>
+
 
   </body>
 </html>

@@ -50,7 +50,7 @@
     <tr style="align-content: center; align-items: center;">
 
       <td  style="width: 250px; "  >
-          <img src="{{$logo}}"  alt="" width="80" style="margin-top: -30px; margin-left: auto;"/>
+        <img src="{{$logo}}"  alt="" style="width: 300px; margin-top: -30px; margin-left: auto; background-size: cover;"/>
 
           <table style="text-align: center;">
             <tr>
@@ -108,7 +108,7 @@
 
   <table width="100%" style="text-align: center;">
     <tr>
-        <td>  
+        <td align="left">  
             <ul style="list-style-type: none;">
                 <li><small> <strong>Cliente: </strong>{{$nombreCliente}}</small></li>
                 <li><small>Cuit: <strong>{{$cuitCliente}}</strong></small></li>
@@ -116,7 +116,7 @@
 
             </ul>
         </td>
-        <td>  
+        <td align="left">  
             <ul style="list-style-type: none;">
                 <li><strong>{{$tipoContribuyente}}</strong></li>
                 <li>{{$leyenda}}</li>                
@@ -132,11 +132,12 @@
   <table width="100%">
     <thead style="background-color: lightgray;">
       <tr  style="">
-        <th>#</th>
+        <th>Codigo</th>
         <th>Descripcion</th>
         <th>Cant.</th>
         <th>Precio U.$</th>
-        <th>Bon.$</th>
+        <th>Bon.%</th>
+        <th>Precio B.$</th>
         <th>Sub.Total.$</th>
       </tr>
     </thead>
@@ -150,12 +151,14 @@
   <th scope="row">{{$item->codigo}}</th>
   <td>{{$item->detalle}}</td>
   <td align="right">{{$item->cantidad}}</td>
-  <td align="right">{{$item->precioLista}}</td>
+
+  <td align="right">{{number_format($item->precioLista,2)}}</td>
   <td align="right">
-    {{$item->porcentaje < 0 ? $item->descuento * $item->cantidad : '0'}}
-    {{$item->porcentaje < 0 ? '('.$item->porcentaje.'%)' : ''}}
+      {{$item->porcentaje < 0 ? $item->porcentaje : ''}}
   </td>
-  <td align="right">{{$item->precioLista * $item->cantidad}}</td>
+  <td align="right">{{number_format($item->precio,2)}}</td>
+  <td align="right">{{ number_format($item->precio * $item->cantidad,2)}}</td>
+
 </tr>
     
 @endforeach
@@ -177,24 +180,35 @@
     </tbody>
     <tr>
       <td colspan="2"></td>
-      <td colspan="4"><hr></td>
+      <td colspan="5"><hr></td>
     </tr>
     <tfoot>
 
+    <tr>
+        <td colspan="5" align="right" >Importe sin Descuento: </td>
+
+        <td colspan="2" align="right">$ {{$subTotalPrecioLista}}</td>
+
+    </tr>
+
+    <tr>
+        <td colspan="5" align="right" >Importe Descuento: </td>
+        <td colspan="2" align="right">$ {{$totalDescuento}}</td>
+
+    </tr>
+
       <tr>
-          <td colspan="4"></td>
-          <td align="right">Sub.Total</td>
-          <td align="right">$ {{$subTotalPrecioLista}}</td>
+          <td colspan="5" align="right" >Importe con Descuento: </td>
+
+          <td colspan="2" align="right">$ {{$totalVenta}}</td>
+
       </tr>
       <tr>
-          <td colspan="4"></td>
-          <td align="right">Bon.</td>
-          <td align="right">$ {{$totalDescuento}}</td>
+          <td colspan="7"><hr></td>
       </tr>
       <tr>
-          <td colspan="2"></td>
-          <td align="right">Total :</td>
-          <td colspan="3" align="right" class="gray">$ {{$totalVenta}}</td>
+          <td colspan="3" align="right">Total :</td>
+          <td colspan="4" align="right" class="gray">$ {{$totalVenta}}</td>
       </tr>
 
         <tr class="bill-row row-details">

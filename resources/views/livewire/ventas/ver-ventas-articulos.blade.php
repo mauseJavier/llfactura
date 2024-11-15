@@ -3,6 +3,7 @@
 <div class="container">
     <h3>Ventas por Articulo</h3>
 
+
     <article>
 
         <form>
@@ -76,6 +77,9 @@
                 <th scope="col">Proveedor</th>
                 <th scope="col">Marca</th>
                 <th scope="col">Fecha</th>
+                <th scope="col">FP Uno</th>
+                <th scope="col">FP Dos</th>
+
 
 
               </tr>
@@ -114,6 +118,10 @@
                             <td>{{$a->proveedor}}</td>
                             <td>{{$a->marca}}</td>
                             <td>{{$a->fecha}}</td>
+
+                            <td>{{$a->nombreFormaPago1}}</td>
+                            <td>{{$a->nombreFormaPago2}}</td>
+
                         </tr>
                     @endif
                 @endforeach

@@ -168,6 +168,8 @@ class VerComprobante extends Component
     public function exportarCSV(){
 
 
+        // ak ahy que agregar las dos formas de pago 
+
         $filename = 'comprobantes'.Carbon::now().'.csv';
 
         // Abrir o crear el archivo CSV
@@ -197,25 +199,31 @@ class VerComprobante extends Component
 
         // Agregar los encabezados al archivo CSV
         fputcsv($handle, ['ID','Fecha', 'tipoComp', 'Numero','Total','CAE','Ven.CAE','PtoVenta',
-                            'TipoDoc','NumDoc','RazonSocial','Domicilio','Leyenda','IdFpago','Usuario']);
+                            'TipoDoc','NumDoc','RazonSocial','Domicilio','Leyenda','FPagoUno','ImporteUno','FPagoDos','ImporteDos','Usuario']);
 
         // Ejecutar la consulta para obtener los datos
-        $comprobantes = Comprobante::where('empresa_id', Auth::user()->empresa_id)
-            ->where('created_at', '>=', $this->fechaFiltroDesde)
-            ->where('created_at', '<=', $this->fechaFiltroHasta)
-            ->when($this->tipoComp, function ($query, $tipoComp) {
-                return $query->where('tipoComp', $tipoComp);
-            })
-            ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-            return $query->where('numero', '=',$numeroComprobanteFiltro);
-            })
-
-            ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
-            return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
-            })
-            ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
-            ->orderByDesc('created_at')
-            ->get();
+        $comprobantes = Comprobante::select(
+            'comprobantes.*',
+            'fp1.nombre as nombreFormaPago1',
+            'fp2.nombre as nombreFormaPago2'
+        )
+        ->join('forma_pagos as fp1', 'comprobantes.idFormaPago', '=', 'fp1.id')
+        ->join('forma_pagos as fp2', 'comprobantes.idFormaPago2', '=', 'fp2.id')
+        ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+        ->where('comprobantes.created_at', '>=', $this->fechaFiltroDesde)
+        ->where('comprobantes.created_at', '<=', $this->fechaFiltroHasta)
+        ->when($this->tipoComp, function ($query, $tipoComp) {
+            return $query->where('comprobantes.tipoComp', $tipoComp);
+        })
+        ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+            return $query->where('comprobantes.numero', '=', $numeroComprobanteFiltro);
+        })
+        ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+            return $query->where('comprobantes.razonSocial', 'LIKE', '%' . $clienteComprobanteFiltro . '%');
+        })
+        ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
+        ->orderByDesc('comprobantes.created_at')
+        ->get();
 
             // dd($comprobantes);
 
@@ -269,7 +277,12 @@ class VerComprobante extends Component
                 $item->razonSocial,
                 $item->domicilio,
                 $item->leyenda,
-                $item->idFormaPago,
+                $item->nombreFormaPago1,
+                $item->importeUno,             
+                
+                $item->nombreFormaPago2,
+                $item->importeDos,
+
                 $item->usuario,
 
             ]);
@@ -287,8 +300,54 @@ class VerComprobante extends Component
     public function crearPDF(){
 
 
+        // ak ahy que agregar el nuevo totoales 
+        
 
         $fechas= array('fdesde'=>date('d/m/y',strtotime($this->fechaFiltroDesde)),'fhasta'=>date('d/m/y',strtotime($this->fechaFiltroHasta)));
+
+        $collection = Comprobante::select('comprobantes.idFormaPago as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeUno) as totalImporte'))
+        ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
+        ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+        ->whereBetween('comprobantes.created_at', [$this->fechaFiltroDesde, $this->fechaFiltroHasta])
+        ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
+        ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
+        ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
+        ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+        ->groupBy('comprobantes.idFormaPago', 'forma_pagos.nombre')
+        
+        // Unir la segunda colección
+        ->unionAll(
+            Comprobante::select('comprobantes.idFormaPago2 as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeDos) as totalImporte'))
+                ->join('forma_pagos', 'comprobantes.idFormaPago2', '=', 'forma_pagos.id')
+                ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+                ->whereBetween('comprobantes.created_at', [$this->fechaFiltroDesde, $this->fechaFiltroHasta])
+                ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
+                ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
+                ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
+                ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+                ->groupBy('comprobantes.idFormaPago2', 'forma_pagos.nombre')
+        )
+        ->get();
+
+    // Procesar los resultados combinados en un único arreglo de totales
+    $totales = [];
+
+    foreach ($collection as $comprobante) {
+        $idFormaPago = $comprobante->idFormaPago;
+        $nombre = $comprobante->nombre;
+        $totalImporte = $comprobante->totalImporte;
+
+        if (!isset($totales[$idFormaPago])) {
+            $totales[$idFormaPago] = [
+                'nombre' => $nombre,
+                'total' => 0,
+            ];
+        }
+
+        $totales[$idFormaPago]['total'] += $totalImporte;
+    }
+
+    // dd($totales);
 
         // Ejecutar la consulta para obtener los datos
         $comprobantes = Comprobante::where('empresa_id', Auth::user()->empresa_id)
@@ -326,38 +385,22 @@ class VerComprobante extends Component
         ->groupBy('tipoComp')
         ->get();
 
-        $totales= Comprobante::select('comprobantes.idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.total) as sumTotal'))
-        ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
-        ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
-        ->where('comprobantes.created_at', '>=', $this->fechaFiltroDesde)
-        ->where('comprobantes.created_at', '<=', $this->fechaFiltroHasta)
-        ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
-        ->when($this->tipoComp, function ($query, $tipoComp) {
-        return $query->where('comprobantes.tipoComp', $tipoComp);
-        })
-        ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-        return $query->where('numero', '=',$numeroComprobanteFiltro);
-        })
-        ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
-        return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
-        })
-        ->groupBy('comprobantes.idFormaPago','forma_pagos.nombre')
-        ->get();
 
-        $sumTotal = Comprobante::where('empresa_id', Auth::user()->empresa_id)
-        ->where('created_at', '>=', $this->fechaFiltroDesde)
-        ->where('created_at', '<=', $this->fechaFiltroHasta)
-        ->when($this->tipoComp, function ($query, $tipoComp) {
-        return $query->where('tipoComp', $tipoComp);
-        })
-        ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-        return $query->where('numero', '=',$numeroComprobanteFiltro);
-        })
-        ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
-        return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
-        })
-        ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
-        ->sum('total');
+
+            $sumTotal = Comprobante::where('empresa_id', Auth::user()->empresa_id)
+            ->where('created_at', '>=', $this->fechaFiltroDesde)
+            ->where('created_at', '<=', $this->fechaFiltroHasta)
+            ->when($this->tipoComp, function ($query, $tipoComp) {
+            return $query->where('tipoComp', $tipoComp);
+            })
+            ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+            return $query->where('numero', '=',$numeroComprobanteFiltro);
+            })
+            ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+            return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+            })
+            ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
+            ->sum('total');
 
 
         // Nombre del archivo
@@ -382,6 +425,58 @@ class VerComprobante extends Component
     
     public function render()
     {
+
+
+            $collection = Comprobante::select('comprobantes.idFormaPago as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeUno) as totalImporte'))
+                ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
+                ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+                ->whereBetween('comprobantes.created_at', [$this->fechaFiltroDesde, $this->fechaFiltroHasta])
+                ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
+                ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
+                ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
+                ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+                ->groupBy('comprobantes.idFormaPago', 'forma_pagos.nombre')
+                
+                // Unir la segunda colección
+                ->unionAll(
+                    Comprobante::select('comprobantes.idFormaPago2 as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeDos) as totalImporte'))
+                        ->join('forma_pagos', 'comprobantes.idFormaPago2', '=', 'forma_pagos.id')
+                        ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+                        ->whereBetween('comprobantes.created_at', [$this->fechaFiltroDesde, $this->fechaFiltroHasta])
+                        ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
+                        ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
+                        ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
+                        ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+                        ->groupBy('comprobantes.idFormaPago2', 'forma_pagos.nombre')
+                )
+                ->get();
+
+            // Procesar los resultados combinados en un único arreglo de totales
+            $totales = [];
+
+            foreach ($collection as $comprobante) {
+                $idFormaPago = $comprobante->idFormaPago;
+                $nombre = $comprobante->nombre;
+                $totalImporte = $comprobante->totalImporte;
+
+                if (!isset($totales[$idFormaPago])) {
+                    $totales[$idFormaPago] = [
+                        'nombre' => $nombre,
+                        'total' => 0,
+                    ];
+                }
+
+                $totales[$idFormaPago]['total'] += $totalImporte;
+            }
+
+
+
+
+
+
+
+
+
         return view('livewire.comprobante.ver-comprobante',[
             'comprobantes' => Comprobante::where('empresa_id', Auth::user()->empresa_id)
                                 ->where('created_at', '>=', $this->fechaFiltroDesde)
@@ -438,31 +533,93 @@ class VerComprobante extends Component
                                         ->groupBy('tipoComp')
                                         ->get(),
 
-            'totales'=> Comprobante::select('comprobantes.idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.total) as sumTotal'))
-                                        ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
-                                        ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
-                                        ->where('comprobantes.created_at', '>=', $this->fechaFiltroDesde)
-                                        ->where('comprobantes.created_at', '<=', $this->fechaFiltroHasta)
-                                        ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
-                                        ->when($this->tipoComp, function ($query, $tipoComp) {
-                                            return $query->where('comprobantes.tipoComp', $tipoComp);
-                                        })
-                                ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-                                return $query->where('numero', '=',$numeroComprobanteFiltro);
-                                })
-
-                                ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
-                                return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
-                                })
-
-
-                                        ->groupBy('comprobantes.idFormaPago','forma_pagos.nombre')
-                                        ->get(),
-
-
+            'totales'=>$totales,
             
         ])        
         ->extends('layouts.app')
         ->section('main');
     }
 }
+
+
+
+  //CONSULTA VIEJA PARA LAS DOS FORMAS DE PAGO Y LOS TOTALES 
+
+        // $collectionFormaPago1 = Comprobante::select('comprobantes.idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeUno) as totalImporteUno'))
+        // ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
+
+        // ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+        // ->where('comprobantes.created_at', '>=', $this->fechaFiltroDesde)
+        // ->where('comprobantes.created_at', '<=', $this->fechaFiltroHasta)
+        // ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
+        // ->when($this->tipoComp, function ($query, $tipoComp) {
+        // return $query->where('comprobantes.tipoComp', $tipoComp);
+        // })
+        // ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+        // return $query->where('numero', '=',$numeroComprobanteFiltro);
+        // })
+
+        // ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+        // return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+        // })
+        // ->groupBy('comprobantes.idFormaPago','forma_pagos.nombre')
+        // ->get();
+
+        // $collectionFormaPago2 = Comprobante::select('comprobantes.idFormaPago2', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeDos) as totalImporteDos'))
+        // ->join('forma_pagos', 'comprobantes.idFormaPago2', '=', 'forma_pagos.id')
+
+        // ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+        // ->where('comprobantes.created_at', '>=', $this->fechaFiltroDesde)
+        // ->where('comprobantes.created_at', '<=', $this->fechaFiltroHasta)
+        // ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
+        // ->when($this->tipoComp, function ($query, $tipoComp) {
+        // return $query->where('comprobantes.tipoComp', $tipoComp);
+        // })
+        // ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+        // return $query->where('numero', '=',$numeroComprobanteFiltro);
+        // })
+
+        // ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+        // return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+        // })
+        // ->groupBy('comprobantes.idFormaPago2','forma_pagos.nombre')
+        // ->get();
+
+
+
+        //     $totales = [];
+
+        //     // Sumar totales para idFormaPago (importeUno)
+        //     foreach ($collectionFormaPago1 as $comprobante) {
+        //         $idFormaPago = $comprobante->idFormaPago;
+        //         $nombre = $comprobante->nombre;
+        //         $totalImporteUno = $comprobante->totalImporteUno;
+
+        //         if (!isset($totales[$idFormaPago])) {
+        //             $totales[$idFormaPago] = [
+        //                 'nombre' => $nombre,
+        //                 'total' => 0,
+        //             ];
+        //         }
+
+        //         $totales[$idFormaPago]['total'] += $totalImporteUno;
+        //     }
+
+        //     // Sumar totales para idFormaPago2 (importeDos)
+        //     foreach ($collectionFormaPago2 as $comprobante) {
+        //         $idFormaPago2 = $comprobante->idFormaPago2;
+        //         $nombre = $comprobante->nombre;
+        //         $totalImporteDos = $comprobante->totalImporteDos;
+
+        //         if (!isset($totales[$idFormaPago2])) {
+        //             $totales[$idFormaPago2] = [
+        //                 'nombre' => $nombre,
+        //                 'total' => 0,
+       
+        //             ];
+        //         }
+
+        //         $totales[$idFormaPago2]['total'] += $totalImporteDos;
+        //     }
+
+
