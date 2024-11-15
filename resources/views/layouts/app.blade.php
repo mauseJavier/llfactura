@@ -75,6 +75,8 @@
 
               </p>
 
+              <h3>Datos de Transferencia:</h3>
+
               <ul>
                 <li>Javier Nicolas Desmaret</li>
                 <li>CVU: 0000003100044706159615</li>

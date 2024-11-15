@@ -3,7 +3,7 @@
 
         {{-- @dump($productos) --}}
 
-        <h1>Productos del comprobante N° {{$comprobante->numero}} </h1>
+        <h1>Productos del comprobante N° {{$comp->numero}} </h1>
         <article>
             
             <div class="grid">
@@ -19,12 +19,116 @@
                 <div class="col">
                     <form role="search"  wire:submit="">        
                         
-                        <input disabled wire:model.live="datoBuscado" name="search" type="search" placeholder="Buscar" class="seleccionarTodo" />
+                        <input disabled  name="search" type="search" placeholder="Buscar" class="seleccionarTodo" />
                         {{-- <input type="submit" value="Buscar" /> --}}
                     </form>
                 </div>
             </div>
                 
+        </article>
+
+        <article>
+
+            <h4>Detalles:</h4>
+
+            <div class="grid">
+                <div class="col">
+
+                    <label for="">
+                        Tipo: 
+                        @switch($comp->tipoComp)
+                            @case(1)
+                            <labelFactura A</label>
+                            @break
+                            @case(6)
+                            <labelFactura B</label>
+                            @break
+                            @case(11)
+                            <labelFactura C</label>
+                            @break
+                            @case(51)
+                            <labelFactura M</label>
+                            @break
+        
+                            @case('remito')
+                            <labelRemito</label>
+                            @break
+        
+                            @case('3')
+                            <labelNC A</label>
+                            @break
+                            @case('8')
+                            <labelNC B</label>
+                            @break
+                            @case('13')
+                            <labelNC C</label>
+                            @break
+                        @case('notaRemito')
+                            <labelNC R</label>
+                            @break
+                        @default
+        
+                        @endswitch
+                    </label>
+                    <label for="">
+                        Cae: {{$comp->cae}}
+                    </label>
+                    <label for="">
+                        Ven. Cae: {{$comp->fechaVencimiento}}
+                    </label>
+
+                    <label for="">
+                        Tipo Doc: {{$comp->DocTipo}}
+                    </label>                    
+                    <label for="">
+                        Cuit Cliente: {{$comp->cuitCliente}}
+                    </label>                    
+                    <label for="">
+                        Ven. Cae: {{$comp->fechaVencimiento}}
+                    </label>                    
+                    <label for="">
+                        Ven. Cae: {{$comp->fechaVencimiento}}
+                    </label>
+
+                    "DocTipo" => 99
+                    "cuitCliente" => 0
+                    "razonSocial" => "Consumidor Final"
+                    "tipoContribuyente" => 5
+
+                </div>
+                <div class="col">
+                    <label for="">
+                        Total: ${{number_format($comp->total,2)}}
+                    </label>
+                    <label for="">
+                        Fecha Hs. Comp: {{$comp->fecha}}
+                    </label>
+                    <label for="">
+                        Pto Venta: {{$comp->ptoVta}}
+                    </label>
+                    <label for="">
+                        Desposito: {{$depo->nombre}}
+                    </label>
+                    
+
+                </div>
+            </div>
+
+            "DocTipo" => 99
+            "cuitCliente" => 0
+            "razonSocial" => "Consumidor Final"
+            "tipoContribuyente" => 5
+            "domicilio" => null
+            "leyenda" => null
+            "idFormaPago" => 5
+            "importeUno" => 31885.93
+            "idFormaPago2" => 5
+            "importeDos" => 0.0
+            "remito" => "no"
+            "empresa_id" => 1
+            "usuario" => "JAVIER LLFACTURA"
+
+
         </article>
 
         <div class="overflow-auto">

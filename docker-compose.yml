@@ -20,31 +20,31 @@ services:
       - DB_PASSWORD=root
     restart: always  # Esta línea asegura que el contenedor arranque automáticamente
 
-  # mysql:
-  #   image: mysql:8.0
-  #   container_name: llfactura_mysql
-  #   restart: unless-stopped
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: root
-  #     MYSQL_DATABASE: llfacturaLocal
-  #     # MYSQL_USER: root
-  #     # MYSQL_PASSWORD: root
-  #   volumes:
-  #     - mysql_data:/var/lib/mysql
-  #   networks:
-  #     - laravel
-  # phpmyadmin:
-  #   image: phpmyadmin
-  #   container_name: phpmyadmin_app
-  #   restart: always
-  #   ports:
-  #     - 8080:80
-  #   networks:
-  #     - llfactura-net
-  #   environment:
-  #     - PMA_ARBITRARY=1
-  #     - PMA_HOST=mysql
-  #     - PMA_PORT=3306
+  mysql:
+    image: mysql:8.0
+    container_name: llfactura_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: llfacturaLocal
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - laravel
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin_app
+    restart: always
+    ports:
+      - 8080:80
+    networks:
+      - llfactura-net
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mysql
+      - PMA_PORT=3306
 
 networks:
   llfactura-net:

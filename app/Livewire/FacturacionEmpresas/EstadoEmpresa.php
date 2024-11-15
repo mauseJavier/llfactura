@@ -20,6 +20,9 @@ class EstadoEmpresa extends Component
     public $razonSocial='';
     public $fechaDesde ;
 
+    public $datoBuscado;
+    public $filtroPago='';
+
     public function mount(){
 
         $this->fechaDesde = Carbon::now()->format('Y-m-d');
@@ -130,8 +133,23 @@ class EstadoEmpresa extends Component
     public function render()
     {
 
+
+        $filtroPago=$this->filtroPago;
+
         // Obtener todas las empresas
-        $empresas = DB::table('empresas')->get()->toArray();
+        $empresas = DB::table('empresas')
+            ->where(function ($query) {
+                $query->where('razonSocial', 'like', '%' . $this->datoBuscado . '%')
+                    ->orWhere('titular', 'like', '%' . $this->datoBuscado . '%')
+                    ->orWhere('cuit', 'like', '%' . $this->datoBuscado . '%');
+            })
+            ->when($filtroPago, function ($query, $filtroPago) {
+                $query->where('pagoServicio', $filtroPago);
+            })
+            ->get()
+            ->toArray();
+
+   
 
         // Recorrer cada empresa para calcular el total facturado del mes actual
         foreach ($empresas as $key => $empresa) {
