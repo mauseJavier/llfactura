@@ -9,6 +9,8 @@ use Afip;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Storage;
+
 
 use App\Models\Empresa;
 use App\Models\Comprobante;
