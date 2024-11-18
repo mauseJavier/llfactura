@@ -1,9 +1,12 @@
 <div>
     <div class="container">
+        <h3>Facturar Remito N° {{$comp->numero}} </h3>
 
-        {{-- @dump($productos) --}}
+        <article wire:loading>
+            <span aria-busy="true">Procesando la Informacion...</span>
+        </article>
 
-        <h1>Productos del comprobante N° {{$comp->numero}} </h1>
+
         <article>
             
             <div class="grid">
@@ -35,6 +38,7 @@
                 <div class="col">
 
                     <label for="">
+                         
                         @switch($comp->tipoComp)
                             @case(1)
                                 Tipo: Factura A
@@ -138,51 +142,54 @@
 
         </article>
 
-        <div class="overflow-auto">
-            <table class="striped">
-                <thead>
-                  <tr>
-                    <th scope="col">codigo</th>
-                    <th scope="col">detalle</th>
-                    <th scope="col">precio</th>
-                    <th scope="col">iva</th>
-                    <th scope="col">cantidad</th>
-                    <th scope="col">rubro</th>
-                    <th scope="col">proveedor</th>
-                    <th scope="col">fecha</th>
-                    <th scope="col">tipoComp</th>
-                    <th scope="col">idFormaPago</th>
-                    <th scope="col">usuario</th>
-                    <th scope="col">ptoVta</th>
-                    <th scope="col">empresa_id</th>
+        <article wire:loading.remove x-data="{ buttonText: 'Finalizar' }" style="width: 100%">
+            {{-- ////////// BOTONES DE LA FACTURACION --}}
+            <div class="grid" style="text-align: center;" >
+                <div>
+                    <button id="btnFacturar" class="outline" style="width: 100%" x-text="buttonText"
+                        wire:click="facturar">
+                    </button>
+                </div>
+                <div>
+                        <select id="selectFormaPago" name="" aria-label=""  required wire:model.live="tipoComprobante" 
+                            {{-- ESTA FUNCION DE ALPINE ES PARA CAMBIAR EL NOMBRE DEL BOTON FINALIZAR --}}
+                            @change="buttonText = 'Finalizar ' + $event.target.options[$event.target.selectedIndex].text"
 
-                  </tr>
-                </thead>
-                <tbody>
-                    @foreach ($productos as $e)
-                        <tr>
-                        <td>{{$e->codigo}}</td>
-                        <td>{{$e->detalle}}</td>
-                        <td>{{$e->precio}}</td>
-                        <td>{{$e->iva}}</td>
-                        <td>{{$e->cantidad}}</td>
-                        <td>{{$e->rubro}}</td>
-                        <td>{{$e->proveedor}}</td>
-                        <td>{{$e->fecha}}</td>
-                        <td>{{$e->tipoComp}}</td>
-                        <td>{{$e->idFormaPago}}</td>
-                        <td>{{$e->usuario}}</td>
-                        <td>{{$e->ptoVta}}</td>
-                        <td>{{$e->empresa_id}}</td>
+                        @if ($errors->has('cuit'))
+                            aria-invalid="true"
+                        @else  
+                            aria-invalid="" 
+                        @endif   
                         
-                        </tr>
-                        
-                    @endforeach
-                </tfoot>
-              </table>
-        </div>
+                        >                                  
+                            @if ($empresa->iva == 'ME' AND $empresa->fe == 'si')
+                                <option value="11">Factura C</option>
+                            @endif                            
+                            @if ($empresa->iva == 'RI' AND $empresa->fe == 'si')
+                                <option value="6">Factura B</option>
+                                <option value="1">Factura A</option>   
+                                <option value="51">Factura M</option>                        
+                     
+                            @endif      
+                            @if ($empresa->razonSocial == 'Empresa Prueba' )
+                                <option value="11">Factura C</option>
+                                <option value="6">Factura B</option>
+                                <option value="1">Factura A</option>    
+                                <option value="51">Factura M</option>                                
+                            @endif   
 
-        {{ $productos->links('vendor.livewire.bootstrap') }}
+                        </select>
+                        <small id="invalid-helper">@error('cuit') {{ $message }} @enderror </small>
+                        
+
+                </div>
+
+            </div>
+            {{-- ////////// BOTONES DE LA FACTURACION --}}
+        </article>
+
 
     </div>
+
+
 </div>

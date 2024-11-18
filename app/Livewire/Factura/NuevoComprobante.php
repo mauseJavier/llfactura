@@ -1779,6 +1779,8 @@ class NuevoComprobante extends Component
                 // dd($this->carrito['carrito']);
         
                 if(isset($this->carrito['carrito'])){//SI EXITE GUARDA LOS ARTICULOS
+
+
                     
                     foreach ($this->carrito['carrito'] as $key => $value) {
                         // array:6 [▼ // app/Livewire/Factura/NuevoComprobante.php:75
@@ -1789,7 +1791,7 @@ class NuevoComprobante extends Component
                         // "cantidad" => 1
                         // "subtotal" => 1
                         // ]
-                        // dump($value);
+                        // dd($value);
                         productoComprobante::create([
                             'comprobante_id'=> $comprobante->id,
                             'comprobante_numero'=>$comprobante->numero,
@@ -1803,7 +1805,7 @@ class NuevoComprobante extends Component
 
 
 
-                            'precio'=>round($value['precio'] * $value['cantidad'],2),
+                            'precio'=>$value['precio'], //ak guarda el precio por que despues lo multriplica por la cantidad
                             'iva'=>$value['iva'],
                             'cantidad'=>$value['cantidad'],
                             'rubro'=>$value['rubro'],

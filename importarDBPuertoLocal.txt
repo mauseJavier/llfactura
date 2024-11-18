@@ -34,13 +34,12 @@ docker exec -it <nombre_contenedor_mysql> bash
 Una vez dentro del contenedor, ejecuta el comando que mencionaste:
 
 ```bash
-mysql -u root -p --default-character-set=utf8 llfacturaLocal < /llfactura.sql
 ```
 
 Si `localhost` es el host de la base de datos y estás corriendo MySQL dentro del mismo contenedor, no necesitas usar `-h localhost`. Simplemente elimina esa parte del comando:
 
 ```bash
-mysql -u root -p --default-character-set=utf8 llfacturaLocal < /1llfactura.sql
+mysql -u root -p --default-character-set=utf8 llfacturaLocal < /llfactura.sql
 ```
 
 Luego ingresa la contraseña de `root` cuando te la pida.

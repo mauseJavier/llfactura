@@ -1,5 +1,7 @@
 services:
   llfactura:
+    depends_on:
+      - mysql
     build:
       context: .
       dockerfile: Dockerfile
@@ -32,7 +34,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
-      - laravel
+      - llfactura-net
   phpmyadmin:
     image: phpmyadmin
     container_name: phpmyadmin_app
@@ -52,3 +54,5 @@ networks:
   evolution-net:
     external: true # por que la red ya esta creada 
 
+volumes:
+  mysql_data:

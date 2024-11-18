@@ -11,6 +11,8 @@ use App\Livewire\Factura\Venta;
 use App\Livewire\Comprobante\VerComprobante;
 use App\Livewire\Comprobante\ProductosComprobante;
 use App\Livewire\Comprobante\NotaCredito;
+use App\Livewire\Comprobante\FacturarRemito;
+
 use App\Livewire\Usuarios\Usuarios;
 use App\Livewire\Usuarios\Update;
 use App\Livewire\Inventario\VerInventario;
@@ -337,6 +339,9 @@ use Illuminate\Http\Request;
         Route::get('/presupuesto', VerPresupuesto::class)->name('presupuesto');
 
         Route::get('/novedades', Novedades::class)->name('novedades');
+
+        Route::get('/facturarRemito/{idComprobante}', FacturarRemito::class)->name('facturarRemito');
+
 
 
 

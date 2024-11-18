@@ -401,28 +401,7 @@ class VerVentasArticulos extends Component
                         
                         ->paginate(50),
 
-                        'iva'=> productoComprobante::                        
-                        select(DB::raw('SUM(round( precio - (precio / (iva / 100 + 1)), 3)) as totalSINiva'))
-                        ->where('empresa_id',Auth::user()->empresa_id)
-                        ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
-
-                        ->when($codigo, function ($query) use ($codigo) {
-                            return $query->where('codigo', 'like', '%' . $codigo . '%');
-                        })
-                        ->when($detalle, function ($query) use ($detalle) {
-                            return $query->where('detalle', 'like', '%' . $detalle . '%');
-                        })
-                        ->when($rubro, function ($query) use ($rubro) {
-                            return $query->where('rubro', 'like', '%' . $rubro . '%');
-                        })
-                        ->when($proveedor, function ($query) use ($proveedor) {
-                            return $query->where('proveedor', 'like', '%' . $proveedor . '%');
-                        })
-                        ->when($marca, function ($query) use ($marca) {
-                            return $query->where('marca', 'like', '%' . $marca . '%');
-                        })
-                        
-                        ->value('totalSINiva'), // Aquí se usa value en lugar de sum
+                       
 
         ])
         ->extends('layouts.app')

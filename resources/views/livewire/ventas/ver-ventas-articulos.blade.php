@@ -45,7 +45,6 @@
           </form>
 
           <h3>Suma de Venta: ${{$precioVenta}}</h3>
-          <h4>IVA: ${{$iva}}</h4>
           <h4>Suma de Costo: ${{$costoVenta}}</h4>
           <h4>Resultado: ${{$resultadoVenta}} (%{{$resultadoPorcentaje}})</h4>
 
@@ -72,7 +71,7 @@
                 <th scope="col">Costo</th>
                 <th scope="col">P.Lista</th>
                 <th scope="col">Descuento</th>
-                <th scope="col">P.Venta</th>
+                <th scope="col">P.Venta U.</th>
                 <th scope="col">Rubro</th>
                 <th scope="col">Proveedor</th>
                 <th scope="col">Marca</th>
@@ -95,9 +94,9 @@
                             <td>{{$a->cantidad}}</td>
             
                             <td>$-{{number_format($a->costo,2,',','.')}}</td>
+                            <td>$-{{number_format($a->precioLista,2,',','.')}}</td>
+                            <td>${{number_format($a->descuento,2,',','.')}}</td>
                             <td>$-{{number_format($a->precio,2,',','.')}}</td>
-                            <td>${{number_format($a->descuento)}}</td>
-                            <td>${{number_format($a->precioLista,2,',','.')}}</td>
                             <td>{{$a->rubro}}</td>
                             <td>{{$a->proveedor}}</td>
                             <td>{{$a->marca}}</td>
@@ -112,7 +111,7 @@
                 
                             <td>${{number_format($a->costo,2,',','.')}}</td>
                             <td>${{number_format($a->precioLista,2,',','.')}}</td>
-                            <td>${{number_format($a->descuento)}}</td>
+                            <td>${{number_format($a->descuento,2,',','.')}}</td>
                             <td>${{number_format($a->precio,2,',','.')}}</td>
                             <td>{{$a->rubro}}</td>
                             <td>{{$a->proveedor}}</td>

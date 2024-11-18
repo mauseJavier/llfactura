@@ -8,6 +8,8 @@ use Livewire\WithPagination;
 use App\Models\productoComprobante;
 use App\Models\Comprobante;
 use App\Models\Deposito;
+use App\Models\FormaPago;
+
 
 
 class ProductosComprobante extends Component
@@ -33,6 +35,10 @@ class ProductosComprobante extends Component
         [
             'productos'=> productoComprobante::Where('comprobante_id',$this->comp->id)->paginate(30),
             'depo'=> Deposito::find($this->comp->deposito_id),
+
+            'fpUno'=> FormaPago::select('nombre')->find($this->comp->idFormaPago),
+            'fpDos'=> FormaPago::select('nombre')->find($this->comp->idFormaPago2),
+
 
 
         ])

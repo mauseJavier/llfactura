@@ -218,8 +218,11 @@ class NotaCredito extends Component
                     productoComprobante::create([
                         'comprobante_id'=> $notaGuardada->id,
                         'comprobante_numero'=>$notaGuardada->numero,
+
                         'codigo'=>$value['codigo'],
                         'detalle'=>$value['detalle'],
+                        'precioLista'=>$value['precioLista'],
+
                         'precio'=>$value['precio'],
                         'costo'=>$value['costo'],
 
