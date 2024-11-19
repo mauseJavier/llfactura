@@ -65,7 +65,7 @@
                     <tr>
                         <td>
                             <a wire:navigate href="{{route('updateUsuario',['id'=>$us->usuarioId])}}">
-                                <i class="fa-regular fa-pen-to-square"></i>
+                                Editar:
                                 {{$us->name}}
                             </a> 
                         </td>
