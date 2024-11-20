@@ -60,10 +60,10 @@
                         </th>
 
                         <th scope="row">
-                            <button wire:click="editarId({{$e->id}})"> <i class="fa-regular fa-pen-to-square"></i>({{$e->id}}) {{$e->razonSocial}}</button>     
+                            <button wire:click="editarId({{$e->id}})"> Editar: ({{$e->id}}) {{$e->razonSocial}}</button>     
                         </th>
                         <th scope="row">
-                            <button  wire:click="datosEmpresa({{$e->id}})" class="outline"> <i class="fa-solid fa-list"></i> {{$e->titular}}</button>     
+                            <button  wire:click="datosEmpresa({{$e->id}})" class="outline">  {{$e->titular}}</button>     
                         </th>
 
                         <td>{{$e->cuit}}</td>

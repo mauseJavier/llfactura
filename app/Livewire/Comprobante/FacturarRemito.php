@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Storage;
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> modificacionIconos
 
 use App\Models\Empresa;
 use App\Models\Comprobante;

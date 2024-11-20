@@ -110,19 +110,33 @@
 
                               {{-- PARA EL AUMENTO DE STOCK --}}
                               @if ($usuario->role_id == 2 || $usuario->role_id == 3 || $usuario->role_id == 4 )  
-                                {{-- <td>
-                                  <div role="group">
-                                    <button wire:click="asignarCodigoDetalle('{{$item->codigo}}','{{$item->detalle}}','{{$item->depositoId}}')" @click=" modalStock = !modalStock" ><i class="fa fa-plus" aria-hidden="true"></i></button>
-                                  
-                                    <button style="background-color: red;" wire:click="eliminarSockDeposito('{{$item->codigo}}','{{$item->depositoId}}')"  > <i class="fa-solid fa-trash"></i></button>
-                                  </div>
-                                </td> --}}
+
 
                                 <td>
                                   <div role="group" title="Modificar / Eliminar">
-                                                                     
-                                    <i class="fa fa-plus" style="color:#4EB31B;" aria-hidden="true" wire:click="asignarCodigoDetalle('{{$item->codigo}}','{{$item->detalle}}','{{$item->depositoId}}')" @click=" modalStock = !modalStock"></i>
-                                    <i class="fa-solid fa-trash" style="color: red;" wire:click="eliminarSockDeposito('{{$item->codigo}}','{{$item->depositoId}}')" wire:confirm="Seguro de Eliminar TODO! el Stock de {{$item->detalle}} de: {{$item->nombreDeposito}}??"></i>
+                                           <!-- plus icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                                      <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" fill="currentColor" viewBox="0 0 512 512"
+                                      
+                                        style="color:#4EB31B;" aria-hidden="true" 
+                                        wire:click="asignarCodigoDetalle('{{$item->codigo}}','{{$item->detalle}}','{{$item->depositoId}}')" 
+                                        @click=" modalStock = !modalStock"
+                                      >
+                                        <path
+                                          d="M 295.38461538461536 39.38461538461539 Q 295.38461538461536 22.153846153846153 284.3076923076923 11.076923076923077 L 284.3076923076923 11.076923076923077 L 284.3076923076923 11.076923076923077 Q 273.2307692307692 0 256 0 Q 238.76923076923077 0 227.69230769230768 11.076923076923077 Q 216.6153846153846 22.153846153846153 216.6153846153846 39.38461538461539 L 216.6153846153846 216.6153846153846 L 216.6153846153846 216.6153846153846 L 39.38461538461539 216.6153846153846 L 39.38461538461539 216.6153846153846 Q 22.153846153846153 216.6153846153846 11.076923076923077 227.69230769230768 Q 0 238.76923076923077 0 256 Q 0 273.2307692307692 11.076923076923077 284.3076923076923 Q 22.153846153846153 295.38461538461536 39.38461538461539 295.38461538461536 L 216.6153846153846 295.38461538461536 L 216.6153846153846 295.38461538461536 L 216.6153846153846 472.61538461538464 L 216.6153846153846 472.61538461538464 Q 216.6153846153846 489.84615384615387 227.69230769230768 500.9230769230769 Q 238.76923076923077 512 256 512 Q 273.2307692307692 512 284.3076923076923 500.9230769230769 Q 295.38461538461536 489.84615384615387 295.38461538461536 472.61538461538464 L 295.38461538461536 295.38461538461536 L 295.38461538461536 295.38461538461536 L 472.61538461538464 295.38461538461536 L 472.61538461538464 295.38461538461536 Q 489.84615384615387 295.38461538461536 500.9230769230769 284.3076923076923 Q 512 273.2307692307692 512 256 Q 512 238.76923076923077 500.9230769230769 227.69230769230768 Q 489.84615384615387 216.6153846153846 472.61538461538464 216.6153846153846 L 295.38461538461536 216.6153846153846 L 295.38461538461536 216.6153846153846 L 295.38461538461536 39.38461538461539 L 295.38461538461536 39.38461538461539 Z"
+                                        />
+                                      </svg>
+
+                                      <!-- trash icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                                      <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" fill="currentColor" viewBox="0 0 512 512"
+                                      
+                                        style="color: red;" wire:click="eliminarSockDeposito('{{$item->codigo}}','{{$item->depositoId}}')" 
+                                        wire:confirm="Seguro de Eliminar TODO! el Stock de {{$item->detalle}} de: {{$item->nombreDeposito}}??"
+                                      >
+                                        <path
+                                          d="M 210 16 L 302 16 L 210 16 L 302 16 Q 315 16 323 27 L 346 64 L 346 64 L 166 64 L 166 64 L 189 27 L 189 27 Q 197 16 210 16 L 210 16 Z M 176 19 L 148 64 L 176 19 L 148 64 L 40 64 L 40 64 Q 33 65 32 72 Q 33 79 40 80 L 472 80 L 472 80 Q 479 79 480 72 Q 479 65 472 64 L 364 64 L 364 64 L 336 19 L 336 19 Q 324 1 302 0 L 210 0 L 210 0 Q 188 1 176 19 L 176 19 Z M 80 119 Q 79 112 71 112 Q 64 113 64 121 L 92 461 L 92 461 Q 95 483 110 497 Q 126 512 148 512 L 364 512 L 364 512 Q 386 512 402 497 Q 417 483 420 461 L 448 121 L 448 121 Q 448 113 441 112 Q 433 112 432 119 L 404 459 L 404 459 Q 402 475 391 485 Q 380 496 364 496 L 148 496 L 148 496 Q 132 496 121 485 Q 110 475 108 459 L 80 119 L 80 119 Z"
+                                        />
+                                      </svg>
+
                                   </div>
                                 </td>
 

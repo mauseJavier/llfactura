@@ -84,6 +84,14 @@
                 <li>CUIT/CUIL: 20358337164</li>
                 <li>Mercado Pago</li>
               </ul>
+              <hr>
+              <ul>
+                <li>Marcelo Horacio Gimenez</li>
+                <li>CVU: 0000003100035481206346</li>
+                <li>Alias: LLfactura2024</li>
+                <li>CUIT/CUIL: 20350796631</li>
+                <li>Mercado Pago</li>
+              </ul>
             </article>
       </dialog>
 
