@@ -149,6 +149,7 @@
  
         <div class="grid" >
 
+
           @if ($carrito)
 
 
@@ -176,8 +177,6 @@
 
               
           @endif
-
-
 
 
           <div class="div" style="transform: scale(0.9, 0.9);margin-bottom: -10px;">
@@ -240,8 +239,20 @@
                   <thead>
                     <tr>
                       <th scope="col">Codigo</th>
-                      <th scope="col">Detalle</th>
+                      <th scope="col">
+                        Detalle {{$bloquearDetalle == 1 ? 'Desbloquear' : 'Bloquear' }}                          
+
+                        <label>
+                          <input wire:model.live="bloquearDetalle" name="bloqueo" type="checkbox" role="switch" 
+                            {{$bloquearDetalle == 1 ? 'checked' : '' }}                          
+
+                          />
+                          
+                        </label>
+                      
+                      </th>
                       <th scope="col" style="text-align: right;">
+
                                 <!-- Select -->
                         <select name="select" aria-label="Select" required wire:model.live="seleccionPrecio" style="font-size: 15px; ">
 

@@ -171,6 +171,8 @@
                                   @if ($item->tipoComp == 'remito')
                                     <li><a wire:navigate href="{{route('facturarRemito',['idComprobante'=>$item->id])}}">Facturar</a></li>
                                   @endif
+                                    <li><a wire:navigate href="{{route('cargarComprobante',['comp'=>$item->id])}}">Cargar</a></li>
+
                                 </ul>
                               </details>                       
                             </th>

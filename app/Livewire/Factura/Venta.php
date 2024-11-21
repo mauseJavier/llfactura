@@ -40,6 +40,9 @@ class Venta extends Component
     public $checkPrecio3;
 
 
+    public $bloquearDetalle;
+
+
     #[Session(key: 'carrito')] 
     public $carrito;
 
@@ -57,6 +60,8 @@ class Venta extends Component
 
         //POR QUE JAVIER CONTRERAS UTILIZA EL PRECIO 2 CON EL 10 POR CIENTO 
         $this->seleccionPrecio = (Auth::user()->empresa_id == 26) ? 'precio2' : 'precio1';
+
+        $this->bloquearDetalle=null;
 
     }
 
@@ -153,8 +158,12 @@ class Venta extends Component
         ->get();
         
         $this->crearCarrito($articulo);
-        $this->datoBuscado= '';
         $this->cantidad = 1;
+        
+        if(!$this->bloquearDetalle){
+            $this->datoBuscado= '';
+            
+        }
         
     }
     
@@ -162,13 +171,13 @@ class Venta extends Component
     {
 
         $validated = $this->validate([
-            'cantidad' => 'required|numeric',
+            'cantidad' => 'required|numeric|min:0.01',
             'porcentaje' => 'required|numeric',
 
         ], [
             'cantidad.required' => 'El campo cantidad a enviar es obligatorio.',
             'cantidad.numeric' => 'El campo cantidad a enviar debe ser un número.',
-            'cantidad.min' => 'El campo cantidad a enviar debe ser mayor que 0.',
+            'cantidad.min' => 'El campo cantidad a enviar debe ser mayor que 0.01.',
 
             'porcentaje.required' => 'El campo porcentaje a enviar es obligatorio.',
             'porcentaje.numeric' => 'El campo porcentaje a enviar debe ser un número.',

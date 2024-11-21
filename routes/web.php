@@ -46,7 +46,6 @@ use App\Livewire\Configuracion\Basico;
 
 
 
-
 use App\Models\Empresa;
 use App\Models\FormaPago;
 use App\Models\Comprobante;
@@ -57,6 +56,8 @@ use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\ReciboPdfController;
 use App\Http\Controllers\CodigoDeBarraController;
 use App\Http\Controllers\ReporteVentaUsuarioController;
+
+use App\Http\Controllers\CargarComprobanteController;
 
 use App\Models\Stock; //PARA PRUEBAS
 use Illuminate\Support\Facades\Auth; //PARA PRUEBA
@@ -368,7 +369,8 @@ use Illuminate\Http\Request;
         Route::get('/imprimirPresupuesto/{presupuesto_id?}/{formato?}', [PresupuestoController::class, 'imprimir'])->name('imprimirPresupuesto');
 
 
-
+        //ruta para mejorar CARGA UN COMPROBANTE AL CARRITO
+        Route::get('/cargarComprobante/{comp}', [CargarComprobanteController::class, 'cargar'])->name('cargarComprobante');
 
 
     });
