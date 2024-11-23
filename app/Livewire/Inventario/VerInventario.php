@@ -323,7 +323,9 @@ class VerInventario extends Component
 
         if($this->ivaIncluido){
 
-            $costo_mas_iva = round($this->costo / (1+ (doubleval($this->iva)/100)),2);
+            // $costo_mas_iva = round($this->costo / (1+ (doubleval($this->iva)/100)),2);
+            $costo_mas_iva = round($this->costo,2);
+
         }else{
             $costo_mas_iva = round($this->costo +($this->costo * doubleval($this->iva) / 100),2);
         }

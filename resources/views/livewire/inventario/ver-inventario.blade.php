@@ -437,7 +437,7 @@
                         <div class="col">
     
                             <label>
-                            Stock (0=Sin Control)
+                            Stock Inicial (0=Sin Control)
                             <input
                                 wire:model.live="nuevoStock"
                                 name="nuevoStock"
@@ -681,7 +681,7 @@
 
             <hr>
 
-                {{-- NUEVO STOCK --}}
+                {{-- editar
                 <div class="grid">                   
     
                         <div class="col">
@@ -718,7 +718,7 @@
                    
                 </div>
 
-            <hr />
+            <hr /> --}}
 
             <details >
                 <summary>Mas:</summary>
