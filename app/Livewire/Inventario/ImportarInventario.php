@@ -99,6 +99,7 @@ class ImportarInventario extends Component
 
             // Crear o actualizar el inventario
 
+
             if($row[0]!='' and $row[1]!=''){
 
                $nuevo= Inventario::updateOrCreate(

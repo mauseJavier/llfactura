@@ -17,7 +17,7 @@
 
 
 
-    <div class="container" x-data="{ valor1:{{$total}}, valor2: {{$importeUno}}, valor3: {{$importeDos}} , valor4: 0,
+    <div class="container" x-data="{ valor1:{{$total}}, valor2: {{$importeUno}}, valor3: {{$importeDos}} , valor4: 0,valor5: 0,
                                             formaPagoSeleccionado: 'NO',
                                             ajustarImporteDos() {
                                              if (this.formaPagoSeleccionado === 'NO') {
@@ -186,10 +186,10 @@
             
 
 
-            <div class="grid" style="text-align: center;">
+            <div class="" style="text-align: center;">
                 <div x-data="{ mostrarFormaPago: false }"> <!-- Declaramos una variable de estado -->
             
-                    <label for="">
+                    <label for="" x-show="!mostrarFormaPago">
                         Forma de Pago 1
                         <select id="idFormaPago" aria-label="" wire:model.live="idFormaPago" wire:change="modificarFormaPago2()">         
                             @foreach ($formaPago as $item)
@@ -208,73 +208,113 @@
             
                     <fieldset>
                         <label>
-                            <input id="activarFormaDePago" type="checkbox" role="switch" x-model="mostrarFormaPago" />
+                            <input id="activarFormaDePago" type="checkbox" role="switch" x-model="mostrarFormaPago"
+                            wire:click="igualarTotal()"  x-on:click="formaPagoSeleccionado = 'NO'"
+                             />
                             Forma de Pago 2?
                         </label>
                     </fieldset>
             
                     <!-- Usamos x-show para mostrar u ocultar el contenido -->
                     <div id="contenidoFormaPago" x-show="mostrarFormaPago" style="display: none;"> 
-                        <label for="">
-                            Pago 1
-                            <fieldset role="group">
-                                <input 
-                                    id="importeUno"
-                                    wire:model="importeUno"
-                                    style="text-align: center; font-size:45px;" 
-                                    type="number" step="0.01"                                    
-                                    x-model.number="valor2" 
-                                    x-on:focus="$refs.inputText1.select()"   
-                                    x-ref="inputText1"  
-                                    x-on:blur="event.target.value = formatCurrency(event.target.value)"
-                                />
-                                <input type="button" value="Total" wire:click="igualarTotal()"  x-on:click="formaPagoSeleccionado = 'NO'"
-                                />
-                            </fieldset>
-                            @error('importeUno')
-                                <small style="color:red;" id="invalid-helper">
-                                    {{ $message }}                          
-                                </small>
-                            @enderror
-                        </label>
+
+                        <div class="grid">
+
+                            <div class="col">
+
+
+                                <label for="" >
+                                    Forma de Pago 1
+                                    <select style="background-color: rgb(95, 123, 98)" id="idFormaPago" aria-label="" wire:model.live="idFormaPago" wire:change="modificarFormaPago2()">         
+                                        @foreach ($formaPago as $item)
+                                            @if ($item->id !== 0) 
+                                                {{-- PARA QUE NO MUESTRE EL CUENTA CORRIENTE DE LA BASE --}}
+                                                <option value="{{$item->id}}">{{$item->nombre}}</option>
+                                            @endif
+                                        @endforeach
+                        
+                                        @if ($cuit !== 0) 
+                                            {{-- SI ESTA CARGADO UN CLIENTE SE PUEDE ASIGNAR EL SALDO A LA CUENTA CORRIENTE --}}
+                                            <option value="0">Cuenta Corriente</option>                                
+                                        @endif
+                                    </select>
+                                </label>
+
+                                <label for="">
+                                    Pago 1
+                                    <fieldset role="group">
+                                        <input 
+
+                                            id="importeUno"
+                                            wire:model="importeUno"
+                                            style="text-align: center; font-size:45px; background-color: rgb(95, 123, 98);" 
+                                            type="texto"                                   
+                                            x-model.number="valor2" 
+                                            x-on:focus="$refs.inputText1.select()"   
+                                            x-ref="inputText1"  
+                                            x-on:blur="event.target.value = formatCurrency(event.target.value)"
+                                        />
+                                        <input type="button" value="Total" wire:click="igualarTotal()"  x-on:click="formaPagoSeleccionado = 'NO'"
+                                        />
+                                    </fieldset>
+                                    @error('importeUno')
+                                        <small style="color:red;" id="invalid-helper">
+                                            {{ $message }}                          
+                                        </small>
+                                    @enderror
+                                </label>
+
+                            </div>
+                            <div class="col">
+
+
+                                <label >
+                                    Forma de Pago 2
+                                    <select 
+
+                                        style="background-color: rgb(80, 102, 134)"
+                                        id="selectFormaPagoDos"
+                                        aria-label="" 
+                                        wire:model.live="idFormaPago2"
+                                        x-model="formaPagoSeleccionado"
+                                        @change="ajustarImporteDos"
+                                    >   
+                                        <option value="NO" selected>NO</option>
+                                        @foreach ($formaPago2 as $item)
+                                            @if ($item->id !== 0)
+                                                <option value="{{$item->id}}">{{$item->nombre}}</option>
+                                            @endif
+                                        @endforeach
+                                    </select>
+                                </label>
+                    
+                                <label for="">
+                                    Pago 2
+                                    <input   
+                                        wire:model="importeDos"
+                                        style="text-align: center; font-size:45px; background-color: rgb(80, 102, 134);" 
+
+                                        type="texto"                                   
+                                        id="importeDos" 
+                                        x-model.number="valor3" 
+                                        x-ref="inputText2"
+                                        x-on:focus="$refs.inputText2.select()"   
+                                        x-on:blur="event.target.value = formatCurrency(event.target.value)"
+                                        :disabled="formaPagoSeleccionado === 'NO'"
+                                    >
+                                    @error('importeDos')
+                                        <small style="color:red;" id="invalid-helper">
+                                            {{ $message }}                          
+                                        </small>
+                                    @enderror
+                                </label>
+
+
+                            </div>
+                        </div>
+
             
-                        <label >
-                            Forma de Pago 2
-                            <select 
-                                id="selectFormaPagoDos"
-                                aria-label="" 
-                                wire:model.live="idFormaPago2"
-                                x-model="formaPagoSeleccionado"
-                                @change="ajustarImporteDos"
-                            >   
-                                <option value="NO" selected>NO</option>
-                                @foreach ($formaPago2 as $item)
-                                    @if ($item->id !== 0)
-                                        <option value="{{$item->id}}">{{$item->nombre}}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </label>
-            
-                        <label for="">
-                            Pago 2
-                            <input   
-                                wire:model="importeDos"
-                                style="text-align: center; font-size:45px;" 
-                                type="number" step="0.01"                                    
-                                id="importeDos" 
-                                x-model.number="valor3" 
-                                x-ref="inputText2"
-                                x-on:focus="$refs.inputText2.select()"   
-                                x-on:blur="event.target.value = formatCurrency(event.target.value)"
-                                :disabled="formaPagoSeleccionado === 'NO'"
-                            >
-                            @error('importeDos')
-                                <small style="color:red;" id="invalid-helper">
-                                    {{ $message }}                          
-                                </small>
-                            @enderror
-                        </label>
+
 
 
                     </div>
@@ -292,12 +332,42 @@
                 </p>
             </div> --}}
 
-            <div style="text-align: center; height: 100%; display: flex; align-items: center; justify-content: center;">
+            {{-- <div style="text-align: center; height: 100%; display: flex; align-items: center; justify-content: center;">
                 <p 
                     :style="(valor1 - (valor2 + valor3)) > 0 ? 'color:red; font-size: 45px; margin: 0;' : 'color:green; font-size: 45px; margin: 0;'" 
                 >
                     <span x-text="(valor1 - (valor2 + valor3)) > 0 ? 'Falta $' + (valor1 - (valor2 + valor3)).toFixed(2) : 'Vuelto $' + (valor1 - (valor2 + valor3)).toFixed(2)"></span>
                 </p>
+            </div> --}}
+
+            <hr>
+            <hr>
+
+
+            <div class="grid">
+                <div class="col">
+                    <input 
+                    id="importeCinco"
+                    style="text-align: center; font-size:45px;" 
+                    type="texto"                                   
+                    x-model.number="valor5" 
+                    x-on:focus="$refs.inputText5.select()"   
+                    x-ref="inputText5"  
+                    x-on:blur="event.target.value = formatCurrency(event.target.value)"
+                />
+
+                </div>
+                <div class="col">
+
+                    <div style="text-align: center; height: 100%; display: flex; align-items: center; justify-content: center;">
+                        <p 
+                            :style="(valor5 - (valor1)) > 0 ? 'color:red; font-size: 45px; margin: 0;' : 'color:green; font-size: 45px; margin: 0;'" 
+                        >
+                            <span x-text="(valor5 - (valor1)) > 0 ? 'Vuelto $' + (valor5 - (valor1)).toFixed(2) : 'Falta $' + (valor5 - (valor1)).toFixed(2)"></span>
+                        </p>
+                    </div>
+
+                </div>
             </div>
 
         </article>
@@ -417,7 +487,7 @@
                         <input  
                             wire:model="cuit" 
                             {{-- wire:focusout="buscarCuit" --}}
-                            wire:keydown.enter="buscarCliente"
+                            {{-- wire:keydown.enter="buscarCliente" --}}
                             {{-- wire:focusout="buscarCliente" por si no queda bien que rederise a cada rato--}}
                             {{-- wire:keyup ="buscarCliente" --}}
                             maxlength="11" 
