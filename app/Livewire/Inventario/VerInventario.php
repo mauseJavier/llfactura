@@ -562,8 +562,6 @@ class VerInventario extends Component
         ]);
 
 
-        $this->controlStock = $this->nuevoStock > 0 ? 'si' : 'no';
-
         $articulo = Inventario::find($this->idArticulo);
  
 
@@ -581,6 +579,7 @@ class VerInventario extends Component
         $articulo->pesable = $this->pesable;
         $articulo->controlStock = $this->controlStock;
         $articulo->imagen = $this->imagen;
+
         
         $articulo->save();
 

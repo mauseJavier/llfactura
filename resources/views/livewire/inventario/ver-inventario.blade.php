@@ -681,44 +681,14 @@
 
             <hr>
 
-                {{-- editar
-                <div class="grid">                   
-    
-                        <div class="col">
-                            Depositos
-                            <select wire:model="idDeposito" name="idDeposito" aria-label="">
-                                @foreach ($depositos as $item)
-                                    <option value="{{$item->id}}">{{$item->nombre}}</option>                        
-                                @endforeach
-                            </select>
-                        </div>
-    
-                        <div class="col">
-    
-                            <label>
-                            Stock (0=Sin Control)
-                            <input
-                                wire:model.live="nuevoStock"
-                                name="nuevoStock"
-                                placeholder="Stock"
-                                autocomplete="nuevoStock"
-                                @error('nuevoStock') aria-invalid="true" @enderror
-                            />
-                                @error('nuevoStock') 
-                                <small id="invalid-helper">
-                                    {{ $message }} 
-                                    </small>
-                                @enderror
-                            
-                            </label>
-                        </div>
-    
-    
-    
-                   
-                </div>
-
-            <hr /> --}}
+            <label for="">
+                Control de Stock?
+                <select name="controlStock" id="controlStock" 
+                    wire:model.live="controlStock">
+                    <option value="si">Activado</option>
+                    <option value="no">Desactivado</option>
+                </select>
+            </label>
 
             <details >
                 <summary>Mas:</summary>
