@@ -126,7 +126,8 @@
         </article>
 
 
-        <article styleee="transform: scale(0.7); transform-origin: top center;">
+        <article x-data="{ mostrarFormaPago: false }"> <!-- Declaramos una variable de estado -->
+         
 
             <div
                 x-data="{
@@ -187,7 +188,7 @@
 
 
             <div class="" style="text-align: center;">
-                <div x-data="{ mostrarFormaPago: false }"> <!-- Declaramos una variable de estado -->
+                <div > 
             
                     <label for="" x-show="!mostrarFormaPago">
                         Forma de Pago 1
@@ -211,7 +212,7 @@
                             <input id="activarFormaDePago" type="checkbox" role="switch" x-model="mostrarFormaPago"
                             wire:click="igualarTotal()"  x-on:click="formaPagoSeleccionado = 'NO'"
                              />
-                            Forma de Pago 2?
+                            Forma de Pago 2? {{$activarFormaDePagoDos}}
                         </label>
                     </fieldset>
             
@@ -246,7 +247,7 @@
                                         <input 
 
                                             id="importeUno"
-                                            wire:model="importeUno"
+                                            wire:model.live="importeUno"
                                             style="text-align: center; font-size:45px; background-color: rgb(95, 123, 98);" 
                                             type="texto"                                   
                                             x-model.number="valor2" 
@@ -254,8 +255,9 @@
                                             x-ref="inputText1"  
                                             x-on:blur="event.target.value = formatCurrency(event.target.value)"
                                         />
-                                        <input type="button" value="Total" wire:click="igualarTotal()"  x-on:click="formaPagoSeleccionado = 'NO'"
-                                        />
+
+                                        <input type="button" value="Total" wire:click="igualarTotal()"  x-on:click="formaPagoSeleccionado = 'NO'"/>
+
                                     </fieldset>
                                     @error('importeUno')
                                         <small style="color:red;" id="invalid-helper">
@@ -279,7 +281,7 @@
                                         x-model="formaPagoSeleccionado"
                                         @change="ajustarImporteDos"
                                     >   
-                                        <option value="NO" selected>NO</option>
+                                        {{-- <option value="NO" selected>NO</option> --}}
                                         @foreach ($formaPago2 as $item)
                                             @if ($item->id !== 0)
                                                 <option value="{{$item->id}}">{{$item->nombre}}</option>
@@ -291,16 +293,17 @@
                                 <label for="">
                                     Pago 2
                                     <input   
-                                        wire:model="importeDos"
+                                        {{-- wire:model="total - importeUno" --}}
                                         style="text-align: center; font-size:45px; background-color: rgb(80, 102, 134);" 
 
                                         type="texto"                                   
                                         id="importeDos" 
-                                        x-model.number="valor3" 
+                                        x-model.number="{{$total-$importeUno}}" 
                                         x-ref="inputText2"
                                         x-on:focus="$refs.inputText2.select()"   
                                         x-on:blur="event.target.value = formatCurrency(event.target.value)"
-                                        :disabled="formaPagoSeleccionado === 'NO'"
+                                        {{-- :disabled="formaPagoSeleccionado === 'NO'" --}}
+                                        disabled
                                     >
                                     @error('importeDos')
                                         <small style="color:red;" id="invalid-helper">
@@ -341,10 +344,8 @@
             </div> --}}
 
             <hr>
-            <hr>
 
-
-            <div class="grid">
+            <div class="grid" x-show="!mostrarFormaPago">
                 <div class="col">
                     <input 
                     id="importeCinco"

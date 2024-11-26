@@ -56,6 +56,9 @@ class NuevoComprobante extends Component
     public $correoCliente;
     public $leyenda;
 
+
+    public $activarFormaDePagoDos;
+
     public $formaPago;
     public $formaPago2;
 
@@ -98,7 +101,8 @@ class NuevoComprobante extends Component
     public function igualarTotal(){
         $this->importeUno = $this->total;
         $this->importeDos = 0;
-        $this->idFormaPago2 = 'NO';
+        // $this->idFormaPago2 = 'NO';
+        $this->activarFormaDePagoDos = $this->activarFormaDePagoDos == 'no' ? 'si' : 'no';
 
 
     }
@@ -107,7 +111,7 @@ class NuevoComprobante extends Component
 
         $this->importeUno = $this->total;
         $this->importeDos = 0;
-        $this->idFormaPago2 = 'NO';
+        // $this->idFormaPago2 = 'NO';
 
     }
 
@@ -159,6 +163,9 @@ class NuevoComprobante extends Component
     {
 
         // dd($this->importeUno .' '. $this->importeDos);
+
+
+        $this->importeDos = $this->total -$this->importeUno;
 
         $validated = $this->validate([
             'cuit' => [
@@ -387,6 +394,7 @@ class NuevoComprobante extends Component
         $this->cuit=0;
         $this->tipoDocumento=99;
         $this->razonSocial='Consumidor Final';
+        $this->activarFormaDePagoDos = 'no'; 
 
         if(isset($this->carrito['total'])){
             $this->total = $this->carrito['total'];
@@ -1753,8 +1761,8 @@ class NuevoComprobante extends Component
 
                     'idFormaPago'=>$this->idFormaPago,
                     'importeUno'=>$this->importeUno,
-                    'idFormaPago2'=>($this->idFormaPago2 == 'NO')? $this->idFormaPago :  $this->idFormaPago2 ,
-                    'importeDos'=>($this->idFormaPago2 == 'NO')? 0 :$this->importeDos ,
+                    'idFormaPago2'=>($this->activarFormaDePagoDos == 'no')? $this->idFormaPago :  $this->idFormaPago2 ,
+                    'importeDos'=>$this->importeDos ,
 
 
                     'ptoVta'=>$nuevoComprobante->FeCabResp->PtoVta,
@@ -1816,7 +1824,7 @@ class NuevoComprobante extends Component
                             'tipoComp'=>$this->tipoComprobante,
                             'fecha'=>$this->fechaHoy,
                             'idFormaPago'=>$this->idFormaPago,
-                            'idFormaPago2'=>($this->idFormaPago2 == 'NO')? $this->idFormaPago :  $this->idFormaPago2,
+                            'idFormaPago2'=>($this->activarFormaDePagoDos == 'no')? $this->idFormaPago :  $this->idFormaPago2,
 
                             'ptoVta'=>$nuevoComprobante->FeCabResp->PtoVta,
                             'usuario'=> $this->usuario->name,
