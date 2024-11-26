@@ -15,15 +15,72 @@
     @dump($ivaDefecto) --}}
 
 
-
-
     <div class="container" x-data="{ valor1:{{$total}}, valor2: {{$importeUno}}, valor3: {{$importeDos}} , valor4: 0,valor5: 0,
                                             formaPagoSeleccionado: 'NO',
                                             ajustarImporteDos() {
-                                             if (this.formaPagoSeleccionado === 'NO') {
-                                                 this.valor3 = 0;
-                                             }
-                                         } }">
+                                                    if (this.formaPagoSeleccionado === 'NO') {
+                                                        this.valor3 = 0;
+                                                    }
+                                                },
+                                                 handleKeyPress(event) {
+                                                    const select = document.getElementById('idFormaPago');
+                                                    const selectDuplicado = document.getElementById('idFormaPagoDuplicado');
+
+                                                    const selectFactura = document.getElementById('selectFormaPago');
+
+
+                                                    const button = document.getElementById('btnFacturar');
+                                                    
+                                                    switch(event.key.toUpperCase()) {
+                                                        case 'E':
+                                                            select.value = '1';
+                                                            selectDuplicado.value = '1';
+                                                            break;
+                                                        case 'M':
+                                                            select.value = '3';
+                                                            selectDuplicado.value = '3';
+                                                            break;
+                                                        case 'T':
+                                                            select.value = '2';
+                                                            selectDuplicado.value = '2';
+                                                            break;
+                                                        case 'F':
+                                                            select.value = '5';
+                                                            selectDuplicado.value = '5';
+                                                            break;
+
+                                                        case 'A':
+                                                            selectFactura.value = '1';
+                                                            break;
+                                                        case 'B':
+                                                            selectFactura.value = '6';
+                                                            break;
+                                                        case 'C':
+                                                            selectFactura.value = '11';
+                                                            break;
+                                                        case 'R':
+                                                            selectFactura.value = 'remito';
+                                                            break;
+                                                        case 'P':
+                                                            selectFactura.value = 'presupuesto';
+                                                            break;
+
+
+                                                        case 'ENTER':
+                                                            button.click(); // Presiona el botón al presionar Enter
+                                                            break;
+                                                    }
+
+
+                                                    
+                                                    select.dispatchEvent(new Event('change')); // Para activar el evento de cambio en Livewire
+                                                    selectFactura.dispatchEvent(new Event('change')); // Para activar el evento de cambio en Livewire
+
+                                                }
+                             }"
+                                          
+                                         x-on:keydown.window="handleKeyPress($event)"
+                                         >
 
 
         @if (\Session::has('mensaje'))
@@ -127,64 +184,7 @@
 
 
         <article x-data="{ mostrarFormaPago: false }"> <!-- Declaramos una variable de estado -->
-         
-
-            <div
-                x-data="{
-                    handleKeyPress(event) {
-                        const select = document.getElementById('idFormaPago');
-                        const selectFactura = document.getElementById('selectFormaPago');
-
-
-                        const button = document.getElementById('btnFacturar');
-                        
-                        switch(event.key.toUpperCase()) {
-                            case 'E':
-                                select.value = '1';
-                                break;
-                            case 'M':
-                                select.value = '3';
-                                break;
-                            case 'T':
-                                select.value = '2';
-                                break;
-                            case 'F':
-                                select.value = '5';
-                                break;
-
-                            case 'A':
-                                selectFactura.value = '1';
-                                break;
-                            case 'B':
-                                selectFactura.value = '6';
-                                break;
-                            case 'C':
-                                selectFactura.value = '11';
-                                break;
-                            case 'R':
-                                selectFactura.value = 'remito';
-                                break;
-                            case 'P':
-                                selectFactura.value = 'presupuesto';
-                                break;
-
-
-                            case 'ENTER':
-                                button.click(); // Presiona el botón al presionar Enter
-                                break;
-                        }
-
-
-                        
-                        select.dispatchEvent(new Event('change')); // Para activar el evento de cambio en Livewire
-                        selectFactura.dispatchEvent(new Event('change')); // Para activar el evento de cambio en Livewire
-
-                    }
-                }"
-                x-on:keydown.window="handleKeyPress($event)"
-            >
-            </div>
-            
+                     
 
 
             <div class="" style="text-align: center;">
@@ -212,7 +212,7 @@
                             <input id="activarFormaDePago" type="checkbox" role="switch" x-model="mostrarFormaPago"
                             wire:click="igualarTotal()"  x-on:click="formaPagoSeleccionado = 'NO'"
                              />
-                            Forma de Pago 2? {{$activarFormaDePagoDos}}
+                            Dos Formas de Pago
                         </label>
                     </fieldset>
             
@@ -226,7 +226,7 @@
 
                                 <label for="" >
                                     Forma de Pago 1
-                                    <select style="background-color: rgb(95, 123, 98)" id="idFormaPago" aria-label="" wire:model.live="idFormaPago" wire:change="modificarFormaPago2()">         
+                                    <select style="background-color: rgb(95, 123, 98)" id="idFormaPagoDuplicado" aria-label="" wire:model.live="idFormaPago" wire:change="modificarFormaPago2()">         
                                         @foreach ($formaPago as $item)
                                             @if ($item->id !== 0) 
                                                 {{-- PARA QUE NO MUESTRE EL CUENTA CORRIENTE DE LA BASE --}}
@@ -245,15 +245,15 @@
                                     Pago 1
                                     <fieldset role="group">
                                         <input 
-
+                                        
                                             id="importeUno"
                                             wire:model.live="importeUno"
                                             style="text-align: center; font-size:45px; background-color: rgb(95, 123, 98);" 
-                                            type="texto"                                   
+                                            type="number" step="0.01" min="0.01"                         
                                             x-model.number="valor2" 
                                             x-on:focus="$refs.inputText1.select()"   
                                             x-ref="inputText1"  
-                                            x-on:blur="event.target.value = formatCurrency(event.target.value)"
+                                            {{-- x-on:blur="event.target.value = formatCurrency(event.target.value)" --}}
                                         />
 
                                         <input type="button" value="Total" wire:click="igualarTotal()"  x-on:click="formaPagoSeleccionado = 'NO'"/>
@@ -298,7 +298,7 @@
 
                                         type="texto"                                   
                                         id="importeDos" 
-                                        x-model.number="{{$total-$importeUno}}" 
+                                        x-model.number="{{round( $total - floatVal($importeUno),2)}}" 
                                         x-ref="inputText2"
                                         x-on:focus="$refs.inputText2.select()"   
                                         x-on:blur="event.target.value = formatCurrency(event.target.value)"
@@ -347,15 +347,18 @@
 
             <div class="grid" x-show="!mostrarFormaPago">
                 <div class="col">
-                    <input 
-                    id="importeCinco"
-                    style="text-align: center; font-size:45px;" 
-                    type="texto"                                   
-                    x-model.number="valor5" 
-                    x-on:focus="$refs.inputText5.select()"   
-                    x-ref="inputText5"  
-                    x-on:blur="event.target.value = formatCurrency(event.target.value)"
-                />
+                    <label for="">
+                        Entrega
+                        <input 
+                            id="importeCinco"
+                            style="text-align: center; font-size:45px;" 
+                            type="texto"                                   
+                            x-model.number="valor5" 
+                            x-on:focus="$refs.inputText5.select()"   
+                            x-ref="inputText5"  
+                            x-on:blur="event.target.value = formatCurrency(event.target.value)"
+                        />
+                    </label>
 
                 </div>
                 <div class="col">
