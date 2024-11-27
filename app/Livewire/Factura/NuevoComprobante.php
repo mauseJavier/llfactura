@@ -98,6 +98,20 @@ class NuevoComprobante extends Component
 
   
 
+
+
+    #[Computed]
+    public function funcionImporteDos()
+    {
+        if(is_numeric($this->importeUno) AND is_numeric($this->total)){
+
+            return $this->total -$this->importeUno;
+        }else{
+            // dd($this->importeUno);
+            $this->importeUno=0;
+        }
+    }
+
     public function igualarTotal(){
         $this->importeUno = $this->total;
         $this->importeDos = 0;
@@ -204,7 +218,7 @@ class NuevoComprobante extends Component
                 'numeric',
                 function ($attribute, $value, $fail) {
                     if ($value == 0) {
-                        $fail('El número debe ser mayor a 0.');
+                        $fail('El Importe UNO debe ser mayor a 0.');
                     }
                 },
 
@@ -213,6 +227,11 @@ class NuevoComprobante extends Component
             'importeDos' => [
                 'required',
                 'numeric',
+                function ($attribute, $value, $fail) {
+                    if ($value < 0) {
+                        $fail('El Importe DOS debe ser mayor a 0.');
+                    }
+                },
 
             ],
 

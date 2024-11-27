@@ -89,12 +89,7 @@
                         Tipo Cntribuyente: {{$comp->tipoContribuyente}}
                     </label>
 
-                    <label for="">
-                        Pago Uno: {{$comp->importeUno}}
-                    </label>                    
-                    <label for="">
-                        Pago Dos: {{$comp->importeDos}}
-                    </label>
+
 
                 </div>
                 <div class="col">
@@ -117,12 +112,7 @@
                     <label for="">
                         Leyenda: {{$depo->leyenda}}
                     </label>                    
-                    <label for="">
-                        FP Uno: {{$fpUno->nombre}}
-                    </label>
-                    <label for="">
-                        FP Dos: {{$fpDos->nombre}}
-                    </label>
+
 
                     <label for="">
                         Usuario: {{$comp->usuario}}
@@ -132,6 +122,29 @@
 
 
                     
+
+                </div>
+            </div>
+
+            <hr>
+
+            <div class="grid">
+                <div class="col">
+                    <label for="">
+                        FP Uno: {{$fpUno->nombre}}
+                    </label>
+                    <label for="">
+                        FP Dos: {{$fpDos->nombre}}
+                    </label>
+
+                </div>
+                <div class="col">
+                    <label for="">
+                        Pago Uno: ${{$comp->importeUno}}
+                    </label>                    
+                    <label for="">
+                        Pago Dos: ${{$comp->importeDos}}
+                    </label>
 
                 </div>
             </div>

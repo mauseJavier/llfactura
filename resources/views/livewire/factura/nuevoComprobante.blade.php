@@ -15,13 +15,9 @@
     @dump($ivaDefecto) --}}
 
 
-    <div class="container" x-data="{ valor1:{{$total}}, valor2: {{$importeUno}}, valor3: {{$importeDos}} , valor4: 0,valor5: 0,
-                                            formaPagoSeleccionado: 'NO',
-                                            ajustarImporteDos() {
-                                                    if (this.formaPagoSeleccionado === 'NO') {
-                                                        this.valor3 = 0;
-                                                    }
-                                                },
+    <div class="container" style="text-align: center;"
+                     x-data="{ valor1:{{$total}}, valor2: {{$importeUno}}, valor3: {{$importeDos}} , valor4: 0,valor5: 0,
+     
                                                  handleKeyPress(event) {
                                                     const select = document.getElementById('idFormaPago');
                                                     const selectDuplicado = document.getElementById('idFormaPagoDuplicado');
@@ -182,8 +178,15 @@
 
         </article>
 
+        
+        <div wire:loading>
+            <span>Procesando la Informacion...</span>
+            <progress />
 
-        <article x-data="{ mostrarFormaPago: false }"> <!-- Declaramos una variable de estado -->
+        </div>
+
+
+        <article wire:loading.remove x-data="{ mostrarFormaPago: false }"> <!-- Declaramos una variable de estado -->
                      
 
 
@@ -210,9 +213,10 @@
                     <fieldset>
                         <label>
                             <input id="activarFormaDePago" type="checkbox" role="switch" x-model="mostrarFormaPago"
-                            wire:click="igualarTotal()"  x-on:click="formaPagoSeleccionado = 'NO'"
+                            wire:click="igualarTotal()"
                              />
-                            Dos Formas de Pago
+                            Dos Formas de Pago 
+                            {{-- forma de pago: {{$activarFormaDePagoDos}} , total {{$total}}, importe uno {{$importeUno}}, importe dos {{$this->funcionImporteDos()}} --}}
                         </label>
                     </fieldset>
             
@@ -249,14 +253,14 @@
                                             id="importeUno"
                                             wire:model.live="importeUno"
                                             style="text-align: center; font-size:45px; background-color: rgb(95, 123, 98);" 
-                                            type="number" step="0.01" min="0.01"                         
+                                            {{-- type="number" step="0.01" min="0.01"                          --}}
+                                            type="text"
                                             x-model.number="valor2" 
                                             x-on:focus="$refs.inputText1.select()"   
                                             x-ref="inputText1"  
                                             {{-- x-on:blur="event.target.value = formatCurrency(event.target.value)" --}}
                                         />
 
-                                        <input type="button" value="Total" wire:click="igualarTotal()"  x-on:click="formaPagoSeleccionado = 'NO'"/>
 
                                     </fieldset>
                                     @error('importeUno')
@@ -278,8 +282,6 @@
                                         id="selectFormaPagoDos"
                                         aria-label="" 
                                         wire:model.live="idFormaPago2"
-                                        x-model="formaPagoSeleccionado"
-                                        @change="ajustarImporteDos"
                                     >   
                                         {{-- <option value="NO" selected>NO</option> --}}
                                         @foreach ($formaPago2 as $item)
@@ -298,11 +300,10 @@
 
                                         type="texto"                                   
                                         id="importeDos" 
-                                        x-model.number="{{round( $total - floatVal($importeUno),2)}}" 
+                                        x-model.number="{{$this->funcionImporteDos()}}" 
                                         x-ref="inputText2"
                                         x-on:focus="$refs.inputText2.select()"   
                                         x-on:blur="event.target.value = formatCurrency(event.target.value)"
-                                        {{-- :disabled="formaPagoSeleccionado === 'NO'" --}}
                                         disabled
                                     >
                                     @error('importeDos')
@@ -364,23 +365,20 @@
                 <div class="col">
 
                     <div style="text-align: center; height: 100%; display: flex; align-items: center; justify-content: center;">
-                        <p 
-                            :style="(valor5 - (valor1)) > 0 ? 'color:red; font-size: 45px; margin: 0;' : 'color:green; font-size: 45px; margin: 0;'" 
-                        >
-                            <span x-text="(valor5 - (valor1)) > 0 ? 'Vuelto $' + (valor5 - (valor1)).toFixed(2) : 'Falta $' + (valor5 - (valor1)).toFixed(2)"></span>
-                        </p>
+                        <label for="">
+                            Vuelto
+                            <p 
+                                :style="(valor5 - (valor1)) > 0 ? 'color:green; font-size: 45px; margin: 0;' :  'color:red; font-size: 45px; margin: 0;'" 
+                            >
+                                <span x-text="(valor5 - (valor1)) > 0 ? ' $' + (valor5 - (valor1)).toFixed(2) : ' $' + (valor5 - (valor1)).toFixed(2)"></span>
+                            </p>
+                        </label>
                     </div>
 
                 </div>
             </div>
 
         </article>
-
-
-        <article wire:loading>
-            <span aria-busy="true">Procesando la Informacion...</span>
-        </article>
-
 
 
         <article wire:loading.remove x-data="{ buttonText: 'Finalizar' }" style="width: 100%">
@@ -474,7 +472,7 @@
             </div>            
         </article>
 
-        <article>
+        <article wire:loading.remove>
 
             {{-- //////////////// --}}
             <div class="grid">
@@ -564,7 +562,7 @@
         </article>
 
         
-        <article>
+        <article wire:loading.remove>
             <details>
                
                 <summary>Mas Datos</summary>
