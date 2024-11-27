@@ -364,6 +364,19 @@ class Venta extends Component
 
     public function modificarCarrito(){
 
+
+        $validated = $this->validate([
+            'modificarCantidad' => 'required|numeric|min:0.01',
+
+        ], [
+            'cantidad.required' => 'El campo cantidad a enviar es obligatorio.',
+            'cantidad.numeric' => 'El campo cantidad a enviar debe ser un número.',
+            'cantidad.min' => 'El campo cantidad a enviar debe ser mayor que 0.01.',
+
+            'porcentaje.required' => 'El campo porcentaje a enviar es obligatorio.',
+            'porcentaje.numeric' => 'El campo porcentaje a enviar debe ser un número.',
+        ]);
+
         $precio =round($this->modificarPrecio+($this->modificarPrecio * $this->modificarPorcentaje /100),2);
 
 

@@ -320,8 +320,17 @@
             </label>
             <label>
               Cantidad
-              <input type="text" wire:model="modificarCantidad" wire:keydown.enter="modificarCarrito">
+              <input type="text" wire:model="modificarCantidad" wire:keydown.enter="modificarCarrito"
+                @error('modificarCantidad')
+                  aria-invalid="true"
+                  aria-describedby="invalid-helper"
+                @enderror
+              >
+              @error('modificarCantidad')
+              <small id="invalid-helper">{{ $message }} </small>               
+              @enderror
             </label>
+
             <label>
               Porcentaje (-Descuento +Incremento)
               <fieldset role="group">
