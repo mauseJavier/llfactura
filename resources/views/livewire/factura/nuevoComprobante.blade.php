@@ -186,7 +186,7 @@
         </div>
 
 
-        <article wire:loading.remove x-data="{ mostrarFormaPago: false }"> <!-- Declaramos una variable de estado -->
+        <article x-data="{ mostrarFormaPago: false }"> <!-- Declaramos una variable de estado -->
                      
 
 
@@ -472,7 +472,7 @@
             </div>            
         </article>
 
-        <article wire:loading.remove>
+        <article>
 
             {{-- //////////////// --}}
             <div class="grid">
