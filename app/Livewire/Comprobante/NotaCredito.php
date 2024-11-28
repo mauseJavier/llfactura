@@ -206,7 +206,15 @@ class NotaCredito extends Component
                     'tipoComp'=>$notaCredito->FeCabResp->CbteTipo,
                     'fecha'=> Carbon::now()->format('Y-m-d H:i:s'),
                     'leyenda'=> $this->comentario,
+
                     'idFormaPago'=>$this->comprobante->idFormaPago,
+                    'importeUno'=> round($this->comprobante->importeUno * -1 ,2), //PARA QUE EL IMPORTE RESTE A LOS COMPROBANTES AJUSTAR EN LA IMPRECION,
+                    'idFormaPago2'=>$this->comprobante->idFormaPago2 ,
+                    'importeDos'=> round($this->comprobante->importeDos * -1 ,2), //PARA QUE EL IMPORTE RESTE A LOS COMPROBANTES AJUSTAR EN LA IMPRECION ,
+
+
+
+
                     'ptoVta'=>$notaCredito->FeCabResp->PtoVta,
                     'deposito_id'=>$this->comprobante->deposito_id,
                     'usuario'=> Auth::user()->name,
@@ -235,6 +243,8 @@ class NotaCredito extends Component
                         'tipoComp'=>$notaGuardada->tipoComp,
                         'fecha'=>$notaGuardada->fecha,
                         'idFormaPago'=>$notaGuardada->idFormaPago,
+                        'idFormaPago2'=>$notaGuardada->idFormaPago2,
+
                         'ptoVta'=>$notaCredito->FeCabResp->PtoVta,
                         'usuario'=> Auth::user()->name,
                         'empresa_id'=> $this->empresa->id,

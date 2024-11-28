@@ -121,8 +121,8 @@
                         @foreach ($totales as $item)
 
 						<tr>
-							<th scope="row">{{$item->nombre}}</th>
-							<td colspan="2">${{number_format($item->sumTotal, 2, ',', '.')}}</td>
+							<th scope="row">{{$item['nombre']}}</th>
+							<td colspan="2">${{number_format($item['total'], 2, ',', '.')}}</td>
 						</tr>
 
                             

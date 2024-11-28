@@ -24,29 +24,48 @@ class ReporteVentaUsuarioController extends Controller
     public function imprimir(){
 
 
+        $collection = Comprobante::select('comprobantes.idFormaPago as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeUno) as totalImporte'))
+        ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
+        ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+        ->whereBetween('comprobantes.created_at', [Carbon::now()->startOfDay(), Carbon::now()])
+        ->where('comprobantes.usuario', 'like', '%' . Auth()->user()->name . '%')
+        // ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
+        // ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
+        // ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+        ->groupBy('comprobantes.idFormaPago', 'forma_pagos.nombre')
+        
+        // Unir la segunda colección
+        ->unionAll(
+            Comprobante::select('comprobantes.idFormaPago2 as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeDos) as totalImporte'))
+                ->join('forma_pagos', 'comprobantes.idFormaPago2', '=', 'forma_pagos.id')
+                ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+                ->whereBetween('comprobantes.created_at', [Carbon::now()->startOfDay(), Carbon::now()])
+                ->where('comprobantes.usuario', 'like', '%' . Auth()->user()->name . '%')
+                // ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
+                // ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
+                // ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+                ->groupBy('comprobantes.idFormaPago2', 'forma_pagos.nombre')
+        )
+        ->get();
 
-        $totales = Comprobante::select('comprobantes.idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.total) as sumTotal'))
-                                        ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
-                                        ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
-                                        ->where('comprobantes.created_at', '>=', Carbon::now()->startOfDay())
-                                        ->where('comprobantes.created_at', '<=', Carbon::now())
-                                        ->where('comprobantes.usuario', 'like', '%' . Auth()->user()->name . '%')
+    // Procesar los resultados combinados en un único arreglo de totales
+    $totales = [];
 
-                                        // ->when($this->tipoComp, function ($query, $tipoComp) {
-                                        //     return $query->where('comprobantes.tipoComp', $tipoComp);
-                                        // })
-                                // ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-                                // return $query->where('numero', '=',$numeroComprobanteFiltro);
-                                // })
+    foreach ($collection as $comprobante) {
+        $idFormaPago = $comprobante->idFormaPago;
+        $nombre = $comprobante->nombre;
+        $totalImporte = $comprobante->totalImporte;
 
-                                // ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
-                                // return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
-                                // })
+        if (!isset($totales[$idFormaPago])) {
+            $totales[$idFormaPago] = [
+                'nombre' => $nombre,
+                'total' => 0,
+            ];
+        }
 
+        $totales[$idFormaPago]['total'] += $totalImporte;
+    }
 
-                                        ->groupBy('comprobantes.idFormaPago','forma_pagos.nombre')
-                                        ->get();
-        // dd($totales);
 
         $info=['titulo'=>'Reporte Diario:'. Auth()->user()->name,
                 'usuario'=> Auth()->user()->name,
