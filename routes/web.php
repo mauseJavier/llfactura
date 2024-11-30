@@ -33,6 +33,9 @@ use App\Livewire\Cliente\CuentaCorriente;
 use App\Livewire\Novedades\Novedades;
 
 
+use App\Livewire\PreciosPublico\PreciosPublico;
+
+
 use App\Livewire\Proveedor\VerProveedor;
 use App\Livewire\Presupuesto\VerPresupuesto;
 
@@ -299,6 +302,9 @@ use Illuminate\Http\Request;
             Route::get('/ventasArticulos', VerVentasArticulos::class)->name('ventasArticulos');
 
             Route::get('/configuracion/basico', Basico::class)->name('configuracionbasico');
+
+            Route::get('/preciosPublico', PreciosPublico::class)->name('preciosPublico');
+
 
         
 

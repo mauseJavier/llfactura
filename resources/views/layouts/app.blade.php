@@ -11,8 +11,6 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.green.min.css"
     />
-
-    <script src="https://kit.fontawesome.com/d361ac2d93.js" crossorigin="anonymous"></script>
     
     <style>
       .tarjetaMenu{
