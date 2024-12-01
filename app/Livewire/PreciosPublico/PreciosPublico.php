@@ -85,7 +85,7 @@ class PreciosPublico extends Component
             // dd($articulo[0]);
 
             $this->detalle = $articulo[0]->detalle;
-            $this->precio = '$'. number_format( $articulo[0]->precio,2,',');
+            $this->precio = '$'. number_format( $articulo[0]->precio,2,'.',',');
 
 
             // $this->crearCarrito($articulo);
