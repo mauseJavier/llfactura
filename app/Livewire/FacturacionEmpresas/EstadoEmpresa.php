@@ -96,7 +96,7 @@ class EstadoEmpresa extends Component
 
 
 
-        $empresa->vencimientoPago=$fecha;
+        $empresa->vencimientoPago="$fecha";
         $empresa->pagoServicio= $empresa->pagoServicio == 1 ?  0 : 1;
 
         $empresa->save();
