@@ -31,7 +31,9 @@ class ImportarInventario extends Component
 
     public $empresa;
 
-    #[Validate('required|mimes:csv')]
+    // #[Validate('required|mimes:csv')]
+    #[Validate('required')]
+
     public $archivo;
 
     public $procesados;
@@ -83,7 +85,7 @@ class ImportarInventario extends Component
 
 
 
-        while (($row = fgetcsv($archivo, 1000, ',')) !== false) {
+        while (($row = fgetcsv($archivo, 1000, ';')) !== false) {
             // Saltar la primera fila (encabezado)
 
             
@@ -99,6 +101,8 @@ class ImportarInventario extends Component
 
             // Crear o actualizar el inventario
 
+
+            // dump($row[1]);
 
             if($row[0]!='' and $row[1]!=''){
 

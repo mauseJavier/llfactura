@@ -18,6 +18,8 @@ use Livewire\WithPagination;
 use Livewire\Component;
 
 use App\Models\Comprobante;
+use App\Models\Empresa;
+
 
 class VerComprobante extends Component
 {
@@ -135,23 +137,57 @@ class VerComprobante extends Component
         $this->numeroComprobanteFiltro="";
 
 
-        $array1 = [
-            '1'=>'Factura A',
-            '6'=>'Factura B',
+        $monotributo = [
+
             '11'=>'Factura C',
-            '51'=>'Factura M',
 
             'remito'=>'Remito',
+
+            '13'=>'NC C',
+            'notaRemito'=>'NC R',
+
+
         ];
-        $array2=array();
 
-        foreach (Comprobante::select('tipoComp')->distinct()->where('empresa_id', Auth::user()->empresa_id)->get() as $key => $value) {        
-            array_push($array2, $value->tipoComp);
+        $responsable = [
+            '1'=>'Factura A',
+            '6'=>'Factura B',
+            '51'=>'Factura M',
+            'remito'=>'Remito',
+
+            '3'=>'NC A',
+            '8'=>'NC B',
+
+
+            'notaRemito'=>'NC R',
+
+
+        ];
+
+
+        // $array2=array();
+
+        // foreach (Comprobante::select('tipoComp')->distinct()->where('empresa_id', Auth::user()->empresa_id)->get() as $key => $value) {        
+        //     array_push($array2, $value->tipoComp);
+        // }
+
+
+        // // Usamos array_intersect_key con array_flip para intersectar usando claves
+        // $this->tiposComprobantes = array_intersect_key($array1, array_flip($array2));
+
+        $empresa =(Empresa::find(Auth()->user()->empresa_id));
+
+        // dd($empresa->iva);
+
+        if($empresa->iva == 'ME'){
+            $this->tiposComprobantes = $monotributo;
+
+        }else{
+            $this->tiposComprobantes = $responsable;
+
         }
-      
 
-        // Usamos array_intersect_key con array_flip para intersectar usando claves
-        $this->tiposComprobantes = array_intersect_key($array1, array_flip($array2));
+        $this->usuarioFiltro = Auth::user()->name;
 
 
 

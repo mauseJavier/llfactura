@@ -306,7 +306,8 @@ use Illuminate\Http\Request;
             Route::get('/preciosPublico', PreciosPublico::class)->name('preciosPublico');
 
 
-        
+            Route::get('/stock', VerStock::class)->name('stock');
+
 
         });
 
@@ -325,7 +326,6 @@ use Illuminate\Http\Request;
         Route::get('/productosComprobante/{idComprobante}', ProductosComprobante::class)->name('productosComprobante');
         Route::get('/nuevoComprobante', NuevoComprobante::class)->name('nuevoComprobante');
         Route::get('/venta', Venta::class)->name('venta');
-        Route::get('/stock', VerStock::class)->name('stock');
         Route::get('/recibirstock', RecibirStock::class)->name('recibirstock');
         Route::get('/historicoenvio', HistoricoEnvio::class)->name('historicoenvio');
         Route::get('/movimientostock/{stock_id?}', MovimientoStock::class)->name('movimientostock');

@@ -62,9 +62,7 @@
                                                             break;
 
 
-                                                        case 'ENTER':
-                                                            button.click(); // Presiona el botón al presionar Enter
-                                                            break;
+                                                      
                                                     }
 
 
