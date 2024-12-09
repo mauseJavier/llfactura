@@ -47,6 +47,9 @@ use App\Livewire\Ventas\VerVentasArticulos;
 
 use App\Livewire\Configuracion\Basico;
 
+use App\Livewire\Mesas\VerMesas;
+use App\Livewire\Mesas\ModificarMesa;
+
 
 
 use App\Models\Empresa;
@@ -348,6 +351,10 @@ use Illuminate\Http\Request;
         Route::get('/novedades', Novedades::class)->name('novedades');
 
         Route::get('/facturarRemito/{idComprobante}', FacturarRemito::class)->name('facturarRemito');
+
+
+        Route::get('/verMesas', VerMesas::class)->name('verMesas');
+        Route::get('/modificarMesa/{mesa}', ModificarMesa::class)->name('modificarMesa');
 
 
 

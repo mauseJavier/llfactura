@@ -37,6 +37,11 @@ class DatabaseSeeder extends Seeder
             ProveedorSeeder::class,
             ListaPrecioSeeder::class,
             DepositoSeeder::class,
+
+            SectorSeeder::class,
+
+            MesaSeeder::class,
+
             // PostSeeder::class,
             // CommentSeeder::class,
         ]);
