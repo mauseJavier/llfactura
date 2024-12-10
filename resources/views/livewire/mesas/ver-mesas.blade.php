@@ -3,7 +3,7 @@
     <div class="container">
 
         <div class="grid">
-            <h3>Mesas:</h3>
+            <h3>Mesas</h3>
 
             <input
                 type="search"
@@ -30,36 +30,40 @@
 
     {{-- @dd($mesas) --}}
 
+
+<h1 style="color: rgb(141, 88, 88)"></h1>
     @foreach ($sector as $s)
         <details open>
-            <summary>{{$s->nombre}}</summary>
+            <summary><h4>{{ $s->nombre }}</h4></summary>
             
-            <div class="grid"> <!-- Aseguramos que siempre hay un grid al inicio -->
+            @php $count = 0; @endphp
+            <div class="grid">
             @foreach ($mesas as $item)
-
-                @if ($loop->index % 4 == 0 && !$loop->first)
-                    </div> <!-- Cierra la grid anterior -->
-                    <div class="grid"> <!-- Abre una nueva grid -->
-                @endif
-
                 @if ($item->sector == $s->id)
-
+                    @if ($count > 0 && $count % 4 == 0)
+                        </div>
+                        <div class="grid">
+                    @endif
+                    
                     <div class="col">
                         <article 
-                            x-data="{ numero: '{{$item->numero}}' }"
-                            :style="numero != '{{$item->numero}}' ? 'background-color: red; text-align: center;' : 'background-color: green; text-align: center;'" 
-                            wire:click="modificarMesa('{{$item->id}}')"
+                            x-data="{ numero: '{{ $item->numero }}' }"
+                            :style="'' == '{{ $item->data }}' ? 'background-color:  rgb(141, 88, 88); text-align: center; cursor:pointer;' : 'background-color: green; text-align: center; cursor:pointer;'" 
+                            wire:click="modificarMesa('{{ $item->id }}')"
                         >
-                            {{$item->nombre}} -
-                            {{$item->id}}
-
+                            {{ $item->nombre }} - {{ $item->numero }} ({{$item->razonSocial }}-- $12.12)
                         </article>
                     </div>
+                    
+                    {{-- {{ isset($item->data) ? ($item->data) : 0}} --}}
+
+                    @php $count++; @endphp
                 @endif
             @endforeach
-            </div> <!-- Siempre cerramos la grid -->
+            </div> <!-- Cierra la última fila -->
         </details>
     @endforeach
+
 
 
     {{-- @foreach ($sector as $s)

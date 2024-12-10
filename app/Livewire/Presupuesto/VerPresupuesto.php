@@ -7,7 +7,6 @@ use Livewire\Component;
 use Livewire\Attributes\Session;
 
 
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -37,6 +36,8 @@ class VerPresupuesto extends Component
         $this->total =$this->presupuesto->total;
 
     }
+
+    
 
 
     public function cargarPresupuesto(){

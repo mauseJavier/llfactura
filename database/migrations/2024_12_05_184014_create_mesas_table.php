@@ -29,6 +29,8 @@ return new class extends Migration
 
             $table->string('comentario')->nullable();
 
+            $table->double('total')->default(0);
+
 
             $table->enum('estado', ['activa', 'cancelada'])->default('activa');
 

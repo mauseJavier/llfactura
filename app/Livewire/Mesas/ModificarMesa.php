@@ -30,13 +30,116 @@ class ModificarMesa extends Component
     #[Session(key: 'mesaCarrito')] 
     public $mesaCarrito;
 
+    #[Session(key: 'carrito')] 
+    public $carrito;
+
+    #[Session(key: 'cliente')] 
+    public $cliente;
 
 
-
-    public $razonSocial,$comentario,$datoBuscado,$cantidad=1,
+    public $razonSocial,$comentario,
+            $tipoDocumento,
+            $numeroDocumento,
+            $tipoContribuyente,
+            $domicilio,
+            $correo,$datoBuscado,$cantidad=1,
             $data;
 
 
+
+    public function finalizarMesa(){
+
+        //BORRAMOS LAS SESSIONES POR LAS DUDAS 
+        $this->carrito = null;
+        $this->cliente = null;
+
+        // dd($this->presupuesto);
+        if(isset($this->razonSocial)){
+
+
+            // $productos = ProductoPresupuesto::where('presupuesto_id',$this->presupuesto->id)->get();
+            // dump($this->presupuesto);
+
+            $this->mesa->razonSocial = $this->razonSocial;
+            $this->mesa->tipoDocumento =$this->tipoDocumento;
+            $this->mesa->numeroDocumento =$this->numeroDocumento;
+            $this->mesa->tipoContribuyente =$this->tipoContribuyente;
+            $this->mesa->domicilio =$this->domicilio;
+            $this->mesa->correo =$this->correo;
+            $this->mesa->comentario =$this->comentario;
+
+            $this->cliente = array(
+                'DocTipo'=> $this->mesa->tipoDocumento,
+                'cuitCliente'=> $this->mesa->numeroDocumento,
+                'razonSocial'=> $this->mesa->razonSocial,
+                'tipoContribuyente'=> $this->mesa->tipoContribuyente,
+                'domicilio'=> $this->mesa->domicilio,
+                'leyenda'=> '',
+                'idFormaPago'=> 1,
+            );
+
+            foreach ($this->data['mesaCarrito'] as $key => $value) {
+
+                // dump($value);
+                # code...
+                $this->carrito['carrito'][] = array(
+                    'codigo'=>$value['codigo'],
+                    'detalle'=>$value['detalle'],
+
+                    'porcentaje'=> $value['porcentaje'],
+                    'precioLista'=> $value['precioLista'] ,
+                    'descuento'=> $value['descuento'] ,
+                    'precio'=> round( $value['precio'],2),
+
+                    'costo'=> $value['costo'],
+
+                    'iva'=>$value['iva'],
+                    'cantidad'=>$value['cantidad'],
+                    'rubro'=>$value['rubro'],
+                    'proveedor'=>$value['proveedor'],
+                    'marca'=>$value['marca'],
+
+                    'controlStock'=>$value['controlStock'],
+                    'subtotal'=> round( $value['precio'] * $value['cantidad'],2) ,
+        
+                    ) ;
+            }
+
+            // dd();
+
+
+
+                $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
+                $cantidadArticulos = 0 ;
+
+                // dd($this->carrito['carrito'] );
+
+                foreach ($this->carrito['carrito'] as $item) {
+
+                    // dd($this->carrito['carrito']);
+                    $totalSubtotal += $item['subtotal'];
+                    $cantidadArticulos += $item['cantidad'];
+
+                }
+
+                $this->carrito['total']=  round($totalSubtotal,2);
+                $this->carrito['articulos']=  $cantidadArticulos;
+
+
+                $this->cancelarMesa();
+
+                $this->redirectRoute('nuevoComprobante');
+
+
+        }else{
+            session()->flash('mensaje', 'Falta Razon Social.');
+
+        }
+
+
+
+    }
+        
 
     public function guardarPedidoMesa(){
 
@@ -251,6 +354,15 @@ class ModificarMesa extends Component
 
         $this->mesa = $mesa;
         $this->razonSocial = $mesa->razonSocial;
+
+        $this->tipoDocumento =$mesa->tipoDocumento;
+        $this->numeroDocumento =$mesa->numeroDocumento;
+        $this->tipoContribuyente =$mesa->tipoContribuyente;
+        $this->domicilio =$mesa->domicilio;
+        $this->correo =$mesa->correo;
+        $this->comentario =$mesa->comentario;
+
+
         $this->datos= $mesa->datos;
 
         $this->data = json_decode($mesa->data,true);
@@ -263,13 +375,74 @@ class ModificarMesa extends Component
 
     public function guardarrazonSocial(){
 
+        $validated = $this->validate([
+            'numeroDocumento' => 'required|numeric|min:0|max:99999999999',
+            'razonSocial' => 'required|min:1',
+        ], [
+            'numeroDocumento.required' => 'El campo CUIT a enviar es obligatorio.',
+            'numeroDocumento.numeric' => 'El campo CUIT a enviar debe ser un número.',
+            'numeroDocumento.min' => 'El campo CUIT a enviar debe ser mayor que 0.',
+            'numeroDocumento.max' => 'El campo CUIT a enviar debe ser menor que 11.',
+
+
+            'razonSocial.required' => 'El campo Razon Social a enviar es obligatorio.',
+            'razonSocial.min' => 'El campo Razon Social a enviar debe ser mayor que 0.',
+        ]);
+
+
+
         $this->mesa->razonSocial = $this->razonSocial;
+        $this->mesa->tipoDocumento =$this->tipoDocumento;
+        $this->mesa->numeroDocumento =$this->numeroDocumento;
+        $this->mesa->tipoContribuyente =$this->tipoContribuyente;
+        $this->mesa->domicilio =$this->domicilio;
+        $this->mesa->correo =$this->correo;
+        $this->mesa->comentario =$this->comentario;
+
 
         $this->mesa->save();
 
 
+        session()->flash('mensaje', 'Cliente Guardado.');
+
+
+
 
     }
+
+
+    public function cancelarMesa(){
+
+        $this->mesa->razonSocial = null;
+        $this->mesa->tipoDocumento =null;
+        $this->mesa->numeroDocumento =null;
+        $this->mesa->tipoContribuyente =null;
+        $this->mesa->domicilio =null;
+        $this->mesa->correo =null;
+        $this->mesa->comentario =null;
+        $this->mesa->data =null;
+
+
+
+        $this->mesa->save();
+
+        $this->data= null;
+
+
+        $this->razonSocial = '';
+        $this->tipoDocumento ='';
+        $this->numeroDocumento ='';
+        $this->tipoContribuyente ='';
+        $this->domicilio ='';
+        $this->correo ='';
+        $this->comentario ='';
+        $this->data ='';
+
+
+
+    }
+
+
 
 
     public function restarCantidad(){

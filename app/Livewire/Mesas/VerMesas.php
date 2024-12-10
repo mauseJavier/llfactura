@@ -32,7 +32,11 @@ class VerMesas extends Component
             'sector'=> Sector::where('empresa_id',Auth()->user()->empresa_id)->get(),
             'mesas'=> Mesa::where('empresa_id',Auth()->user()->empresa_id)
                 ->when($this->buscarMesa, function ($query, $buscarMesa) {
-                    return $query->where('nombre','LIKE', '%'. $buscarMesa.'%');
+                    return $query->whereAny([
+                        'nombre',
+                        'numero',
+                        'razonSocial',
+                    ], 'like', '%'. $buscarMesa.'%');
                 })
                 ->get(),
 
