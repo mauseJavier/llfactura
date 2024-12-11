@@ -7,6 +7,7 @@
                 <div class="col">
                     <h1>
                         ({{$mesa->numero}})  {{$mesa->nombre}}        
+                        (${{number_format($total, 2, ',', '.')}} - {{$razonSocial}})
                     </h1>
 
                 </div>

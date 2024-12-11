@@ -43,7 +43,8 @@ class ModificarMesa extends Component
             $tipoContribuyente,
             $domicilio,
             $correo,$datoBuscado,$cantidad=1,
-            $data;
+            $data,
+            $total;
 
 
 
@@ -167,10 +168,12 @@ class ModificarMesa extends Component
     
             // dd($resultado);
             $this->mesa->data = $resultado;
+            $this->mesa->total =  $resultado['total'] ;
 
     
         }else{
             $this->mesa->data = $this->mesaCarrito;
+            $this->mesa->total = $this->mesaCarrito['total'];
 
         }
 
@@ -179,6 +182,8 @@ class ModificarMesa extends Component
         $this->mesaCarrito = null;
 
         $this->data = $this->mesa->data;
+        $this->total = $this->mesa->total;
+
 
         session()->flash('mensaje', 'Guardado');
 
@@ -361,6 +366,8 @@ class ModificarMesa extends Component
         $this->domicilio =$mesa->domicilio;
         $this->correo =$mesa->correo;
         $this->comentario =$mesa->comentario;
+        $this->total =$mesa->total;
+
 
 
         $this->datos= $mesa->datos;
@@ -421,6 +428,8 @@ class ModificarMesa extends Component
         $this->mesa->correo =null;
         $this->mesa->comentario =null;
         $this->mesa->data =null;
+        $this->mesa->total =0;
+
 
 
 
@@ -437,6 +446,8 @@ class ModificarMesa extends Component
         $this->correo ='';
         $this->comentario ='';
         $this->data ='';
+        $this->total =0;
+
 
 
 

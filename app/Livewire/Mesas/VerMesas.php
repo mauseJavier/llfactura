@@ -15,13 +15,40 @@ use App\Models\Sector;
 class VerMesas extends Component
 {
 
-    public $buscarMesa;
+    public $buscarMesa,
+        $nombreMesa,
+        $numeroMesa,
+        $capacidadMesa,
+        $sectorMesa;
 
 
     public function modificarMesa($mesa){
 
         
         $this->redirectRoute('modificarMesa', ['mesa' => $mesa]);
+
+
+    }
+
+
+    public function guardarMesa(){
+
+
+        $mesa = Mesa::create([
+            'numero' => $this->numeroMesa,
+            'nombre' => $this->nombreMesa,
+            'capacidad' => $this->capacidadMesa,
+            'sector' => $this->sectorMesa,
+        ]);
+
+
+        $this->numeroMesa='';
+        $this->nombreMesa='';
+        $this->capacidadMesa='';
+        $this->sectorMesa='';
+
+
+        session()->flash('btnGuardar', 'Guardado!!');
 
 
     }

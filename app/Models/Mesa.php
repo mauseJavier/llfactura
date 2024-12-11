@@ -9,4 +9,5 @@ class Mesa extends Model
 {
     /** @use HasFactory<\Database\Factories\MesaFactory> */
     use HasFactory;
+    protected $guarded = [];  
 }
