@@ -133,7 +133,7 @@ class ModificarMesa extends Component
 
 
         }else{
-            session()->flash('mensaje', 'Falta Razon Social.');
+            session()->flash('mensaje', 'Falta Razon Social (Nombre Cliente).');
 
         }
 

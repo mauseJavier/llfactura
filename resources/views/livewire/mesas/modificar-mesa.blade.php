@@ -298,7 +298,7 @@
 
         <div style="justify-content: center; align-items: center; ">
             @if (session()->has('mensaje'))
-                <div class="alert alert-success" role="alert">
+                <div style="color: red; text-align: center;">
                 {{ session('mensaje') }}
                 </div>
             @endif
