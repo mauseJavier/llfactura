@@ -30,7 +30,15 @@ class VerMesas extends Component
         $sector= Sector::where('empresa_id',Auth()->user()->empresa_id)->first();
 
         // dd($sector->id);
-        $this->sectorMesa = $sector->id;
+        if($sector){
+
+            $this->sectorMesa = $sector->id;
+        }else{
+
+            $this->sectorMesa = NULL;
+
+
+        }
 
     }
 

@@ -31,6 +31,8 @@ class Basico extends Component
     public $telefono;
     public $correo;
 
+    public $mesas;
+
 
 
 
@@ -81,6 +83,9 @@ class Basico extends Component
         $this->telefono = $this->empresa->telefono;
         $this->correo = $this->empresa->correo;
 
+        $this->mesas = $this->empresa->mesas;
+
+
 
 
 
@@ -109,16 +114,14 @@ class Basico extends Component
         $this->empresa->telefono = $this->telefono;
         $this->empresa->correo = $this->correo;
 
-
-
-
-
-
+        $this->empresa->mesas = $this->mesas;
 
 
         $this->empresa->save();
 
         session()->flash('mensaje', 'Guardado Correcto.');
+
+        $this->render();
     }
      
     public function render()

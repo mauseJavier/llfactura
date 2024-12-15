@@ -19,10 +19,15 @@
             <details class="dropdown">
             <summary>Opciones</summary>
                 <ul>
+
+                  @isset($sectorMesa)
+                      
                     <li>
                         <a @click="modalNuevaMesa = !modalNuevaMesa" >Nueva Mesa</a>
 
                     </li>
+                  @endisset
+  
                     <li>
                       <a @click="modalNuevoSector = !modalNuevoSector" >Nuevo Sector</a>
 
@@ -97,7 +102,7 @@
             
             <article style="width: 100%;">
               <header>
-                <button aria-label="Close" rel="prev" @click="modalNuevaMesa = !modalNuevaMesa"></button>
+                <button aria-label="Close" rel="prev" @click="modalNuevaMesa = !modalNuevaMesa" wire:click="$refresh"></button>
                 <p>
                   <strong>Nueva Mesa</strong>
                 </p>
@@ -219,7 +224,7 @@
 
     
     
-              <p style="text-align: right;" @click="modalNuevaMesa = !modalNuevaMesa">
+              <p style="text-align: right;" @click="modalNuevaMesa = !modalNuevaMesa" wire:click="$refresh">
 
                 Cerrar - 
     
@@ -239,7 +244,7 @@
             
       <article style="width: 100%;">
         <header>
-          <button aria-label="Close" rel="prev" @click="modalNuevoSector = !modalNuevoSector"></button>
+          <button aria-label="Close" rel="prev" @click="modalNuevoSector = !modalNuevoSector" wire:click="$refresh"></button>
           <p>
             <strong>Nuevo Sector</strong>
           </p>
@@ -363,7 +368,7 @@
 
 
 
-        <p style="text-align: right;" @click="modalNuevoSector = !modalNuevoSector">
+        <p style="text-align: right;" @click="modalNuevoSector = !modalNuevoSector" wire:click="$refresh">
 
           Cerrar - 
 

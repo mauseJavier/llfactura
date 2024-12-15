@@ -156,6 +156,19 @@
                 </div>
 
 
+                <div class="grid">
+                    <label for="">
+                        Opcion para Restaurantes
+                        <select name="mesas" wire:model="mesas">
+          
+                            <option value="no">NO</option>
+                            <option value="si">SI</option>
+                            
+                          </select>
+                    </label>
+                </div>
+
+
                 </fieldset>
               
                 <input

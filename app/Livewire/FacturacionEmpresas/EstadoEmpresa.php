@@ -7,6 +7,9 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Support\Facades\Auth;
+
+
 use App\Models\Comprobante;
 use App\Models\Empresa;
 
@@ -80,10 +83,14 @@ class EstadoEmpresa extends Component
     }
 
 
-    public function modificarFechaVencimientoPago(Empresa $empresa,$fecha){
+    public function modificarFechaVencimientoPago(Empresa $empresa,$fecha,$pagoMes,$comentario){
 
 
         $empresa->vencimientoPago=$fecha;
+        $empresa->pagoMes=$pagoMes;
+        $empresa->comentario=$comentario;
+        $empresa->usuarioPago=Auth()->user()->name;
+
         $empresa->save();
 
 
@@ -122,7 +129,12 @@ class EstadoEmpresa extends Component
 
             $affected = DB::table('empresas')
               ->update(['vencimientoPago' => $fechaFormateada,
-              'pagoServicio'=>0]);
+              'pagoServicio'=>0,
+              'usuarioPago'=>'',
+              'pagoMes'=>0,
+
+
+            ]);
 
 
                 session()->flash('mensaje', 'Riniciado mes actual. '. $affected);
@@ -134,7 +146,6 @@ class EstadoEmpresa extends Component
     {
 
 
-        $filtroPago=$this->filtroPago;
 
         // Obtener todas las empresas
         $empresas = DB::table('empresas')
@@ -143,14 +154,13 @@ class EstadoEmpresa extends Component
                     ->orWhere('titular', 'like', '%' . $this->datoBuscado . '%')
                     ->orWhere('cuit', 'like', '%' . $this->datoBuscado . '%');
             })
-            ->when($filtroPago, function ($query, $filtroPago) {
+            ->when($this->filtroPago, function ($query, $filtroPago) {
                 $query->where('pagoServicio', $filtroPago);
             })
             ->get()
             ->toArray();
 
    
-
         // Recorrer cada empresa para calcular el total facturado del mes actual
         foreach ($empresas as $key => $empresa) {
             $totalFacturado = DB::table('comprobantes')
