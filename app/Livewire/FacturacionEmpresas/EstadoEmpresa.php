@@ -42,7 +42,7 @@ class EstadoEmpresa extends Component
         $handle = fopen($filename, 'w');
 
         // Agregar los encabezados al archivo CSV
-        fputcsv($handle, ['ID Empresa', 'Nombre Empresa', 'Total Facturado','Vencimiento','Pago']);
+        fputcsv($handle, ['ID Empresa', 'Nombre Empresa', 'Total Facturado','Vencimiento','Pago','Importe','Usuario','Comentario']);
 
         // Obtener todas las empresas
         $empresas = DB::table('empresas')->get()->toArray();
@@ -69,7 +69,13 @@ class EstadoEmpresa extends Component
                 $empresa->razonSocial,
                 $empresa->totalFacturado,
                 $empresa->vencimientoPago,
-                $empresa->pagoServicio == 1 ?  'SI' : 'NO',
+                $empresa->pagoServicio == 'si' ?  'SI' : 'NO',
+                $empresa->pagoMes,
+                $empresa->usuarioPago,
+                $empresa->comentario,
+
+
+
 
             ]);
         }
@@ -83,16 +89,21 @@ class EstadoEmpresa extends Component
     }
 
 
-    public function modificarFechaVencimientoPago(Empresa $empresa,$fecha,$pagoMes,$comentario){
+    public function modificarFechaVencimientoPago(Empresa $empresa,$fecha,$pagoMes,$comentario,$pagoServicio){
 
 
+        // dd($pagoServicio);
         $empresa->vencimientoPago=$fecha;
         $empresa->pagoMes=$pagoMes;
-        $empresa->comentario=$comentario;
+        $empresa->comentario=trim($comentario);
         $empresa->usuarioPago=Auth()->user()->name;
+
+        $empresa->pagoServicio= $pagoServicio;
+
 
         $empresa->save();
 
+        // dd($empresa);
 
         session()->flash('mensaje', 'Fecha Actualizada. '. $empresa->razonSocial .' Fecha: '. $fecha);
 
@@ -104,7 +115,7 @@ class EstadoEmpresa extends Component
 
 
         $empresa->vencimientoPago="$fecha";
-        $empresa->pagoServicio= $empresa->pagoServicio == 1 ?  0 : 1;
+        $empresa->pagoServicio= $empresa->pagoServicio == 'si' ?  'no' : 'si';
 
         $empresa->save();
 
@@ -129,7 +140,7 @@ class EstadoEmpresa extends Component
 
             $affected = DB::table('empresas')
               ->update(['vencimientoPago' => $fechaFormateada,
-              'pagoServicio'=>0,
+              'pagoServicio'=>'no',
               'usuarioPago'=>'',
               'pagoMes'=>0,
 
@@ -154,6 +165,7 @@ class EstadoEmpresa extends Component
                     ->orWhere('titular', 'like', '%' . $this->datoBuscado . '%')
                     ->orWhere('cuit', 'like', '%' . $this->datoBuscado . '%');
             })
+            // ->where('pagoServicio',$this->filtroPago)
             ->when($this->filtroPago, function ($query, $filtroPago) {
                 $query->where('pagoServicio', $filtroPago);
             })
@@ -177,15 +189,26 @@ class EstadoEmpresa extends Component
         });
 
         // Ahora $empresas está ordenado por totalFacturado en orden descendente
+
+        $totalPorUsuario = DB::table('empresas')
+                ->select('usuarioPago', DB::raw('SUM(pagoMes) as totalPagos'))
+                ->where(function ($query) {
+                    $query->where('razonSocial', 'like', '%' . $this->datoBuscado . '%')
+                        ->orWhere('titular', 'like', '%' . $this->datoBuscado . '%')
+                        ->orWhere('cuit', 'like', '%' . $this->datoBuscado . '%');
+                })
+                ->when($this->filtroPago, function ($query, $filtroPago) {
+                    $query->where('pagoServicio', $filtroPago);
+                })
+                ->groupBy('usuarioPago') // Agrupa por el campo usuarioPago
+                ->get()
+                ->toArray();
         
-        // dd($empresas);
+        // dd($totalPorUsuario);
 
         return view('livewire.facturacion-empresas.estado-empresa',[
-            'empresas'=> 
-                    $empresas            
-                ,
-
-                'usuario'=>'usuario'
+            'empresas'=>$empresas,
+            'totalPorUsuario'=>$totalPorUsuario,
 
         ])
         ->extends('layouts.app')

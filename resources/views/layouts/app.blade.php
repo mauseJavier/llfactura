@@ -48,14 +48,15 @@
       @yield('main')
     </main>
 
+    {{-- {{$generalEmpresa->where('id', Auth()->user()->empresa_id)->pluck('vencimientoPago')[0] < date('Y-m-d') ? 'verdadero':'falso'}} --}}
 
     <dialog id="modal-example" 
         @if (
-              $generalEmpresa->where('id', Auth()->user()->empresa_id)->pluck('pagoServicio')[0] == 0 
+              $generalEmpresa->where('id', Auth()->user()->empresa_id)->pluck('pagoServicio')[0] == 'no' 
               AND 
               $generalEmpresa->where('id', Auth()->user()->empresa_id)->pluck('vencimientoPago')[0] < date('Y-m-d') 
             )
-            open
+        open
         @endif
           >
             <article>

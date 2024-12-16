@@ -27,6 +27,11 @@ return new class extends Migration
                 $table->string('usuarioPago')->nullable();
                 $table->string('comentario')->nullable();
 
+                $table->dropColumn('pagoServicio');
+                $table->enum('pagoServicio', ['si', 'no'])->default('no');
+
+
+
             });
             
         
@@ -42,7 +47,7 @@ return new class extends Migration
         //
         Schema::table('empresas', function (Blueprint $table) {
             // $table->dropColumn(['votes', 'avatar', 'location']);
-            $table->dropColumn(['pagoMes', 'mesas', 'usuarioPago']);
+            $table->dropColumn(['pagoMes', 'mesas', 'usuarioPago','comentario','pagoServicio']);
         });
     }
 };

@@ -28,7 +28,11 @@
         <article x-data="{ abierto: false }">
               
             <label>
-                <input name="terms" type="checkbox" role="switch" @click="abierto = !abierto" x-bind:checked="abierto" />
+                <input 
+                    {{-- NO BORRAR ESTE IMPUT ES IMPORTATNE --}}
+                    style="display: none;" 
+                        name="terms" type="checkbox" role="switch" 
+                        @click="abierto = !abierto" x-bind:checked="abierto" />
 
                     <!-- id-card-clip icon by Free Icons (https://free-icons.github.io/free-icons/) -->
                     <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" fill="currentColor" viewBox="0 0 512 512">

@@ -7,6 +7,18 @@
 
           <article>
 
+
+            <table>
+                <tbody>
+                    @foreach ($totalPorUsuario as $item)
+                    <tr>
+                        <td>{{$item->usuarioPago}}</td>
+                        <td>${{$item->totalPagos}}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
             <div class="grid">
 
                 <div role="group">
@@ -58,29 +70,24 @@
                     <th scope="col" style="color: red;">Usuario</th>
 
 
+                    <th scope="col" style="color: red;">
+
+                        <select 
+                            name="pago servicio"
+                            wire:model.live="filtroPago"
+                        >
+
+                            <option value="si">SI</option>
+                            <option value="no">NO</option>
+                            <option value="">TODO</option>
+
+                        </select>
+
+                    </th>
 
 
                     <th scope="col" style="color: red;">Ven de Pago</th>
 
-                    <th scope="col" style="color: red;"
-
-   
-                    
-                    >
-
-
-                    {{$filtroPago}}
-                              <select name="pago servicio"
-                                wire:model.live="filtroPago"
-                              >
-    
-                                <option value="1">SI</option>
-                                <option value="0">NO</option>
-                                <option value="">TODO</option>
-    
-                              </select>
-
-                    </th>
 
                     
                 </tr>
@@ -89,7 +96,9 @@
                     @foreach ($empresas as $key => $c)                        
                         <tr x-data="{ vencimiento: '{{$c->vencimientoPago}}',
                             pagoMes: '{{$c->pagoMes}}',
-                            comentario: '{{$c->comentario}}'
+                            comentario: '{{$c->comentario}}',
+                            pagoServicio: '{{$c->pagoServicio}}',
+
                             
                             }">
                             <th scope="row">{{$c->id}}</th>
@@ -106,24 +115,45 @@
 
                             <th scope="row">
                                 <textarea name="" id="" cols="20" rows="1"
-                                
-                                value="{{$c->comentario}}"
-                                x-ref="comentario"
-                                @input="comentario = $event.target.value">
-
-                                </textarea>
+                                    x-ref="comentario"
+                                    @input="comentario = $event.target.value">{{$c->comentario}}</textarea>
                             </th>
                             <th scope="row">
-                                <input type="text"
+                                @if ($c->pagoMes>0)
+
+                                    <input type="number"
                                     value="{{$c->pagoMes}}"
                                     x-ref="pagoMes"
-                                    @input="pagoMes = $event.target.value">
+                                    @input="pagoMes = $event.target.value"
+                                    readonly>
+                                    
+                                @else
+                                    <input type="number"
+                                        value="{{$c->pagoMes}}"
+                                        x-ref="pagoMes"
+                                        @input="pagoMes = $event.target.value">
+                                    
+                                @endif
                                 
                                 </th>
 
                             <th scope="row">{{ $c->usuarioPago}}</th>
 
+                            <th scope="row">
+                                <select 
+                                        name="pagoServicio"
+                                        x-ref="pagoServicio"
+                                        x-model="pagoServicio"
 
+                                        @change="pagoServicio = $event.target.value">
+                                    >
+        
+                                    <option value="si">SI</option>
+                                    <option value="no">NO</option>
+        
+                                </select>
+
+                            </th>
  
                             <th scope="row" > 
                                 <fieldset role="group">
@@ -135,7 +165,7 @@
                                            @input="vencimiento = $event.target.value">
                             
                                     <button type="button" 
-                                            wire:click="modificarFechaVencimientoPago({{$c->id}}, $refs.vencimientoInput.value,$refs.pagoMes.value,$refs.comentario.value)">
+                                            wire:click="modificarFechaVencimientoPago({{$c->id}}, $refs.vencimientoInput.value,$refs.pagoMes.value,$refs.comentario.value,$refs.pagoServicio.value)">
                                         Actualizar
                                     </button>
 
@@ -143,24 +173,8 @@
 
 
                             </th>
-                            <th scope="row">
-                                <fieldset>
-                                    <label for="">
-                                        @if ($c->pagoServicio == 1)
-                                            SI
-                                        @else
-                                            NO  
-                                        @endif
-                                        <input name="terms" type="checkbox" role="switch"
-                                            wire:click="pagarEmpresa({{$c->id}}, $refs.vencimientoInput.value)"
-                                            @if ($c->pagoServicio == 1)
-                                                checked                                             
-                                            @endif
-                                        />
-                                    </label>                              
-                                    
-                                  </fieldset>
-                                </th>
+
+
 
 
 
