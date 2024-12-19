@@ -177,11 +177,11 @@
         </article>
 
         
-        <div wire:loading>
+        {{-- <div wire:loading>
             <span>Procesando la Informacion...</span>
             <progress />
 
-        </div>
+        </div> --}}
 
 
         <article x-data="{ mostrarFormaPago: false }"> <!-- Declaramos una variable de estado -->
@@ -379,7 +379,7 @@
         </article>
 
 
-        <article wire:loading.remove x-data="{ buttonText: 'Finalizar' }" style="width: 100%">
+        <article BORRARwire:loading.remove x-data="{ buttonText: 'Finalizar' }" style="width: 100%">
             {{-- ////////// BOTONES DE LA FACTURACION --}}
             <div class="grid" style="text-align: center;" >
                 <div>
@@ -430,7 +430,7 @@
 
 
 
-        <article style="text-align: center; width: 100%;" wire:loading.remove>
+        <article style="text-align: center; width: 100%;" BORRARwire:loading.remove>
             <div class="grid">
 
                 <div class="col">
@@ -560,7 +560,7 @@
         </article>
 
         
-        <article wire:loading.remove>
+        <article BORRARwire:loading.remove>
             <details>
                
                 <summary>Mas Datos</summary>

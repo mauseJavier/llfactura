@@ -26,10 +26,20 @@ class EstadoEmpresa extends Component
     public $datoBuscado;
     public $filtroPago='';
 
+
+    public $ordenarPor='';
+
     public function mount(){
 
         $this->fechaDesde = Carbon::now()->format('Y-m-d');
 
+
+    }
+
+
+    public function ordenarActualizado(){
+
+        $this->ordenarPor='updated_at';
 
     }
 
@@ -183,15 +193,30 @@ class EstadoEmpresa extends Component
             $empresas[$key]->totalFacturado = $totalFacturado;
         }
 
-        // Ordenar las empresas por total facturado de forma descendente
-        usort($empresas, function($a, $b) {
-            return $b->totalFacturado <=> $a->totalFacturado;
-        });
+
+        if ($this->ordenarPor != '' and $this->ordenarPor == 'updated_at') {
+
+            // Ordenar las empresas por total facturado de forma descendente
+            usort($empresas, function($a, $b) {
+                // return $b->totalFacturado <=> $a->totalFacturado;
+                return strtotime($b->updated_at) <=> strtotime($a->updated_at);
+            });
+
+        }else{
+
+            // Ordenar las empresas por total facturado de forma descendente
+            usort($empresas, function($a, $b) {
+                return $b->totalFacturado <=> $a->totalFacturado;
+            });
+
+        }
 
         // Ahora $empresas está ordenado por totalFacturado en orden descendente
 
+        // dd($empresas);
+
         $totalPorUsuario = DB::table('empresas')
-                ->select('usuarioPago', DB::raw('SUM(pagoMes) as totalPagos'))
+                ->select('usuarioPago', DB::raw('SUM(pagoMes) as totalPagos'), DB::raw('count(pagoMes) as cantidad'),)
                 ->where(function ($query) {
                     $query->where('razonSocial', 'like', '%' . $this->datoBuscado . '%')
                         ->orWhere('titular', 'like', '%' . $this->datoBuscado . '%')
@@ -206,9 +231,26 @@ class EstadoEmpresa extends Component
         
         // dd($totalPorUsuario);
 
+        $total = DB::table('empresas')
+        ->select(DB::raw('SUM(pagoMes) as total'),DB::raw('count(pagoMes) as totalCantidad'),)
+        ->where(function ($query) {
+            $query->where('razonSocial', 'like', '%' . $this->datoBuscado . '%')
+                ->orWhere('titular', 'like', '%' . $this->datoBuscado . '%')
+                ->orWhere('cuit', 'like', '%' . $this->datoBuscado . '%');
+        })
+        ->when($this->filtroPago, function ($query, $filtroPago) {
+            $query->where('pagoServicio', $filtroPago);
+        })
+        ->get()
+        ->toArray();
+
+        // dd($total);
+
         return view('livewire.facturacion-empresas.estado-empresa',[
             'empresas'=>$empresas,
             'totalPorUsuario'=>$totalPorUsuario,
+            'total'=>$total,
+
 
         ])
         ->extends('layouts.app')

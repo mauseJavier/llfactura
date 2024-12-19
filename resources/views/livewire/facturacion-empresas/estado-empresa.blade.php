@@ -12,10 +12,18 @@
                 <tbody>
                     @foreach ($totalPorUsuario as $item)
                     <tr>
+                        <td>{{$item->cantidad}}</td>
+
                         <td>{{$item->usuarioPago}}</td>
                         <td>${{$item->totalPagos}}</td>
                     </tr>
                     @endforeach
+                    <tr>
+                        <td>{{$total[0]->totalCantidad}}</td>
+
+                        <td style="text-align:right;">TOTAL:</td>
+                        <td>${{$total[0]->total}}</td>
+                    </tr>
                 </tbody>
             </table>
 
@@ -88,100 +96,96 @@
 
                     <th scope="col" style="color: red;">Ven de Pago</th>
 
+                    <th><button wire:click="ordenarActualizado">Actualizado</button></th>
+                    <th>Creado</th>
+
 
                     
                 </tr>
                 </thead>
+
                 <tbody>
                     @foreach ($empresas as $key => $c)                        
-                        <tr x-data="{ vencimiento: '{{$c->vencimientoPago}}',
-                            pagoMes: '{{$c->pagoMes}}',
-                            comentario: '{{$c->comentario}}',
-                            pagoServicio: '{{$c->pagoServicio}}',
-
-                            
-                            }">
+                        <tr 
+                            x-data="{ 
+                                vencimiento: '{{$c->vencimientoPago}}',
+                                pagoMes: '{{$c->pagoMes}}',
+                                comentario: '{{$c->comentario}}',
+                                pagoServicio: '{{$c->pagoServicio}}',
+                            }"
+                        >
                             <th scope="row">{{$c->id}}</th>
-                            <th scope="row">{{$c->razonSocial}}</th>
+                            <th scope="row" >{{$c->razonSocial}}</th>
                             <th scope="row">{{$c->titular}}</th>
-
+                
                             <th scope="row">{{$c->cuit}}</th>
-
+                
                             <th scope="row">
                                 <a href="https://wa.me/54{{$c->telefono}}" target="_blank" rel="noopener noreferrer">{{$c->telefono}}</a>
                             </th>
-
+                
                             <th scope="row">${{ number_format( $c->totalFacturado ,2 )}}</th>
-
+                
                             <th scope="row">
                                 <textarea name="" id="" cols="20" rows="1"
                                     x-ref="comentario"
                                     @input="comentario = $event.target.value">{{$c->comentario}}</textarea>
                             </th>
                             <th scope="row">
-                                @if ($c->pagoMes>0)
-
+                                @if ($c->pagoMes > 0)
                                     <input type="number"
-                                    value="{{$c->pagoMes}}"
-                                    x-ref="pagoMes"
-                                    @input="pagoMes = $event.target.value"
-                                    readonly>
-                                    
+                                        value="{{$c->pagoMes}}"
+                                        x-ref="pagoMes"
+                                        @input="pagoMes = $event.target.value"
+                                        readonly>
                                 @else
                                     <input type="number"
                                         value="{{$c->pagoMes}}"
                                         x-ref="pagoMes"
                                         @input="pagoMes = $event.target.value">
-                                    
                                 @endif
-                                
-                                </th>
-
-                            <th scope="row">{{ $c->usuarioPago}}</th>
-
+                            </th>
+                
+                            <th scope="row">{{ $c->usuarioPago }}</th>
+                
                             <th scope="row">
                                 <select 
                                         name="pagoServicio"
                                         x-ref="pagoServicio"
                                         x-model="pagoServicio"
 
+                                        @if ($c->pagoServicio === 'no')
+                                            style="background-color: red; color: white;"
+                                        @else
+                                            style="background-color: rgb(60, 186, 34); color: white;"
+                                        @endif
+
                                         @change="pagoServicio = $event.target.value">
-                                    >
-        
-                                    <option value="si">SI</option>
-                                    <option value="no">NO</option>
-        
+                                    <option value="si" :selected="'{{$c->pagoServicio}}' === 'si'">SI</option>
+                                    <option value="no" :selected="'{{$c->pagoServicio}}' === 'no'">NO</option>
                                 </select>
-
                             </th>
- 
-                            <th scope="row" > 
+                
+                            <th scope="row"> 
                                 <fieldset role="group">
-
                                     <input type="date" 
                                            value="{{$c->vencimientoPago}}"
-                                           
                                            x-ref="vencimientoInput"
                                            @input="vencimiento = $event.target.value">
-                            
                                     <button type="button" 
-                                            wire:click="modificarFechaVencimientoPago({{$c->id}}, $refs.vencimientoInput.value,$refs.pagoMes.value,$refs.comentario.value,$refs.pagoServicio.value)">
+                                            wire:click="modificarFechaVencimientoPago({{$c->id}}, $refs.vencimientoInput.value, $refs.pagoMes.value, $refs.comentario.value, $refs.pagoServicio.value)">
                                         Actualizar
                                     </button>
-
                                 </fieldset>
-
-
                             </th>
 
-
-
-
+                            <th>{{$c->updated_at}}</th>
+                            <th>{{$c->created_at}}</th>
 
                         </tr>
                     @endforeach
-
                 </tbody>
+                
 
             </table>
         </div>

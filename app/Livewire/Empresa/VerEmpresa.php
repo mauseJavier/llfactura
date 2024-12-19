@@ -32,6 +32,7 @@ class VerEmpresa extends Component
     public $preloader = 'close';
 
 
+    public $id=Null;
 
     #[Validate('required', message: 'Requerido')]
     #[Validate('min:1', message: 'Minimo 1 caracter')]
@@ -146,9 +147,10 @@ class VerEmpresa extends Component
         // $this->validate();
 
         $nuevaEmpresa = Empresa::updateOrCreate(
-            ['cuit' => $this->cuit, ],
+            ['id' => $this->id, ],
             [
                  
+                'cuit' => $this->cuit,
                 'razonSocial' => $this->razonSocial,
                 'claveFiscal'=> $this->claveFiscal,
                 'domicilio'=> $this->domicilio,
@@ -193,6 +195,8 @@ class VerEmpresa extends Component
         $this->telefono='';
         $this->logo='';
         $this->correo='';
+        $this->id=null;
+
 
         $this->datoBuscado= $nuevaEmpresa->razonSocial;
         $this->modal='close';
@@ -219,6 +223,8 @@ class VerEmpresa extends Component
         //     "updated_at" => "2024-05-20 17:19:06"
         // ]
 
+
+        $this->id= $empresa->id;
 
         $this->razonSocial= $empresa->razonSocial;
         $this->titular= $empresa->titular;
@@ -260,6 +266,8 @@ class VerEmpresa extends Component
             $this->telefono='';
             $this->logo='';
             $this->correo='';
+            $this->id=null;
+
             
         }
     }

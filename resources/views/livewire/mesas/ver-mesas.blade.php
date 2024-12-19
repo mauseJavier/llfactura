@@ -49,7 +49,7 @@
 
     {{-- @dd($mesas) --}}
 
-        <div class="div" >
+        <div class="div" wire:poll>
 
 
           <h1 style="color: rgb(141, 88, 88)"></h1>

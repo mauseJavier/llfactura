@@ -444,15 +444,19 @@ class NuevoComprobante extends Component
         $this->empresa = Empresa::find(Auth::user()->empresa_id);
         $this->usuario = Auth::user();
 
-        if( $this->empresa->iva == 'ME' AND $this->empresa->fe == 'si'){
-            $this->tipoComprobante = 11;
-        }elseif($this->empresa->iva == 'RI' AND $this->empresa->fe == 'si'){
-            $this->tipoComprobante = 6;
-        }elseif($this->empresa->fe == 'no' AND isset($this->carrito['total'])){
-            $this->tipoComprobante = 'remito';
-        }else{
-            $this->tipoComprobante = 11;
-        }
+        // if( $this->empresa->iva == 'ME' AND $this->empresa->fe == 'si'){
+        //     $this->tipoComprobante = 11;
+        // }elseif($this->empresa->iva == 'RI' AND $this->empresa->fe == 'si'){
+        //     $this->tipoComprobante = 6;
+        // }elseif($this->empresa->fe == 'no' AND isset($this->carrito['total'])){
+        //     $this->tipoComprobante = 'remito';
+        // }else{
+        //     $this->tipoComprobante = 11;
+        // }
+
+
+        //POR EL TOMI
+        $this->tipoComprobante = 'remito';
 
 
         $this->tipoContribuyente=5;
