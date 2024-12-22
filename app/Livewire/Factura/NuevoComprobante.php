@@ -109,6 +109,7 @@ class NuevoComprobante extends Component
         }else{
             // dd($this->importeUno);
             $this->importeUno=0;
+            return 0;
         }
     }
 
@@ -404,6 +405,8 @@ class NuevoComprobante extends Component
 
         $this->formaPago2 = FormaPago::where('id','!=',$this->idFormaPago)                                        
         ->get();
+
+        $this->idFormaPago2 = $this->formaPago2[1]->id ;
 
     }
 

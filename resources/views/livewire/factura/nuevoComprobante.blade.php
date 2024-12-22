@@ -93,7 +93,7 @@
 
                                                 },
                                                 handleSelectChange(event,tipoIva) {
-                                                
+
                                                     const selectFactura = document.getElementById('selectFormaPago');
                                                     console.log('Cambio detectado en selectFactura:', selectFactura.value);
 
@@ -365,7 +365,7 @@
 
                                         type="texto"                                   
                                         id="importeDos" 
-                                        x-model.number="{{$this->funcionImporteDos()}}" 
+                                        x-model.number="'{{$this->funcionImporteDos()}}'" 
                                         x-ref="inputText2"
                                         x-on:focus="$refs.inputText2.select()"   
                                         x-on:blur="event.target.value = formatCurrency(event.target.value)"
@@ -446,7 +446,7 @@
         </article>
 
 
-        <article BORRARwire:loading.remove x-data="{ buttonText: 'Finalizar' }" style="width: 100%">
+        <article x-data="{ buttonText: 'Finalizar' }" style="width: 100%">
             {{-- ////////// BOTONES DE LA FACTURACION --}}
             <div class="grid" style="text-align: center;" >
                 <div>
@@ -497,7 +497,7 @@
 
 
 
-        <article style="text-align: center; width: 100%;" BORRARwire:loading.remove>
+        <article style="text-align: center; width: 100%;" >
             <div class="grid">
 
                 <div class="col">
@@ -547,7 +547,7 @@
                 </div>
 
 
-                <div x-data>
+                <div>
                     <label for="">Numero de Documento <small style="color: red">(Buscar para Cuenta Corriente)</small></label>
                     <fieldset role="group">                       
 
@@ -627,7 +627,7 @@
         </article>
 
         
-        <article BORRARwire:loading.remove>
+        <article >
             <details>
                
                 <summary>Mas Datos</summary>
