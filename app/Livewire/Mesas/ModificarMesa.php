@@ -48,6 +48,28 @@ class ModificarMesa extends Component
 
 
 
+    public function eliminarMesa(Mesa $mesa){
+
+
+        if($mesa->data){
+
+            session()->flash('mensaje', 'No se puede eliminar Posee datos cargados. ');
+
+        }else{
+
+            $mesa->delete();
+
+            $this->redirectRoute('verMesas');
+
+
+            session()->flash('mensaje', 'Mesa Eliminada');
+
+
+        }
+
+
+    }
+
     public function finalizarMesa(){
 
         //BORRAMOS LAS SESSIONES POR LAS DUDAS 
@@ -410,7 +432,7 @@ class ModificarMesa extends Component
         $this->mesa->save();
 
 
-        session()->flash('mensaje', 'Cliente Guardado.');
+        session()->flash('mensaje', 'Cliente Guardado: '.$this->razonSocial);
 
 
 

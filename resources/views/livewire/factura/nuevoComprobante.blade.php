@@ -95,7 +95,6 @@
                                                 handleSelectChange(event,tipoIva) {
 
                                                     const selectFactura = document.getElementById('selectFormaPago');
-                                                    console.log('Cambio detectado en selectFactura:', selectFactura.value);
 
                                                     let selectedValue = event.target.value;
 

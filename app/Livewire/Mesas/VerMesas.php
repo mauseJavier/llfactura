@@ -85,8 +85,20 @@ class VerMesas extends Component
         $this->numeroMesa='';
         $this->nombreMesa='';
         $this->capacidadMesa=1;
-        $this->sectorMesa='';
 
+        
+        $sector= Sector::where('empresa_id',Auth()->user()->empresa_id)->first();
+
+        // dd($sector->id);
+        if($sector){
+
+            $this->sectorMesa = $sector->id;
+        }else{
+
+            $this->sectorMesa = NULL;
+
+
+        }
 
         session()->flash('btnGuardar', 'Guardado!!');
 
@@ -128,6 +140,8 @@ class VerMesas extends Component
         $this->nombreSector='';
         $this->capacidadSector=1;
 
+
+        $this->redirectRoute('verMesas');
 
         session()->flash('btnGuardar', 'Guardado!!');
 

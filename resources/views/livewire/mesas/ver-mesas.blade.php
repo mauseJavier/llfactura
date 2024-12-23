@@ -16,10 +16,17 @@
             
             
             <!-- Dropdown -->
+
+            {{-- @dump($sectorMesa) --}}
             <details class="dropdown">
             <summary>Opciones</summary>
                 <ul>
 
+                  
+                  <li>
+                    <a @click="modalNuevoSector = !modalNuevoSector" >Nuevo Sector</a>
+                    
+                  </li>
                   @isset($sectorMesa)
                       
                     <li>
@@ -27,11 +34,6 @@
 
                     </li>
                   @endisset
-  
-                    <li>
-                      <a @click="modalNuevoSector = !modalNuevoSector" >Nuevo Sector</a>
-
-                  </li>
 
                 </ul>
             </details>
@@ -48,6 +50,14 @@
     </div>
 
     {{-- @dd($mesas) --}}
+
+    <div style="justify-content: center; align-items: center; ">
+        @if (session()->has('mensaje'))
+            <div style="color: red; text-align: center;">
+            {{ session('mensaje') }}
+            </div>
+        @endif
+    </div>
 
         <div class="div" wire:poll>
 
@@ -70,13 +80,17 @@
                           
                           <div 
                             class="col">
+
                               <article 
                                   x-data="{ numero: '{{ $item->numero }}' }"
                                   :style="'' == '{{ $item->data }}' ? 'background-color:  rgb(56, 56, 171) ; text-align: center; cursor:pointer;' : 'background-color: green; text-align: center; cursor:pointer;'" 
                                   wire:click="modificarMesa('{{ $item->id }}')"
                               >
                                   {{ $item->nombre }} - {{ $item->numero }} ({{$item->razonSocial }} - ${{number_format($item->total, 2, ',', '.')}})
-                              </article>
+
+                                  
+                                </article>
+
                           </div>
                           
                           {{-- {{ isset($item->data) ? ($item->data) : 0}} --}}

@@ -133,7 +133,7 @@
                         </label>
                     </fieldset>
 
-                    <button wire:click="guardarrazonSocial">Guardar Cliente</button>
+                    <button wire:click="guardarrazonSocial" @click="abierto = !abierto">Guardar Cliente</button>
 
               </details>
 
@@ -386,6 +386,24 @@
 
         {{-- {{ $comprobantes->links('paginacion.paginacion') }} --}}
         {{ $inventario->links('vendor.livewire.bootstrap') }}
+    </div>
+
+
+    <div class="container">
+        <details>
+            <summary>Eliminar Mesa</summary>
+            <article>
+    
+                <button wire:click="eliminarMesa({{$mesa->id}})"
+                        style="background-color: red;"
+                        wire:confirm="Seguro de Eliminar la Mesa de Forma Permanente?">Eliminar Mesa de forma Permanente??</button>
+    
+            </article>
+
+          </details>
+
+
+
     </div>
 
 
