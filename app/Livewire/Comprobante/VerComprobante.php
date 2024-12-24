@@ -36,6 +36,13 @@ class VerComprobante extends Component
     public $clienteComprobanteFiltro;
 
 
+    public function limpiarFiltro(){
+
+        $this->tipoComp = '';
+        $this->usuarioFiltro = '';
+        $this->numeroComprobanteFiltro="";
+    }
+
     public function reporteVentaUsuario(){
 
         $this->redirectRoute('reporteVentaUsuario');

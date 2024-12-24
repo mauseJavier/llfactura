@@ -66,22 +66,6 @@
                                                                     }
                                                             break;
 
-                                                        case 'A':
-                                                            selectFactura.value = '1';
-                                                            break;
-                                                        case 'B':
-                                                            selectFactura.value = '6';
-                                                            break;
-                                                        case 'C':
-                                                            selectFactura.value = '11';
-                                                            break;
-                                                        case 'R':
-                                                            selectFactura.value = 'remito';
-                                                            break;
-                                                        case 'P':
-                                                            selectFactura.value = 'presupuesto';
-                                                            break;
-
 
                                                       
                                                     }
@@ -94,6 +78,9 @@
                                                 },
                                                 handleSelectChange(event,tipoIva) {
 
+                                                    const select = document.getElementById('idFormaPago');
+
+                                                    
                                                     const selectFactura = document.getElementById('selectFormaPago');
 
                                                     let selectedValue = event.target.value;
@@ -134,6 +121,9 @@
 
                                                       
                                                     }
+
+                                                    select.dispatchEvent(new Event('change')); // Para activar el evento de cambio en Livewire
+                                                    selectFactura.dispatchEvent(new Event('change')); // Para activar el evento de cambio en Livewire
                                                 }
                              }"
                                           

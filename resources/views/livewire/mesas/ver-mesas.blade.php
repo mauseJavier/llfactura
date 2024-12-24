@@ -59,7 +59,7 @@
         @endif
     </div>
 
-        <div class="div" wire:poll>
+        <div class="div" >
 
 
           <h1 style="color: rgb(141, 88, 88)"></h1>
@@ -82,6 +82,12 @@
                             class="col">
 
                               <article 
+
+                                  wire:poll
+
+                              
+                                  wire:key="mesa-{{ $item->id }}" 
+
                                   x-data="{ numero: '{{ $item->numero }}' }"
                                   :style="'' == '{{ $item->data }}' ? 'background-color:  rgb(56, 56, 171) ; text-align: center; cursor:pointer;' : 'background-color: green; text-align: center; cursor:pointer;'" 
                                   wire:click="modificarMesa('{{ $item->id }}')"

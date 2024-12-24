@@ -742,7 +742,7 @@
               <label>
                 Rubro
                 <input
-                  wire:model.live="nuevoRubro"
+                  wire:model="nuevoRubro"
                   name="rubro"
                   placeholder="Nombre Rubro"
                   autocomplete="rubro"
@@ -783,9 +783,9 @@
             <form wire:submit="guardarProveedor">
             <fieldset>
                 <label>
-                Rubro
+                Proveedor
                 <input
-                    wire:model.live="nuevoProveedor"
+                    wire:model="nuevoProveedor"
                     name="proveedor"
                     placeholder="Nombre Proveedor"
                     autocomplete="proveedor"

@@ -122,8 +122,15 @@
                 
               </fieldset>
             </div>
+            @if (Auth()->user()->role_id == 2 OR Auth()->user()->role_id == 3 OR Auth()->user()->role_id == 4)                
+              <div class="col">
+              
+                <a wire:click="limpiarFiltro()" style="cursor: pointer;">Limpiar Filtro</a>
+              </div>
+            @endif
             <div class="col">
-              <a wire:click="reporteVentaUsuario()">Reporte diario {{Auth()->user()->name}}</a>
+
+              <a wire:click="reporteVentaUsuario()" style="cursor: pointer;">Reporte diario {{Auth()->user()->name}}</a>
 
             </div>
             <div class="col">              

@@ -380,7 +380,7 @@ class ModificarMesa extends Component
         $this->seleccionPrecio ='precio1';
 
         $this->mesa = $mesa;
-        $this->razonSocial = $mesa->razonSocial;
+        $this->razonSocial = $mesa->razonSocial == ''? 'Mesa-'.$mesa->numero : $mesa->razonSocial ;
 
         $this->tipoDocumento =$mesa->tipoDocumento;
         $this->numeroDocumento =$mesa->numeroDocumento;

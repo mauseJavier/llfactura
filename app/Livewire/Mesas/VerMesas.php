@@ -26,6 +26,7 @@ class VerMesas extends Component
         $capacidadSector = 1;
 
 
+
     public function mount(){
         $sector= Sector::where('empresa_id',Auth()->user()->empresa_id)->first();
 
@@ -39,6 +40,7 @@ class VerMesas extends Component
 
 
         }
+
 
     }
 
@@ -148,10 +150,12 @@ class VerMesas extends Component
 
     }
 
-
+    
+    
     public function render()
     {
-
+        
+        
         $mesas= Mesa::where('empresa_id',Auth()->user()->empresa_id)
         ->when($this->buscarMesa, function ($query, $buscarMesa) {
             return $query->whereAny([
@@ -160,7 +164,7 @@ class VerMesas extends Component
                 'razonSocial',
             ], 'like', '%'. $buscarMesa.'%');
         })
-        ->get();
+        ->get();        // $this->emit('actualizarMesa', $mesa); // Si necesitas eventos en el frontend
 
 
         return view('livewire.mesas.ver-mesas',[
