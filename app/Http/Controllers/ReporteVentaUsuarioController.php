@@ -48,38 +48,54 @@ class ReporteVentaUsuarioController extends Controller
         )
         ->get();
 
-    // Procesar los resultados combinados en un único arreglo de totales
-    $totales = [];
+        // Procesar los resultados combinados en un único arreglo de totales
+        $totales = [];
 
-    foreach ($collection as $comprobante) {
-        $idFormaPago = $comprobante->idFormaPago;
-        $nombre = $comprobante->nombre;
-        $totalImporte = $comprobante->totalImporte;
+        foreach ($collection as $comprobante) {
+            $idFormaPago = $comprobante->idFormaPago;
+            $nombre = $comprobante->nombre;
+            $totalImporte = $comprobante->totalImporte;
 
-        if (!isset($totales[$idFormaPago])) {
-            $totales[$idFormaPago] = [
-                'nombre' => $nombre,
-                'total' => 0,
-            ];
+            if (!isset($totales[$idFormaPago])) {
+                $totales[$idFormaPago] = [
+                    'nombre' => $nombre,
+                    'total' => 0,
+                ];
+            }
+
+            $totales[$idFormaPago]['total'] += $totalImporte;
+
         }
 
-        $totales[$idFormaPago]['total'] += $totalImporte;
-    }
+        // Inicializa una variable para almacenar la suma total
+            $sumaTotal = 0;
+
+            // Itera sobre cada subarray y suma los valores de la clave 'total'
+            foreach ($totales as $subarray) {
+                if (isset($subarray['total'])) {
+                    $sumaTotal += $subarray['total'];
+                }
+            }
+
+
+        // dd(number_format($sumaTotal, 2, ',', '.'));
 
 
         $info=['titulo'=>'Reporte Diario:'. Auth()->user()->name,
                 'usuario'=> Auth()->user()->name,
                 'fechayhora'=>Carbon::now()->format('Y-m-d:H:i:s'),
                 'totales'=>$totales,
+                'sumaTotal'=>number_format($sumaTotal, 2, ',', '.'),
             ];
         $pdf = Pdf::loadView('PDF.reporteUsuarioTicket',$info);
         $pdf->set_paper(array(0,0,250,(300)), 'portrait');
         // $pdf->getCanvas()->page_text(15,800, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0,0,0));
 
         $nombreArchivo= 'Reporte:'. Auth()->user()->name.''.Carbon::now()->format('Ymd').'.pdf';
-        return $pdf->download($nombreArchivo);
-        // return $pdf->stream($nombreArchivo);   
+        // return $pdf->download($nombreArchivo);
+        return $pdf->stream($nombreArchivo);   
 
     }
+
     
 }

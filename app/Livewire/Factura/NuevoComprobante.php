@@ -40,6 +40,9 @@ use Livewire\Attributes\On;
 class NuevoComprobante extends Component
 {
 
+
+    public $error;
+
     public $fechaHoy;
     public $fechaMin;
     public $fechaMax;
@@ -174,225 +177,240 @@ class NuevoComprobante extends Component
         $this->render();
     }
 
+
     public function facturar(Request $request)//este request es por la session 
     {
-
-        // dd($this->importeUno .' '. $this->importeDos);
-
-
-        $this->importeDos = $this->total -$this->importeUno;
-
-        $validated = $this->validate([
-            'cuit' => [
-                'required',
-                'numeric',
-                function ($attribute, $value, $fail) {
-
-                    if($this->tipoComprobante == 1 OR $this->tipoComprobante == 51){
-
-                        if(strlen($value) == 11) {
-                            return true;
-                        }else{
-                            $fail('Para Factura A o M ingrese CUIT del Cliente');
-                        }
-
-                    }else{
-
-                        if ($value == 0) {
-                            return true;
-                        }elseif(strlen($value) == 11 OR strlen($value) == 8) {
-                            return true;
-                        }else{
-                            $fail('El número debe tener 11 o 8 caracteres.');
-                        }
-
-
-                    }
-
-
-                },
-            ],
-
-
-            'importeUno' => [
-                'required',
-                'numeric',
-                function ($attribute, $value, $fail) {
-                    if ($value == 0) {
-                        $fail('El Importe UNO debe ser mayor a 0.');
-                    }
-                },
-
-            ],
-
-            'importeDos' => [
-                'required',
-                'numeric',
-                function ($attribute, $value, $fail) {
-                    if ($value < 0) {
-                        $fail('El Importe DOS debe ser mayor a 0.');
-                    }
-                },
-
-            ],
-
-            'total' => [
-                'required',
-                'numeric',
-                function ($attribute, $value, $fail) {
-                    if ($value == 0) {
-                        $fail('El número debe ser mayor a 0.');
-                    }
-                    // Validación para verificar que total >= (importeUno + importeDos)
-                    if(is_numeric($this->importeUno) AND is_numeric($this->importeDos)){
-
-                        if ((doubleVal($value) - doubleVal($this->importeUno + $this->importeDos)) != 0) {
-                            $fail('Diferencia : $'.number_format ($value - ($this->importeUno + $this->importeDos),2) .' en la Pago. El PAGO debe ser justo.' );
-                        }
-                    }
-                    else{
-                        $fail('Importe Uno y Dos Numerico');
-
-                    }
-
-                },
-            ],
-
-            'razonSocial' => [
-                'required',
-                'min:1',
-                'max:256',
-            ],
-            'tipoDocumento' => [
-                'required',
-
-            ],
-        ],[
-            'required' => 'El campo :attribute es obligatorio.',
-            'numeric' => 'El campo :attribute debe ser un numero válido.',
-        ]);
-
-
-
-        // AK TENEMOS QUE SABER SI VAMOS A HACER A B C O REMITO PRESUPUESTO    
-        if($this->tipoComprobante == 11){
-            $descripcionTipoComp = 'Factura C';
-            $nuevoComprobante = $this->crearComprobanteC($this->total,$this->cuit,$this->tipoDocumento);
-            $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);            
-        }elseif($this->tipoComprobante == 6){
-            $descripcionTipoComp = 'Factura B';
-            $nuevoComprobante = $this->crearComprobanteB($this->total,$this->tipoDocumento,$this->cuit);
-            $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
-        }elseif($this->tipoComprobante == 1){
-            $descripcionTipoComp = 'Factura A';
-            $nuevoComprobante = $this->crearComprobanteA($this->total,$this->tipoDocumento,$this->cuit);
-            $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
-
-        }elseif($this->tipoComprobante == 51){
-            $descripcionTipoComp = 'Factura M';
-            $nuevoComprobante = $this->crearComprobanteM($this->total,$this->tipoDocumento,$this->cuit);
-            $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
-
-        }elseif($this->tipoComprobante == 'remito'){
-            $descripcionTipoComp = 'Remito';
-
-            
-            // Obtener el último registro
-            $ultimoRegistro = Comprobante::latest()->first();
-
-            if ($ultimoRegistro) {
-                $ultimoId = $ultimoRegistro->id + 1;
-                // echo "El último ID es: " . $ultimoId;
-            } else {
-                // echo "No hay registros en la tabla.";
-                $ultimoId =  1;
-            }
-
-            if( !isset($this->carrito['total'])){
-
-                $this->carrito['carrito'][] = array(
-                    'codigo'=>$this->codigo,
-                    'detalle'=>$this->detalle,
-                    'rubro'=>$this->rubro,
-                    'proveedor'=>$this->proveedor,
-                    'marca'=>$this->marca,
-                    'iva'=>$this->ivaDefecto,
-                    
-                    'porcentaje'=> 0,
-                    'precioLista'=> round($this->total,2) ,
-                    'descuento'=> 0 ,
-                    
-                    'costo'=> 0 , //SI CONTROLES DE COSTO Y STOCK POR QUE NO SABEMOS QUE CANTIDAD SE VENDE
-                    'controlStock'=>'no', //SI CONTROLES DE COSTO Y STOCK POR QUE NO SABEMOS QUE CANTIDAD SE VENDE
-
-                    
-                    'precio'=> round($this->total,2),
-                    'cantidad'=>1,
-
-                    'subtotal'=>  round($this->total,2),
+        
+        try {
+            // $this->user = User::findOrFail($this->userId);
+            // dd($this->importeUno .' '. $this->importeDos);
     
-                    ) ;
-                $this->carrito['total']= round($this->total,2);
-            }
-
-            $nuevoComprobante = json_decode(
-                '{
-                    "FeCabResp": {
-                    "Cuit": '.$this->empresa->cuit.',
-                    "PtoVta": 0,
-                    "CbteTipo": "remito",
-                    "FchProceso": "0",
-                    "CantReg": 1,
-                    "Resultado": "A",
-                    "Reproceso": "N"
+    
+            $this->importeDos = $this->total -$this->importeUno;
+    
+            $validated = $this->validate([
+                'cuit' => [
+                    'required',
+                    'numeric',
+                    function ($attribute, $value, $fail) {
+    
+                        if($this->tipoComprobante == 1 OR $this->tipoComprobante == 51){
+    
+                            if(strlen($value) == 11) {
+                                return true;
+                            }else{
+                                $fail('Para Factura A o M ingrese CUIT del Cliente');
+                            }
+    
+                        }else{
+    
+                            if ($value == 0) {
+                                return true;
+                            }elseif(strlen($value) == 11 OR strlen($value) == 8) {
+                                return true;
+                            }else{
+                                $fail('El número debe tener 11 o 8 caracteres.');
+                            }
+    
+    
+                        }
+    
+    
                     },
-                    "FeDetResp": {
-                    "FECAEDetResponse": {
-                        "Concepto": 1,
-                        "DocTipo": '.$this->tipoDocumento.',
-                        "DocNro": '.$this->cuit.',
-                        "CbteDesde": '.$ultimoId .',
-                        "CbteHasta": '.$ultimoId .',
-                        "CbteFch": "0",
+                ],
+    
+    
+                'importeUno' => [
+                    'required',
+                    'numeric',
+                    function ($attribute, $value, $fail) {
+                        if ($value == 0) {
+                            $fail('El Importe UNO debe ser mayor a 0.');
+                        }
+                    },
+    
+                ],
+    
+                'importeDos' => [
+                    'required',
+                    'numeric',
+                    function ($attribute, $value, $fail) {
+                        if ($value < 0) {
+                            $fail('El Importe DOS debe ser mayor a 0.');
+                        }
+                    },
+    
+                ],
+    
+                'total' => [
+                    'required',
+                    'numeric',
+                    function ($attribute, $value, $fail) {
+                        if ($value == 0) {
+                            $fail('El número debe ser mayor a 0.');
+                        }
+                        // Validación para verificar que total >= (importeUno + importeDos)
+                        if(is_numeric($this->importeUno) AND is_numeric($this->importeDos)){
+    
+                            if ((doubleVal($value) - doubleVal($this->importeUno + $this->importeDos)) != 0) {
+                                $fail('Diferencia : $'.number_format ($value - ($this->importeUno + $this->importeDos),2) .' en la Pago. El PAGO debe ser justo.' );
+                            }
+                        }
+                        else{
+                            $fail('Importe Uno y Dos Numerico');
+    
+                        }
+    
+                    },
+                ],
+    
+                'razonSocial' => [
+                    'required',
+                    'min:1',
+                    'max:256',
+                ],
+                'tipoDocumento' => [
+                    'required',
+    
+                ],
+            ],[
+                'required' => 'El campo :attribute es obligatorio.',
+                'numeric' => 'El campo :attribute debe ser un numero válido.',
+            ]);
+    
+    
+    
+            // AK TENEMOS QUE SABER SI VAMOS A HACER A B C O REMITO PRESUPUESTO    
+            if($this->tipoComprobante == 11){
+                $descripcionTipoComp = 'Factura C';
+                $nuevoComprobante = $this->crearComprobanteC($this->total,$this->cuit,$this->tipoDocumento);
+                $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);            
+            }elseif($this->tipoComprobante == 6){
+                $descripcionTipoComp = 'Factura B';
+                $nuevoComprobante = $this->crearComprobanteB($this->total,$this->tipoDocumento,$this->cuit);
+                $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
+            }elseif($this->tipoComprobante == 1){
+                $descripcionTipoComp = 'Factura A';
+                $nuevoComprobante = $this->crearComprobanteA($this->total,$this->tipoDocumento,$this->cuit);
+                $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
+    
+            }elseif($this->tipoComprobante == 51){
+                $descripcionTipoComp = 'Factura M';
+                $nuevoComprobante = $this->crearComprobanteM($this->total,$this->tipoDocumento,$this->cuit);
+                $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
+    
+            }elseif($this->tipoComprobante == 'remito'){
+                $descripcionTipoComp = 'Remito';
+    
+                
+                // Obtener el último registro
+                $ultimoRegistro = Comprobante::latest()->first();
+    
+                if ($ultimoRegistro) {
+                    $ultimoId = $ultimoRegistro->id + 1;
+                    // echo "El último ID es: " . $ultimoId;
+                } else {
+                    // echo "No hay registros en la tabla.";
+                    $ultimoId =  1;
+                }
+    
+                if( !isset($this->carrito['total'])){
+    
+                    $this->carrito['carrito'][] = array(
+                        'codigo'=>$this->codigo,
+                        'detalle'=>$this->detalle,
+                        'rubro'=>$this->rubro,
+                        'proveedor'=>$this->proveedor,
+                        'marca'=>$this->marca,
+                        'iva'=>$this->ivaDefecto,
+                        
+                        'porcentaje'=> 0,
+                        'precioLista'=> round($this->total,2) ,
+                        'descuento'=> 0 ,
+                        
+                        'costo'=> 0 , //SI CONTROLES DE COSTO Y STOCK POR QUE NO SABEMOS QUE CANTIDAD SE VENDE
+                        'controlStock'=>'no', //SI CONTROLES DE COSTO Y STOCK POR QUE NO SABEMOS QUE CANTIDAD SE VENDE
+    
+                        
+                        'precio'=> round($this->total,2),
+                        'cantidad'=>1,
+    
+                        'subtotal'=>  round($this->total,2),
+        
+                        ) ;
+                    $this->carrito['total']= round($this->total,2);
+                }
+    
+                $nuevoComprobante = json_decode(
+                    '{
+                        "FeCabResp": {
+                        "Cuit": '.$this->empresa->cuit.',
+                        "PtoVta": 0,
+                        "CbteTipo": "remito",
+                        "FchProceso": "0",
+                        "CantReg": 1,
                         "Resultado": "A",
-                        "CAE": "0",
-                        "CAEFchVto": "'.$this->fechaHoy.'"
-                    }
-                    }
-                }');
-            $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
-
-        }elseif($this->tipoComprobante == 'presupuesto'){
-            $comprobanteId = $this->finalizarPresupuesto(); 
-        }else{
-            dd('Tipo de comprobante erroneo: '.$this->tipoComprobante);
-        }
-
-
-        //borramos la session de carrito 
-        $this->carrito=null;
-        $this->cliente=null;
-
-
-        if($this->imprimir){
-
-            if ($this->tipoComprobante == 'presupuesto'){
-
-                $this->redirectRoute('formatoPDF',['comprobante_id'=>$comprobanteId,
-                                                    'tipo'=>'presupuesto']);
+                        "Reproceso": "N"
+                        },
+                        "FeDetResp": {
+                        "FECAEDetResponse": {
+                            "Concepto": 1,
+                            "DocTipo": '.$this->tipoDocumento.',
+                            "DocNro": '.$this->cuit.',
+                            "CbteDesde": '.$ultimoId .',
+                            "CbteHasta": '.$ultimoId .',
+                            "CbteFch": "0",
+                            "Resultado": "A",
+                            "CAE": "0",
+                            "CAEFchVto": "'.$this->fechaHoy.'"
+                        }
+                        }
+                    }');
+                $comprobanteId = $this->finalizarComprobante($nuevoComprobante,$descripcionTipoComp);
+    
+            }elseif($this->tipoComprobante == 'presupuesto'){
+                $comprobanteId = $this->finalizarPresupuesto(); 
             }else{
-
-                $this->redirectRoute('formatoPDF',['comprobante_id'=>$comprobanteId,
-                                                    'tipo'=>'factura']);
-               
+                dd('Tipo de comprobante erroneo: '.$this->tipoComprobante);
+            }
+    
+    
+            //borramos la session de carrito 
+            $this->carrito=null;
+            $this->cliente=null;
+    
+    
+            if($this->imprimir){
+    
+                if ($this->tipoComprobante == 'presupuesto'){
+    
+                    $this->redirectRoute('formatoPDF',['comprobante_id'=>$comprobanteId,
+                                                        'tipo'=>'presupuesto']);
+                }else{
+    
+                    $this->redirectRoute('formatoPDF',['comprobante_id'=>$comprobanteId,
+                                                        'tipo'=>'factura']);
+                   
+                }
+    
+    
+            }else{
+    
+                $this->redirect('/nuevoComprobante'); 
+    
             }
 
+        } 
+        
+        catch (ModelNotFoundException $e) {
+            $this->error = 'User not found';
+        } catch (\Exception $e) {
 
-        }else{
+            // dd($e->getMessage());
+            $this->error = $e->getMessage();
+        }    
 
-            $this->redirect('/nuevoComprobante'); 
 
-        }
 
 
 

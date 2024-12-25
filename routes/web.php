@@ -50,6 +50,8 @@ use App\Livewire\Configuracion\Basico;
 use App\Livewire\Mesas\VerMesas;
 use App\Livewire\Mesas\ModificarMesa;
 
+use App\Livewire\Reportes\Reportes;
+
 
 
 use App\Models\Empresa;
@@ -341,6 +343,9 @@ use Illuminate\Http\Request;
         Route::get('/reciboPdf/{recibo_id?}', [ReciboPdfController::class, 'imprimir'])->name('reciboPdf');
         Route::get('/codigoBarraPdf', [CodigoDeBarraController::class, 'imprimir'])->name('codigoBarraPdf');
         Route::get('/reporteVentaUsuario', [ReporteVentaUsuarioController::class, 'imprimir'])->name('reporteVentaUsuario');
+
+
+        Route::get('/reportes', Reportes::class)->name('reportes');
 
 
         

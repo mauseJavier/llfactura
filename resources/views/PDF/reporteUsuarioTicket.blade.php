@@ -135,7 +135,16 @@
 			</td>
 		</tr>
 
+		<tr>
+			<hr>
+		</tr>
+
+			<tr>
+				<td>Total: ${{$sumaTotal}}</td>
+			</tr>
 
 	</table>
+
+
 </body>
 </html>

@@ -130,7 +130,7 @@
             @endif
             <div class="col">
 
-              <a wire:click="reporteVentaUsuario()" style="cursor: pointer;">Reporte diario {{Auth()->user()->name}}</a>
+              <a href="{{route('reportes',['ruta'=>'reporteVentaUsuario'])}}" style="cursor: pointer;">Reporte diario {{Auth()->user()->name}}</a>
 
             </div>
             <div class="col">              

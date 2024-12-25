@@ -15,10 +15,19 @@
     @dump($ivaDefecto) --}}
 
 
+    @if ($error)
+        
+    <div class="container">
+        <article>
+            <h2>{{$error}}</h2>
+        </article>
+    </div>
+    @else
+        
     <div class="container" style="text-align: center;"
                      x-data="{ valor1:{{$total}}, valor2: {{$importeUno}}, valor3: {{$importeDos}} , valor4: 0,valor5: 0,
      
-                                                 handleKeyPress(event,tipoIva) {
+                                                 handleKeyPress(event,tipoIva,fe) {
                                                     const select = document.getElementById('idFormaPago');
                                                     const selectDuplicado = document.getElementById('idFormaPagoDuplicado');
 
@@ -39,31 +48,38 @@
                                                             select.value = '3';
                                                             selectDuplicado.value = '3';
                                                             
+                                                                if(fe == 'si'){
                                                                     if(tipoIva == 'ME'){
                                                                         selectFactura.value = '11';
                                                                     }else{
                                                                         selectFactura.value = '6';
                                                                     }
+                                                                }
+
                                                             break;
                                                         case 'T':
                                                             select.value = '2';
                                                             selectDuplicado.value = '2';
                                                             
+                                                                if(fe == 'si'){
                                                                     if(tipoIva == 'ME'){
                                                                         selectFactura.value = '11';
                                                                     }else{
                                                                         selectFactura.value = '6';
                                                                     }
+                                                                }
                                                             break;
                                                         case 'F':
                                                             select.value = '5';
                                                             selectDuplicado.value = '5';
                                                             
+                                                                if(fe == 'si'){
                                                                     if(tipoIva == 'ME'){
                                                                         selectFactura.value = '11';
                                                                     }else{
                                                                         selectFactura.value = '6';
                                                                     }
+                                                                }
                                                             break;
 
 
@@ -76,7 +92,7 @@
                                                     selectFactura.dispatchEvent(new Event('change')); // Para activar el evento de cambio en Livewire
 
                                                 },
-                                                handleSelectChange(event,tipoIva) {
+                                                handleSelectChange(event,tipoIva,fe) {
 
                                                     const select = document.getElementById('idFormaPago');
 
@@ -93,27 +109,33 @@
                                                             break;
                                                         case '3':
                                                                                                                 
+                                                                if(fe == 'si'){
                                                                     if(tipoIva == 'ME'){
                                                                         selectFactura.value = '11';
                                                                     }else{
                                                                         selectFactura.value = '6';
                                                                     }
+                                                                }
                                                             break;
                                                         case '2':
                                                      
+                                                                if(fe == 'si'){
                                                                     if(tipoIva == 'ME'){
                                                                         selectFactura.value = '11';
                                                                     }else{
                                                                         selectFactura.value = '6';
                                                                     }
+                                                                }
                                                             break;
                                                         case '5':
                                                                                                               
+                                                                if(fe == 'si'){
                                                                     if(tipoIva == 'ME'){
                                                                         selectFactura.value = '11';
                                                                     }else{
                                                                         selectFactura.value = '6';
                                                                     }
+                                                                }
                                                             break;
 
                                                         
@@ -127,7 +149,7 @@
                                                 }
                              }"
                                           
-                                         x-on:keydown.window="handleKeyPress($event,'{{$empresa->iva}}')"
+                                         x-on:keydown.window="handleKeyPress($event,'{{$empresa->iva}}','{{$empresa->fe}}')"
                                          >
 
 
@@ -138,6 +160,10 @@
             </ul>
         </article>
         @endif
+
+
+     
+
 
         {{-- //////ESTE ES EL GRID DE LOS FAVORITOS  --}}
         {{-- @dump($carrito) --}}
@@ -249,7 +275,7 @@
                         Forma de Pago 1
                         <select id="idFormaPago" aria-label="" wire:model.live="idFormaPago" 
                                             wire:change="modificarFormaPago2()" 
-                                            x-on:change="handleSelectChange($event,'{{$empresa->iva}}')">         
+                                            x-on:change="handleSelectChange($event,'{{$empresa->iva}}','{{$empresa->fe}}')">         
                             @foreach ($formaPago as $item)
                                 @if ($item->id !== 0) 
                                     {{-- PARA QUE NO MUESTRE EL CUENTA CORRIENTE DE LA BASE --}}
@@ -284,7 +310,8 @@
 
                                 <label for="" >
                                     Forma de Pago 1
-                                    <select style="background-color: rgb(95, 123, 98)" id="idFormaPagoDuplicado" aria-label="" wire:model.live="idFormaPago" wire:change="modificarFormaPago2()" >         
+                                    <select style="background-color: rgb(95, 123, 98)" id="idFormaPagoDuplicado" aria-label="" wire:model.live="idFormaPago" wire:change="modificarFormaPago2()" 
+                                            x-on:change="handleSelectChange($event,'{{$empresa->iva}}','{{$empresa->fe}}')">         
                                         @foreach ($formaPago as $item)
                                             @if ($item->id !== 0) 
                                                 {{-- PARA QUE NO MUESTRE EL CUENTA CORRIENTE DE LA BASE --}}
@@ -667,6 +694,8 @@
               
         </article>
     </div>
+    @endif
+
 
 
 

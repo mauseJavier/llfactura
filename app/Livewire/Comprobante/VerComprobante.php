@@ -43,14 +43,6 @@ class VerComprobante extends Component
         $this->numeroComprobanteFiltro="";
     }
 
-    public function reporteVentaUsuario(){
-
-        $this->redirectRoute('reporteVentaUsuario');
-
-
-
-    }
-
     public function modificarFechas($dato){
 
         
