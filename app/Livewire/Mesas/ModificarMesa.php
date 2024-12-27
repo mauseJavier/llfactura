@@ -40,13 +40,112 @@ class ModificarMesa extends Component
     public $razonSocial,$comentario,
             $tipoDocumento,
             $numeroDocumento,
-            $tipoContribuyente,
+            $tipoContribuyente=13,
             $domicilio,
             $correo,$datoBuscado,$cantidad=1,
             $data,
             $total;
 
+    public $estadoModalEdicion = '';
+    public $modificarDetalle;
+    public $modificarPrecio;
+    public $modificarCantidad;
+    public $modificarPorcentaje=0;
 
+    public $modificarKey;
+
+
+
+
+    public function modificarMesaCarrito(){
+
+
+        $validated = $this->validate([
+            'modificarCantidad' => 'required|numeric|min:0.01',
+
+        ], [
+            'cantidad.required' => 'El campo cantidad a enviar es obligatorio.',
+            'cantidad.numeric' => 'El campo cantidad a enviar debe ser un número.',
+            'cantidad.min' => 'El campo cantidad a enviar debe ser mayor que 0.01.',
+
+            'porcentaje.required' => 'El campo porcentaje a enviar es obligatorio.',
+            'porcentaje.numeric' => 'El campo porcentaje a enviar debe ser un número.',
+        ]);
+
+        $precio =round($this->modificarPrecio+($this->modificarPrecio * $this->modificarPorcentaje /100),2);
+
+
+        $this->mesaCarrito['mesaCarrito'][$this->modificarKey]['detalle'] = $this->modificarDetalle ;
+        $this->mesaCarrito['mesaCarrito'][$this->modificarKey]['precio'] =    $precio ; 
+        $this->mesaCarrito['mesaCarrito'][$this->modificarKey]['precioLista'] = $this->modificarPorcentaje < 0 ? round(floatval($this->modificarPrecio),2) : round($this->modificarPrecio+($this->modificarPrecio * $this->modificarPorcentaje /100),2);
+
+
+        $this->mesaCarrito['mesaCarrito'][$this->modificarKey]['cantidad'] =  round(floatval($this->modificarCantidad),2) ;    
+        $this->mesaCarrito['mesaCarrito'][$this->modificarKey]['subtotal'] =  round( floatval($precio) * floatval($this->modificarCantidad),2) ;   
+
+        $this->mesaCarrito['mesaCarrito'][$this->modificarKey]['descuento']= $this->modificarPorcentaje < 0 ? round(($this->modificarPrecio * $this->modificarPorcentaje /100),2) : 0;
+        $this->mesaCarrito['mesaCarrito'][$this->modificarKey]['porcentaje']= $this->modificarPorcentaje;
+
+        $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
+        $cantidadArticulos = 0 ;
+        foreach ($this->mesaCarrito['mesaCarrito'] as $item) {
+
+            // dd($this->mesaCarrito['mesaCarrito']);
+            $totalSubtotal += $item['subtotal'];
+            $cantidadArticulos += $item['cantidad'];
+        }
+
+        $this->mesaCarrito['total']= round($totalSubtotal,2);
+        $this->mesaCarrito['articulos']=  $cantidadArticulos;
+
+
+        // dd($this->checkPrecio1 .' '.$this->checkPrecio2 .' '.$this->checkPrecio3);
+        // if($this->checkPrecio1){
+        //     Inventario::where('codigo', $this->carrito['carrito'][$this->modificarKey]['codigo'])
+        //                 ->where('empresa_id', Auth::user()->empresa_id)
+        //         ->update(['precio1' => round(floatval($this->modificarPrecio),2)]);
+        // }
+
+        // if($this->checkPrecio2){
+        //     Inventario::where('codigo', $this->carrito['carrito'][$this->modificarKey]['codigo'])
+        //                 ->where('empresa_id', Auth::user()->empresa_id)
+        //         ->update(['precio2' => round(floatval($this->modificarPrecio),2)]);
+        // }
+
+        // if($this->checkPrecio3){
+        //     Inventario::where('codigo', $this->carrito['carrito'][$this->modificarKey]['codigo'])
+        //                 ->where('empresa_id', Auth::user()->empresa_id)
+        //         ->update(['precio3' => round(floatval($this->modificarPrecio),2)]);
+        // }
+
+
+        $this->modificarPorcentaje=0;
+        // $this->checkPrecio1 = false;
+        // $this->checkPrecio2 = false;
+        // $this->checkPrecio3 = false;
+
+        // $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
+
+
+        $this->cerrarModalEdicion();
+    }
+
+    public function abrirModalEdicion($key)
+    {
+
+        $this->modificarDetalle = $this->mesaCarrito['mesaCarrito'][$key]['detalle'];
+        $this->modificarPrecio = $this->mesaCarrito['mesaCarrito'][$key]['precio'];
+        $this->modificarCantidad = $this->mesaCarrito['mesaCarrito'][$key]['cantidad'];
+        $this->modificarKey = $key;
+
+
+        $this->estadoModalEdicion= 'open';
+
+    }
+
+    public function cerrarModalEdicion(){
+        $this->estadoModalEdicion='';
+    }
 
     public function eliminarMesa(Mesa $mesa){
 
@@ -384,7 +483,7 @@ class ModificarMesa extends Component
 
         $this->tipoDocumento =$mesa->tipoDocumento;
         $this->numeroDocumento =$mesa->numeroDocumento;
-        $this->tipoContribuyente =$mesa->tipoContribuyente;
+        $this->tipoContribuyente =$mesa->tipoContribuyente == 0 ? 5 : $mesa->tipoContribuyente;
         $this->domicilio =$mesa->domicilio;
         $this->correo =$mesa->correo;
         $this->comentario =$mesa->comentario;
