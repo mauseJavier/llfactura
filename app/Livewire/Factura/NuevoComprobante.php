@@ -1813,6 +1813,7 @@ class NuevoComprobante extends Component
                     'deposito_id'=>$this->usuario->deposito_id,
                     'usuario'=> $this->usuario->name,
                     'remito'=>  $this->remitoEntrega, //no (se entrega en el momento ) si (se entrega posterior)
+                    'cantidadComenzales' => isset($this->carrito['cantidadComenzales'])? $this->carrito['cantidadComenzales'] : 0,
                 ]);
 
         

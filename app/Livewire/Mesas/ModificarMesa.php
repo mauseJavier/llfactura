@@ -53,6 +53,7 @@ class ModificarMesa extends Component
     public $modificarPorcentaje=0;
 
     public $modificarKey;
+    public $cantidadComenzales=1;
 
 
 
@@ -246,6 +247,8 @@ class ModificarMesa extends Component
 
                 $this->carrito['total']=  round($totalSubtotal,2);
                 $this->carrito['articulos']=  $cantidadArticulos;
+                $this->carrito['cantidadComenzales']=  $this->cantidadComenzales;
+
 
 
                 $this->cancelarMesa();
@@ -290,11 +293,15 @@ class ModificarMesa extends Component
             // dd($resultado);
             $this->mesa->data = $resultado;
             $this->mesa->total =  $resultado['total'] ;
+            $this->mesa->cantidadComenzales =  $this->cantidadComenzales ;
+
 
     
         }else{
             $this->mesa->data = $this->mesaCarrito;
             $this->mesa->total = $this->mesaCarrito['total'];
+            $this->mesa->cantidadComenzales =  $this->cantidadComenzales ;
+
 
         }
 
@@ -489,6 +496,9 @@ class ModificarMesa extends Component
         $this->comentario =$mesa->comentario;
         $this->total =$mesa->total;
 
+        $this->cantidadComenzales =$mesa->cantidadComenzales;
+
+
 
 
         $this->datos= $mesa->datos;
@@ -527,6 +537,9 @@ class ModificarMesa extends Component
         $this->mesa->correo =$this->correo;
         $this->mesa->comentario =$this->comentario;
 
+        $this->mesa->cantidadComenzales =  $this->cantidadComenzales ;
+
+
 
         $this->mesa->save();
 
@@ -551,6 +564,9 @@ class ModificarMesa extends Component
         $this->mesa->data =null;
         $this->mesa->total =0;
 
+        $this->mesa->cantidadComenzales =1;
+
+
 
 
 
@@ -568,6 +584,9 @@ class ModificarMesa extends Component
         $this->comentario ='';
         $this->data ='';
         $this->total =0;
+
+        $this->cantidadComenzales =1;
+
 
 
 

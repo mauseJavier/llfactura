@@ -1,14 +1,53 @@
 <div>
 
+    <style>
+        .labelIcon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 10%;
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+    
+        /* Efecto de iluminación */
+        .highlight-green {
+          box-shadow: inset 0 0 15px 5px green;
+          transform: scale(1.1);
+        }
+    
+        .highlight-red {
+          box-shadow: inset 0 0 15px 5px red;
+          transform: scale(1.1);
+        }
+      </style>
+
+
+
     <div class="container">
 
         <article>
             <div class="grid">
                 <div class="col">
-                    <h1>
-                        ({{$mesa->numero}})  {{$mesa->nombre}}        
-                        (${{number_format($total, 2, ',', '.')}} - {{$razonSocial}})
-                    </h1>
+                    <h3>
+                        ${{number_format($total, 2, ',', '.')}}
+                    </h3>
+                    <h6>
+                        <label for="">
+                            Nombre Mesa: {{$mesa->nombre}}   
+                        </label>
+                    </h6>
+                    <h6>
+                        <label for="">
+                            Numero Mesa: {{$mesa->numero}}    
+                        </label>
+                    </h6>
+
+                    <h6>
+                        <label for="">
+                            Cliente: {{$razonSocial}}
+                        </label>
+                    </h6>
 
                 </div>
                 
@@ -63,6 +102,45 @@
                                   </small>
                               @enderror
                         </label>
+
+                        <label>
+                            Comenzales
+      
+                            <select wire:model="cantidadComenzales" name="" id="" required
+                                @error('cantidadComenzales') 
+                                  required aria-invalid="true"
+                                
+                                @enderror
+                            >
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6</option>
+                              <option value="7">7</option>
+                              <option value="8">8</option>
+                              <option value="9">9</option>
+                              <option value="10">10</option>
+                              <option value="11">11</option>
+                              <option value="12">12</option>
+                              <option value="13">13</option>
+                              <option value="14">14</option>
+                              <option value="15">15</option>
+      
+      
+      
+                              
+                            </select>
+                            
+                            @error('cantidadComenzales') 
+                              <small id="invalid-helper">
+                                {{ $message }} 
+                              </small>
+                            @enderror
+                          </label>
+
+
                         <label for="">
                             Comentario
                             <textarea
@@ -75,7 +153,7 @@
                     </fieldset>
 
 
-                    <fieldset class="grid">
+                    {{-- <fieldset class="grid">
                         <label>
                             Tipo de documento
                             <select name="" wire:model="tipoDocumento">
@@ -130,7 +208,7 @@
                               placeholder="Correo"
                               wire:model="correo"
                             />
-                        </label>
+                        </label> --}}
                     </fieldset>
 
                     <button wire:click="guardarrazonSocial" @click="abierto = !abierto">Guardar Cliente</button>
@@ -338,13 +416,65 @@
                 wire:model.live="datoBuscado"
                 />
     
-                <select name="select" aria-label="Select" required wire:model.live="seleccionPrecio" style="font-size: 15px; ">
+                {{-- <select name="select" aria-label="Select" required wire:model.live="seleccionPrecio" style="font-size: 15px; ">
     
                     <option value="precio1">Precio 1</option>
                     <option value="precio2">Precio 2</option>
                     <option value="precio3">Precio 3</option>
     
-                </select>
+                </select> --}}
+
+                <label for="" 
+                    style="            
+                        display: flex;
+                        justify-content: center; /* Alinea horizontalmente en el centro */
+                        align-items: center; /* Alinea verticalmente en el centro */
+                        width: 12%; /* Ajusta el ancho según tus necesidades */
+                        cursor:pointer;
+                        font-size: 150%;">
+                    {{$cantidad}}
+                </label>   
+
+                <label id="plus-icon" class="labelIcon highlight-green"
+                     style="            
+                        display: flex;
+                        justify-content: center; /* Alinea horizontalmente en el centro */
+                        align-items: center; /* Alinea verticalmente en el centro */
+                        width: 12%; /* Ajusta el ancho según tus necesidades */
+                        cursor:pointer;
+                        "
+                    wire:click="sumarCantidad"
+                    >
+                    
+                    <!-- square-plus icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" height="2em" fill="currentColor" viewBox="0 0 512 512">
+                        <path
+                        d="M 73.14285714285714 18.285714285714285 Q 50.285714285714285 19.428571428571427 34.285714285714285 34.285714285714285 L 34.285714285714285 34.285714285714285 L 34.285714285714285 34.285714285714285 Q 19.428571428571427 50.285714285714285 18.285714285714285 73.14285714285714 L 18.285714285714285 438.85714285714283 L 18.285714285714285 438.85714285714283 Q 19.428571428571427 461.7142857142857 34.285714285714285 477.7142857142857 Q 50.285714285714285 492.57142857142856 73.14285714285714 493.7142857142857 L 438.85714285714283 493.7142857142857 L 438.85714285714283 493.7142857142857 Q 461.7142857142857 492.57142857142856 477.7142857142857 477.7142857142857 Q 492.57142857142856 461.7142857142857 493.7142857142857 438.85714285714283 L 493.7142857142857 73.14285714285714 L 493.7142857142857 73.14285714285714 Q 492.57142857142856 50.285714285714285 477.7142857142857 34.285714285714285 Q 461.7142857142857 19.428571428571427 438.85714285714283 18.285714285714285 L 73.14285714285714 18.285714285714285 L 73.14285714285714 18.285714285714285 Z M 0 73.14285714285714 Q 1.1428571428571428 42.285714285714285 21.714285714285715 21.714285714285715 L 21.714285714285715 21.714285714285715 L 21.714285714285715 21.714285714285715 Q 42.285714285714285 1.1428571428571428 73.14285714285714 0 L 438.85714285714283 0 L 438.85714285714283 0 Q 469.7142857142857 1.1428571428571428 490.2857142857143 21.714285714285715 Q 510.85714285714283 42.285714285714285 512 73.14285714285714 L 512 438.85714285714283 L 512 438.85714285714283 Q 510.85714285714283 469.7142857142857 490.2857142857143 490.2857142857143 Q 469.7142857142857 510.85714285714283 438.85714285714283 512 L 73.14285714285714 512 L 73.14285714285714 512 Q 42.285714285714285 510.85714285714283 21.714285714285715 490.2857142857143 Q 1.1428571428571428 469.7142857142857 0 438.85714285714283 L 0 73.14285714285714 L 0 73.14285714285714 Z M 246.85714285714286 365.7142857142857 L 246.85714285714286 265.14285714285717 L 246.85714285714286 365.7142857142857 L 246.85714285714286 265.14285714285717 L 146.28571428571428 265.14285714285717 L 146.28571428571428 265.14285714285717 Q 138.28571428571428 264 137.14285714285714 256 Q 138.28571428571428 248 146.28571428571428 246.85714285714286 L 246.85714285714286 246.85714285714286 L 246.85714285714286 246.85714285714286 L 246.85714285714286 146.28571428571428 L 246.85714285714286 146.28571428571428 Q 248 138.28571428571428 256 137.14285714285714 Q 264 138.28571428571428 265.14285714285717 146.28571428571428 L 265.14285714285717 246.85714285714286 L 265.14285714285717 246.85714285714286 L 365.7142857142857 246.85714285714286 L 365.7142857142857 246.85714285714286 Q 373.7142857142857 248 374.85714285714283 256 Q 373.7142857142857 264 365.7142857142857 265.14285714285717 L 265.14285714285717 265.14285714285717 L 265.14285714285717 265.14285714285717 L 265.14285714285717 365.7142857142857 L 265.14285714285717 365.7142857142857 Q 264 373.7142857142857 256 374.85714285714283 Q 248 373.7142857142857 246.85714285714286 365.7142857142857 L 246.85714285714286 365.7142857142857 Z"
+                        />
+                    </svg>
+                </label>  
+
+
+                <label id="minus-icon" class="labelIcon highlight-red"
+                    style="            
+                        display: flex;
+                        justify-content: center; /* Alinea horizontalmente en el centro */
+                        align-items: center; /* Alinea verticalmente en el centro */
+                        width: 12%; /* Ajusta el ancho según tus necesidades */
+                        cursor:pointer;
+                        "
+                    wire:click="restarCantidad"
+                    >
+                    
+                        <!-- square-minus icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" height="2em" fill="currentColor" viewBox="0 0 512 512">
+                            <path
+                            d="M 73.14285714285714 18.285714285714285 Q 50.285714285714285 19.428571428571427 34.285714285714285 34.285714285714285 L 34.285714285714285 34.285714285714285 L 34.285714285714285 34.285714285714285 Q 19.428571428571427 50.285714285714285 18.285714285714285 73.14285714285714 L 18.285714285714285 438.85714285714283 L 18.285714285714285 438.85714285714283 Q 19.428571428571427 461.7142857142857 34.285714285714285 477.7142857142857 Q 50.285714285714285 492.57142857142856 73.14285714285714 493.7142857142857 L 438.85714285714283 493.7142857142857 L 438.85714285714283 493.7142857142857 Q 461.7142857142857 492.57142857142856 477.7142857142857 477.7142857142857 Q 492.57142857142856 461.7142857142857 493.7142857142857 438.85714285714283 L 493.7142857142857 73.14285714285714 L 493.7142857142857 73.14285714285714 Q 492.57142857142856 50.285714285714285 477.7142857142857 34.285714285714285 Q 461.7142857142857 19.428571428571427 438.85714285714283 18.285714285714285 L 73.14285714285714 18.285714285714285 L 73.14285714285714 18.285714285714285 Z M 0 73.14285714285714 Q 1.1428571428571428 42.285714285714285 21.714285714285715 21.714285714285715 L 21.714285714285715 21.714285714285715 L 21.714285714285715 21.714285714285715 Q 42.285714285714285 1.1428571428571428 73.14285714285714 0 L 438.85714285714283 0 L 438.85714285714283 0 Q 469.7142857142857 1.1428571428571428 490.2857142857143 21.714285714285715 Q 510.85714285714283 42.285714285714285 512 73.14285714285714 L 512 438.85714285714283 L 512 438.85714285714283 Q 510.85714285714283 469.7142857142857 490.2857142857143 490.2857142857143 Q 469.7142857142857 510.85714285714283 438.85714285714283 512 L 73.14285714285714 512 L 73.14285714285714 512 Q 42.285714285714285 510.85714285714283 21.714285714285715 490.2857142857143 Q 1.1428571428571428 469.7142857142857 0 438.85714285714283 L 0 73.14285714285714 L 0 73.14285714285714 Z M 146.28571428571428 246.85714285714286 L 365.7142857142857 246.85714285714286 L 146.28571428571428 246.85714285714286 L 365.7142857142857 246.85714285714286 Q 373.7142857142857 248 374.85714285714283 256 Q 373.7142857142857 264 365.7142857142857 265.14285714285717 L 146.28571428571428 265.14285714285717 L 146.28571428571428 265.14285714285717 Q 138.28571428571428 264 137.14285714285714 256 Q 138.28571428571428 248 146.28571428571428 246.85714285714286 L 146.28571428571428 246.85714285714286 Z"
+                            />
+                        </svg>
+
+                </label>  
+
             </fieldset>
             
 
@@ -356,7 +486,7 @@
                     @foreach ($inventario as $i)
 
                     <tr>
-                        <td style="width: 25%;">
+                        {{-- <td style="width: 25%;">
 
                             <div role="group">
                                 <button style="width: 15%; background-color: red;" wire:click="restarCantidad">-</button>
@@ -369,7 +499,7 @@
                             <button style="width: 15%;  background-color: rgb(65, 112, 142);" wire:click="sumarCantidad">+</button>
                             </div>
 
-                        </td>
+                        </td> --}}
 
                         <td style="width: 65%;">
 
@@ -379,7 +509,10 @@
                                 >
         
                                     {{$i->detalle}}
-                                    (${{$i->precio}})
+                                    <strong>
+                                        (${{$i->precio}})
+
+                                    </strong>
                 
                                 </button>
 
@@ -468,6 +601,28 @@
             </footer>
         </article>
     </dialog>
+
+    <script>
+        // Selección de elementos
+        const plusIcon = document.getElementById('plus-icon');
+        const minusIcon = document.getElementById('minus-icon');
+    
+        // Evento para el ícono de suma
+        plusIcon.addEventListener('click', () => {
+        //   plusIcon.classList.add('highlight-green');
+        //   setTimeout(() => plusIcon.classList.remove('highlight-green'), 500);
+
+        plusIcon.classList.remove('highlight-green');
+        setTimeout(() => plusIcon.classList.add('highlight-green'), 500);
+
+        });
+    
+        // Evento para el ícono de resta
+        minusIcon.addEventListener('click', () => {
+          minusIcon.classList.remove('highlight-red');
+          setTimeout(() => minusIcon.classList.add('highlight-red'), 500);
+        });
+      </script>
 
 
 </div>
