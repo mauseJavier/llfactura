@@ -424,19 +424,9 @@
     
                 </select> --}}
 
-                <label for="" 
-                    style="            
-                        display: flex;
-                        justify-content: center; /* Alinea horizontalmente en el centro */
-                        align-items: center; /* Alinea verticalmente en el centro */
-                        width: 12%; /* Ajusta el ancho según tus necesidades */
-                        cursor:pointer;
-                        font-size: 150%;">
-                    {{$cantidad}}
-                </label>   
-
-                <label id="plus-icon" class="labelIcon highlight-green"
-                     style="            
+                
+                <label id="plus-icon" class="labelIcon"
+                style="            
                         display: flex;
                         justify-content: center; /* Alinea horizontalmente en el centro */
                         align-items: center; /* Alinea verticalmente en el centro */
@@ -453,9 +443,19 @@
                         />
                     </svg>
                 </label>  
+                
+                <label for="" 
+                    style="            
+                        display: flex;
+                        justify-content: center; /* Alinea horizontalmente en el centro */
+                        align-items: center; /* Alinea verticalmente en el centro */
+                        width: 12%; /* Ajusta el ancho según tus necesidades */
+                        cursor:pointer;
+                        font-size: 150%;">
+                    {{$cantidad}}
+                </label>   
 
-
-                <label id="minus-icon" class="labelIcon highlight-red"
+                <label id="minus-icon" class="labelIcon"
                     style="            
                         display: flex;
                         justify-content: center; /* Alinea horizontalmente en el centro */
@@ -612,15 +612,15 @@
         //   plusIcon.classList.add('highlight-green');
         //   setTimeout(() => plusIcon.classList.remove('highlight-green'), 500);
 
-        plusIcon.classList.remove('highlight-green');
-        setTimeout(() => plusIcon.classList.add('highlight-green'), 500);
+        plusIcon.classList.add('highlight-green');
+        setTimeout(() => plusIcon.classList.remove('highlight-green'), 500);
 
         });
     
         // Evento para el ícono de resta
         minusIcon.addEventListener('click', () => {
-          minusIcon.classList.remove('highlight-red');
-          setTimeout(() => minusIcon.classList.add('highlight-red'), 500);
+          minusIcon.classList.add('highlight-red');
+          setTimeout(() => minusIcon.classList.remove('highlight-red'), 500);
         });
       </script>
 
