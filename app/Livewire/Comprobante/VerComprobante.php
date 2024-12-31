@@ -18,6 +18,8 @@ use Livewire\WithPagination;
 use Livewire\Component;
 
 use App\Models\Comprobante;
+use App\Models\productoComprobante;
+
 use App\Models\Empresa;
 
 
@@ -125,11 +127,21 @@ class VerComprobante extends Component
 
     public function mount(){
 
-        $this->fechaFiltroDesde = Carbon::now();
-        $this->fechaFiltroDesde->setTime(0, 0);
-        $this->fechaFiltroDesde = $this->fechaFiltroDesde->format('Y-m-d\TH:i');
+        // $this->fechaFiltroDesde = Carbon::now();
+        // $this->fechaFiltroDesde->setTime(0, 0);
+        // $this->fechaFiltroDesde = $this->fechaFiltroDesde->format('Y-m-d\TH:i');
         
-        $this->fechaFiltroHasta = Carbon::now()->addDay()->format('Y-m-d\TH:i');
+        // $this->fechaFiltroHasta = Carbon::now()->addDay()->format('Y-m-d\TH:i');
+
+        // Comienzo del día actual
+        $comienzoDelDia = Carbon::now()->startOfDay()->format('Y-m-d\TH:i');
+
+        // Última hora del día actual
+        $ultimaHoraDelDia = Carbon::now()->endOfDay()->format('Y-m-d\TH:i');
+
+        $this->fechaFiltroDesde = $comienzoDelDia;
+        
+        $this->fechaFiltroHasta = $ultimaHoraDelDia;
 
         $this->tipoComp = '';
         $this->usuarioFiltro = '';
@@ -364,25 +376,25 @@ class VerComprobante extends Component
         )
         ->get();
 
-    // Procesar los resultados combinados en un único arreglo de totales
-    $totales = [];
+            // Procesar los resultados combinados en un único arreglo de totales
+            $totales = [];
 
-    foreach ($collection as $comprobante) {
-        $idFormaPago = $comprobante->idFormaPago;
-        $nombre = $comprobante->nombre;
-        $totalImporte = $comprobante->totalImporte;
+            foreach ($collection as $comprobante) {
+                $idFormaPago = $comprobante->idFormaPago;
+                $nombre = $comprobante->nombre;
+                $totalImporte = $comprobante->totalImporte;
 
-        if (!isset($totales[$idFormaPago])) {
-            $totales[$idFormaPago] = [
-                'nombre' => $nombre,
-                'total' => 0,
-            ];
-        }
+                if (!isset($totales[$idFormaPago])) {
+                    $totales[$idFormaPago] = [
+                        'nombre' => $nombre,
+                        'total' => 0,
+                    ];
+                }
 
-        $totales[$idFormaPago]['total'] += $totalImporte;
-    }
+                $totales[$idFormaPago]['total'] += $totalImporte;
+            }
 
-    // dd($totales);
+            // dd($totales);
 
         // Ejecutar la consulta para obtener los datos
         $comprobantes = Comprobante::where('empresa_id', Auth::user()->empresa_id)
@@ -507,12 +519,28 @@ class VerComprobante extends Component
 
 
 
-
-
-
+            $ivaPeriodo = productoComprobante::where('empresa_id', Auth::user()->empresa_id)
+            ->where('fecha', '>=', $this->fechaFiltroDesde)
+            ->where('fecha', '<=', $this->fechaFiltroHasta)
+            ->where('tipoComp', '!=', 'remito') // Excluir registros con tipoComp 'remito'
+            ->get()
+            ->map(function ($item) {
+                // Calcular el precio con IVA incluido
+                $item->precioConIva = round( ($item->precio * $item->cantidad) - (($item->precio * $item->cantidad) / (1 + ($item->iva / 100))),2);
+                return $item;
+            });
+        
+        $sumaTotalConIva = $ivaPeriodo->sum('precioConIva'); // Sumar todos los precios con IVA incluido
+        
+        
+            
+            // $ivaIncluido = $precio - ($precio / (1 + ($ivaPorcentaje / 100)));
 
 
         return view('livewire.comprobante.ver-comprobante',[
+
+            'ivaPeriodo'=> $sumaTotalConIva,
+
             'comprobantes' => Comprobante::where('empresa_id', Auth::user()->empresa_id)
                                 ->where('created_at', '>=', $this->fechaFiltroDesde)
                                 ->where('created_at', '<=', $this->fechaFiltroHasta)

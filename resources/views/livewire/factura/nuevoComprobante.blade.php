@@ -462,18 +462,31 @@
         </article>
 
 
-        <article x-data="{ buttonText: 'Finalizar' }" style="width: 100%">
+        <article style="width: 100%">
             {{-- ////////// BOTONES DE LA FACTURACION --}}
             <div class="grid" style="text-align: center;" >
                 <div>
-                    <button id="btnFacturar" class="outline" style="width: 100%" x-text="buttonText"
+                    {{-- <button id="btnFacturar" class="outline" style="width: 100%" x-text="buttonText"
                         wire:click="facturar">
+                    </button> --}}
+
+                    <button id="btnFacturar" 
+                            class="outline" 
+                            style="width: 100%" 
+                            x-data="{ disabled: false, buttonText: 'Finalizar' }"
+                            x-bind:disabled="disabled"
+                            x-text="buttonText"
+                            @click="disabled = true; buttonText = 'Procesando...';"
+                            wire:click="facturar">
                     </button>
+
+
+
                 </div>
                 <div>
                         <select id="selectFormaPago" name="" aria-label=""  required wire:model.live="tipoComprobante" 
                             {{-- ESTA FUNCION DE ALPINE ES PARA CAMBIAR EL NOMBRE DEL BOTON FINALIZAR --}}
-                            @change="buttonText = 'Finalizar ' + $event.target.options[$event.target.selectedIndex].text"
+                            {{-- @change="buttonText = 'Finalizar ' + $event.target.options[$event.target.selectedIndex].text" --}}
 
                         @if ($errors->has('cuit'))
                             aria-invalid="true"
@@ -564,7 +577,7 @@
 
 
                 <div>
-                    <label for="">Numero de Documento <small style="color: red">(Buscar para Cuenta Corriente)</small></label>
+                    <label for="">CUIT</label>
                     <fieldset role="group">                       
 
                         <input  

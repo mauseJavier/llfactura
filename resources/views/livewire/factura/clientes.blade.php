@@ -2,7 +2,7 @@
 
 
     <label for="">
-        Buscar Cliente (Nombre-CUIT)
+        Nombre Cliente
         <input type="text" wire:keydown="busquedaDeCliente" wire:model.live="clienteBuscado" placeholder="Buscar Cliente..."
             x-on:click="event.target.select()"
 

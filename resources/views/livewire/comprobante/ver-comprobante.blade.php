@@ -4,6 +4,7 @@
 
         <h3>Ver Comprobantes</h3>
 
+
         @if (Auth()->user()->role_id == 2 OR Auth()->user()->role_id == 3 OR Auth()->user()->role_id == 4)
             
           <div class="grid">
@@ -61,6 +62,8 @@
           <article>
 
             <label for="">Total: ${{number_format($sumTotal, 2, ',', '.')}}</label>
+            <label for="">Total IVA: ${{number_format($ivaPeriodo, 2, ',', '.')}}</label>
+
             <hr>
             <button wire:click="crearPDF()">Crear PDF</button>
             <button wire:click="exportarCSV()">Exportar CSV</button>
