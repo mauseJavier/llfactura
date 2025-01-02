@@ -65,6 +65,8 @@ use App\Http\Controllers\ReciboPdfController;
 use App\Http\Controllers\CodigoDeBarraController;
 use App\Http\Controllers\ReporteVentaUsuarioController;
 
+use App\Http\Controllers\CartaInventarioController;
+
 use App\Http\Controllers\CargarComprobanteController;
 
 use App\Models\Stock; //PARA PRUEBAS
@@ -119,22 +121,24 @@ use Illuminate\Http\Request;
 
 
 
-            Route::get('/pasarDomicilio', function () {
+            Route::get('/verEmpresa', function () {
 
                 $empresas= Empresa::all();
 
                 foreach ($empresas as $key => $value) {
-                    dump($value->domicilio .' '.$value->razonSocial);
-
-                    $affected = DB::table('users')
-                    ->where('empresa_id',$value->id)
-                    ->update(['domicilio' => $value->domicilio]);
-
-                    dump('actualizado '. $affected);
+                    
+                    dump($value->razonSocial);
                 }
 
                 
             });
+
+            Route::get('/cartaInventario', [CartaInventarioController::class, 'ejemplo'])->name('cartaInventario');
+
+            Route::get('/cartaInventario/{empresa}', [CartaInventarioController::class, 'index'])->name('cartaInventario');
+
+
+
 
 
             Route::get('/buscarDuplicados', function () {
