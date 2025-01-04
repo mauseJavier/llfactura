@@ -99,6 +99,11 @@ use Illuminate\Http\Request;
     ->name('prueba');
 
 
+    Route::get('/cartaInventario', [CartaInventarioController::class, 'empresas'])->name('cartaInventario');
+
+    Route::get('/cartaInventario/{empresa}', [CartaInventarioController::class, 'index'])->name('cartaInventario');
+
+
 
 
     Route::middleware(['auth', 'verified'])->group(function () {
@@ -132,13 +137,6 @@ use Illuminate\Http\Request;
 
                 
             });
-
-            Route::get('/cartaInventario', [CartaInventarioController::class, 'ejemplo'])->name('cartaInventario');
-
-            Route::get('/cartaInventario/{empresa}', [CartaInventarioController::class, 'index'])->name('cartaInventario');
-
-
-
 
 
             Route::get('/buscarDuplicados', function () {

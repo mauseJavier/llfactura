@@ -661,10 +661,18 @@ class NuevoComprobante extends Component
 
                 }
                 $this->razonSocial = $apellidoNombre;
-                $this->tipoDocumento = 80;
-                $this->domicilio =  $taxpayer_details->datosGenerales->domicilioFiscal->direccion .' '.
-                $taxpayer_details->datosGenerales->domicilioFiscal->localidad .' '.
-                $taxpayer_details->datosGenerales->domicilioFiscal->descripcionProvincia;
+                if(isset($taxpayer_details->datosGenerales->domicilioFiscal)){
+                    
+                    $this->tipoDocumento = 80;
+                    $this->domicilio =  $taxpayer_details->datosGenerales->domicilioFiscal->direccion .' '.
+                    $taxpayer_details->datosGenerales->domicilioFiscal->localidad .' '.
+                    $taxpayer_details->datosGenerales->domicilioFiscal->descripcionProvincia;
+                }else{
+                    $this->tipoDocumento = 86;
+
+                    $this->domicilio = '';
+
+                }
 
                 // PARA LOS CUILS 
             }elseif(isset($taxpayer_details->errorConstancia->apellido)){
@@ -720,6 +728,13 @@ class NuevoComprobante extends Component
 
     function buscarCliente(){
 
+        $validated = $this->validate([
+            'cuit' => 'digits:11',
+        ], [
+            'cuit.digits' => 'El campo CUIT tiene 11 caracteres.',
+
+        ]);
+
         $clienteBuscado = Cliente::where('numeroDocumento',$this->cuit)
                                     ->where('empresa_id',$this->empresa->id)
                                     ->firstOr(function () {
@@ -741,6 +756,9 @@ class NuevoComprobante extends Component
         }
 
         $this->cambiarFactura();
+
+            // Emitir evento al terminar
+            $this->dispatch('buscar-terminado');
 
         // 
 

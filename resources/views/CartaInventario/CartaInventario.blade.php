@@ -1,50 +1,419 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Menu</title>
-    <link rel="stylesheet" href="https://unpkg.com/@picocss/pico@1.5.6/css/pico.min.css">
-</head>
-<body>
-    <header class="container">
-        <h1>{{$empresa->razonSocial}} Menu</h1>
-        <p>Explora nuestras deliciosas ofertas, categorizadas por tipo de cocina.</p>
-    </header>
+    <meta charset="utf-8">
+    <title>Carta Digital {{$empresa->razonSocial}}</title>
+    <meta name="author" content="">
 
+    <!-- SEO -->
+    <meta name="description" content="Sistema Integral de Gestion Administrativo Web ">
+    <meta name="keywords" content="">
+
+    <!-- Favicons -->
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+    <!-- Responsive Tag -->
+    <meta name="viewport" content="width=device-width">
+
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="{{ asset('storage/cartaDigital/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('storage/cartaDigital/css/font-awesome/css/font-awesome.css') }}">
+    <link rel="stylesheet" href="{{ asset('storage/cartaDigital/css/plugin.css') }}">
+    <link rel="stylesheet" href="{{ asset('storage/cartaDigital/css/main.css') }}">
+
+    <!--[if lt IE 9]>
+            <script src="js/vendor/html5-3.6-respond-1.4.2.min.js"></script>
+        <![endif]-->
+</head>
+
+<body>
+    <!--[if lt IE 8]>
+    <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+<![endif]-->
+
+    <!-- Preloder-->
+    <div class="preloder animated">
+        <div class="scoket">
+            <img src="{{ asset('storage/cartaDigital/img/preloader.svg') }}" alt="" />
+        </div>
+    </div>
+
+    <div class="body">
+
+        <div class="main-wrapper">
+            <!-- Navigation-->
+            <nav class="navbar navbar-fixed-top">
+                {{-- <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="./index.html">
+                            <img src="img/nav-logo.png" alt="nav-logo">
+                        </a>
+                    </div>
+                    <div id="navbar" class="navbar-collapse collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <li class="dropdown">
+                                <!--a href="./index.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Home<span class="caret"></span></a-->
+                                <ul class="dropdown-menu">
+                                    <li><a href="./index.html">Home - Image</a></li>
+                                    <li><a href="./index_slider.html">Home - Header Slider</a></li>
+                                    <li><a href="./index_video.html">Home - Video Background</a></li>
+                                    <li><a href="./index_parallax.html">Home - Parallax</a></li>
+                                    <li><a href="./index_animation.html">Home - Scroll Animation</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <!--a href="./menu_all.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">CONFITERIA<span class="caret"></span></a-->
+                                <ul class="dropdown-menu">
+                                    <li><a href="./menu_list.html">Menu - List</a></li>
+                                    <li><a href="./menu_overlay.html">Menu - Overlay</a></li>
+                                    <li><a href="./menu_tile.html">Menu - Tile</a></li>
+                                    <li><a href="./menu_grid.html">Menu - Grid</a></li>
+                                    <li><a href="./menu_all.html">Menu All</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <!--a href="./reservation.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Reservation<span class="caret"></span></a-->
+                                <ul class="dropdown-menu">
+                                    <li><a href="./reservation.html">Reservation</a></li>
+                                    <li><a href="./reservation-ot.html">Reservation - Opentable</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <!--a href="./about.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pages<span class="caret"></span></a-->
+                                <ul class="dropdown-menu">
+                                    <li><a href="./about.html">About</a></li>
+                                    <li><a href="./gallery.html">Gallery</a></li>
+                                    <li><a href="./elements.html">Shortcodes</a></li>
+                                    <li><a href="./shop_account.html">Login / Signup</a></li>
+                                    <li><a href="./404.html">404 Page</a></li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <!--a href="./recipe.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Recipe<span class="caret"></span></a-->
+                                <ul class="dropdown-menu">
+                                    <li><a href="./recipe.html">Recipe - 2Col</a></li>
+                                    <li><a href="./recipe_3col.html">Recipe - 3Col</a></li>
+                                    <li><a href="./recipe_4col.html">Recipe - 4Col</a></li>
+                                    <li><a href="./recipe_masonry.html">Recipe - Masonry</a></li>
+                                    <li>
+                                        <a href="./recipe_detail-image.html">Recipe - Single <span class="caret-right"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="./recipe_detail-image.html">Recipe - Image</a></li>
+                                            <li><a href="./recipe_detail-slider.html">Recipe - Gallery</a></li>
+                                            <li><a href="./recipe_detail-video.html">Recipe - Video</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <!--a href="./blog_right_sidebar.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Blog<span class="caret"></span></a-->
+                                <ul class="dropdown-menu">
+                                    <li><a href="./blog_right_sidebar.html">Blog - Right Sidebar</a></li>
+                                    <li><a href="./blog_left_sidebar.html">Blog - Left Sidebar</a></li>
+                                    <li><a href="./blog_fullwidth.html">Blog - Fullwidth</a></li>
+                                    <li><a href="./blog_masonry.html">Blog - Masonry</a></li>
+                                    <li>
+                                        <a href="./blog_single_image.html">Blog - Single <span class="caret-right"></span></a>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="./blog_single_image.html">Blog - Image</a></li>
+                                            <li><a href="./blog_single_slider.html">Blog - Gallery</a></li>
+                                            <li><a href="./blog_single_video.html">Blog - Video</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <!--a href="./shop_fullwidth.html" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Shop<span class="caret"></span></a-->
+                                <ul class="dropdown-menu">
+                                    <li><a href="./shop_fullwidth.html">Shop - Full</a></li>
+                                    <li><a href="./shop_left_sidebar.html">Shop - Left Sidebar</a></li>
+                                    <li><a href="./shop_right_sidebar.html">Shop - Right Sidebar</a></li>
+                                    <li>
+                                        <!--a href="./shop_single_full.html">Shop - Single <span class="caret-right"></span></a-->
+                                        <ul class="dropdown-menu">
+                                            <li><a href="./shop_single_full.html">Shop - Full</a></li>
+                                            <li><a href="./shop_single_left.html">Shop - Left Sidebar</a></li>
+                                            <li><a href="./shop_single_right.html">Shop - Right Sidebar</a></li>
+                                        </ul>
+                                    </li>
+                                    <!--li><a href="./shop_cart.html">Shop - Cart</a></li>
+                                    <li><a href="./shop_checkout.html">Shop - Checkout</a></li>
+                                    <li><a href="./shop_account.html">Shop - Account</a></li>
+                                    <li><a href="./shop_account_detail.html">Shop - Account Detail</a></l-->
+                                </ul>
+                            </li>
+                            <!--li><a href="./contact.html">MENU</a></li-->
+                            <li class="dropdown">
+                                <!--ACA ESTA EL CARRITO-->
+                                <!--a class="css-pointer dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-shopping-cart fsc pull-left"></i><span class="cart-number">3</span><span class="caret"></span></a-->
+                                <div class="cart-content dropdown-menu">
+                                    <div class="cart-title">
+                                        <!--h4>Carrito</h4-->
+                                    </div>
+                                    <div class="cart-items">
+                                        <div class="cart-item clearfix">
+                                            <div class="cart-item-image">
+                                                <!--a href="./shop_single_full.html"><img src="img/cart-img1.jpg" alt="Breakfast with coffee"></a>
+                                            </div>
+                                            <div class="cart-item-desc">
+                                                <!--a href="./shop_single_full.html">Breakfast with coffee</a-->
+                                                <!--span class="cart-item-price">$19.99</span-->
+                                                <!--span class="cart-item-quantity">x 2</span-->
+                                                <i class="fa fa-times ci-close"></i>
+                                            </div>
+                                        </div>
+                                        <!--div class="cart-item clearfix"-->
+                                            <!--div class="cart-item-image"-->
+                                                <!--a href="./shop_single_full.html"><img src="img/cart-img2.jpg" alt="Chicken stew"></a-->
+                                            </div>
+                                            <!--div class="cart-item-desc"-->
+                                                <!--a href="./shop_single_full.html">Chicken stew</a-->
+                                                <!--span class="cart-item-price">$24.99</span-->
+                                                <!--span class="cart-item-quantity">x 3</span-->
+                                                <i class="fa fa-times ci-close"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--div class="cart-action clearfix">
+                                        <span class="pull-left checkout-price">$ 114.95</span>
+                                        <a class="btn btn-default pull-right" href="./shop_cart.html">View Cart</a>
+                                    </div-->
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/.navbar-collapse -->
+                </div> --}}
+            </nav>
+
+<section class="home">
+                <div class="tittle-block">
+                    <div class="logo">
+                        <a href="./index.html">
+                            <img src="{{ asset('storage/'.$empresa->cuit.'/logo/logo.png') }}" alt="logo">
+                        </a>
+                    </div>
+                    <h1>{{$empresa->razonSocial}}</h1>
+                    <h2>{{$empresa->domicilio}}</h2>
+                </div>
+                <div class="scroll-down">
+                    <a href="#about">
+                        <img src="{{ asset('storage/cartaDigital/img/arrow-down.png') }}" alt="down-arrow">
+                    </a>
+                </div>
+            </section>
+
+
+            <!-- menu-->
+            <section class="menu space60">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="page-header wow fadeInDown">
+                                <h1>{{$empresa->razonSocial}}<small>Menu</small></h1>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="food-menu wow fadeInUp">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="menu-tags">
+                                    {{-- <span data-filter="*" class="tagsort-active" onclick="FILTROcomidas('TODO')">TODO</span>
+                                    <span data-filter=".HAMBURGUESAS" onclick="FILTROcomidas('HAMBURGUESAS')">HAMBURGUESAS</span>
+                                    <span  onclick="FILTROcomidas('PAPAS')">PAPAS</span>
+                                    <span  onclick="FILTROcomidas('PIZZAS')" >PIZZAS</span>
+                                    <span onclick="FILTROcomidas('CAFETERÍA')" >CAFETERÍA</span>
+                                    <span onclick="FILTROcomidas('TARTAS')" >TARTAS</span> --}}
+                                    
+                                    @foreach ($rubro as $r)
+                                    
+                                        <span onclick="FILTROcomidas('{{$r->nombre}}')" >{{$r->nombre}}</span>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row menu-items" id="comidas">
+                            @foreach ($inventario as $i)
+
+                                {{-- @dump($i) --}}
+                                <div class="menu-item col-sm-6 col-md-12 starter dinner desserts {{$i->rubro}} - {{$i->proveedor}}">
+                                    <div class="clearfix menu-wrapper">
+                                        <h4>{{$i->detalle}}</h4>
+                                        <span class="price">${{$i->precio1}}</span>
+                                        <div class="dotted-bg"></div>
+                                    </div>
+                                    <p>{{$i->rubro}} - {{$i->proveedor}}</p>
+                                </div>
+                                
+                            @endforeach
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="menu-btn">
+                                    <!-- a class="btn btn-default btn-lg" href="./menu_all.html" role="button">Explore our menu</a-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- subscribe -->
+            <!-- section class="subscribe">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h1>Subscribe</h1>
+                            <p>Get updates about new dishes and upcoming events</p>
+                            <form class="form-inline" action="php/subscribe.php" id="invite" method="POST">
+                                <div class="form-group">
+                                    <input class="e-mail form-control" name="email" id="address" type="email" placeholder="Your Email Address" required>
+                                </div>
+                                <button type="submit" class="btn btn-default">
+                                    <i class="fa fa-angle-right"></i>
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </section-->
+
+            <!-- Footer-->
+            <section class="footer">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-12">
+                            <h1>{{$empresa->razonSocial}}</h1>
+                            <p>Vení a disfrutar de una inolvidable noche con amigos y familia, la mejor comida y shows en vivo con los mejores artistas. </p>
+                             <!-- a href="./about.html">Read more &rarr;</a-->
+                        </div>
+                        <<!--div class="col-md-4  col-sm-6">
+                            <h1>PLATOS</h1>
+                            <div class="footer-blog clearfix">
+                                <a href="./blog_right_sidebar.html">
+                                    <img src="img/thumb8.png" class="img-responsive footer-photo" alt="blog photos">
+                                    <p class="footer-blog-text">CAPUCCINO</p>
+                                    <p class="footer-blog-date">4 marzo 2022</p>
+                                </a>
+                            </div-->
+                            <!--div class="footer-blog clearfix last">
+                                <a href="./blog_right_sidebar.html">
+                                    <img src="img/thumb9.png" class="img-responsive footer-photo" alt="blog photos">
+                                    <p class="footer-blog-text">Especial dias de san valentín</p>
+                                    <p class="footer-blog-date">14 febrero 2022</p>
+                                </a>
+                            </div>
+                        </div-->
+                        <div class="col-md-4  col-sm-6">
+                            <h1>ENCONTRANOS</h1>
+                            <div class="footer-social-icons">
+                                <a href="http://www.facebook.com">
+                                    <i class="fa fa-facebook-square"></i>
+                                </a>
+                                <a href="http://www.twitter.com">
+                                    <i class="fa fa-twitter"></i>
+                                </a>
+                                <a href="http://plus.google.com">
+                                    <i class="fa fa-google"></i>
+                                </a>
+                                <a href="http://www.youtube.com">
+                                    <i class="fa fa-youtube-play"></i>
+                                </a>
+                                <a href="http://www.vimeo.com">
+                                    <i class="fa fa-vimeo"></i>
+                                </a>
+                                <a href="http://www.pinterest.com">
+                                    <i class="fa fa-pinterest-p"></i>
+                                </a>
+                                <a href="http://www.linkedin.com">
+                                    <i class="fa fa-linkedin"></i>
+                                </a>
+                            </div>
+                            <div class="footer-address">
+                                <p><i class="fa fa-map-marker"></i>{{$empresa->domicilio}}</p>
+                                <p><i class="fa fa-phone"></i>Tel: {{$empresa->telefono}}</p>
+                                <p><i class="fa fa-envelope-o"></i>{{$empresa->correo}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer - Copyright -->
+                <div class="footer-copyrights">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img src="img/favicon.ico" alt="nav-logo">
+                                <p><i class="fa fa-copyright"></i>LLFactura</p>
+                                <p><i ></i> Contacto: 2994562062 - 2942506803 </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+    </div> 
+
+    <!-- Javascript -->
+    
+    
+    {{-- <script src="js/vendor/jquery-1.11.2.min.js"></script>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/jquery.flexslider-min.js"></script>
+    <script src="js/vendor/spectragram.js"></script>
+    <script src="js/vendor/owl.carousel.min.js"></script>
+    <script src="js/vendor/velocity.min.js"></script>
+    <script src="js/vendor/velocity.ui.min.js"></script>
+    <script src="js/vendor/bootstrap-datepicker.min.js"></script>
+    <script src="js/vendor/bootstrap-clockpicker.min.js"></script>
+    <script src="js/vendor/jquery.magnific-popup.min.js"></script>
+    <script src="js/vendor/isotope.pkgd.min.js"></script>
+    <script src="js/vendor/slick.min.js"></script>
+    <script src="js/vendor/wow.min.js"></script>
+    <script src="js/animation.js"></script>
+    <script src="js/vendor/vegas/vegas.min.js"></script>
+    <script src="js/vendor/jquery.mb.YTPlayer.js"></script>
+    <script src="js/vendor/jquery.stellar.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/vendor/mc/jquery.ketchup.all.min.js"></script>
+    <script src="js/vendor/mc/main.js"></script> --}}
+    
+    <script src="{{ asset('storage/cartaDigital/js/myapp/app.js') }}"></script>
+    
+    <script src="{{ asset('storage/cartaDigital/js/vendor/jquery-1.11.2.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/jquery.flexslider-min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/spectragram.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/owl.carousel.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/velocity.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/velocity.ui.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/bootstrap-clockpicker.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/jquery.magnific-popup.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/isotope.pkgd.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/slick.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/wow.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/animation.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/vegas/vegas.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/jquery.mb.YTPlayer.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/jquery.stellar.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/main.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/mc/jquery.ketchup.all.min.js') }}"></script>
+    <script src="{{ asset('storage/cartaDigital/js/vendor/mc/main.js') }}"></script>
 
     
-    <main class="container">
-        @foreach ($rubro as $r)
-            
-            <section>
-                
-                <h2>
-                    <!-- plate-utensils icon by Free Icons (https://free-icons.github.io/free-icons/) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
-                    <path
-                        d="M 6.4 64 Q 0.8 64.8 0 70.4 L 0 198.4 L 0 198.4 Q 0 212 9.6 220.8 Q 18.4 230.4 32 230.4 L 51.2 230.4 L 51.2 230.4 L 51.2 441.6 L 51.2 441.6 Q 52 447.2 57.6 448 Q 63.2 447.2 64 441.6 L 64 230.4 L 64 230.4 L 83.2 230.4 L 83.2 230.4 Q 96.8 230.4 105.6 220.8 Q 115.2 212 115.2 198.4 L 115.2 70.4 L 115.2 70.4 Q 114.4 64.8 108.8 64 Q 103.2 64.8 102.4 70.4 L 102.4 198.4 L 102.4 198.4 Q 100.8 216 83.2 217.6 L 64 217.6 L 64 217.6 L 64 70.4 L 64 70.4 Q 63.2 64.8 57.6 64 Q 52 64.8 51.2 70.4 L 51.2 217.6 L 51.2 217.6 L 32 217.6 L 32 217.6 Q 14.4 216 12.8 198.4 L 12.8 70.4 L 12.8 70.4 Q 12 64.8 6.4 64 L 6.4 64 Z M 398.4 114.4 Q 345.6 65.6 268.8 64 Q 193.6 65.6 140.8 112.8 L 140.8 130.4 L 140.8 130.4 Q 165.6 105.6 198.4 91.2 Q 231.2 76.8 268.8 76.8 Q 343.2 78.4 392.8 127.2 Q 395.2 120 398.4 114.4 L 398.4 114.4 Z M 431.2 332.8 Q 408.8 379.2 365.6 406.4 L 365.6 406.4 L 365.6 406.4 Q 323.2 434.4 268.8 435.2 Q 212.8 434.4 169.6 405.6 Q 126.4 376.8 104.8 328.8 Q 99.2 331.2 92.8 332 Q 115.2 384 162.4 416 Q 208.8 447.2 268.8 448 Q 328.8 447.2 375.2 416 Q 421.6 384.8 444.8 332.8 L 435.2 332.8 L 435.2 332.8 Q 432.8 332.8 431.2 332.8 L 431.2 332.8 Z M 384 256 Q 384 224.8 368.8 198.4 L 368.8 198.4 L 368.8 198.4 Q 353.6 172 326.4 156 Q 299.2 140.8 268.8 140.8 Q 238.4 140.8 211.2 156 Q 184 172 168.8 198.4 Q 153.6 224.8 153.6 256 Q 153.6 287.2 168.8 313.6 Q 184 340 211.2 356 Q 238.4 371.2 268.8 371.2 Q 299.2 371.2 326.4 356 Q 353.6 340 368.8 313.6 Q 384 287.2 384 256 L 384 256 Z M 166.4 256 Q 166.4 228 180 204.8 L 180 204.8 L 180 204.8 Q 193.6 181.6 217.6 167.2 Q 241.6 153.6 268.8 153.6 Q 296 153.6 320 167.2 Q 344 181.6 357.6 204.8 Q 371.2 228 371.2 256 Q 371.2 284 357.6 307.2 Q 344 330.4 320 344.8 Q 296 358.4 268.8 358.4 Q 241.6 358.4 217.6 344.8 Q 193.6 330.4 180 307.2 Q 166.4 284 166.4 256 L 166.4 256 Z M 495.2 76.8 L 495.2 76.8 L 495.2 76.8 L 495.2 76.8 Q 495.2 76.8 495.2 76.8 Q 495.2 76.8 495.2 76.8 Q 499.2 76.8 499.2 80.8 L 499.2 294.4 L 499.2 294.4 L 435.2 294.4 L 435.2 294.4 Q 423.2 293.6 422.4 281.6 L 422.4 179.2 L 422.4 179.2 Q 423.2 143.2 438.4 121.6 Q 453.6 100 470.4 89.6 Q 487.2 79.2 495.2 76.8 L 495.2 76.8 Z M 512 294.4 L 512 80.8 L 512 294.4 L 512 80.8 Q 510.4 65.6 495.2 64 Q 492.8 64 490.4 64.8 Q 482.4 67.2 463.2 78.4 Q 444.8 90.4 427.2 115.2 Q 410.4 139.2 409.6 179.2 L 409.6 281.6 L 409.6 281.6 Q 409.6 292.8 416.8 300 Q 424 307.2 435.2 307.2 L 499.2 307.2 L 499.2 307.2 L 499.2 441.6 L 499.2 441.6 Q 500 447.2 505.6 448 Q 511.2 447.2 512 441.6 L 512 307.2 L 512 307.2 L 512 300.8 L 512 300.8 L 512 294.4 L 512 294.4 Z"
-                    />
-                    </svg>
-                    {{$r->nombre}}
-                </h2>
-                <ul>
-                    @foreach ($inventario->where('rubro', $r->nombre) as $i)
-                        
-                        <li>
-                            <strong>{{$i->detalle}}</strong> - ${{$i->precio1}}.
-                        </li>
-                    @endforeach
 
-                </ul>
-            </section>
-        @endforeach
-
-      
-    </main>
-
-    <footer class="container">
-        <p>&copy; 2025 Your Restaurant Name. All rights reserved.</p>
-    </footer>
 </body>
+
 </html>
+
+

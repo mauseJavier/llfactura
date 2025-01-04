@@ -113,6 +113,8 @@ class Venta extends Component
                     // Asignamos el valor de las variables con peso codbar
                     // TOMA EL PLU
                     $plu =ltrim(substr($this->datoBuscado, 2, 5), '0') ; // 5 CIFRAS CODIGO
+
+                    // dd($plu);
                     // TOMA EL PESO
                     // Extraer los últimos 4 dígitos $numero = "2000110012250";
                     $parteDecimal = substr($this->datoBuscado, 9,3);

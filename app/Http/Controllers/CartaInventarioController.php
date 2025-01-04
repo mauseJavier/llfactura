@@ -36,15 +36,16 @@ class CartaInventarioController extends Controller
 
 
     //cuando no trae parametro
-    public function ejemplo(){
+    public function empresas(){
 
 
-        $empresa = Empresa::find(1);
+        $empresa = Empresa::all();
 
-        dump($empresa);
+        return view('CartaInventario.ListadoEmpresas', [
+            'empresa' => $empresa,
 
-                return view('user.profile', [
-            'user' => User::findOrFail($id)
+
+
         ]);
 
     }
