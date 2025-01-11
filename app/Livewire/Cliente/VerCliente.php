@@ -40,6 +40,17 @@ class VerCliente extends Component
 
     }
 
+    public function cancelar(){
+
+        $this->cuit = '';
+        $this->razonSocial = '';
+        $this->tipoDocumento = '';
+        $this->domicilio = '';
+        $this->correoCliente = '';
+        $this->tipoContribuyente = '';
+
+    }
+
     public function guardarCliente(){
 
         $validated = $this->validate([
@@ -66,6 +77,13 @@ class VerCliente extends Component
             'correo'=>trim($this->correoCliente),
             'tipoContribuyente'=>trim($this->tipoContribuyente)]
         );
+
+        $this->cuit='';
+        $this->tipoDocumento='';
+        $this->razonSocial='';
+        $this->domicilio='';
+        $this->correoCliente='';
+        $this->tipoContribuyente='';
 
         session()->flash('mensaje', 'Cliente '.$cliente->razonSocial.' Guardado.');
 

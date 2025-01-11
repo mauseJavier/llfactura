@@ -111,7 +111,7 @@ class ComprobanteController extends Controller
             //EXISTE UNA DIFERENCIA CON LA MULTIPLICACION DE LOS ARTICULOS POR ESO ES NECESARIO REALIZAR ESTA OPERACION PARA QUE CONINCIDA LOS IMPORTES 
             // $subTotalPrecioLista +=  ($totalRevisado - $totalDescuento)-$totalRevisado;
 
-            // dd($totalDescuento);
+            // dd($importe_iva_al21);
             
         }
 

@@ -522,15 +522,27 @@ class VerComprobante extends Component
             $ivaPeriodo = productoComprobante::where('empresa_id', Auth::user()->empresa_id)
             ->where('fecha', '>=', $this->fechaFiltroDesde)
             ->where('fecha', '<=', $this->fechaFiltroHasta)
-            ->where('tipoComp', '!=', 'remito') // Excluir registros con tipoComp 'remito'
+            ->whereNotIn('tipoComp', ['remito', 'notaRemito',]) // Excluir múltiples valores
             ->get()
             ->map(function ($item) {
-                // Calcular el precio con IVA incluido
-                $item->precioConIva = round( ($item->precio * $item->cantidad) - (($item->precio * $item->cantidad) / (1 + ($item->iva / 100))),2);
+
+                if($item->tipoComp == 3 OR $item->tipoComp == 8 OR $item->tipoComp == 13 ){
+
+
+                    // Calcular el precio con IVA incluido
+                    $item->precioConIva = round( ($item->precio * $item->cantidad) - (($item->precio * $item->cantidad) / (1 + ($item->iva / 100))) ,2) * -1;
+
+                }else{
+
+                    // Calcular el precio con IVA incluido
+                    $item->precioConIva = round( ($item->precio * $item->cantidad) - (($item->precio * $item->cantidad) / (1 + ($item->iva / 100))),2);
+                }
+                // $item->precioConIva = round( ($item->precio * $item->cantidad) ,2);
+
                 return $item;
             });
-        
-        $sumaTotalConIva = $ivaPeriodo->sum('precioConIva'); // Sumar todos los precios con IVA incluido
+
+            $sumaTotalConIva = $ivaPeriodo->sum('precioConIva'); // Sumar todos los precios con IVA incluido
         
         
             

@@ -298,6 +298,37 @@
             <td colspan="3" align="right" class="gray">$ {{$totalVenta}}</td>
         </tr>
 
+
+{{-- TRANSPARENCIA FISCAL --}}
+        @if ($codigoFactura == 6 )
+          <tr>
+            <td colspan="4"></td>
+          </tr>
+          <tr>
+              <td align="right" colspan="2">Régimen de Transparencia Fiscal al Consumidor (Ley 27.743)</td>
+          </tr>
+          <tr>
+            <td colspan="4"><hr></td>
+          </tr>
+          @if ($iva105 > 0)
+            <tr>
+                <td align="right" colspan="1">Iva 10.5 </td>
+                <td align="right" colspan="1">${{$iva105}}</td>
+            </tr>
+              
+          @endif
+          @if ($iva21 > 0)
+            <tr>
+              <td align="right" colspan="1">Iva 21 </td>
+              <td align="right" colspan="1">$ {{$iva21}}</td>
+            </tr>
+              
+          @endif
+        @endif
+
+
+
+
         <tr class="bill-row row-details">
           <td>
             <div>

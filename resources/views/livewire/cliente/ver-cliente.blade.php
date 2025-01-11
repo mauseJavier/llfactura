@@ -198,7 +198,7 @@
                 />
             </form>
 
-            <button @click="modalNuevoCliente = !modalNuevoCliente">Cancelar</button>
+            <button wire:click="cancelar" @click="modalNuevoCliente = !modalNuevoCliente">Cancelar</button>
         </article>
     </dialog>
 
