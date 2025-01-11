@@ -132,22 +132,6 @@
                     {{$name}}-({{$role->nombre}})
                   </h5>
                 </li>              
-                {{-- SUPER USURAIO --}}
-                @if (Auth::user()->role_id == 3)
-                  <li>
-                    <a wire:navigate href="{{route('usuarios')}}">Usuarios</a>
-                  </li>
-                  <li>
-                    <a wire:navigate href="{{route('empresa')}}">Empresas</a>
-                  </li>
-                  <li>
-                    <a wire:navigate href="{{route('facturacionempresas')}}">Facturacion Empresas</a>
-                  </li>
-                  <li>
-                    <a wire:navigate href="{{route('EstadoEmpresa')}}">Estado Empresas</a>
-                  </li>
-                    
-                @endif
 
                 {{-- ADMIN USUARIO --}}
                 @if ((Auth::user()->role_id == 2 || Auth::User()->role_id == 3 || Auth::User()->role_id == 4))
@@ -169,6 +153,28 @@
 
                 {{-- TODOS LOS USUARIOS --}}
                 <li><a wire:navigate href="{{route('comprobante')}}">Comprobantes</a></li>
+
+                {{-- SUPER USURAIO --}}
+                @if (Auth::user()->role_id == 3)
+                  <li>
+                    <a wire:navigate href="{{route('usuarios')}}">Usuarios</a>
+                  </li>
+                  <li>
+                    <a wire:navigate href="{{route('empresa')}}">Empresas</a>
+                  </li>
+                  <li>
+                    <a wire:navigate href="{{route('facturacionempresas')}}">Facturacion Empresas</a>
+                  </li>
+                  <li>
+                    <a wire:navigate href="{{route('EstadoEmpresa')}}">Estado Empresas</a>
+                  </li>
+                  <li>
+                    <a wire:navigate href="{{route('backup')}}">Backup</a>
+                  </li>
+                    
+                @endif
+
+
                 <li><a wire:navigate href="{{route('profile')}}">Perfil</a></li>
                 
                 <li><a wire:click="logout" role="button" >Salir</a></li>

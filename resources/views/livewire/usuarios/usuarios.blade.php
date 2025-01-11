@@ -60,24 +60,64 @@
                     </tr>
                 </thead>
                 <tbody>
+
+
                     @foreach ($usuarios as $us)
     
+                        @if ($us->usuarioId == 1 OR $us->usuarioId == 2)
+    
+                            <tr>
+                                <td>
+                                    <a wire:navigate href="{{route('updateUsuario',['id'=>$us->usuarioId])}}"
+                                        style="color: yellow;">
+                                        {{$us->name}}
+                                    </a> 
+                                </td>
+                                
+                                <td>{{$us->email}}</td>
+                                <td>{{$us->razonSocial}} ({{$us->fe}})</td>
+                                <td>{{$us->puntoVenta}}</td>
+                                <td>{{$us->nombreDeposito}}</td>
+                                <td>{{$us->rol}}</td>
+                                <td>{{$us->last_login}}</td>
+                                
+                            </tr>
+                            
+                            
+                        @endif
+                        
+                    @endforeach
+
                     <tr>
                         <td>
-                            <a wire:navigate href="{{route('updateUsuario',['id'=>$us->usuarioId])}}">
-                                Editar:
-                                {{$us->name}}
-                            </a> 
+                            <hr>
                         </td>
-                        
-                        <td>{{$us->email}}</td>
-                        <td>{{$us->razonSocial}} ({{$us->fe}})</td>
-                        <td>{{$us->puntoVenta}}</td>
-                        <td>{{$us->nombreDeposito}}</td>
-                        <td>{{$us->rol}}</td>
-                        <td>{{$us->last_login}}</td>
-                        
                     </tr>
+
+
+                    @foreach ($usuarios as $us)
+    
+                    @if ($us->usuarioId !== 1 AND $us->usuarioId !== 2)
+    
+                        <tr>
+                            <td>
+                                <a wire:navigate href="{{route('updateUsuario',['id'=>$us->usuarioId])}}">
+                                    Editar:
+                                    {{$us->name}}
+                                </a> 
+                            </td>
+                            
+                            <td>{{$us->email}}</td>
+                            <td>{{$us->razonSocial}} ({{$us->fe}})</td>
+                            <td>{{$us->puntoVenta}}</td>
+                            <td>{{$us->nombreDeposito}}</td>
+                            <td>{{$us->rol}}</td>
+                            <td>{{$us->last_login}}</td>
+                            
+                        </tr>
+                        
+                        
+                    @endif
                         
                     @endforeach
                 </tbody>

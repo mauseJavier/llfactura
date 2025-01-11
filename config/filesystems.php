@@ -44,6 +44,13 @@ return [
             'throw' => false,
         ],
 
+        'backup' => [
+            'driver' => 'local',
+            'root' => storage_path('app/backup'), // Cambia la ruta según tu estructura de carpetas
+            'url' => env('APP_URL') . '/storage/backup',
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

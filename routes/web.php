@@ -51,6 +51,8 @@ use App\Livewire\Mesas\VerMesas;
 use App\Livewire\Mesas\ModificarMesa;
 
 use App\Livewire\Reportes\Reportes;
+use App\Livewire\Backup\BackupManager;
+
 
 
 
@@ -123,6 +125,7 @@ use Illuminate\Http\Request;
             Route::get('/EstadoEmpresa', EstadoEmpresa::class)->name('EstadoEmpresa');
 
 
+            Route::get('/backup', BackupManager::class)->name('backup');
 
 
 
