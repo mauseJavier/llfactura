@@ -5,7 +5,7 @@ services:
     #  context: .
     #  dockerfile: Dockerfile
     image: shinsenter/laravel:latest
-    container_name: container-llfactura
+    container_name: llfactura
     volumes:
       - .:/var/www/html
     networks:
