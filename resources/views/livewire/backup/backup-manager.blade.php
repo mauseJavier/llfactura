@@ -30,7 +30,7 @@
                     Descargar
                 </button>
 
-                <button wire:click="delete('{{ basename($file) }}')" 
+                <button wire:click="delete('{{ $file }}')" 
                     style="background-color: red;">
                     Borrar
                 </button>
