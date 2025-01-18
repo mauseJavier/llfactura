@@ -44,6 +44,12 @@
                                     <li>
                                         <a role="button" class="outline" wire:navigate href="{{route('codigoBarra')}}">Codigo Barra</a>
                                     </li>
+                                    <li>
+                                        <a role="button" class="outline" wire:click="exportarInventarioCsv" >ExportarCSV (Filtro)</a>
+                                    </li>
+                                    <li>
+                                        <a role="button" class="outline" wire:click="exportarPLU">Exportar PLU</a>
+                                    </li>
                                 </ul>
                             </details>
                         </div>

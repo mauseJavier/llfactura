@@ -59,6 +59,8 @@ class NuevoComprobante extends Component
     public $correoCliente;
     public $leyenda;
 
+    public $activarPago2;
+
 
     public $activarFormaDePagoDos;
 
@@ -477,7 +479,9 @@ class NuevoComprobante extends Component
 
 
         //POR EL TOMI
-        $this->tipoComprobante = 'remito';
+        $this->tipoComprobante = $this->empresa->facturaDefault;
+
+        $this->activarPago2 = $this->empresa->activarPago2;
 
 
         $this->tipoContribuyente=5;

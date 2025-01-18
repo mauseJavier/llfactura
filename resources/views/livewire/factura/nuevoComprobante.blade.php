@@ -264,7 +264,7 @@
         </div> --}}
 
 
-        <article x-data="{ mostrarFormaPago: false }"> <!-- Declaramos una variable de estado -->
+        <article x-data="{ mostrarFormaPago: '{{$activarPago2}}' == 'si' ? true : false }"> <!-- Declaramos una variable de estado -->
                      
 
 

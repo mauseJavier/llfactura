@@ -33,6 +33,10 @@ class Basico extends Component
 
     public $mesas;
 
+    public $activarPago2;
+    public $facturaDefault;
+
+
 
 
 
@@ -83,6 +87,9 @@ class Basico extends Component
         $this->telefono = $this->empresa->telefono;
         $this->correo = $this->empresa->correo;
 
+        $this->activarPago2 = $this->empresa->activarPago2;
+        $this->facturaDefault = $this->empresa->facturaDefault;
+
         $this->mesas = $this->empresa->mesas;
 
 
@@ -113,6 +120,9 @@ class Basico extends Component
 
         $this->empresa->telefono = $this->telefono;
         $this->empresa->correo = $this->correo;
+
+        $this->empresa->activarPago2 = $this->activarPago2;
+        $this->empresa->facturaDefault = $this->facturaDefault;
 
         $this->empresa->mesas = $this->mesas;
 

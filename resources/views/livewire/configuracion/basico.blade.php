@@ -43,19 +43,46 @@
 
             <form>
                 <fieldset>
-                  <label>
-                    Forma de Pago Activa
-                    <select  wire:model="idFormaPago">
+                    <div class="grid">
 
-                        @foreach ($formaPago as $item)
-                            @if ($item->id != 0)
-                                <option value="{{$item->id}}">{{$item->nombre}}</option>
-                                
-                            @endif
-                        @endforeach
-                            
-                      </select>
-                  </label>
+                        <label>
+                          Forma de Pago Activa
+                          <select  wire:model="idFormaPago">
+      
+                              @foreach ($formaPago as $item)
+                                  @if ($item->id != 0)
+                                      <option value="{{$item->id}}">{{$item->nombre}}</option>
+                                      
+                                  @endif
+                              @endforeach
+                                  
+                            </select>
+                        </label>
+                        <label>
+                          Tipo de Factura Activa
+                          <select  wire:model="facturaDefault">                       
+                              <option value="remito">Remito</option>      
+                                              
+                            @if ($empresa->iva == 'ME' AND $empresa->fe == 'si')
+                                <option value="11">Factura C</option>
+                            @endif                            
+                            @if ($empresa->iva == 'RI' AND $empresa->fe == 'si')
+                                <option value="6">Factura B</option>
+                                <option value="1">Factura A</option>   
+                                <option value="51">Factura M</option>                        
+                    
+                            @endif      
+                            @if ($empresa->razonSocial == 'Empresa Prueba' )
+                                <option value="11">Factura C</option>
+                                <option value="6">Factura B</option>
+                                <option value="1">Factura A</option>    
+                                <option value="51">Factura M</option>                                
+                            @endif        
+                                  
+                            </select>
+                        </label>
+                    </div>
+
                   <label>
                     Tope Facturacion(En proceso!)
                     <input
@@ -85,6 +112,17 @@
                             <option value="1">Si Imprimir</option>                        
                           </select>
                       </label>
+
+                      <label for="">
+                        Forma de Pago 2
+                        <select name="activarPago2" wire:model="activarPago2">
+            
+                                <option value="no">NO</option>
+                                <option value="si">SI</option>
+                                
+                            </select>
+                        </label>
+
                   </div>
 
                   <label>
@@ -166,6 +204,7 @@
                             
                           </select>
                     </label>
+
                 </div>
 
 

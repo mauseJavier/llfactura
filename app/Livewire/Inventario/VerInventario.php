@@ -7,6 +7,10 @@ use Livewire\Component;
 use Livewire\Attributes\Validate;
 use Livewire\WithPagination;
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Response;
+
+
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -108,6 +112,169 @@ class VerInventario extends Component
 
 
 
+    public function exportarInventarioCsv(){
+       
+
+            // ak ahy que agregar las dos formas de pago 
+    
+            $filename = 'Inventario'.Carbon::now().'.csv';
+    
+            // Abrir o crear el archivo CSV
+            $handle = fopen($filename, 'w');
+    
+            // "id" => 15650
+            // "tipoComp" => "11"
+            // "numero" => 2080
+            // "total" => 14560.0
+            // "cae" => 74432202688187
+            // "fechaVencimiento" => "2024-11-03"
+            // "fecha" => "2024-10-24 19:56:13"
+            // "ptoVta" => 1
+            // "deposito_id" => 1
+            // "DocTipo" => 99
+            // "cuitCliente" => 0
+            // "razonSocial" => "Consumidor Final"
+            // "tipoContribuyente" => 5
+            // "domicilio" => null
+            // "leyenda" => null
+            // "idFormaPago" => 5
+            // "remito" => "no"
+            // "empresa_id" => 1
+            // "usuario" => "JAVIER LLFACTURA"
+            // "created_at" => "2024-10-24 19:56:13"
+            // "updated_at" => "2024-10-24 19:56:13"
+    
+            // Agregar los encabezados al archivo CSV
+            fputcsv($handle, ['id','codigo','detalle','costo','precio1','precio2','precio3','porcentaje','iva','rubro','proveedor','marca','pesable','controlStock','imagen','empresa_id','favorito','created_at','updated_at',]);
+    
+                $inventario = DB::table('inventarios')
+                                // ->select('id','codigo','detalle','precio1 as precio')
+                                ->where('empresa_id', Auth::user()->empresa_id)
+                                ->whereAny([
+                                    'codigo',
+                                    'detalle',
+                                    'rubro',
+                                    'proveedor',
+                                    'marca'
+                                ], 'LIKE', "%$this->datoBuscado%")        
+                                ->orderBy($this->ordenarPor,$this->acendenteDecendente)                        
+                                ->get();
+    
+                //  dd($inventario);
+    
+            // Escribir los datos de la consulta en el archivo CSV
+            foreach ($inventario as $item) {
+    
+                fputcsv($handle, [
+                    $item->id,
+                    $item->codigo,
+                    $item->detalle,
+                    $item->costo,
+                    $item->precio1,
+                    $item->precio2,
+                    $item->precio3,
+                    $item->porcentaje,
+                    $item->iva,
+                    $item->rubro,
+                    $item->proveedor,
+                    $item->marca,
+                    $item->pesable,
+                    $item->controlStock,
+                    $item->imagen,             
+                    $item->empresa_id,             
+                    $item->favorito,
+                    $item->created_at,
+    
+                    $item->updated_at,
+    
+                ]);
+            }
+    
+            // Cerrar el archivo CSV
+            fclose($handle);
+    
+            // Mensaje de confirmación
+            return response()->download($filename)->deleteFileAfterSend(true);
+    
+        
+    }
+
+    public function exportarPLU(){
+        
+
+            // ak ahy que agregar las dos formas de pago 
+
+            $filename = 'Inventario'.Carbon::now().'.csv';
+
+            // Abrir o crear el archivo CSV
+            $handle = fopen($filename, 'w');
+
+            // "id" => 15650
+            // "tipoComp" => "11"
+            // "numero" => 2080
+            // "total" => 14560.0
+            // "cae" => 74432202688187
+            // "fechaVencimiento" => "2024-11-03"
+            // "fecha" => "2024-10-24 19:56:13"
+            // "ptoVta" => 1
+            // "deposito_id" => 1
+            // "DocTipo" => 99
+            // "cuitCliente" => 0
+            // "razonSocial" => "Consumidor Final"
+            // "tipoContribuyente" => 5
+            // "domicilio" => null
+            // "leyenda" => null
+            // "idFormaPago" => 5
+            // "remito" => "no"
+            // "empresa_id" => 1
+            // "usuario" => "JAVIER LLFACTURA"
+            // "created_at" => "2024-10-24 19:56:13"
+            // "updated_at" => "2024-10-24 19:56:13"
+
+            // Agregar los encabezados al archivo CSV
+            fputcsv($handle, ['Nombre de la sección:','Código de PLU','Descripción:','Número de PLU','Precio Lista 1','Precio Lista 2','Tipo de Venta','Vencimiento',]);
+
+                $inventario = DB::table('inventarios')
+                                // ->select('id','codigo','detalle','precio1 as precio')
+                                ->where('empresa_id', Auth::user()->empresa_id)
+                                ->where('pesable', 'si')
+
+                                ->whereAny([
+                                    'codigo',
+                                    'detalle',
+                                    'rubro',
+                                    'proveedor',
+                                    'marca'
+                                ], 'LIKE', "%$this->datoBuscado%")        
+                                ->orderBy($this->ordenarPor,$this->acendenteDecendente)                        
+                                ->get();
+
+                //  dd($inventario);
+
+            // Escribir los datos de la consulta en el archivo CSV
+            foreach ($inventario as $item) {
+
+                fputcsv($handle, [
+                    $item->rubro,
+                    $item->codigo,
+                    $item->detalle,
+                    $item->codigo,
+                    $item->precio1,
+                    $item->precio2,
+                    'PESO',
+                    0,
+
+                ]);
+            }
+
+            // Cerrar el archivo CSV
+            fclose($handle);
+
+            // Mensaje de confirmación
+            return response()->download($filename)->deleteFileAfterSend(true);
+
+        
+    }
 
     public function eliminarInventario(Inventario $articulo){
         // dd($articulo);
