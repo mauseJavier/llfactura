@@ -107,9 +107,7 @@
 			
 		</tr>
         <tr>
-			<td class="border-top padding-t-3 padding-b-3">
-				<p>TOTALES</p>
-			</td>
+
 		</tr>
 		<tr>
 			<td class="border-top padding-t-3 padding-b-3">
@@ -118,12 +116,12 @@
 					
 
 
-                        @foreach ($totales as $item)
+                        @foreach ($cierreDia as $item)
 
-						<tr>
-							<th scope="row">{{$item['nombre']}}</th>
-							<td colspan="2">${{number_format($item['total'], 2, ',', '.')}}</td>
-						</tr>
+							<tr>
+								<th scope="row">{{$item['created_at']}}</th>
+								<td colspan="2">${{number_format($item['importe'], 2, ',', '.')}}</td>
+							</tr>
 
                             
                         @endforeach
@@ -140,7 +138,7 @@
 		</tr>
 
 			<tr>
-				<td>Total: ${{$sumaTotal}}</td>
+				<td>Total: ${{$sumaCierre}}</td>
 			</tr>
 
 	</table>

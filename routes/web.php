@@ -30,6 +30,8 @@ use App\Livewire\Remito\VerRemito;
 use App\Livewire\Cliente\VerCliente;
 use App\Livewire\Cliente\CuentaCorriente;
 
+use App\Livewire\Caja\VerCierreCaja;
+
 use App\Livewire\Novedades\Novedades;
 
 
@@ -347,6 +349,7 @@ use Illuminate\Http\Request;
 
         Route::get('/reciboPdf/{recibo_id?}', [ReciboPdfController::class, 'imprimir'])->name('reciboPdf');
         Route::get('/codigoBarraPdf', [CodigoDeBarraController::class, 'imprimir'])->name('codigoBarraPdf');
+        
         Route::get('/reporteVentaUsuario', [ReporteVentaUsuarioController::class, 'imprimir'])->name('reporteVentaUsuario');
 
 
@@ -394,6 +397,10 @@ use Illuminate\Http\Request;
 
         //ruta para mejorar CARGA UN COMPROBANTE AL CARRITO
         Route::get('/cargarComprobante/{comp}', [CargarComprobanteController::class, 'cargar'])->name('cargarComprobante');
+
+        //RUTA CIERRE DE CAJA
+        Route::get('/cierrecaja', VerCierreCaja::class)->name('cierrecaja');
+
 
 
     });

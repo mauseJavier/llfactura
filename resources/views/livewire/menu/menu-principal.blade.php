@@ -174,6 +174,7 @@
                     
                 @endif
 
+                <li><a wire:navigate href="{{route('cierrecaja')}}">Cierre Caja</a></li>
 
                 <li><a wire:navigate href="{{route('profile')}}">Perfil</a></li>
                 

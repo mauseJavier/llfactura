@@ -133,7 +133,7 @@
             @endif
             <div class="col">
 
-              <a href="{{route('reportes',['ruta'=>'reporteVentaUsuario'])}}" style="cursor: pointer;">Reporte diario {{Auth()->user()->name}}</a>
+              <a href="{{route('cierrecaja')}}" style="cursor: pointer;">Cierre Caja</a>
 
             </div>
             <div class="col">              
