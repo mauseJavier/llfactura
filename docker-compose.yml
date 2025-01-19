@@ -1,12 +1,14 @@
 
 services:
   llfactura:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: container-llfactura
+    #build:
+    #  context: .
+    #  dockerfile: Dockerfile
+    image: shinsenter/laravel:latest
+    container_name: llfactura
     volumes:
       - .:/var/www/html
+<<<<<<< HEAD
     environment:
       DB_HOST: host.docker.internal # Apunta al servicio MySQL en el host
       DB_PORT: 3306
@@ -68,3 +70,12 @@ services:
 
 # volumes:
 #   mariadb_data:
+=======
+    networks:
+      - redPrincipal
+     
+networks:
+  redPrincipal:
+    external: true
+
+>>>>>>> 44457f30a9955fd96648d5f7be7c11dd00df950e
