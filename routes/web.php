@@ -351,6 +351,8 @@ use Illuminate\Http\Request;
         Route::get('/codigoBarraPdf', [CodigoDeBarraController::class, 'imprimir'])->name('codigoBarraPdf');
         
         Route::get('/reporteVentaUsuario', [ReporteVentaUsuarioController::class, 'imprimir'])->name('reporteVentaUsuario');
+        Route::get('/reporteVentaUsuarioCompleto', [ReporteVentaUsuarioController::class, 'reporteCompleto'])->name('reporteVentaUsuarioCompleto');
+
 
 
         Route::get('/reportes', Reportes::class)->name('reportes');

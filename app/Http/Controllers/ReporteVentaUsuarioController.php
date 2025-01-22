@@ -51,7 +51,7 @@ class ReporteVentaUsuarioController extends Controller
     }
 
     //ESTE REPORTE AHORA SALE POR CIERRE DE CAJA 
-    public function cambiar(){
+    public function reporteCompleto(){
 
 
         $collection = Comprobante::select('comprobantes.idFormaPago as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeUno) as totalImporte'))
@@ -119,7 +119,7 @@ class ReporteVentaUsuarioController extends Controller
             ];
 
             
-        $pdf = Pdf::loadView('PDF.reporteUsuarioTicket',$info);
+        $pdf = Pdf::loadView('PDF.pdfReporteCierreCompleto',$info);
         $pdf->set_paper(array(0,0,250,(300)), 'portrait');
         // $pdf->getCanvas()->page_text(15,800, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0,0,0));
 
