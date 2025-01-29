@@ -137,76 +137,84 @@ class EstadoEmpresa extends Component
 
         // dd($response->json($key = null, $default = null));
 
-        $response = Http::withHeaders([
-            'apikey' => 'F4E52C66ABDA-429B-AD0E-E6E15D358D85',
-        ])->post('https://evo.llservicios.ar/message/sendText/'.$instanciaWS, [
-            'number' => '549'.$empresa->telefono,
-            'text' => $messajedeWA .' Importe: $'.$pagoMes,
+        if($pagoMes > 1 ){
 
-        ]);
-
-
-
-        if (Storage::disk('local')->exists( 'public/llfactura/logo.png')) {
-            // ...
-            $urlLogo = Storage::url( 'public/llfactura/logo.png');
-            $pathLogo = Storage::path('public/llfactura/logo.png');
-            // $url = Storage::get('public/'.$empresa->cuit.'/logo/logo.png');
-            // return  asset($url);
-            // return $path;
             
+            $response = Http::withHeaders([
+                'apikey' => 'F4E52C66ABDA-429B-AD0E-E6E15D358D85',
+            ])->post('https://evo.llservicios.ar/message/sendText/'.$instanciaWS, [
+                'number' => '549'.$empresa->telefono,
+                'text' => $messajedeWA .' Importe: $'.$pagoMes,
+    
+            ]);
+    
+    
+    
+            if (Storage::disk('local')->exists( 'public/llfactura/logo.png')) {
+                // ...
+                $urlLogo = Storage::url( 'public/llfactura/logo.png');
+                $pathLogo = Storage::path('public/llfactura/logo.png');
+                // $url = Storage::get('public/'.$empresa->cuit.'/logo/logo.png');
+                // return  asset($url);
+                // return $path;
+                
+            }else{
+                $urlLogo = '';
+                $pathLogo ='';
+            }
+    
+            $info=[
+                'titulo'=>'Pago Servicio:'. $empresa->razonSocial,
+                'cliente'=>$empresa,
+                'fecha'=>Carbon::now()->format('d-m-Y'),
+                'importe'=>$pagoMes,
+                'logo'=>$pathLogo,
+            ];
+    
+            // dd($info);
+    
+            // resources/views/PDF/pdfReciboPagoServicioCliente.blade.php
+            $pdf = Pdf::loadView('PDF.pdfReciboPagoServicioCliente',$info);
+            // $pdf->set_paper(array(0,0,250,(300)), 'portrait');
+            // $pdf->getCanvas()->page_text(15,800, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0,0,0));
+    
+            $nombreArchivo= 'Pago Servicio:'. $empresa->razonSocial.' '.Carbon::now()->format('Ymd').'.pdf';
+            // return $pdf->download($nombreArchivo);
+            // return $pdf->stream($nombreArchivo);   
+    
+            // Obtener el contenido binario del PDF
+            $pdfContent = $pdf->output();
+            // return $pdf->stream($nombreArchivo);   
+            // return $pdf->download($nombreArchivo);
+    
+    
+    
+            // Convertir a Base64
+            $pdfBase64 = base64_encode($pdfContent);
+    
+            // dd($pdfBase64);
+            
+    
+            $response = Http::withHeaders([
+                'apikey' => 'F4E52C66ABDA-429B-AD0E-E6E15D358D85',
+                'Content-Type'=> 'application/json',
+    
+            ])->post('https://evo.llservicios.ar/message/sendMedia/'.$instanciaWS, [ //https://localhost:8080/message/sendMedia/dfgdfg '{"media":"dsgergdfgdfg","mediatype":"image","number":"33333"}'
+                'number' => '549'.$empresa->telefono,
+                'media'=>$pdfBase64,
+                'mediatype'=>'document',//image
+                'fileName'=>'Pago Servicio:'. $empresa->razonSocial .'.pdf',//
+    
+    
+            ]);
+    
+            session()->flash('mensaje', 'Fecha Actualizada. '. $empresa->razonSocial .' Fecha: '. $fecha .':: '. $response->body());
+
+
         }else{
-            $urlLogo = '';
-            $pathLogo ='';
+
+            session()->flash('mensaje', 'Fecha Actualizada. '. $empresa->razonSocial .' Fecha: '. $fecha .':: SIN ENVIO WHATSAPP ');
         }
-
-        $info=[
-            'titulo'=>'Pago Servicio:'. $empresa->razonSocial,
-            'cliente'=>$empresa,
-            'fecha'=>Carbon::now()->format('Ymd'),
-            'importe'=>$pagoMes,
-            'logo'=>$pathLogo,
-        ];
-
-        // dd($info);
-
-        // resources/views/PDF/pdfReciboPagoServicioCliente.blade.php
-        $pdf = Pdf::loadView('PDF.pdfReciboPagoServicioCliente',$info);
-        // $pdf->set_paper(array(0,0,250,(300)), 'portrait');
-        // $pdf->getCanvas()->page_text(15,800, "Página {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0,0,0));
-
-        $nombreArchivo= 'Pago Servicio:'. $empresa->razonSocial.' '.Carbon::now()->format('Ymd').'.pdf';
-        // return $pdf->download($nombreArchivo);
-        // return $pdf->stream($nombreArchivo);   
-
-        // Obtener el contenido binario del PDF
-        $pdfContent = $pdf->output();
-        // return $pdf->stream($nombreArchivo);   
-        // return $pdf->download($nombreArchivo);
-
-
-
-        // Convertir a Base64
-        $pdfBase64 = base64_encode($pdfContent);
-
-        // dd($pdfBase64);
-        
-
-        $response = Http::withHeaders([
-            'apikey' => 'F4E52C66ABDA-429B-AD0E-E6E15D358D85',
-            'Content-Type'=> 'application/json',
-
-        ])->post('https://evo.llservicios.ar/message/sendMedia/'.$instanciaWS, [ //https://localhost:8080/message/sendMedia/dfgdfg '{"media":"dsgergdfgdfg","mediatype":"image","number":"33333"}'
-            'number' => '549'.$empresa->telefono,
-            'media'=>$pdfBase64,
-            'mediatype'=>'document',//image
-            'fileName'=>'Pago Servicio:'. $empresa->razonSocial .'.pdf',//
-
-
-        ]);
-
-        session()->flash('mensaje', 'Fecha Actualizada. '. $empresa->razonSocial .' Fecha: '. $fecha .':: '. $response->body());
-        // session()->flash('mensaje', 'Fecha Actualizada. '. $empresa->razonSocial .' Fecha: '. $fecha .':: ');
 
 
 

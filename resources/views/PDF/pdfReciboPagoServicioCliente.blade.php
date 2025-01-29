@@ -104,6 +104,8 @@
             <p><strong>Dirección:</strong> {{$cliente->domicilio}}</p>
             <p><strong>Teléfono:</strong> {{$cliente->telefono}}</p>
             <p><strong>Email:</strong> {{$cliente->correo}}</p>
+            <p><strong>Fecha:</strong> {{$fecha}}</p>
+
         </div>
         <div class="detalle-pago">
             <h2>Detalle del Pago</h2>
