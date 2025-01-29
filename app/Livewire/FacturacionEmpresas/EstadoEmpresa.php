@@ -126,9 +126,11 @@ class EstadoEmpresa extends Component
         $messajedeWA='Muchas Gracias, te envio el recibo de pago de este mes.';
         $instanciaWS= env('instanciaWhatsappLLFactura');
 
+        $tokenTelegram = env('tokenTelegram');
+
         
 
-        $response = Http::get('https://api.telegram.org/bot7827556227:AAHqRA4R2VMZBnVzWvmoVYS0oc1ocurIuog/sendMessage', [
+        $response = Http::get('https://api.telegram.org/bot'.$tokenTelegram.'/sendMessage', [
             'chat_id' => '7622868304', //este soy yo
             'text' => 'Cobro empresa: '. $empresa->razonSocial . ' $'.$pagoMes. ' telefono: api.whatsapp.com/send?phone=549'.$empresa->telefono,
         ]);
