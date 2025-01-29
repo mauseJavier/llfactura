@@ -21,6 +21,7 @@ class EmpresaSeeder extends Seeder
             'domicilio' => 'Domicilio',
             'fe'=>'no',
             'titular'=>'Titular Prueba',
+            'telefono'=> 2942506803,
         ]);
 
         DB::table('empresas')->insert([
@@ -29,6 +30,7 @@ class EmpresaSeeder extends Seeder
             'domicilio' => 'Av. del Trabajo 540 Las Lajas',
             'fe'=>'si',
             'titular'=>'Gimenez Teodoro',
+            'telefono'=> 2994562062,
         ]);
     }
 }

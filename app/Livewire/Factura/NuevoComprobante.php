@@ -646,8 +646,14 @@ class NuevoComprobante extends Component
             if(isset($taxpayer_details->datosGenerales->razonSocial)){
                 $this->razonSocial = $taxpayer_details->datosGenerales->razonSocial;
                 $this->tipoDocumento = 80;
+
+                    if(isset($taxpayer_details->datosGenerales->domicilioFiscal->localidad) ){
+                        $localidad = $taxpayer_details->datosGenerales->domicilioFiscal->localidad;
+                    }else{
+                        $localidad = '';
+                    }
                 $this->domicilio =  $taxpayer_details->datosGenerales->domicilioFiscal->direccion .' '.
-                                    $taxpayer_details->datosGenerales->domicilioFiscal->localidad .' '.
+                                    $localidad .' '.
                                     $taxpayer_details->datosGenerales->domicilioFiscal->descripcionProvincia;
                 // descripcionProvincia": "BUENOS AIRES",
                 // "direccion": "COLECTORA ESTE 34903",
@@ -668,8 +674,13 @@ class NuevoComprobante extends Component
                 if(isset($taxpayer_details->datosGenerales->domicilioFiscal)){
                     
                     $this->tipoDocumento = 80;
+                        if(isset($taxpayer_details->datosGenerales->domicilioFiscal->localidad) ){
+                            $localidad = $taxpayer_details->datosGenerales->domicilioFiscal->localidad;
+                        }else{
+                            $localidad = '';
+                        }
                     $this->domicilio =  $taxpayer_details->datosGenerales->domicilioFiscal->direccion .' '.
-                    $taxpayer_details->datosGenerales->domicilioFiscal->localidad .' '.
+                    $localidad .' '.
                     $taxpayer_details->datosGenerales->domicilioFiscal->descripcionProvincia;
                 }else{
                     $this->tipoDocumento = 86;
