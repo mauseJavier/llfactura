@@ -741,12 +741,65 @@ class NuevoComprobante extends Component
 
     }
 
+    public function buscarDni(){
+
+                    // // Certificado (Puede estar guardado en archivos, DB, etc)
+            // $cert = file_get_contents('./certificado.crt');
+
+            // // Key (Puede estar guardado en archivos, DB, etc)
+            // $key = file_get_contents('./key.key');
+
+            if (Storage::disk('local')->exists('public/'.$this->empresa->cuit.'/cert.crt') ) {
+                // ...
+                $cert = Storage::get('public/'.$this->empresa->cuit.'/cert.crt');
+
+                // return response()->json($cert, 200);
+                
+            }else
+            {
+                dd('No existe CERT');
+            }
+
+            if ( Storage::disk('local')->exists('public/'.$this->empresa->cuit.'/key.key')) {
+                // ...
+            
+                $key = Storage::get('public/'.$this->empresa->cuit.'/key.key');
+
+                // return response()->json($key, 200);
+                
+            }else
+            {
+                dd('No existe key');
+            }
+
+
+
+            $afip = new Afip(array(
+                'CUIT' =>  $this->empresa->cuit,
+                'cert' => $cert,
+                'key' => $key,
+                'access_token' => env('tokenAFIPsdk'),
+                'production' => TRUE
+            ));
+
+        // DNI
+        $national_id = $this->cuit;
+
+        $tax_id = $afip->RegisterScopeThirteen->GetTaxIDByDocument($national_id);
+
+        // dd($tax_id[0]);
+
+        $this->cuit = $tax_id[0];
+
+        $this->buscarCuit();
+    }
+
     function buscarCliente(){
 
         $validated = $this->validate([
-            'cuit' => 'digits:11',
+            'cuit' => 'min:8',
         ], [
-            'cuit.digits' => 'El campo CUIT tiene 11 caracteres.',
+            'cuit.digits' => 'El campo CUIT tiene minimo 8 caracteres.',
 
         ]);
 
@@ -767,7 +820,16 @@ class NuevoComprobante extends Component
             $this->tipoContribuyente = $clienteBuscado->tipoContribuyente;
 
         }else{
-            $this->buscarCuit();
+
+
+            if(strlen($this->cuit) == 11){
+                $this->buscarCuit();
+            }
+
+            if(strlen($this->cuit) == 8){
+                $this->buscarDni();
+
+            }
         }
 
         $this->cambiarFactura();

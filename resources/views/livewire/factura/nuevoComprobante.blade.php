@@ -577,7 +577,7 @@
 
 
                 <div>
-                    <label for="">CUIT</label>
+                    <label for="">CUIT/DNI</label>
                     <fieldset role="group">                       
 
                         <input  
