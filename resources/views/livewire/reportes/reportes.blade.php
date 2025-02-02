@@ -4,6 +4,7 @@
         <h3>Reportes</h3>
 
 
+
         @if (Route::has($ruta))
             
             <iframe width="100%" height="1000px" src="{{route($ruta)}}" frameborder="0"></iframe>

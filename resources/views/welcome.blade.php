@@ -124,13 +124,18 @@
                       @else
                           <a
                               href="{{ route('login') }}"
+                              role="button"
                                   >
                               Entrar
                           </a>
+
+                          | 
           
                           @if (Route::has('register'))
                               <a
                                   href="{{ route('register') }}"
+                                  role="button"
+                                  style="background-color: green;"
                                   >
                                   Regristro
                               </a>

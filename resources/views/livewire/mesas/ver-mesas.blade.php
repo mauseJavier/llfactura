@@ -13,6 +13,8 @@
         <div class="grid">
             <h3>Mesas ({{$mesaOcupada}}/{{$totalMesas}})</h3>
 
+
+            <a href="{{route('comandas')}}" role="button">Comandas</a>
             
             
             <!-- Dropdown -->

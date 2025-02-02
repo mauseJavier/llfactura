@@ -51,6 +51,8 @@ use App\Livewire\Configuracion\Basico;
 
 use App\Livewire\Mesas\VerMesas;
 use App\Livewire\Mesas\ModificarMesa;
+use App\Livewire\Mesas\Comandas;
+
 
 use App\Livewire\Reportes\Reportes;
 use App\Livewire\Backup\BackupManager;
@@ -68,6 +70,8 @@ use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\ReciboPdfController;
 use App\Http\Controllers\CodigoDeBarraController;
 use App\Http\Controllers\ReporteVentaUsuarioController;
+use App\Http\Controllers\ImprimirComandaController;
+
 
 use App\Http\Controllers\CartaInventarioController;
 
@@ -370,6 +374,10 @@ use Illuminate\Http\Request;
 
         Route::get('/verMesas', VerMesas::class)->name('verMesas');
         Route::get('/modificarMesa/{mesa}', ModificarMesa::class)->name('modificarMesa');
+        Route::get('/comandas', Comandas::class)->name('comandas');
+        Route::get('/imprimirComanda/{comanda}', [ImprimirComandaController::class, 'imprimir'])->name('imprimirComanda');
+
+
 
 
 

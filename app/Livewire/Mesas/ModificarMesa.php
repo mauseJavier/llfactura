@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\Mesa;
 use App\Models\Inventario;
+use App\Models\Comanda;
 
 
 class ModificarMesa extends Component
@@ -304,6 +305,18 @@ class ModificarMesa extends Component
 
 
         }
+        
+        // dd(        json_encode($this->mesaCarrito['mesaCarrito'])    );
+
+        $comanda = Comanda::create([
+            'numeroMesa' => $this->mesa->numero,
+            'nombreMesa' => $this->mesa->nombre,
+            'nombreMesero' => Auth()->user()->name,
+            'comanda' => json_encode($this->mesaCarrito['mesaCarrito']),
+            'estado' => 'Nuevo',
+            'empresa_id' => Auth()->user()->empresa_id,
+
+        ]);
 
 
         $this->mesa->save();
@@ -555,9 +568,9 @@ class ModificarMesa extends Component
     public function cancelarMesa(){
 
         $this->mesa->razonSocial = null;
-        $this->mesa->tipoDocumento =null;
-        $this->mesa->numeroDocumento =null;
-        $this->mesa->tipoContribuyente =null;
+        $this->mesa->tipoDocumento =0;
+        $this->mesa->numeroDocumento =0;
+        $this->mesa->tipoContribuyente =0;
         $this->mesa->domicilio =null;
         $this->mesa->correo =null;
         $this->mesa->comentario =null;
@@ -639,6 +652,6 @@ class ModificarMesa extends Component
 
         ])
         ->extends('layouts.app')
-        ->section('main');;
+        ->section('main');
     }
 }
