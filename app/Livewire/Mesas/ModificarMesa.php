@@ -58,6 +58,9 @@ class ModificarMesa extends Component
 
 
 
+    public function imprimirMesa(){
+        dd($this->mesa);
+    }
 
     public function modificarMesaCarrito(){
 
@@ -632,7 +635,10 @@ class ModificarMesa extends Component
     {
     
 
-        $this->resetPage();
+        
+        if($this->datoBuscado != ''){
+            $this->resetPage();
+        }
 
         
         return view('livewire.mesas.modificar-mesa',[

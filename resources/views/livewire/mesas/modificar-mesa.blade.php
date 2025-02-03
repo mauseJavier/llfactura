@@ -55,6 +55,7 @@
                 <div class="col">
                     @if ($data)
 
+                        <button wire:click="imprimirMesa">Imprimir</button>
                         <button wire:click="finalizarMesa" wire:confirm="Finalizar Mesa??">Finalizar Mesa</button>
                         <button wire:click="cancelarMesa" wire:confirm="Cancelar Mesa??" style="background-color: rgb(145, 62, 62);">Cancelar Mesa</button>
                     @endif

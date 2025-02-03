@@ -125,6 +125,8 @@ class EstadoEmpresa extends Component
  
         $messajedeWA='Muchas Gracias, te envio el recibo de pago de este mes.';
         $instanciaWS= env('instanciaWhatsappLLFactura');
+        $apikey= env('apikeyLLFactura');
+
 
         $tokenTelegram = env('tokenTelegram');
 
@@ -141,7 +143,7 @@ class EstadoEmpresa extends Component
 
             
             $response = Http::withHeaders([
-                'apikey' => 'F4E52C66ABDA-429B-AD0E-E6E15D358D85',
+                'apikey' => $apikey,
             ])->post('https://evo.llservicios.ar/message/sendText/'.$instanciaWS, [
                 'number' => '549'.$empresa->telefono,
                 'text' => $messajedeWA .' Importe: $'.$pagoMes,
@@ -196,7 +198,7 @@ class EstadoEmpresa extends Component
             
     
             $response = Http::withHeaders([
-                'apikey' => 'F4E52C66ABDA-429B-AD0E-E6E15D358D85',
+                'apikey' => $apikey,
                 'Content-Type'=> 'application/json',
     
             ])->post('https://evo.llservicios.ar/message/sendMedia/'.$instanciaWS, [ //https://localhost:8080/message/sendMedia/dfgdfg '{"media":"dsgergdfgdfg","mediatype":"image","number":"33333"}'
