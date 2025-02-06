@@ -28,6 +28,8 @@
             </div>
         </article>
 
+        {{-- @dump($movimientos) --}}
+
         @if (session('mensaje'))
             <article>
                 <p>
@@ -41,10 +43,10 @@
             <table class="striped">
                 <thead>
                   <tr>
+
+                    <th scope="col">Acciones</th>
+
                     <th scope="col">Fecha</th>
-                    <th scope="col">Comp.</th>
-                    <th scope="col">VER</th>
-                    <th scope="col">Comentario</th>
                     <th scope="col">Debe</th>
                     <th scope="col">Haber</th>
                     <th scope="col">Saldo</th>  
@@ -57,21 +59,31 @@
                 <tbody>
                     @foreach ($movimientos as $c)
                         <tr>
-                            <td>{{$c->created_at}}</td>
-                            <td>{{$c->comprobante_id}}</td>
-                            @if ($c->tipo == 'venta')
-                                
-                                <td><a rel="noopener noreferrer" href="{{route('productosComprobante',['idComprobante'=>$c->comprobante_id])}}">Ver Comp. {{$c->comprobante_id}}</a> </td>
-                            @else
-                                <td>
-                                    
-                                    <a wire:click="imprimirPagoCC({{$c->id}})" >Ver Pago {{$c->id}}</a>
-                                    {{-- <button wire:click="imprimirPagoCC({{$c->id}})">Ver Pago {{$c->id}}</button> --}}
-                                </td>
+                            <td>
+                                <!-- Dropdown -->
+                              <details class="dropdown">
+                                <summary>Acciones</summary>
+                                <ul>
+                                    @if ($c->tipo == 'venta')
+                                        <li>
 
-                                
-                            @endif
-                            <td>{{$c->comentario}}</td>
+                                            <a rel="noopener noreferrer" href="{{route('productosComprobante',['idComprobante'=>$c->comprobante_id])}}">Ver</a>
+                                        </li>
+                                    @else
+                                        <li>
+                                            <a wire:click="imprimirPagoCC({{$c->id}})" >Ver Pago</a>
+                                            {{-- <button wire:click="imprimirPagoCC({{$c->id}})">Ver Pago {{$c->id}}</button> --}}
+
+                                        </li>                                     
+                                        
+                                    @endif
+                                    <li><a wire:navigate href="{{route('formatoPDF',['tipo'=>'factura','comprobante_id'=>$c->comprobante_id])}}">Imprimir</a></li>
+
+
+                                </ul>
+                              </details>    
+                            </td>
+                            <td>{{$c->created_at}}</td>
                             <td>{{number_format($c->debe, 2, ',', '.')}}</td>
                             <td>{{number_format($c->haber, 2, ',', '.')}}</td>
                             <td>{{number_format($c->saldo, 2, ',', '.')}}</td>

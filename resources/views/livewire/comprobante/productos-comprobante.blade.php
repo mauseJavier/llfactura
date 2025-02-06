@@ -17,11 +17,11 @@
                 </div>
 
                 <div class="col">
-                    <form role="search"  wire:submit="">        
+                    @if ($comp->tipoComp == 'remito')
+                        <a wire:navigate role="button" href="{{route('facturarRemito',['idComprobante'=>$comp->id])}}"> Facturar </a>
                         
-                        <input disabled  name="search" type="search" placeholder="Buscar" class="seleccionarTodo" />
-                        {{-- <input type="submit" value="Buscar" /> --}}
-                    </form>
+                    @endif
+                    <a wire:navigate role="button" href="{{route('formatoPDF',['tipo'=>'factura','comprobante_id'=>$comp->id])}}">Imprimir</a>
                 </div>
             </div>
                 

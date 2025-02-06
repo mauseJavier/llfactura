@@ -72,6 +72,8 @@
             <p><strong>Cliente:</strong> {{$cliente->razonSocial}}</p>
             <p><strong>Usuario:</strong> {{$recibo_id->usuario}}</p>
             <p><strong>Número de Recibo:</strong> {{$recibo_id->id}}</p>
+            <p><strong>Comentario:</strong> {{$recibo_id->comentario}}</p>
+
         </div>
         <div class="content">
             <h2>Información de Pago</h2>

@@ -47,7 +47,7 @@ class CuentaCorriente extends Component
         // $this->movimientos = DB::table('cuenta_corrientes')->where('cliente_id',$cliente->id)->orderBy('created_at','DESC')->paginate(5);
         // $this->saldo = DB::table('cuenta_corrientes')->select('saldo')->where('cliente_id',$cliente->id)->orderBy('created_at','DESC')->limit(1)->get();
 
-        $this->fechaDesde = Carbon::now()->startOfMonth()->format('Y-m-d');
+        $this->fechaDesde = Carbon::now()->subMonths(6)->format('Y-m-d');
         $end = Carbon::now();
 
         $this->usuario= Auth::user();
@@ -113,7 +113,7 @@ class CuentaCorriente extends Component
             'movimientos'=> DB::table('cuenta_corrientes')
                 ->where('cliente_id',$this->cliente->id)
                 ->where('created_at','>=',$this->fechaDesde)
-                ->orderBy('created_at','DESC')->paginate(5),
+                ->orderBy('created_at','DESC')->paginate(20),
             'saldo' => $this->getSaldo(),
         ])
         ->extends('layouts.app')
