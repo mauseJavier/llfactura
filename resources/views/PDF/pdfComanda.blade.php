@@ -66,7 +66,17 @@
 	</style>
 </head>
 <body>
+
+	
+	
 	<table class="bill-container">
+		<tr>
+			<td class="border-top padding-t-3 padding-b-3">
+				<p class="text-center text-lg">{{$comanda->nombreCliente}}</p>
+	
+			</td>
+	
+		</tr>
 		<tr>
 			<td class="padding-b-3">
                 <p>Mesa:({{$comanda->numeroMesa}}) {{$comanda->nombreMesa}}</p>

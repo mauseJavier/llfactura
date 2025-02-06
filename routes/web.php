@@ -71,6 +71,7 @@ use App\Http\Controllers\ReciboPdfController;
 use App\Http\Controllers\CodigoDeBarraController;
 use App\Http\Controllers\ReporteVentaUsuarioController;
 use App\Http\Controllers\ImprimirComandaController;
+use App\Http\Controllers\ImprimirMesaController;
 
 
 use App\Http\Controllers\CartaInventarioController;
@@ -376,6 +377,8 @@ use Illuminate\Http\Request;
         Route::get('/modificarMesa/{mesa}', ModificarMesa::class)->name('modificarMesa');
         Route::get('/comandas', Comandas::class)->name('comandas');
         Route::get('/imprimirComanda/{comanda}', [ImprimirComandaController::class, 'imprimir'])->name('imprimirComanda');
+        Route::get('/imprimirMesa/{mesa}', [ImprimirMesaController::class, 'imprimir'])->name('imprimirMesa');
+
 
 
 

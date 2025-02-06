@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('comandas', function (Blueprint $table) {
             $table->id();
 
+            $table->string('nombreCliente')->nullable()->default('Cliente');
+
             $table->unsignedInteger('numeroMesa'); //empresa_id
             $table->string('nombreMesa');
             $table->string('nombreMesero');

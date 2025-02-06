@@ -56,10 +56,20 @@ class ModificarMesa extends Component
     public $modificarKey;
     public $cantidadComenzales=1;
 
+    public $modalImprimir='close';
 
 
     public function imprimirMesa(){
-        dd($this->mesa);
+
+
+        return redirect(route('imprimirMesa',['mesa'=>$this->mesa->id]));
+
+        
+        // ESTO NO FUNCIONO POR ESO LA REDIRIJO A LA RUTA DEL CONTROLADOR Y LISTO 
+        // $this->modalImprimir == 'open' ? $this->modalImprimir = 'close' : $this->modalImprimir = 'open';
+        
+
+
     }
 
     public function modificarMesaCarrito(){
@@ -309,11 +319,14 @@ class ModificarMesa extends Component
 
         }
         
-        // dd(        json_encode($this->mesaCarrito['mesaCarrito'])    );
+        // dd(    $this->mesa   );
 
         $comanda = Comanda::create([
+
+            'nombreCliente' => $this->mesa->razonSocial, 
+
             'numeroMesa' => $this->mesa->numero,
-            'nombreMesa' => $this->mesa->nombre,
+            'nombreMesa' => $this->mesa->nombre, 
             'nombreMesero' => Auth()->user()->name,
             'comanda' => json_encode($this->mesaCarrito['mesaCarrito']),
             'estado' => 'Nuevo',
@@ -498,10 +511,12 @@ class ModificarMesa extends Component
 
     public function mount(Mesa $mesa){
 
+        // dd($mesa);
+
+        $this->mesa = $mesa;
 
         $this->seleccionPrecio ='precio1';
 
-        $this->mesa = $mesa;
         $this->razonSocial = $mesa->razonSocial == ''? 'Mesa-'.$mesa->numero : $mesa->razonSocial ;
 
         $this->tipoDocumento =$mesa->tipoDocumento;

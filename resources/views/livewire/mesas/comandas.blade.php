@@ -18,7 +18,7 @@
                         <th scope="col">Estado</th>
                         <th scope="col">Id</th>
                         <th scope="col">Mesa</th>
-                        <th scope="col">Nombre</th>
+                        <th scope="col">Cliente</th>
                         <th scope="col">Mesero</th>
                         <th scope="col">Fecha H.</th>
                         <th scope="col">Modificado</th>
@@ -31,8 +31,8 @@
                         <tr>
                             <td x-bind:style="estadoColors['{{ $c->estado }}']">{{ $c->estado }}</td>
                             <th x-bind:style="estadoColors['{{ $c->estado }}']">{{ $c->id }}</th>
-                            <td x-bind:style="estadoColors['{{ $c->estado }}']">{{ $c->numeroMesa }}</td>
-                            <td x-bind:style="estadoColors['{{ $c->estado }}']">{{ $c->nombreMesa }}</td>
+                            <td x-bind:style="estadoColors['{{ $c->estado }}']">({{ $c->numeroMesa }}) {{ $c->nombreMesa }}</td>
+                            <td x-bind:style="estadoColors['{{ $c->estado }}']">{{ $c->nombreCliente }}</td>
                             <td x-bind:style="estadoColors['{{ $c->estado }}']">{{ $c->nombreMesero }}</td>
                             <td x-bind:style="estadoColors['{{ $c->estado }}']">{{ $c->created_at }}</td>
                             <td x-bind:style="estadoColors['{{ $c->estado }}']">{{ $c->updated_at }}</td>

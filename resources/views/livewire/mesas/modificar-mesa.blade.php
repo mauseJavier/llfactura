@@ -603,6 +603,23 @@
         </article>
     </dialog>
 
+    {{-- MODAL PARA LA IMPRECION  --}}
+    <dialog {{$modalImprimir}}>
+        <article>
+            <header>
+            <button 
+                aria-label="Close" rel="prev"     
+                wire:click="imprimirMesa"                
+                >
+            </button>
+            <p>
+                <strong>Imprimir</strong>
+            </p>
+            </header>          
+            <iframe width="100%" height="1000px" src="{{route('imprimirMesa',['mesa'=>$mesa->id])}}" frameborder="0"></iframe>
+        </article>
+    </dialog>
+
     <script>
         // Selección de elementos
         const plusIcon = document.getElementById('plus-icon');
