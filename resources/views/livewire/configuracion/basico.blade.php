@@ -226,6 +226,71 @@
                 </div>
             @endif
         </article>
+        
+
+        <nav>
+            <li>
+                <h1>Usuarios</h1>
+                <input wire:model.live="buscarUsuario" placeholder="Buscar">
+
+            </li>
+        </nav>
+
+        <div class="overflow-auto">
+            <table>
+                <thead>
+                    <tr>
+                        
+                        <td>Nombre</td>
+                        <td>Correo</td>
+                        <td>Empresa (FE)</td>
+                        <td>PuntoVenta</td>
+                        <td>Deposito</td>
+                        
+                        <td>Rol</td>
+                        <td>LastLogin</td>
+                        <td>Eliminar</td>
+    
+                    </tr>
+                </thead>
+                <tbody>
+    
+    
+                    @foreach ($usuariosEmpresa as $us)
+    
+                    @if ($us->usuarioId !== 1 AND $us->usuarioId !== 2)
+    
+                        <tr>
+                            <td>
+
+                                    {{$us->name}}
+                                
+                            </td>
+                            
+                            <td>{{$us->email}}</td>
+                            <td>{{$us->razonSocial}} ({{$us->fe}})</td>
+                            <td>{{$us->puntoVenta}}</td>
+                            <td>{{$us->nombreDeposito}}</td>
+                            <td>{{$us->rol}}</td>
+                            <td>{{$us->last_login}}</td>
+                            <td>
+                                <button wire:confirm="Esta seguro de eliminar?" wire:click="eliminarUsuario({{$us->usuarioId}})">Eliminar</button>
+                            </td>
+    
+                            
+                        </tr>
+                        
+                        
+                    @endif
+                        
+                    @endforeach
+                </tbody>
+            </table>
+          </div>
+
+          
     </div>
+
+
 
 </div>

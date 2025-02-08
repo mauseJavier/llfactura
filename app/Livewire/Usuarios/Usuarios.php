@@ -6,7 +6,7 @@ use Livewire\Component;
 
 use Illuminate\Support\Facades\Auth;
 
-// use App\Models\User;
+use App\Models\User;
 // use App\Models\Empresa;
 // use App\Models\Deposito;
 
@@ -22,6 +22,14 @@ class Usuarios extends Component
     public $buscarUsuario;
 
     // public $deposito;
+
+    public function eliminarUsuario(User $usuario){
+
+        $usuario->delete();
+
+        session()->flash('mensaje', 'Eliminado: '. $usuario->name .' Correo: '. $usuario->email);
+
+    }
  
     public function mount()
     {

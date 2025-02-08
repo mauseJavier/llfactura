@@ -1,7 +1,6 @@
 # LLFactura - Facturación Electrónica
 
 
-
 LLFactura es una aplicación web de facturación electrónica diseñada para simplificar la emisión, gestión y almacenamiento de facturas digitales de manera eficiente y segura.
 
 ## Características
@@ -46,12 +45,17 @@ LLFactura es una aplicación web de facturación electrónica diseñada para sim
    ```sh
    docker-compose up -d --build
    ```
-5. Instalar dependencias:
+5. Otorgar permisos a las carpetas necesarias:
+   ```sh
+   sudo chown -R www-data:www-data storage bootstrap/cache
+   sudo chmod -R 775 storage bootstrap/cache
+   ```
+6. Instalar dependencias:
    ```sh
    composer install
    npm install && npm run build
    ```
-6. Generar la clave de aplicación y ejecutar migraciones:
+7. Generar la clave de aplicación y ejecutar migraciones:
    ```sh
    php artisan key:generate
    php artisan migrate --seed

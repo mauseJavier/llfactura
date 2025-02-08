@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Empresa;
 use App\Models\FormaPago;
+use App\Models\User;
+
 
 
 
@@ -18,6 +20,8 @@ class Basico extends Component
     public $usuario;
     public $empresa;
     public $formaPago;
+    public $buscarUsuario;
+
     //////////////valiables edicion//////////////
     public $idFormaPago;
     public $topeFacturacion;
@@ -74,6 +78,7 @@ class Basico extends Component
         $this->empresa = Empresa::find(Auth()->user()->empresa_id);
         $this->formaPago = FormaPago::all();
 
+
         $this->idFormaPago = $this->empresa->idFormaPago;
         $this->topeFacturacion = $this->empresa->topeFacturacion;
         $this->formatoImprecion = $this->empresa->formatoImprecion;
@@ -103,6 +108,14 @@ class Basico extends Component
 
         // dd($this->empresa);
 
+
+    }
+
+    public function eliminarUsuario(User $usuario){
+
+        $usuario->delete();
+
+        session()->flash('mensaje', 'Eliminado: '. $usuario->name .' Correo: '. $usuario->email);
 
     }
 
@@ -136,7 +149,32 @@ class Basico extends Component
      
     public function render()
     {
-        return view('livewire.configuracion.basico')
+        return view('livewire.configuracion.basico',[
+            'usuariosEmpresa'=> DB::select("SELECT
+                                        a.id AS usuarioId,
+                                        c.nombre AS rol,
+                                        a.*,
+                                        b.*,
+                                        c.*,
+                                        d.nombre as nombreDeposito
+                                    FROM
+                                        users a,
+                                        empresas b,
+                                        roles c,
+                                        depositos d
+                                    WHERE
+                                        a.empresa_id = b.id AND a.role_id = c.id  AND d.id = a.deposito_id AND
+                                        (
+                                            a.name LIKE '%$this->buscarUsuario%' OR
+                                            a.email LIKE '%$this->buscarUsuario%' OR 
+                                            b.razonSocial LIKE '%$this->buscarUsuario%' OR
+                                            c.nombre LIKE '%$this->buscarUsuario%'
+                                        )
+                                        AND 
+                                        a.empresa_id = ".$this->empresa->id."
+                                    ORDER BY a.last_login DESC"
+                                    ),
+        ])
         ->extends('layouts.app')
         ->section('main');
     }

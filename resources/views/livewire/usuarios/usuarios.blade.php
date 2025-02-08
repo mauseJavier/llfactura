@@ -57,6 +57,8 @@
                         
                         <td>Rol</td>
                         <td>LastLogin</td>
+                        <td>Eliminar</td>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -113,6 +115,10 @@
                             <td>{{$us->nombreDeposito}}</td>
                             <td>{{$us->rol}}</td>
                             <td>{{$us->last_login}}</td>
+                            <td>
+                                <button wire:confirm="Esta seguro de eliminar?" wire:click="eliminarUsuario({{$us->usuarioId}})">Eliminar</button>
+                            </td>
+
                             
                         </tr>
                         
