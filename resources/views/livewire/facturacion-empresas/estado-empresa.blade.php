@@ -68,8 +68,6 @@
                     <th scope="col" style="color: red;">id</th>
                     <th scope="col" style="color: red;">RazonSocial</th>
                     <th scope="col" style="color: red;">Titular</th>
-
-                    <th scope="col" style="color: red;">CUIT</th>
                     <th scope="col" style="color: red;">TEL</th>
                     <th scope="col" style="color: red;">TOTAL MES</th>
 
@@ -97,8 +95,6 @@
                     <th scope="col" style="color: red;">Ven de Pago</th>
 
                     <th><button wire:click="ordenarActualizado">Actualizado</button></th>
-                    <th>Creado</th>
-
 
                     
                 </tr>
@@ -109,7 +105,7 @@
                         <tr 
                             x-data="{ 
                                 vencimiento: '{{$c->vencimientoPago}}',
-                                pagoMes: '{{$c->pagoMes}}',
+                                pagoMes: '{{number_format($c->pagoMes, 2, ',', '.')}}',
                                 comentario: '{{$c->comentario}}',
                                 pagoServicio: '{{$c->pagoServicio}}',
                             }"
@@ -118,7 +114,6 @@
                             <th scope="row" >{{$c->razonSocial}}</th>
                             <th scope="row">{{$c->titular}}</th>
                 
-                            <th scope="row">{{$c->cuit}}</th>
                 
                             <th scope="row">
                                 <a href="https://wa.me/54{{$c->telefono}}" target="_blank" rel="noopener noreferrer">{{$c->telefono}}</a>
@@ -128,18 +123,22 @@
                 
                             <th scope="row">
                                 <textarea name="" id="" cols="20" rows="1"
+                                    style="text-align: center; min-width: 200px;"
+
                                     x-ref="comentario"
                                     @input="comentario = $event.target.value">{{$c->comentario}}</textarea>
                             </th>
                             <th scope="row">
                                 @if ($c->pagoMes > 0)
                                     <input type="number"
+                                        style="text-align: center; min-width: 200px;"
                                         value="{{$c->pagoMes}}"
                                         x-ref="pagoMes"
                                         @input="pagoMes = $event.target.value"
                                         readonly>
                                 @else
                                     <input type="number"
+                                        style="text-align: center; min-width: 200px;"
                                         value="{{$c->pagoMes}}"
                                         x-ref="pagoMes"
                                         @input="pagoMes = $event.target.value">
@@ -180,7 +179,6 @@
                             </th>
 
                             <th>{{$c->updated_at}}</th>
-                            <th>{{$c->created_at}}</th>
 
                         </tr>
                     @endforeach

@@ -4,7 +4,7 @@
 
     <div class="container">
         <h3>Cuenta Corriente</h3>
-        <h6>{{$cliente->razonSocial}} (${{number_format($saldo, 2, ',', '.')}})</h6>
+        <h4>{{$cliente->razonSocial}}</h4>
 
         <article>
             <div class="grid">
@@ -12,12 +12,7 @@
                     <h3>Saldo</h3>
                     <h1 style="color: red;">${{number_format($saldo, 2, ',', '.')}}</h1>
                 </div>
-                <div class="col">
-                    <label for="">
-                        Desde
-                        <input type="date" wire:model.live="fechaDesde" name="date" aria-label="Date">
-                    </label>
-                </div>
+
                 <div class="col">                      
                     <label for="">
                         
@@ -26,6 +21,21 @@
                     </label>
                 </div>
             </div>
+
+            <hr>
+
+
+            <details>
+                <summary style="color: green;">Filtro</summary>
+
+                <label for="">
+                    Desde
+                    <input type="date" wire:model.live="fechaDesde" name="date" aria-label="Date">
+                </label>
+
+            </details>
+
+
         </article>
 
         {{-- @dump($movimientos) --}}
@@ -47,12 +57,9 @@
                     <th scope="col">Acciones</th>
 
                     <th scope="col">Fecha</th>
-                    <th scope="col">Debe</th>
-                    <th scope="col">Haber</th>
-                    <th scope="col">Saldo</th>  
-                    <th scope="col">Usuario</th>    
-  
-    
+                    <th scope="col">Debe(-)</th>
+                    <th scope="col">Haber(+)</th>
+   
     
                   </tr>
                 </thead>
@@ -86,10 +93,7 @@
                             <td>{{$c->created_at}}</td>
                             <td>{{number_format($c->debe, 2, ',', '.')}}</td>
                             <td>{{number_format($c->haber, 2, ',', '.')}}</td>
-                            <td>{{number_format($c->saldo, 2, ',', '.')}}</td>
-                            <td>{{$c->usuario}}</td>
-
-    
+   
     
     
                         </tr>
