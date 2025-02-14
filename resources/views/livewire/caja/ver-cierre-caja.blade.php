@@ -148,6 +148,15 @@
                                     </tr>
                                     <tr>
                                         <td>
+                                            Cobro CC en Efectivo:
+                                        </td>
+                                        <td style="text-align:right;">
+                                            ${{$item['cobroCuentasCorrientes']}}
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr>
+                                        <td>
                                             Total Cierre Efectivo:
                                         </td>
                                         <td style="text-align:right;">

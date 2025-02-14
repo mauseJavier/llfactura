@@ -14,6 +14,8 @@ use App\Models\Empresa;
 use App\Models\CierreCaja;
 use App\Models\User;
 use App\Models\Comprobante;
+use App\Models\CuentaCorriente;
+
 
 
 
@@ -36,9 +38,6 @@ class VerCierreCaja extends Component
         $this->usuario = Auth()->User();
 
         $this->fechaCierre = Carbon::now()->format('Y-m-d');
-
-
-        // dd($this->usuario);
 
 
     }
@@ -136,6 +135,18 @@ class VerCierreCaja extends Component
                     }
                 }
 
+                // SUMAR EL COMBRO DE CUENTAS CORRIENTES 
+
+                $cobroCuentasCorrientes=0;
+                $cobroCC = CuentaCorriente::where('usuario',$us->name)->whereDate('created_at', $this->fechaCierre)->get();
+
+                foreach ($cobroCC as $key => $value) {
+                   # code...
+                   $cobroCuentasCorrientes += $value->haber ;
+                }
+
+                // $totalSoloEfectivo += $cobroCuentasCorrientes;
+
 
             // dd(number_format($sumaTotal, 2, ',', '.'));
             // dd($totalSoloEfectivo);
@@ -153,7 +164,8 @@ class VerCierreCaja extends Component
                     'sumaTotal'=>number_format($sumaTotal, 2, ',', '.'),
                     'sumaCierre'=>number_format($sumaCierre, 2, ',', '.'),
                     'totalSoloEfectivo'=>number_format($totalSoloEfectivo, 2, ',', '.'),
-                    'diferencia'=>number_format($sumaCierre - $totalSoloEfectivo, 2, ',', '.'),
+                    'cobroCuentasCorrientes'=>number_format($cobroCuentasCorrientes, 2, ',', '.'),
+                    'diferencia'=>number_format($sumaCierre -( $totalSoloEfectivo + $cobroCuentasCorrientes), 2, ',', '.'),
 
                 ];
 
