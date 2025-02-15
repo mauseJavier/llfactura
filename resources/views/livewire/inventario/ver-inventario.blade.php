@@ -54,7 +54,7 @@
                             </details>
                         </div>
                         <div class="col">
-                            <button wire:click="cambiarModal">Nuevo Articulo</button>
+                            <button wire:click="cambiarModal" data-tooltip="Nuevo Articulo">+</button>
                             <a wire:navigate role="button" href="{{route('stock')}}">Stock</a>
         
                         </div>
@@ -72,6 +72,85 @@
                     </form>
                 </div>
             </div>
+
+
+
+            <hr />
+
+            {{-- @dump($listaRubros) --}}
+            
+            <details>
+                <summary>Filtro: {{$nombreRubro == '' ? '' : '(Rubro: '.$nombreRubro.')'}}
+                                     {{$nombreProveedor == '' ? '' : '(Proveedor: '.$nombreProveedor.')'}}
+                                    {{$nombreMarca == '' ? '' : '(Marca: '.$nombreMarca.')'}} 
+                                     {{$filtroModificado == '' ? '' : '(Fecha Modi.: '.$filtroModificado.')'}} 
+
+                </summary>
+                <div class="grid">
+                    <div class="col">
+                            <select name="favorite-cuisine" aria-label="Selecciones Rubro" wire:model.live="nombreRubro">
+                                <option selected disabled value="">
+                                    Selecione Rubro
+                                </option>
+                                <option value="">Todo</option>
+                                @foreach ($listaRubros as $r)                                    
+                                    <option value="{{$r->nombre}}">{{$r->nombre}}</option>
+                                @endforeach
+
+                            </select>
+
+                            <select name="favorite-cuisine" aria-label="Selecciones Proveedor" wire:model.live="nombreProveedor">
+                                <option selected disabled value="">
+                                    Selecione Proveedor
+                                </option>
+                                <option value="">Todo</option>
+                                @foreach ($listaProveedores as $p)                                    
+                                    <option value="{{$p->nombre}}">{{$p->nombre}}</option>
+                                @endforeach
+                            </select>
+
+                            <select name="favorite-cuisine" aria-label="Selecciones Marca" wire:model.live="nombreMarca">
+                                <option selected disabled value="">
+                                    Selecione Marca
+                                </option>
+                                <option value="">Todo</option>
+                                @foreach ($listaMarcas as $m)                                    
+                                    <option value="{{$m->nombre}}">{{$m->nombre}}</option>
+                                @endforeach
+                            </select>
+                    </div>
+                    <div class="col">
+                        <fieldset>
+                            <legend>Fecha de Modificacion:</legend>
+                            <label>
+                                <input type="radio" name="language" wire:click="modFechaModificacion('')" {{$filtroModificado == '' ? 'checked' : ''}}   />
+                                Todo
+                            </label>
+                            <label>
+                              <input type="radio" name="language" wire:click="modFechaModificacion('Hoy')" />
+                              Hoy
+                            </label>
+                            <label>
+                              <input type="radio" name="language" wire:click="modFechaModificacion('Esta Semana')" />
+                              Esta Semana
+                            </label>
+                            <label>
+                              <input type="radio" name="language" wire:click="modFechaModificacion('Este Mes')" />
+                              Este Mes
+                            </label>
+                            <label>
+                              <input type="radio" name="language" wire:click="modFechaModificacion('Mes Pasado')" />
+                              Mes Pasado
+                            </label>
+
+                          </fieldset>
+            
+                    </div>
+                </div>
+            </details>
+
+
+
                 
         </article>
      

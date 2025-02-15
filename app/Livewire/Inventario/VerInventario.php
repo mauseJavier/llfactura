@@ -34,8 +34,17 @@ class VerInventario extends Component
     public $empresa;
     public $depositos;
     public $datoBuscado ='' ;
+
+    public $nombreRubro='';
+    public $nombreProveedor='';
+    public $nombreMarca='';
+
+    public $filtroModificado='';
+
     public $modal = 'close';
     public $modalEditar = 'close';
+
+
 
     public $masDatos = false;
     public $modalStock = 'close';
@@ -806,6 +815,12 @@ class VerInventario extends Component
 
     }
 
+    public function modFechaModificacion($filtro){
+
+        $this->filtroModificado=$filtro;
+
+    }
+
     public function render()
     {
         // return view('livewire.inventario.ver-inventario');
@@ -817,10 +832,42 @@ class VerInventario extends Component
                                 ->whereAny([
                                     'codigo',
                                     'detalle',
-                                    'rubro',
-                                    'proveedor',
-                                    'marca'
-                                ], 'LIKE', "%$this->datoBuscado%")        
+
+                                ], 'LIKE', "%$this->datoBuscado%")     
+
+                                ->when($this->nombreRubro, function ($query, $nombreRubro) {
+                                    return $query->where('rubro', $nombreRubro);
+                                })
+                                ->when($this->nombreProveedor, function ($query, $nombreProveedor) {
+                                    return $query->where('proveedor', $nombreProveedor);
+                                })
+                                ->when($this->nombreMarca, function ($query, $nombreMarca) {
+                                    return $query->where('marca', $nombreMarca);
+                                })
+
+                                ->when($this->filtroModificado, function ($query, $filtroModificado) {
+                                    switch ($filtroModificado) {
+                                        case 'Hoy':
+                                            return $query->whereDate('updated_at', today());
+                                            break;
+                                        case 'Esta Semana':
+                                            return $query->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                                            break;
+                                        case 'Este Mes':
+                                            return $query->whereBetween('updated_at', [now()->startOfMonth(), now()->endOfMonth()]);
+                                            break;
+                                        case 'Mes Pasado':
+                                            return $query->whereBetween('updated_at', [
+                                                now()->subMonth()->startOfMonth(),
+                                                now()->subMonth()->endOfMonth()
+                                            ]);
+                                            break;                                        
+                                        default:
+                                            # code...
+                                            break;
+                                    }
+                                })
+
                                 ->orderBy($this->ordenarPor,$this->acendenteDecendente)                        
                                 ->paginate(30),
 
