@@ -37,9 +37,9 @@
 
 
             <article>
-                <header><h1>{{$detalle}} ({{implode('', $this->keys) == '' ? $searchQuery : implode('', $this->keys) }})</h1></header>
+                <header><h2>{{$detalle}} ({{implode('', $this->keys) == '' ? $searchQuery : implode('', $this->keys) }})</h2></header>
                 <label for="">
-                    <h1 style="font-size: 200px;">{{$precio}}</h1>
+                    <h2 style="font-size: 500%;">{{$precio}}</h2>
                 </label>
             </article>
             <div x-data="fullscreenHandler()" class="p-4 border rounded bg-gray-100">
