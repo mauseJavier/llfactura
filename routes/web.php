@@ -30,6 +30,9 @@ use App\Livewire\Remito\VerRemito;
 use App\Livewire\Cliente\VerCliente;
 use App\Livewire\Cliente\CuentaCorriente;
 
+use App\Livewire\Gasto\VerGasto;
+
+
 use App\Livewire\Caja\VerCierreCaja;
 
 use App\Livewire\Novedades\Novedades;
@@ -324,6 +327,9 @@ use Illuminate\Http\Request;
 
 
             Route::get('/stock', VerStock::class)->name('stock');
+
+            Route::get('/gasto', VerGasto::class)->name('gasto');
+
 
 
         });

@@ -148,6 +148,9 @@
                   <li>
                     <a wire:navigate href="{{route('preciosPublico')}}">Precios al Publico</a>
                   </li>
+                  <li>
+                    <a wire:navigate href="{{route('gasto')}}">Gastos</a>
+                  </li>
                     
                 @endif
 

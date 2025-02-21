@@ -42,8 +42,8 @@
 
             <hr>
             <button wire:click="cerrarCaja" wire:confirm="Esta seguro?">Cerrar Caja</button>
-            {{-- PARA ALICIA DE QUINTA empresa_id 48 --}}
-            @if (Auth::User()->empresa_id == 48 OR Auth::User()->empresa_id == 91)                 
+            {{-- PARA EL TOMI QUE ES 44 EL REPORTE  --}}
+            @if (Auth::User()->empresa_id != 44)                 
                 <a href="{{route('reportes',['ruta'=>'reporteVentaUsuarioCompleto'])}}" style="cursor: pointer;" role="button">ReporteDiario C.</a>
             @else                
                 <a href="{{route('reportes',['ruta'=>'reporteVentaUsuario'])}}" style="cursor: pointer;" role="button">Reporte Diario</a>
