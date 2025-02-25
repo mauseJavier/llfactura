@@ -1,16 +1,82 @@
 
+# services:
+#   llfactura:
+#     #build:
+#     #  context: .
+#     #  dockerfile: Dockerfile
+#     image: shinsenter/laravel:latest
+#     container_name: llfactura
+#     volumes:
+#       - .:/var/www/html
+#     networks:
+#       - redPrincipal
+     
+# networks:
+#   redPrincipal:
+#     external: true
+
+
 services:
   llfactura:
-    #build:
-    #  context: .
-    #  dockerfile: Dockerfile
-    image: shinsenter/laravel:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: llfactura
     volumes:
       - .:/var/www/html
     networks:
       - redPrincipal
-     
+    restart: always
+    #QUITAR LOS PUERTOS Y LA DEPENDENCIA DE MARIADB
+    ports:
+      - "8080:80"
+    depends_on:
+      - mariadb
+
+  llfactura-scheduler:
+    image: shinsenter/laravel:latest
+    container_name: llfactura-scheduler
+    volumes:
+      - .:/var/www/html
+    entrypoint: ["/bin/sh", "-c", "chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache && while true; do php /var/www/html/artisan schedule:run --no-interaction & sleep 60; done"]
+    networks:
+      - redPrincipal
+    restart: always
+    #QUITAR EL SERVICIO DE MARIA DB 
+    depends_on:
+      - mariadb
+
+  llfactura-queue-worker:
+    image: shinsenter/laravel:latest
+    container_name: llfactura-queue-worker
+    volumes:
+      - .:/var/www/html
+    entrypoint: ["/bin/sh", "-c", "chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache && php /var/www/html/artisan queue:work"]
+    networks:
+      - redPrincipal
+    restart: always
+    #QUITAR EL SERVICIO DE MARIA DB 
+    depends_on:
+      - mariadb
+  #QUITAR EL SERVICIO DE MARIA DB 
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: root  # Cambia esto a una contraseña segura
+      MYSQL_DATABASE: llfactura  # Nombre de la base de datos
+      MYSQL_USER: root  # Usuario de la base de datos
+      MYSQL_PASSWORD: root  # Contraseña del usuario
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - redPrincipal
+    restart: always
+
+volumes:
+  mariadb_data:
+
 networks:
   redPrincipal:
     external: true
+

@@ -28,9 +28,14 @@ return new class extends Migration
 
             $table->string('comentario')->nullable();
 
-            $table->date('fechaNotificacion')->nullable();
+            // $table->date('fechaNotificacion')->nullable();
+            $table->tinyInteger('diaNotificacion')->unsigned()->nullable(); // Guardará solo valores de 1 a 31
+
 
             $table->string('usuario');
+
+            $table->string('repetir')->nullable();
+
 
 
             $table->unsignedInteger('empresa_id'); //empresa_id

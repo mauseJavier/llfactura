@@ -16,6 +16,7 @@ use App\Models\Cliente;
 class VerCliente extends Component
 {
 
+    public $idCliente;
     public $cuit;   
     public $razonSocial;    
     public $tipoDocumento=99;  
@@ -28,6 +29,8 @@ class VerCliente extends Component
 
     public function editarCliente(Cliente $cliente){
         // dd($cliente);
+
+        $this->idCliente = $cliente->id;
 
         $this->cuit = $cliente->numeroDocumento;
         $this->razonSocial = $cliente->razonSocial;
@@ -42,16 +45,19 @@ class VerCliente extends Component
 
     public function cancelar(){
 
+        $this->idCliente = '';
+
         $this->cuit = '';
         $this->razonSocial = '';
-        $this->tipoDocumento = '';
+        $this->tipoDocumento = 99;
         $this->domicilio = '';
         $this->correoCliente = '';
-        $this->tipoContribuyente = '';
+        $this->tipoContribuyente = 5;
+    
 
     }
 
-    public function guardarCliente(){
+    public function updateCliente(){
 
         $validated = $this->validate([
             'cuit' => 'required|numeric|min:1',
@@ -66,26 +72,126 @@ class VerCliente extends Component
         ]);
 
 
+        $cliente = Cliente::where('numeroDocumento', $this->cuit)
+                    ->where('empresa_id',Auth::user()->empresa_id)
+                    ->where('id','!=',$this->idCliente)
+                    ->get();
 
-        $cliente = Cliente::updateOrCreate(
-            ['numeroDocumento'=>$this->cuit,'empresa_id'=> Auth::user()->empresa_id],
-            [            
-            'tipoDocumento'=>trim($this->tipoDocumento),
+                    // dd($cliente);
 
-            'razonSocial'=>trim($this->razonSocial),
-            'domicilio'=>trim($this->domicilio),
-            'correo'=>trim($this->correoCliente),
-            'tipoContribuyente'=>trim($this->tipoContribuyente)]
-        );
 
-        $this->cuit='';
-        $this->tipoDocumento='';
-        $this->razonSocial='';
-        $this->domicilio='';
-        $this->correoCliente='';
-        $this->tipoContribuyente='';
+        if ($cliente->isEmpty()) {
 
-        session()->flash('mensaje', 'Cliente '.$cliente->razonSocial.' Guardado.');
+            // dd('no cuit');
+            Cliente::where('id', $this->idCliente)
+                    ->update(
+                        [
+            
+                            'numeroDocumento'=>$this->cuit,
+                        
+                            'tipoDocumento'=>trim($this->tipoDocumento),
+                
+                            'razonSocial'=>trim($this->razonSocial),
+                            'domicilio'=>trim($this->domicilio),
+                            'correo'=>trim($this->correoCliente),
+                            'tipoContribuyente'=>trim($this->tipoContribuyente)
+                        ]
+                    );
+    
+    
+    
+            $this->idCliente='';
+    
+            $this->cuit='';
+            $this->tipoDocumento=99;
+            $this->razonSocial='';
+            $this->domicilio='';
+            $this->correoCliente='';
+            $this->tipoContribuyente=5;
+    
+            session()->flash('guardado', 'Cliente Editado.');
+            
+        }else {
+                
+    
+            $this->idCliente='';
+    
+            $this->cuit='';
+            $this->tipoDocumento=99;
+            $this->razonSocial='';
+            $this->domicilio='';
+            $this->correoCliente='';
+            $this->tipoContribuyente=5;
+    
+            session()->flash('guardado', 'Cliente NO editado, Exite otro cliente con el mismo cuit/dni.');
+
+        }
+
+
+    }
+
+    public function guardarCliente(){
+
+        $validated = $this->validate([
+            'cuit' => 'required|numeric|min:1',
+            'razonSocial' => 'required|min:1',
+            'tipoDocumento' => 'required',
+
+        ], [
+            'cuit.required' => 'El campo CUIT a enviar es obligatorio.',
+            'cuit.numeric' => 'El campo CUIT a enviar debe ser un número.',
+            'cuit.min' => 'El campo CUIT a enviar debe ser mayor que 0.',
+
+            'razonSocial.required' => 'El campo Razon Social a enviar es obligatorio.',
+            'razonSocial.min' => 'El campo Razon Social a enviar debe ser mayor que 0.',
+        ]);
+
+
+        $cliente = Cliente::where('numeroDocumento', $this->cuit)
+                    ->where('empresa_id',Auth::user()->empresa_id)
+                    ->get();
+
+        // dd($cliente);
+
+        if ($cliente->isEmpty()) {
+            # code...
+            $cliente = Cliente::create(
+                [
+    
+                    'numeroDocumento'=>$this->cuit,
+                    'empresa_id'=> Auth::user()->empresa_id,
+                
+                    'tipoDocumento'=>trim($this->tipoDocumento),
+        
+                    'razonSocial'=>trim($this->razonSocial),
+                    'domicilio'=>trim($this->domicilio),
+                    'correo'=>trim($this->correoCliente),
+                    'tipoContribuyente'=>trim($this->tipoContribuyente)
+                ]
+            );
+    
+            $this->cuit='';
+            $this->tipoDocumento=99;
+            $this->razonSocial='';
+            $this->domicilio='';
+            $this->correoCliente='';
+            $this->tipoContribuyente=5;
+    
+            session()->flash('guardado', 'Cliente '.$cliente->razonSocial.' Guardado.');
+        } else {
+            # code...
+    
+            $this->cuit='';
+            $this->tipoDocumento=99;
+            $this->razonSocial='';
+            $this->domicilio='';
+            $this->correoCliente='';
+            $this->tipoContribuyente=5;
+    
+            session()->flash('guardado', 'Cliente NO Guardado. Existe otro cliente con el mismo CUIT/DNI');
+        }
+        
+
 
     }
     public function render()

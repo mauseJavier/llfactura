@@ -19,7 +19,8 @@
                 </div>
                 <div class="col">
 
-                    <button @click="modal = !modal">Nuevo</button>
+                    <button @click="modal = !modal">Nuevo Gasto</button>
+
                 </div>
                 <div class="col">
                     <input
@@ -37,7 +38,7 @@
 
             <details>
                 <summary>
-                    <h4>Filtro:</h4> {{$tipo == '' ? '' : '(Tipo: '.$tipo.')'}}
+                    <h4>Filtro:</h4> {{$filtroTipo == '' ? '' : '(Tipo: '.$filtroTipo.')'}}
                                      {{$formaPago == '' ? '' : '(F. Pago: '.$formaPago.')'}}
                                     {{$estado == '' ? '' : '(Estado: '.$estado.')'}} 
                                      {{$fechaCreado == '' ? '' : '(Fecha Creado: '.$fechaCreado.')'}} 
@@ -48,14 +49,15 @@
                         <label for="">
                             Tipo
 
-                            <select name="tipo" aria-label="Tipo" wire:model.live="tipo">
+                            <select name="tipo" aria-label="Tipo" wire:model.live="filtroTipo">
                                 <option selected disabled value="">
                                     Seleccione Tipo
                                 </option>
                                 <option value="">Todo</option>
-                                <option selected value="Gasto">Gasto</option>
-                                <option value="Factura">Factura</option>
-                                <option value="Compra">Compra</option>
+                                @foreach ($tiposUnicos as $item)
+                                    
+                                    <option value="{{$item}}">{{$item}}</option>
+                                @endforeach
 
                             </select>
                         </label>
@@ -143,26 +145,35 @@
                     <th scope="col">Estado</th>
                     <th scope="col">Proveedor</th>
                     <th scope="col">Comentario</th>
-                    <th scope="col">Notificacion</th>
+                    <th scope="col">Dia Notif.</th>
+                    <th scope="col">Repetir</th>
+
                     <th scope="col">Usuario</th>
                   </tr>
                 </thead>
                 <tbody>
+                    
                     @foreach ($Gasto as $item)
-                        <tr>
-                            <td>{{$item->created_at}}</td>
-                            <td>{{$item->tipo}}</td>
-                            <td>{{$item->importe}}</td>
-                            <td>{{$item->formaPago}}</td>
-                            <td>{{$item->estado}}</td>
-                            <td>{{$item->nombreProveedor}}</td>
-                            <td>{{$item->comentario}}</td>
-                            <td>{{$item->fechaNotificacion}}</td>
-                            <td>{{$item->usuario}}</td>
-
-
+                        <tr x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'background-color': repetir === 'Repetido' ? 'green' : '' }">
+                            <td>{{ $item->created_at }}</td>
+                            <td>{{ $item->tipo }}</td>
+                            <td>${{ number_format($item->importe, 2, ',', '.') }}</td>
+                            <td>{{ $item->formaPago }}</td>
+                            <td>{{ $item->estado }}</td>
+                            <td>{{ $item->nombreProveedor }}</td>
+                            <td>{{ $item->comentario }}</td>
+                            <td>{{ $item->diaNotificacion }}</td>
+                            <td>
+                                @if ($item->repetir == 'No' || $item->repetir == 'Repetido')
+                                    {{ $item->repetir }}
+                                @else
+                                    {{ $item->repetir }} <a wire:click="quitarRepetir({{ $item->id }})">Quitar</a>
+                                @endif
+                            </td>
+                            <td>{{ $item->usuario }}</td>
                         </tr>
                     @endforeach
+                
 
                 </tbody>
 
@@ -177,8 +188,8 @@
 
 
 
-
-    <dialog x-bind:open="modal">
+{{-- //MODAL DE NUEVO GASTO --}}
+    <dialog x-bind:open="modal" x-data="{ showSelectProveedor: false,showSelectNotifi: false, showSelectRepe: false, isChecked: false }">
         <article>
 
             @if (session('creado'))
@@ -202,42 +213,39 @@
                 
                 <fieldset>
     
-                    <div>@error('importe') {{ $message }} @enderror</div>
-                    <div>@error('tipo') {{ $message }} @enderror</div>
-                    <div>@error('estado') {{ $message }} @enderror</div>
-                    <div>@error('formaPago') {{ $message }} @enderror</div>
+                    <div x-data="{
+                        
+                        tipo: @entangle('tipo'),
+                        tipos: @js($tiposUnicos),
+                        filteredTipos: [],
+                        showSuggestions: false,
+                        get filteredTipos() {
+                            return this.tipos.filter(tipo => tipo.toLowerCase().includes(this.tipo.toLowerCase()));
+                        }
+                    }">
+                        <label for="">
+                            Tipo de Gasto
+                            <input name="terms" type="checkbox" role="switch" @click="isChecked = !isChecked" />
+                    
+                            <input type="text" name="tipo" x-model="tipo" x-bind:disabled="!isChecked" @input="showSuggestions = true" @blur="setTimeout(() => showSuggestions = false, 100)" />
+                    
+                            <ul x-show="showSuggestions && tipo.length > 0">
+                                <template x-for="suggestion in filteredTipos" :key="suggestion">
+                                    <li @click="tipo = suggestion; showSuggestions = false">
+                                        <span style="color: red;" x-text="suggestion"></span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </label>
+                    </div>
+                    
+                    
 
-
-    
                     <label for="">
-                        Tipo
+                        Forma Pago
 
-                        <select name="tipo" wire:model="tipo" >
-        
-                            <option selected disabled value="">
-                                Seleccione Tipo
-                            </option>
-    
-                            <option value="Gasto">Gasto</option>
-                            <option value="Factura">Factura</option>
-                            <option value="Compra">Compra</option>
-                        </select>
-                    </label>
-    
-                    <label>
-                        Importe
-                        <input
-                            name="importe"
-                            placeholder="Importe Gasto"
-                            autocomplete="importe"
-                            wire:model="importe"
-                        />
-                    </label>
-    
-                    <label for="">
-                        Forma Pago 
-
-                        <select name="formaPago" wire:model="formaPago" >
+                        <select name="formaPago" wire:model="formaPago"                             
+                        @error('formaPago') aria-invalid="true" @enderror  >
         
                             <option selected disabled value="">
                                 Seleccione Forma Pago
@@ -248,12 +256,18 @@
                             @endforeach
         
                         </select>
+                        @error('formaPago') 
+                            <small id="invalid-helper">
+                                {{ $message }}  
+                            </small>
+                        @enderror
                     </label>
     
                     <label for="">
                         Estado
 
-                        <select name="estado" wire:model="estado" >
+                        <select name="estado" wire:model="estado" 
+                        @error('estado') aria-invalid="true" @enderror >
         
                             <option selected disabled value="">
                                 Seleccione Estado
@@ -265,19 +279,31 @@
         
         
                         </select>
+                        @error('estado') 
+                            <small id="invalid-helper">
+                                {{ $message }}  
+                            </small>
+                        @enderror
                     </label>
     
-                    <label for="">
-                        Proveedor
 
-                        <select name="proveedor" wire:model="idProveedor" >
-                            <option selected value="" selected>No</option>
-                            @foreach ($Proveedor as $item)
-                                <option value="{{$item->id}}">{{$item->nombre}}</option>                        
-                            @endforeach
-        
-        
-                        </select>
+                    
+
+                    <label>
+                        Importe
+                        <input
+                            name="importe"
+                            placeholder="Importe Gasto"
+                            autocomplete="importe"
+                            wire:model="importe"
+                            @error('importe') aria-invalid="true" @enderror
+
+                        />
+                        @error('importe') 
+                            <small id="invalid-helper">
+                                {{ $message }}  
+                            </small>
+                        @enderror
                     </label>
                     
                     <label for="">
@@ -293,9 +319,44 @@
                     </label>
     
                     <label for="">
-                        Notificacion
+                        Proveedor 
+                        <input name="terms" type="checkbox" role="switch"  @click="showSelectProveedor = !showSelectProveedor" />
+                    
+                        <select name="proveedor" wire:model="idProveedor" x-show="showSelectProveedor">
+                            <option selected value="">No</option>
+                            @foreach ($Proveedor as $item)
+                                <option value="{{ $item->id }}">{{ $item->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </label>
+                    <label for="">
+                        Dia Notificacion 
+                        <input name="terms" type="checkbox" role="switch"  @click="showSelectNotifi = !showSelectNotifi" />
+                        
+                        <select name="dia_mes" wire:model="diaNotificacion" x-show="showSelectNotifi">
+                            @for ($i = 1; $i <= 31; $i++)
+                                <option value="{{ $i }}">Dia: {{ $i }}</option>
+                            @endfor
+                        </select>
+                        
 
-                        <input type="date" name="fechaNotificacion" aria-label="Date" wire:model="fechaNotificacion">
+
+                    </label>
+                    <label for="">
+                        Repetir  
+                        <input name="terms" type="checkbox" role="switch"  @click="showSelectRepe = !showSelectRepe" />
+                        
+                        <select name="repetir" wire:model="repetir" x-show="showSelectRepe">
+                            <option selected value="No">No</option>
+                            <option selected value="Mes">Mes</option>
+                            @if (Auth()->user()->role_id == 3)
+                            
+                                <option selected value="Minuto">Minuto (Super)</option>
+                                
+                            @endif
+
+
+                        </select>
                     </label>
     
     

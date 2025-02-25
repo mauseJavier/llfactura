@@ -104,101 +104,123 @@
 
     <dialog x-bind:open="modalNuevoCliente">      
         <article>
-          <header>
-            <button aria-label="Close" rel="prev" @click="modalNuevoCliente = !modalNuevoCliente"></button>
-            <p>
-              <strong>Nuevo Cliente</strong>
-            </p>
-          </header>
 
-            @if (session('mensaje'))
-                <article>
-                    <p>
-                        {{ session('mensaje') }}    
-                    </p>     
-                </article>
+            @if (session('guardado'))
+
+                <p>
+                    {{ session('guardado') }}    
+                </p>  
+
+                <a href="{{route('cliente')}}" role="button">Listo</a>
+                
+            @else
+                
+                <header>
+                <button aria-label="Close" rel="prev" @click="modalNuevoCliente = !modalNuevoCliente"></button>
+                <p>
+                    <strong>Nuevo Cliente</strong>
+                </p>
+                </header>
+    
+                @if (session('mensaje'))
+                    <article>
+                        <p>
+                            {{ session('mensaje') }}    
+                        </p>     
+                    </article>
+                @endif
+    
+                    <fieldset>
+                        <label>
+                            Razon Social
+                            <input
+                            type="text"
+                            name=""
+                            placeholder="Razon Social (Nombre Completo)"
+                            wire:model="razonSocial"
+                            @error('razonSocial') aria-invalid="true" @enderror
+                            />
+                            @error('razonSocial') 
+                                <small id="invalid-helper">
+                                    {{ $message }}  
+                                </small>
+                            @enderror
+                        </label>
+                        <label>
+                            Cuit
+                            <input
+                            type="text"
+                            name=""
+                            placeholder="Cuit-Cuil-DNI"
+                            wire:model="cuit"
+                            @error('cuit') aria-invalid="true" @enderror
+                            />
+                            @error('cuit') 
+                                <small id="invalid-helper">
+                                    {{ $message }}  
+                                </small>
+                            @enderror
+                        </label>
+                        <label>
+                            Tipo de documento
+                            <select name="" wire:model="tipoDocumento"
+                            @error('tipoDocumento') aria-invalid="true" @enderror
+                            >
+                                <option selected value="99">Consumidor Final</option>
+                                <option  value="80">CUIT</option>
+                                <option  value="86">CUIL</option>
+                                <option  value="96">DNI</option>
+                            </select>
+                            @error('tipoDocumento') 
+                                <small id="invalid-helper">
+                                    {{ $message }}  
+                                </small>
+                            @enderror
+                        </label>
+                        <label>
+                            Domicilio
+                            <input
+                            type="text"
+                            name=""
+                            placeholder="Domicilio"
+                            wire:model="domicilio"
+                            />
+                        </label>
+                        <label>
+                            Correo
+                            <input
+                            type="text"
+                            name=""
+                            placeholder="Correo"
+                            wire:model="correoCliente"
+                            />
+                        </label>
+                        <label for="">
+                            Tipo Contribuyente
+                            <select name="" aria-label=""  required wire:model="tipoContribuyente">       
+    
+                                    <option value="5">Consumidor Final</option>
+                                    <option value="13">Monotributista</option>
+                                    <option value="6">Responsable Inscripto</option>
+                                    <option value="4">Exento</option>
+                            
+                            </select>
+                            
+                        </label>
+                    </fieldset>
+                
+    
+                
+                @if ($idCliente)
+                
+                    <button wire:click="updateCliente" >Editar Cliente</button>
+                
+                @else
+                    <button wire:click="guardarCliente" >Guardar Cliente</button>
+                
+                @endif
+                <button wire:click="cancelar" @click="modalNuevoCliente = !modalNuevoCliente">Cancelar</button>
             @endif
-
-            <form wire:submit="guardarCliente">
-                <fieldset>
-                    <label>
-                        Razon Social
-                        <input
-                        type="text"
-                        name=""
-                        placeholder="Razon Social (Nombre Completo)"
-                        wire:model="razonSocial"
-                        @error('razonSocial') aria-invalid="true" @enderror
-                        />
-                        @error('razonSocial') 
-                            <small id="invalid-helper">
-                                {{ $message }}  
-                            </small>
-                        @enderror
-                    </label>
-                    <label>
-                        Cuit
-                        <input
-                        type="text"
-                        name=""
-                        placeholder="Cuit-Cuil-DNI"
-                        wire:model="cuit"
-                        @error('cuit') aria-invalid="true" @enderror
-                        />
-                        @error('cuit') 
-                            <small id="invalid-helper">
-                                {{ $message }}  
-                            </small>
-                        @enderror
-                    </label>
-                    <label>
-                        Tipo de documento
-                        <select name="" wire:model="tipoDocumento">
-                            <option selected value="99">Consumidor Final</option>
-                            <option  value="80">CUIT</option>
-                            <option  value="86">CUIL</option>
-                            <option  value="96">DNI</option>
-                        </select>
-                    </label>
-                    <label>
-                        Domicilio
-                        <input
-                        type="text"
-                        name=""
-                        placeholder="Domicilio"
-                        wire:model="domicilio"
-                        />
-                    </label>
-                    <label>
-                        Correo
-                        <input
-                        type="text"
-                        name=""
-                        placeholder="Correo"
-                        wire:model="correoCliente"
-                        />
-                    </label>
-                    <label for="">
-                        Tipo Contribuyente
-                        <select name="" aria-label=""  required wire:model="tipoContribuyente">       
-
-                                <option value="5">Consumidor Final</option>
-                                <option value="13">Monotributista</option>
-                                <option value="6">Responsable Inscripto</option>
-                                <option value="4">Exento</option>
-                        
-                        </select>
-                        
-                    </label>
-                </fieldset>
-            
-                <input
-                type="submit"
-                value="Guardar Cliente"
-                />
-            </form>
-
-            <button wire:click="cancelar" @click="modalNuevoCliente = !modalNuevoCliente">Cancelar</button>
         </article>
     </dialog>
 
