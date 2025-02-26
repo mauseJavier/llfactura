@@ -42,6 +42,8 @@
                                      {{$formaPago == '' ? '' : '(F. Pago: '.$formaPago.')'}}
                                     {{$estado == '' ? '' : '(Estado: '.$estado.')'}} 
                                      {{$fechaCreado == '' ? '' : '(Fecha Creado: '.$fechaCreado.')'}} 
+                                     {{$filtroRepetir == '' ? '' : '(Repetir: '.$filtroRepetir.')'}} 
+
 
                 </summary>
                 <div class="grid">
@@ -86,6 +88,24 @@
                                 <option value="">Todo</option>
                                 <option selected value="Impago" selected>Impago</option>
                                 <option selected value="Pago" >Pago</option>
+                            </select>
+
+                        </label>
+
+                        <label for="">
+                            Repetir
+
+                            <select name="estado" aria-label="Seleccione Repetir" wire:model.live="filtroRepetir">
+                                <option selected disabled value="">
+                                    Seleccione Repetir
+                                </option>
+                                <option value="">Todo</option>
+                                <option selected value="No" >No</option>
+                                <option selected value="Repetido" >Repetido</option>
+                                <option selected value="Mes" selected>Mes</option>
+                                <option selected value="Minuto" selected>Minuto</option>
+
+
                             </select>
 
                         </label>
@@ -154,23 +174,57 @@
                 <tbody>
                     
                     @foreach ($Gasto as $item)
-                        <tr x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'background-color': repetir === 'Repetido' ? 'green' : '' }">
-                            <td>{{ $item->created_at }}</td>
-                            <td>{{ $item->tipo }}</td>
-                            <td>${{ number_format($item->importe, 2, ',', '.') }}</td>
-                            <td>{{ $item->formaPago }}</td>
-                            <td>{{ $item->estado }}</td>
-                            <td>{{ $item->nombreProveedor }}</td>
-                            <td>{{ $item->comentario }}</td>
-                            <td>{{ $item->diaNotificacion }}</td>
-                            <td>
-                                @if ($item->repetir == 'No' || $item->repetir == 'Repetido')
-                                    {{ $item->repetir }}
-                                @else
-                                    {{ $item->repetir }} <a wire:click="quitarRepetir({{ $item->id }})">Quitar</a>
-                                @endif
+                        <tr>
+                            <td 
+                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                {{ $item->created_at }}</td>
+                            <td 
+                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                {{ $item->tipo }}</td>
+                            <td 
+                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                ${{ number_format($item->importe, 2, ',', '.') }}</td>
+                            <td 
+                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                {{ $item->formaPago }}</td>
+                            <td 
+                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                {{ $item->estado }}</td>
+                            <td 
+                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                {{ $item->nombreProveedor }}</td>
+                            <td 
+                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                {{ $item->comentario }}</td>
+                            <td 
+                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                {{ $item->diaNotificacion }}</td>
+                            <td 
+                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                @switch($item->repetir)
+                                    @case('No')
+                                            {{ $item->repetir }}
+                                        @break
+                                    @case('Repetido')
+                                        {{ $item->repetir }} <a wire:click="editarGasto({{ $item->id }})" @click="modal = !modal" >Editar</a>
+                                        @break
+                                    @default
+                                        {{ $item->repetir }} <a wire:click="quitarRepetir({{ $item->id }})">Quitar Repetir</a>
+                                @endswitch
                             </td>
-                            <td>{{ $item->usuario }}</td>
+                            <td 
+                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                {{ $item->usuario }}</td>
                         </tr>
                     @endforeach
                 
@@ -203,7 +257,7 @@
             @else
                 
                 <header>
-                <button aria-label="Close" @click="modal = false" rel="prev"></button>
+                <button aria-label="Close" wire:click="cancelar()" @click="modal = false" rel="prev"></button>
                 <p>
                     <strong>Datos del Gasto</strong>
                 </p>
@@ -347,12 +401,18 @@
                         <input name="terms" type="checkbox" role="switch"  @click="showSelectRepe = !showSelectRepe" />
                         
                         <select name="repetir" wire:model="repetir" x-show="showSelectRepe">
-                            <option selected value="No">No</option>
-                            <option selected value="Mes">Mes</option>
-                            @if (Auth()->user()->role_id == 3)
-                            
-                                <option selected value="Minuto">Minuto (Super)</option>
+                            @if ($idGasto == '')
+                                <option selected value="No">No</option>
+                                <option selected value="Mes">Mes</option>
+                                @if (Auth()->user()->role_id == 3)
                                 
+                                    <option selected value="Minuto">Minuto (Super)</option>
+                                    
+                                @endif
+                                
+                            @else
+                                <option selected value="No">No (Edicion)</option>
+
                             @endif
 
 

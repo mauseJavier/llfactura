@@ -24,7 +24,7 @@ class VerGasto extends Component
     use WithPagination;
 
 
-    public $filtroTipo='';
+    public $idGasto='';
     public $tipo='Gasto';
     public $importe;
     public $idProveedor='';
@@ -32,12 +32,50 @@ class VerGasto extends Component
     public $diaNotificacion;
     public $formaPago='';
     public $estado='';
-    public $fechaCreado='';
-    public $buscar='';
-
     public $repetir='No';
+    
+    public $fechaCreado='';
+    public $buscar='';    
+    public $filtroTipo='';
+    public $filtroRepetir='';
 
 
+
+    public function cancelar(){
+
+        $this->idGasto='';
+        $this->tipo='Gasto';
+        $this->importe=0;
+        $this->idProveedor='';
+        $this->comentario='';
+        $this->diaNotificacion;
+        $this->formaPago='';
+        $this->estado='';
+        $this->repetir='No';
+        
+        $this->fechaCreado='';
+        $this->buscar='';    
+        $this->filtroTipo='';
+        $this->filtroRepetir='';
+
+    }
+    public function editarGasto(Gasto $gasto){
+
+        $this->idGasto=$gasto->id;
+
+
+        $this->tipo = $gasto->tipo;     
+        $this->importe = $gasto->importe;     
+        $this->formaPago = $gasto->formaPago;     
+        $this->estado = $gasto->estado;    
+        $this->idProveedor = $gasto->idProveedor;     
+        $this->comentario = $gasto->comentario;     
+        $this->diaNotificacion = $gasto->diaNotificacion;     
+        $this->usuario = $gasto->usuario;     
+        $this->empresa_id = $gasto->empresa_id;    
+        $this->repetir = $gasto->repetir;     
+
+    }
 
     public function quitarRepetir(Gasto $gasto){
 
@@ -76,26 +114,62 @@ class VerGasto extends Component
             // 'razonSocial.min' => 'El campo Razon Social a enviar debe ser mayor que 0.',
         ]);
 
+        if($this->idGasto == ''){
+
+            $Gasto = Gasto::create([
+                'tipo' => $this->tipo,
+                'importe' => $this->importe,
+                'formaPago' => $this->formaPago,
+                'estado' => $this->estado,
+                'idProveedor' => $this->idProveedor,
+                'comentario' => $this->comentario,
+                'diaNotificacion' => $this->diaNotificacion,
+                'usuario' => Auth()->user()->name,
+                'empresa_id' => Auth()->user()->empresa_id,
+                'repetir' => $this->repetir,
+    
+    
+    
+            ]);
+        }else{
+
+            // dd('ID a editar '.$this->idGasto);
+            Gasto::where('id', $this->idGasto)
+                ->update([
+                    'tipo' => $this->tipo,
+                    'importe' => $this->importe,
+                    'formaPago' => $this->formaPago,
+                    'estado' => $this->estado,
+                    'idProveedor' => $this->idProveedor,
+                    'comentario' => $this->comentario,
+                    'diaNotificacion' => $this->diaNotificacion,
+                    'usuario' => Auth()->user()->name,
+                    'empresa_id' => Auth()->user()->empresa_id,
+                    'repetir' => 'No',
+                ]);
+
+
+        }
  
-        $Gasto = Gasto::create([
-            'tipo' => $this->tipo,
-            'importe' => $this->importe,
-            'formaPago' => $this->formaPago,
-            'estado' => $this->estado,
-            'idProveedor' => $this->idProveedor,
-            'comentario' => $this->comentario,
-            'diaNotificacion' => $this->diaNotificacion,
-            'usuario' => Auth()->user()->name,
-            'empresa_id' => Auth()->user()->empresa_id,
-            'repetir' => $this->repetir,
-
-
-
-        ]);
 
         // dd($Gasto);
 
-        session()->flash('creado', 'Creado.');
+        $this->idGasto='';
+        $this->tipo='Gasto';
+        $this->importe;
+        $this->idProveedor='';
+        $this->comentario;
+        $this->diaNotificacion;
+        $this->formaPago='';
+        $this->estado='';
+        $this->repetir='No';
+        
+        $this->fechaCreado='';
+        $this->buscar='';    
+        $this->filtroTipo='';
+        $this->filtroRepetir='';
+
+        session()->flash('creado', 'Creado / Editado.');
 
 
     }
@@ -130,6 +204,9 @@ class VerGasto extends Component
 
                         ->when($this->estado, function ($query, $estado) {
                             return $query->where('estado', $estado);
+                        })
+                        ->when($this->filtroRepetir, function ($query, $filtroRepetir) {
+                            return $query->where('repetir', $filtroRepetir);
                         })
 
                         ->when($this->fechaCreado, function ($query, $fechaCreado) {
@@ -186,6 +263,9 @@ class VerGasto extends Component
 
                         ->when($this->estado, function ($query, $estado) {
                             return $query->where('estado', $estado);
+                        })
+                        ->when($this->filtroRepetir, function ($query, $filtroRepetir) {
+                            return $query->where('repetir', $filtroRepetir);
                         })
 
                         ->when($this->fechaCreado, function ($query, $fechaCreado) {
