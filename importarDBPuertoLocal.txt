@@ -43,3 +43,14 @@ mysql -u root -p --default-character-set=utf8 llfacturaLocal < /llfactura.sql
 ```
 
 Luego ingresa la contraseña de `root` cuando te la pida.
+
+PARA DOCKER DEL VPS 
+
+1
+docker cp /llfactura.sql mariadb:/llfactura.sql
+2
+docker exec -it mariadb bash
+3
+mysql -u mause -p --default-character-set=utf8 llfacturaPrueba < /llfactura.sql
+
+

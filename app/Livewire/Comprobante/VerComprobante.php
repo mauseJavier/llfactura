@@ -21,6 +21,10 @@ use App\Models\Comprobante;
 use App\Models\productoComprobante;
 
 use App\Models\Empresa;
+use App\Models\User;
+use App\Models\Deposito;
+
+
 
 
 class VerComprobante extends Component
@@ -34,6 +38,7 @@ class VerComprobante extends Component
 
     public $tipoComp;
     public $usuarioFiltro;
+    public $depositoFiltro;
     public $numeroComprobanteFiltro;
     public $clienteComprobanteFiltro;
 
@@ -145,6 +150,8 @@ class VerComprobante extends Component
 
         $this->tipoComp = '';
         $this->usuarioFiltro = '';
+        $this->depositoFiltro = '';
+
         $this->numeroComprobanteFiltro="";
 
 
@@ -198,7 +205,11 @@ class VerComprobante extends Component
 
         }
 
+
+      if (Auth()->user()->role_id == 1 OR Auth()->user()->role_id == 2) {
+        # code...
         $this->usuarioFiltro = Auth::user()->name;
+      }
 
 
 
@@ -267,6 +278,9 @@ class VerComprobante extends Component
         })
         ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
             return $query->where('comprobantes.razonSocial', 'LIKE', '%' . $clienteComprobanteFiltro . '%');
+        })
+        ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+            return $query->where('comprobantes.deposito_id', $depositoFiltro);
         })
         ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
         ->orderByDesc('comprobantes.created_at')
@@ -360,6 +374,9 @@ class VerComprobante extends Component
         ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
         ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
         ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+        ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+            return $query->where('comprobantes.deposito_id', $depositoFiltro);
+        })
         ->groupBy('comprobantes.idFormaPago', 'forma_pagos.nombre')
         
         // Unir la segunda colección
@@ -372,6 +389,9 @@ class VerComprobante extends Component
                 ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
                 ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
                 ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+                ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+            return $query->where('comprobantes.deposito_id', $depositoFiltro);
+        })
                 ->groupBy('comprobantes.idFormaPago2', 'forma_pagos.nombre')
         )
         ->get();
@@ -410,6 +430,9 @@ class VerComprobante extends Component
         ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
         return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
         })
+        ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+            return $query->where('comprobantes.deposito_id', $depositoFiltro);
+        })
         ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
         ->orderByDesc('created_at')
         ->get();
@@ -428,6 +451,9 @@ class VerComprobante extends Component
         ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
         return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
         })
+        ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+            return $query->where('comprobantes.deposito_id', $depositoFiltro);
+        })
         ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
         ->groupBy('tipoComp')
         ->get();
@@ -445,6 +471,9 @@ class VerComprobante extends Component
             })
             ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
             return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+            })
+            ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+                return $query->where('comprobantes.deposito_id', $depositoFiltro);
             })
             ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
             ->sum('total');
@@ -482,6 +511,9 @@ class VerComprobante extends Component
                 ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
                 ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
                 ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+                        ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+            return $query->where('comprobantes.deposito_id', $depositoFiltro);
+        })
                 ->groupBy('comprobantes.idFormaPago', 'forma_pagos.nombre')
                 
                 // Unir la segunda colección
@@ -494,6 +526,9 @@ class VerComprobante extends Component
                         ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
                         ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
                         ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+                                ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+            return $query->where('comprobantes.deposito_id', $depositoFiltro);
+        })
                         ->groupBy('comprobantes.idFormaPago2', 'forma_pagos.nombre')
                 )
                 ->get();
@@ -566,6 +601,9 @@ class VerComprobante extends Component
                                 ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
                                 return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
                                 })
+                                ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+                                    return $query->where('comprobantes.deposito_id', $depositoFiltro);
+                                })
                                 ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
                                 ->orderByDesc('created_at')
                                 ->paginate(15),
@@ -582,6 +620,9 @@ class VerComprobante extends Component
 
                                 ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
                                 return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+                                })
+                                ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+                                    return $query->where('comprobantes.deposito_id', $depositoFiltro);
                                 })
 
 
@@ -602,6 +643,9 @@ class VerComprobante extends Component
                                 ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
                                 return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
                                 })
+                                ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+                                    return $query->where('comprobantes.deposito_id', $depositoFiltro);
+                                })
 
 
                                         ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
@@ -609,6 +653,10 @@ class VerComprobante extends Component
                                         ->get(),
 
             'totales'=>$totales,
+            'usuariosEmpresa'=> User::where('empresa_id',Auth::user()->empresa_id)->get(),
+            'depositosEmpresa'=> Deposito::where('empresa_id',Auth::user()->empresa_id)->get(),
+
+
             
         ])        
         ->extends('layouts.app')

@@ -154,7 +154,27 @@ class VerInventario extends Component
             // "updated_at" => "2024-10-24 19:56:13"
     
             // Agregar los encabezados al archivo CSV
-            fputcsv($handle, ['id','codigo','detalle','costo','precio1','precio2','precio3','porcentaje','iva','rubro','proveedor','marca','pesable','controlStock','imagen','empresa_id','favorito','created_at','updated_at',]);
+            fputcsv($handle, [
+                // 'id',
+                'codigo',
+                'detalle',
+                'costo',
+                'precio1',
+                'precio2',
+                'precio3',
+                // 'porcentaje',
+                // 'iva',
+                // 'rubro',
+                // 'proveedor',
+                // 'marca',
+                // 'pesable',
+                // 'controlStock',
+                // 'imagen',
+                // 'empresa_id',
+                // 'favorito',
+                // 'created_at',
+                // 'updated_at',
+            ], ';');
     
                 $inventario = DB::table('inventarios')
                                 // ->select('id','codigo','detalle','precio1 as precio')
@@ -175,28 +195,27 @@ class VerInventario extends Component
             foreach ($inventario as $item) {
     
                 fputcsv($handle, [
-                    $item->id,
+                    // $item->id,
                     $item->codigo,
                     $item->detalle,
                     $item->costo,
                     $item->precio1,
                     $item->precio2,
                     $item->precio3,
-                    $item->porcentaje,
-                    $item->iva,
-                    $item->rubro,
-                    $item->proveedor,
-                    $item->marca,
-                    $item->pesable,
-                    $item->controlStock,
-                    $item->imagen,             
-                    $item->empresa_id,             
-                    $item->favorito,
-                    $item->created_at,
+                    // $item->porcentaje,
+                    // $item->iva,
+                    // $item->rubro,
+                    // $item->proveedor,
+                    // $item->marca,
+                    // $item->pesable,
+                    // $item->controlStock,
+                    // $item->imagen,             
+                    // $item->empresa_id,             
+                    // $item->favorito,
+                    // $item->created_at,
+                    // $item->updated_at,
     
-                    $item->updated_at,
-    
-                ]);
+                ], ';');
             }
     
             // Cerrar el archivo CSV
@@ -213,7 +232,9 @@ class VerInventario extends Component
 
             // ak ahy que agregar las dos formas de pago 
 
-            $filename = 'Inventario'.Carbon::now().'.csv';
+            // $filename = 'Inventario'.Carbon::now().'.csv';
+            $filename = 'PLU.csv';
+
 
             // Abrir o crear el archivo CSV
             $handle = fopen($filename, 'w');
@@ -240,8 +261,19 @@ class VerInventario extends Component
             // "created_at" => "2024-10-24 19:56:13"
             // "updated_at" => "2024-10-24 19:56:13"
 
-            // Agregar los encabezados al archivo CSV
-            fputcsv($handle, ['Nombre de la sección:','Código de PLU','Descripción:','Número de PLU','Precio Lista 1','Precio Lista 2','Tipo de Venta','Vencimiento',]);
+                    // Encabezados personalizados (ajústalos según necesidad)
+                    fputcsv($handle, [
+                        'Nombre de la seccion', 
+                        'Codigo de PLU', 
+                        'Descripcion', 
+                        'Numero de PLU', 
+                        'Precio Lista 1', 
+                        'Precio Lista 2', 
+                        'Tipo de Venta', 
+                        'Vencimiento', 
+                        'Detalle', // Se agregan campos adicionales para cumplir el formato
+                        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+                    ], ';');
 
                 $inventario = DB::table('inventarios')
                                 // ->select('id','codigo','detalle','precio1 as precio')
@@ -260,24 +292,31 @@ class VerInventario extends Component
 
                 //  dd($inventario);
 
-            // Escribir los datos de la consulta en el archivo CSV
-            foreach ($inventario as $item) {
+                    // Escribir los datos en el archivo CSV
+                    foreach ($inventario as $item) {
+                        // Convertir decimales de "." a "," para el formato requerido
+                        $precio1 = str_replace('.', ',', $item->precio1);
+                        $precio2 = str_replace('.', ',', $item->precio2);
 
-                fputcsv($handle, [
-                    $item->rubro,
-                    $item->codigo,
-                    $item->detalle,
-                    $item->codigo,
-                    $item->precio1,
-                    $item->precio2,
-                    'PESO',
-                    0,
+                        // Crear la fila con la cantidad exacta de columnas
+                        $row = [
+                            $item->rubro,      // No lleva comillas
+                            $item->codigo,     // Numérico sin comillas
+                            $item->detalle,    // No lleva comillas
+                            $item->codigo,     // Repetición de código
+                            $precio1,          // Formato correcto para decimales
+                            $precio2,          // Formato correcto para decimales
+                            'PESO',            // Valor fijo
+                            0,                 // Numérico sin comillas
+                            'Envasada en origen', // Datos adicionales (ajustar según necesidades)
+                            51, 0, 'Origen', 'Conservacion', 'Ingredientes', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '', '1234567891230', '', '', '', ''
+                        ];
 
-                ]);
-            }
+                        fputcsv($handle, $row, ';');
+                    }
 
-            // Cerrar el archivo CSV
-            fclose($handle);
+                    // Cerrar el archivo CSV
+                    fclose($handle);
 
             // Mensaje de confirmación
             return response()->download($filename)->deleteFileAfterSend(true);

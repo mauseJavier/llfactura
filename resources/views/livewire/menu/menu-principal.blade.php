@@ -148,9 +148,7 @@
                   <li>
                     <a wire:navigate href="{{route('preciosPublico')}}">Precios al Publico</a>
                   </li>
-                  <li>
-                    <a wire:navigate href="{{route('gasto')}}">Gastos</a>
-                  </li>
+
                     
                 @endif
 
@@ -159,6 +157,12 @@
 
                 {{-- SUPER USURAIO --}}
                 @if (Auth::user()->role_id == 3)
+
+                  <li>
+                    <a wire:navigate href="{{route('gasto')}}">Gastos</a>
+                  </li>
+
+
                   <li>
                     <a wire:navigate href="{{route('usuarios')}}">Usuarios</a>
                   </li>

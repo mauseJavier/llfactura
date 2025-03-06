@@ -12,3 +12,4 @@ use Illuminate\Support\Facades\Schedule;
     
     
 Schedule::command('repetirGastoMinuto')->everyMinute();
+Schedule::command('repetirGastoMes')->monthly();

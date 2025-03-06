@@ -125,12 +125,7 @@
                 
               </fieldset>
             </div>
-            @if (Auth()->user()->role_id == 2 OR Auth()->user()->role_id == 3 OR Auth()->user()->role_id == 4)                
-              <div class="col">
-              
-                <a wire:click="limpiarFiltro()" style="cursor: pointer;">Limpiar Filtro</a>
-              </div>
-            @endif
+
             <div class="col">
 
               <a href="{{route('cierrecaja')}}" style="cursor: pointer;">Cierre Caja</a>
@@ -385,18 +380,35 @@
                             </select>
                         </label>                  
                     </div>
-                    <div class="col">
-                        <label for="">
-                            Usuario
-                            <input type="text" wire:model.live="usuarioFiltro" name="usuario" placeholder="Usuario" />
-                        </label>
-                    </div>
-                    <div class="col">
-                      <label for="">
-                          Numero "="
-                          <input type="text" wire:model.live="numeroComprobanteFiltro" name="numeroComprobanteFiltro" placeholder="Numero" />
-                      </label>
-                  </div>
+
+                    @if (Auth::user()->role_id == 3 OR Auth::user()->role_id == 4)
+                        
+                        <div class="col">
+                            <label for="">
+                                Usuario
+                                <select name="selectUsuario" id="selectUsuario" wire:model.live="usuarioFiltro">
+                                  <option value="">Todos</option>
+                                  @foreach ($usuariosEmpresa as $u)
+                                    <option value="{{$u->name}}">{{$u->name}}</option>
+                                      
+                                  @endforeach
+                                </select>
+                            </label>
+                        </div>
+                        <div class="col">
+                          <label for="">
+                              Deposito
+
+                              <select name="selectDeposito" id="selectDeposito" wire:model.live="depositoFiltro">
+                                <option value="">Todos</option>
+                                @foreach ($depositosEmpresa as $d)
+                                  <option value="{{$d->id}}">{{$d->nombre}}</option>
+                                    
+                                @endforeach
+                              </select>
+                          </label>
+                      </div>
+                    @endif
                     
                 </div>
         

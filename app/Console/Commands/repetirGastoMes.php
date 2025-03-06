@@ -9,17 +9,14 @@ use Illuminate\Support\Facades\Log;
 
 use App\Models\Gasto;
 
-
-class repetirGastoMinuto extends Command
+class repetirGastoMes extends Command
 {
-
-
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'repetirGastoMinuto';
+    protected $signature = 'repetirGastoMes';
 
     /**
      * The console command description.
@@ -43,7 +40,7 @@ class repetirGastoMinuto extends Command
                 // Mostrar en la terminal si se ejecuta manualmente
                 // $this->info("Usuarios registrados hoy: " . $usuarios);
 
-                $gastoRepetir = Gasto::where('repetir','Minuto')->get();
+                $gastoRepetir = Gasto::where('repetir','Mes')->get();
                 // Log::info("Gastos A Repetir " . $gastoRepetir[0]->tipo);
 
                 // {

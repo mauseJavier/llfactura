@@ -123,6 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'memory_limit' => env('PHP_MEMORY_LIMIT', '512M'),
+
     
 
 ];

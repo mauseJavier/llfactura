@@ -126,10 +126,23 @@ class Venta extends Component
 
                     $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
                     ->where('codigo', $plu)
+                    ->where('pesable', 'si')
                     ->where('empresa_id', Auth::user()->empresa_id)
                     ->get();
 
                     // dd($parteEntera .'.'.$parteDecimal);
+
+                            // dd($articulo);
+                    if(count($articulo) == 0){
+
+                        $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+                        ->where('codigo', $this->datoBuscado)
+                        ->where('empresa_id', Auth::user()->empresa_id)
+                        ->get();
+                        // dd('no pesable');
+                        $this->cantidad = 1;
+
+                    }
             
             
         }else{
@@ -139,6 +152,7 @@ class Venta extends Component
                             ->where('empresa_id', Auth::user()->empresa_id)
                             ->get();
             // dd('no pesable');
+
         }
 
 

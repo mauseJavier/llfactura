@@ -169,12 +169,18 @@
                     <th scope="col">Repetir</th>
 
                     <th scope="col">Usuario</th>
+                    <th scope="col">Accion</th>
+
                   </tr>
                 </thead>
                 <tbody>
                     
                     @foreach ($Gasto as $item)
-                        <tr>
+                        <tr 
+                        
+                            x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'ackground-color': repetir === 'Repetido' ? 'yellow' : '' }"
+
+                        >
                             <td 
                                  x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
                             >
@@ -215,16 +221,31 @@
                                             {{ $item->repetir }}
                                         @break
                                     @case('Repetido')
-                                        {{ $item->repetir }} <a wire:click="editarGasto({{ $item->id }})" @click="modal = !modal" >Editar</a>
+                                        {{ $item->repetir }} 
                                         @break
                                     @default
-                                        {{ $item->repetir }} <a wire:click="quitarRepetir({{ $item->id }})">Quitar Repetir</a>
+                                        {{ $item->repetir }} 
                                 @endswitch
                             </td>
                             <td 
                                  x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
                             >
-                                {{ $item->usuario }}</td>
+                                {{ $item->usuario }}
+                            </td>
+
+                            <td 
+                            x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                            >
+                                @switch($item->repetir)
+                                    @case('No')
+                                        @break
+                                    @case('Repetido')
+                                         <a role="button" wire:click="editarGasto({{ $item->id }})" @click="modal = !modal" >Editar</a>
+                                        @break
+                                    @default
+                                         <a role="button" wire:click="quitarRepetir({{ $item->id }})">Quitar Repetir</a>
+                                @endswitch
+                            </td>
                         </tr>
                     @endforeach
                 
