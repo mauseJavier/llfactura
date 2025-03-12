@@ -4,7 +4,7 @@ namespace App\Livewire\Usuarios;
 
 use Livewire\Component;
 
-// use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Afip;
 
@@ -23,6 +23,9 @@ class Update extends Component
     public $empresa;
     public $depositos;
     public $listaPuntoVenta;
+
+    public $roles;
+    public $empresas;
  
     
 
@@ -98,7 +101,36 @@ class Update extends Component
  
     public function mount($id)
     {
+
+
         $this->usuario = User::find($id);
+
+        // dd($this->usuario);
+
+        if (!$this->usuario) {
+            # code...
+            session()->flash('mensaje', 'No existe Usuario.');
+            return $this->redirect('/usuarios', navigate: true);
+        }
+
+        if ( Auth()->user()->role_id == 4 ) {
+            
+            if ($this->usuario->empresa_id != Auth()->user()->empresa_id OR $this->usuario->id == 1 OR $this->usuario->id == 2) {
+                session()->flash('mensaje', 'No puede Modificar este Usuario.');
+                return $this->redirect('/usuarios', navigate: true);
+            }
+
+            $this->roles = Role::where('id','!=',3)->get();
+            $this->empresas = Empresa::find(Auth()->user()->empresa_id);
+
+        }else{
+            
+            $this->roles = Role::all();
+            $this->empresas = Empresa::all();
+
+            
+        }
+        
 
         $this->name = $this->usuario->name;
         $this->email = $this->usuario->email;
@@ -160,8 +192,7 @@ class Update extends Component
         return view('livewire.usuarios.update',
             [
     
-            'roles'=> Role::all(),
-            'empresas'=> Empresa::all(),
+
             
             ])        
         ->extends('layouts.app')

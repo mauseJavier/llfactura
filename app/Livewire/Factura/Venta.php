@@ -132,7 +132,8 @@ class Venta extends Component
 
                     // dd($parteEntera .'.'.$parteDecimal);
 
-                            // dd($articulo);
+                    // dd($articulo);
+                    
                     if(count($articulo) == 0){
 
                         $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
@@ -478,9 +479,7 @@ class Venta extends Component
                                     ->where('empresa_id', Auth::user()->empresa_id)
                                     ->whereAny([
                                         'codigo',
-                                        'detalle',
-                                        'rubro',
-                                        'proveedor'
+                                        'detalle'
                                     ], 'LIKE', "%{$this->datoBuscado}%")     
                                     ->orderBy('created_at','DESC')                           
                                     ->paginate(30),

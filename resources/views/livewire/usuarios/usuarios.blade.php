@@ -90,11 +90,6 @@
                         
                     @endforeach
 
-                    <tr>
-                        <td>
-                            <hr>
-                        </td>
-                    </tr>
 
 
                     @foreach ($usuarios as $us)

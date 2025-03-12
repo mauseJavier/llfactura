@@ -227,102 +227,160 @@ class VerInventario extends Component
         
     }
 
+    // public function exportarPLU(){
+        
+
+    //         // ak ahy que agregar las dos formas de pago 
+
+    //         // $filename = 'Inventario'.Carbon::now().'.csv';
+    //         $filename = 'PLU.csv';
+
+
+    //         // Abrir o crear el archivo CSV
+    //         $handle = fopen($filename, 'w');
+
+    //         // "id" => 15650
+    //         // "tipoComp" => "11"
+    //         // "numero" => 2080
+    //         // "total" => 14560.0
+    //         // "cae" => 74432202688187
+    //         // "fechaVencimiento" => "2024-11-03"
+    //         // "fecha" => "2024-10-24 19:56:13"
+    //         // "ptoVta" => 1
+    //         // "deposito_id" => 1
+    //         // "DocTipo" => 99
+    //         // "cuitCliente" => 0
+    //         // "razonSocial" => "Consumidor Final"
+    //         // "tipoContribuyente" => 5
+    //         // "domicilio" => null
+    //         // "leyenda" => null
+    //         // "idFormaPago" => 5
+    //         // "remito" => "no"
+    //         // "empresa_id" => 1
+    //         // "usuario" => "JAVIER LLFACTURA"
+    //         // "created_at" => "2024-10-24 19:56:13"
+    //         // "updated_at" => "2024-10-24 19:56:13"
+
+    //                 // Encabezados personalizados (ajústalos según necesidad)
+    //                 fputcsv($handle, [
+    //                     'Nombre de la seccion', 
+    //                     'Codigo de PLU', 
+    //                     'Descripcion', 
+    //                     'Numero de PLU', 
+    //                     'Precio Lista 1', 
+    //                     'Precio Lista 2', 
+    //                     'Tipo de Venta', 
+    //                     'Vencimiento', 
+    //                     'Detalle', // Se agregan campos adicionales para cumplir el formato
+    //                     '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
+    //                 ], ';');
+
+    //             $inventario = DB::table('inventarios')
+    //                             // ->select('id','codigo','detalle','precio1 as precio')
+    //                             ->where('empresa_id', Auth::user()->empresa_id)
+    //                             ->where('pesable', 'si')
+
+    //                             ->whereAny([
+    //                                 'codigo',
+    //                                 'detalle',
+    //                                 'rubro',
+    //                                 'proveedor',
+    //                                 'marca'
+    //                             ], 'LIKE', "%$this->datoBuscado%")        
+    //                             ->orderBy($this->ordenarPor,$this->acendenteDecendente)                        
+    //                             ->get();
+
+    //             //  dd($inventario);
+
+    //                 // Escribir los datos en el archivo CSV
+    //                 foreach ($inventario as $item) {
+    //                     // Convertir decimales de "." a "," para el formato requerido
+    //                     $precio1 = str_replace('.', ',', $item->precio1);
+    //                     $precio2 = str_replace('.', ',', $item->precio2);
+
+    //                     // Crear la fila con la cantidad exacta de columnas
+    //                     $row = [
+    //                         $item->rubro,      // No lleva comillas
+    //                         $item->codigo,     // Numérico sin comillas
+    //                         $item->detalle,    // No lleva comillas
+    //                         $item->codigo,     // Repetición de código
+    //                         $precio1,          // Formato correcto para decimales
+    //                         $precio2,          // Formato correcto para decimales
+    //                         'PESO',            // Valor fijo
+    //                         0,                 // Numérico sin comillas
+    //                         'Envasada en origen', // Datos adicionales (ajustar según necesidades)
+    //                         51, 0, 'Origen', 'Conservacion', 'Ingredientes', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '', '1234567891230', '', '', '', ''
+    //                     ];
+
+    //                     fputcsv($handle, $row, ';');
+    //                 }
+
+    //                 // Cerrar el archivo CSV
+    //                 fclose($handle);
+
+    //         // Mensaje de confirmación
+    //         return response()->download($filename)->deleteFileAfterSend(true);
+
+        
+    // }
+
+    // CODIGO GENERADO CON CHAT 
     public function exportarPLU(){
-        
-
-            // ak ahy que agregar las dos formas de pago 
-
-            // $filename = 'Inventario'.Carbon::now().'.csv';
-            $filename = 'PLU.csv';
-
-
-            // Abrir o crear el archivo CSV
-            $handle = fopen($filename, 'w');
-
-            // "id" => 15650
-            // "tipoComp" => "11"
-            // "numero" => 2080
-            // "total" => 14560.0
-            // "cae" => 74432202688187
-            // "fechaVencimiento" => "2024-11-03"
-            // "fecha" => "2024-10-24 19:56:13"
-            // "ptoVta" => 1
-            // "deposito_id" => 1
-            // "DocTipo" => 99
-            // "cuitCliente" => 0
-            // "razonSocial" => "Consumidor Final"
-            // "tipoContribuyente" => 5
-            // "domicilio" => null
-            // "leyenda" => null
-            // "idFormaPago" => 5
-            // "remito" => "no"
-            // "empresa_id" => 1
-            // "usuario" => "JAVIER LLFACTURA"
-            // "created_at" => "2024-10-24 19:56:13"
-            // "updated_at" => "2024-10-24 19:56:13"
-
-                    // Encabezados personalizados (ajústalos según necesidad)
-                    fputcsv($handle, [
-                        'Nombre de la seccion', 
-                        'Codigo de PLU', 
-                        'Descripcion', 
-                        'Numero de PLU', 
-                        'Precio Lista 1', 
-                        'Precio Lista 2', 
-                        'Tipo de Venta', 
-                        'Vencimiento', 
-                        'Detalle', // Se agregan campos adicionales para cumplir el formato
-                        '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''
-                    ], ';');
-
-                $inventario = DB::table('inventarios')
-                                // ->select('id','codigo','detalle','precio1 as precio')
-                                ->where('empresa_id', Auth::user()->empresa_id)
-                                ->where('pesable', 'si')
-
-                                ->whereAny([
-                                    'codigo',
-                                    'detalle',
-                                    'rubro',
-                                    'proveedor',
-                                    'marca'
-                                ], 'LIKE', "%$this->datoBuscado%")        
-                                ->orderBy($this->ordenarPor,$this->acendenteDecendente)                        
-                                ->get();
-
-                //  dd($inventario);
-
-                    // Escribir los datos en el archivo CSV
-                    foreach ($inventario as $item) {
-                        // Convertir decimales de "." a "," para el formato requerido
-                        $precio1 = str_replace('.', ',', $item->precio1);
-                        $precio2 = str_replace('.', ',', $item->precio2);
-
-                        // Crear la fila con la cantidad exacta de columnas
-                        $row = [
-                            $item->rubro,      // No lleva comillas
-                            $item->codigo,     // Numérico sin comillas
-                            $item->detalle,    // No lleva comillas
-                            $item->codigo,     // Repetición de código
-                            $precio1,          // Formato correcto para decimales
-                            $precio2,          // Formato correcto para decimales
-                            'PESO',            // Valor fijo
-                            0,                 // Numérico sin comillas
-                            'Envasada en origen', // Datos adicionales (ajustar según necesidades)
-                            51, 0, 'Origen', 'Conservacion', 'Ingredientes', 0, '', 0, 0, 0, 0, 0, 0, 0, 0, '', '1234567891230', '', '', '', ''
-                        ];
-
-                        fputcsv($handle, $row, ';');
-                    }
-
-                    // Cerrar el archivo CSV
-                    fclose($handle);
-
-            // Mensaje de confirmación
-            return response()->download($filename)->deleteFileAfterSend(true);
-
-        
+        $filename = 'PLU.csv';
+    
+        // Abrir o crear el archivo CSV
+        $handle = fopen($filename, 'w');
+    
+        // Encabezados ajustados al formato del archivo adjunto
+        fputcsv($handle, [
+            'Nombre de la sección:', 
+            'Código de PLU', 
+            'Descripción:', 
+            'Número de PLU', 
+            'Precio Lista 1', 
+            'Precio Lista 2', 
+            'Tipo de Venta', 
+            'Vencimiento'
+        ], ';');
+    
+        $inventario = DB::table('inventarios')
+                        ->where('empresa_id', Auth::user()->empresa_id)
+                        ->where('pesable', 'si')
+                        ->whereAny([
+                            'codigo',
+                            'detalle',
+                            'rubro',
+                            'proveedor',
+                            'marca'
+                        ], 'LIKE', "%$this->datoBuscado%")        
+                        ->orderBy($this->ordenarPor,$this->acendenteDecendente)                        
+                        ->get();
+    
+        // Escribir los datos en el archivo CSV
+        foreach ($inventario as $item) {
+            $precio1 = str_replace('.', ',', $item->precio1);
+            $precio2 = str_replace('.', ',', $item->precio2);
+            $tipoVenta = $item->pesable == 'si' ? 'PESO' : 'UNIDAD';
+    
+            $row = [
+                $item->rubro,      
+                $item->codigo,     
+                $item->detalle,    
+                $item->codigo,     
+                $precio1,          
+                $precio2,          
+                $tipoVenta,        
+                0                  
+            ];
+    
+            fputcsv($handle, $row, ';');
+        }
+    
+        fclose($handle);
+    
+        return response()->download($filename)->deleteFileAfterSend(true);
     }
+    
 
     public function eliminarInventario(Inventario $articulo){
         // dd($articulo);
@@ -415,19 +473,35 @@ class VerInventario extends Component
             'nuevaMarca' => 'required|min:3',
         ]);
 
-        $nuevaMarca = Marca::create([
-            'nombre'=> $this->nuevaMarca,
-            'comentario'=> $this->nuevaMarca,
-            'empresa_id'=>$this->empresa->id,
-        ]);
-
-        if($nuevaMarca){
-
-            session()->flash('marcaGuardar', 'Marca '.$nuevaMarca->nombre.' Guardado.');
-        }else{
-
-            session()->flash('marcaGuardar', 'Ocurrio un Error');
-        }
+            // Verificar si ya existe un rubro con el mismo nombre y empresa_id
+            $existe = Marca::whereRaw('LOWER(nombre) = ?', [strtolower($this->nuevaMarca)])
+            ->where('empresa_id', $this->empresa->id)
+            ->exists();
+        
+    
+            if ($existe) {
+            // Si ya existe, puedes lanzar una excepción, retornar un mensaje de error, etc.
+                // throw new \Exception('El rubro ya existe para esta empresa.');
+                session()->flash('marcaGuardar', 'Marca "'.$this->nuevaMarca.'" Ya Existe');
+    
+            } else {
+                // Si no existe, crear el nuevo rubro
+                $nuevaMarca = Marca::create([
+                    'nombre'=> $this->nuevaMarca,
+                    'comentario'=> $this->nuevaMarca,
+                    'empresa_id'=>$this->empresa->id,
+                ]);
+    
+                if($nuevaMarca){
+        
+                    session()->flash('mensaje', 'Marca "'.$this->nuevaMarca.'" Guardado.');
+                    $this->redirect('/inventario');
+        
+                }else{
+                    session()->flash('marcaGuardar', 'Ocurrio un error');
+        
+                }
+            }
 
 
         $this->nuevaMarca = '';
@@ -440,19 +514,35 @@ class VerInventario extends Component
             'porcentajeLista' => 'required|numeric',
         ]);
 
-        $listaGuardada = ListaPrecio::create([
-            'nombre'=> $this->nuevaLista,
-            'porcentaje'=> $this->porcentajeLista,
-            'empresa_id'=>$this->empresa->id,
-        ]);
-
-        if($listaGuardada){
-
-            session()->flash('mensajeLista', 'Lista '.$listaGuardada->nombre.' Guardado.');
-        }else{
-
-            session()->flash('mensajeLista', 'Ocurrio un Error');
-        }
+                    // Verificar si ya existe un rubro con el mismo nombre y empresa_id
+                    $existe = ListaPrecio::whereRaw('LOWER(nombre) = ?', [strtolower($this->nuevaLista)])
+                    ->where('empresa_id', $this->empresa->id)
+                    ->exists();
+                
+            
+                    if ($existe) {
+                    // Si ya existe, puedes lanzar una excepción, retornar un mensaje de error, etc.
+                        // throw new \Exception('El rubro ya existe para esta empresa.');
+                        session()->flash('mensajeLista', 'Lista "'.$this->nuevaLista.'" Ya Existe');
+            
+                    } else {
+                        // Si no existe, crear el nuevo rubro
+                        $nuevaLista = ListaPrecio::create([
+                            'nombre'=> $this->nuevaLista,
+                            'porcentaje'=> $this->porcentajeLista,
+                            'empresa_id'=>$this->empresa->id,
+                        ]);
+            
+                        if($nuevaLista){
+                
+                            session()->flash('mensaje', 'Lista "'.$this->nuevaLista.'" Guardada.');
+                            $this->redirect('/inventario');
+                
+                        }else{
+                            session()->flash('mensajeLista', 'Ocurrio un error');
+                
+                        }
+                    }
 
 
         $this->nuevaLista = '';
@@ -466,17 +556,37 @@ class VerInventario extends Component
             'nuevoProveedor' => 'required|min:3',
         ]);
 
-        $nuevoProveedor = Proveedor::create([
-            'nombre'=> $this->nuevoProveedor,
-            'empresa_id'=>$this->empresa->id,
-        ]);
 
-        if($nuevoProveedor){
+        // Verificar si ya existe un Proveedor con el mismo nombre y empresa_id
+        $existe = Proveedor::whereRaw('LOWER(nombre) = ?', [strtolower($this->nuevoProveedor)])
+        ->where('empresa_id', $this->empresa->id)
+        ->exists();
+    
 
-            session()->flash('proveedorGuardado', 'Proveedor '.$nuevoProveedor->nombre.' Guardado.');
-        }else{
-            session()->flash('proveedorGuardado', 'Ocurrio un error');
+        if ($existe) {
+        // Si ya existe, puedes lanzar una excepción, retornar un mensaje de error, etc.
+            // throw new \Exception('El Proveedor ya existe para esta empresa.');
+            session()->flash('proveedorGuardado', 'Proveedor "'.$this->nuevoProveedor.'" Ya Existe');
+
+        } else {
+                // Si no existe, crear el nuevo rubro
+                $nuevoProveedor = Proveedor::create([
+                    'nombre'=> $this->nuevoProveedor,
+                    'empresa_id'=>$this->empresa->id,
+                ]);
+
+            if($nuevoProveedor){
+    
+                session()->flash('mensaje', 'Proveedor "'.$this->nuevoProveedor.'" Guardado.');
+                $this->redirect('/inventario');
+    
+            }else{
+                session()->flash('rubroGuardado', 'Ocurrio un error');
+    
+            }
         }
+
+        ////////////////////////////////////
         $this->nuevoProveedor = '';
     }
 
@@ -486,18 +596,40 @@ class VerInventario extends Component
             'nuevoRubro' => 'required|min:3',
         ]);
 
-        $nuevoRubro = Rubro::create([
-            'nombre'=> $this->nuevoRubro,
-            'empresa_id'=>$this->empresa->id,
-        ]);
+        // $nuevoRubro = Rubro::create([
+        //     'nombre'=> $this->nuevoRubro,
+        //     'empresa_id'=>$this->empresa->id,
+        // ]);
 
-        if($nuevoRubro){
+        // Verificar si ya existe un rubro con el mismo nombre y empresa_id
+        $existeRubro = Rubro::whereRaw('LOWER(nombre) = ?', [strtolower($this->nuevoRubro)])
+        ->where('empresa_id', $this->empresa->id)
+        ->exists();
+    
 
-            session()->flash('rubroGuardado', 'Rubro '.$this->nuevoRubro.' Guardado.');
-        }else{
-            session()->flash('rubroGuardado', 'Ocurrio un error');
+        if ($existeRubro) {
+        // Si ya existe, puedes lanzar una excepción, retornar un mensaje de error, etc.
+            // throw new \Exception('El rubro ya existe para esta empresa.');
+            session()->flash('rubroGuardado', 'Rubro "'.$this->nuevoRubro.'" Ya Existe');
 
+        } else {
+        // Si no existe, crear el nuevo rubro
+            $nuevoRubro = Rubro::create([
+                'nombre' => $this->nuevoRubro,
+                'empresa_id' => $this->empresa->id,
+            ]);
+
+            if($nuevoRubro){
+    
+                session()->flash('mensaje', 'Rubro "'.$this->nuevoRubro.'" Guardado.');
+                $this->redirect('/inventario');
+    
+            }else{
+                session()->flash('rubroGuardado', 'Ocurrio un error');
+    
+            }
         }
+
 
         $this->nuevoRubro = '';
     }
@@ -912,12 +1044,16 @@ class VerInventario extends Component
 
             'listaPrecios' => ListaPrecio::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
             'listaRubros' => Rubro::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
+            // 'rubrosUnicos' => Rubro::where('empresa_id', Auth::user()->empresa_id)
+            //                         ->pluck('nombre'), 
             'listaProveedores' => Proveedor::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
             'listaMarcas' => Marca::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
         ])        
         ->extends('layouts.app')
         ->section('main'); 
     }
+
+
 
     public function cambiarModal(){
 

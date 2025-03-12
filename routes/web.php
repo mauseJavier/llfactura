@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Middleware\ControlDeRolAdmin;
 use App\Http\Middleware\ControlDeRolSuper;
+use App\Http\Middleware\ControlDeRolAdminPlus;
+
 
 use App\Livewire\Panel;
 use App\Livewire\Factura\NuevoComprobante;
@@ -162,18 +164,55 @@ use Illuminate\Http\Request;
                     dump($value->id .' '.$value->razonSocial);
 
                     $affected = DB::select('                    
-                        SELECT detalle, codigo, empresa_id, COUNT(*) AS cantidad
-                        FROM inventarios
+                        SELECT  nombre, empresa_id, COUNT(*) AS cantidad
+                        FROM proveedors
                         WHERE empresa_id = ?
-                        GROUP BY codigo
+                        GROUP BY nombre, empresa_id
                         HAVING cantidad > 1', 
                         [$value->id]);
 
 
 
-                    dump(count($affected));
+                    if(count($affected) > 0){
 
-                    dump($affected);
+                        dump(' proveedores: '.count($affected));
+    
+                        dump($affected);
+                    }
+
+                    $affected = DB::select('                    
+                        SELECT  nombre, empresa_id, COUNT(*) AS cantidad
+                        FROM rubros
+                        WHERE empresa_id = ?
+                        GROUP BY nombre, empresa_id
+                        HAVING cantidad > 1', 
+                        [$value->id]);
+
+
+
+                        if(count($affected) > 0){
+
+                            dump(' rubros: '.count($affected));
+        
+                            dump($affected);
+                        }
+
+                    $affected = DB::select('                    
+                        SELECT  nombre, empresa_id, COUNT(*) AS cantidad
+                        FROM marcas
+                        WHERE empresa_id = ?
+                        GROUP BY nombre, empresa_id
+                        HAVING cantidad > 1', 
+                        [$value->id]);
+
+
+
+                        if(count($affected) > 0){
+
+                            dump(' marcas: '.count($affected));
+        
+                            dump($affected);
+                        }
 
 
                     
@@ -184,30 +223,125 @@ use Illuminate\Http\Request;
                 
             });
 
-            Route::get('/eliminarDuplicados/{idEmpresa}', function ($idEmpresa) {
-
-                $empresa= Empresa::find($idEmpresa);
-
-                dump('Empresa id: '.$empresa->id .' Nombre: '.$empresa->razonSocial);
+            Route::get('/eliminarDuplicados/{idEmpresa?}', function ($idEmpresa = null) {
 
 
-                // ESTE CODIGO PARA ELIMINAR LOS DUPLICADOS COMPLETAR CON EL ID EMPRESA PARA NO ERRRAR 
-                
-                // Encuentra todos los registros duplicados excepto uno por grupo
-                    $idEmpresaParaEliminarDuplicados = $idEmpresa;
-                    $duplicados = Inventario::select('codigo', 'empresa_id', DB::raw('MIN(id) as id'))
-                    ->where('empresa_id', $idEmpresaParaEliminarDuplicados)
-                    ->groupBy('codigo', 'empresa_id')
-                    ->pluck('id');
+                if($idEmpresa == null){
 
-                // Elimina los registros que no están en la lista de IDs únicos
+                    $empresas= Empresa::all();
 
-                $resultadoEliminado = Inventario::where('empresa_id', $idEmpresaParaEliminarDuplicados)
-                    ->whereNotIn('id', $duplicados)
-                    ->delete();
+                    // ESTE CODIGO PARA BUSCAR LOS DUPLICADOS;
+    
+                    foreach ($empresas as $key => $value) {
+                        dump($value->id .' '.$value->razonSocial);
+    
 
-                dump('Cantidad de eliminados: '.$resultadoEliminado);
-                
+
+                        // ESTE CODIGO PARA ELIMINAR LOS DUPLICADOS COMPLETAR CON EL ID EMPRESA PARA NO ERRRAR 
+                        
+                        $resultadoEliminado = DB::affectingStatement('
+                                DELETE r1 FROM proveedors r1
+                                INNER JOIN proveedors r2
+                                WHERE
+                                    r1.empresa_id = '. $value->id .' AND
+                                    r1.empresa_id = r2.empresa_id AND
+                                    r1.nombre = r2.nombre AND
+                                    r1.id > r2.id
+                            ');
+                            
+        
+                            if($resultadoEliminado > 0){
+                                dump('Cantidad de eliminados proveedores : '.$resultadoEliminado);
+                            }
+        
+        
+                        $resultadoEliminado = DB::affectingStatement('
+                                DELETE r1 FROM rubros r1
+                                INNER JOIN rubros r2
+                                WHERE
+                                    r1.empresa_id = '. $value->id .' AND
+                                    r1.empresa_id = r2.empresa_id AND
+                                    r1.nombre = r2.nombre AND
+                                    r1.id > r2.id
+                            ');
+                            
+        
+                            if($resultadoEliminado > 0){
+                                dump('Cantidad de eliminados rubros : '.$resultadoEliminado);
+                            }    
+
+                            $resultadoEliminado = DB::affectingStatement('
+                                DELETE r1 FROM marcas r1
+                                INNER JOIN marcas r2
+                                WHERE
+                                    r1.empresa_id = '. $value->id .' AND
+                                    r1.empresa_id = r2.empresa_id AND
+                                    r1.nombre = r2.nombre AND
+                                    r1.id > r2.id
+                            ');
+                            
+        
+                            if($resultadoEliminado > 0){
+                                dump('Cantidad de eliminados marcas : '.$resultadoEliminado);
+                            }    
+    
+                        
+                        
+                    }
+
+                }else{
+
+                    $empresa= Empresa::find($idEmpresa);
+    
+                    dump('Empresa id: '.$empresa->id .' Nombre: '.$empresa->razonSocial);
+    
+    
+                    // ESTE CODIGO PARA ELIMINAR LOS DUPLICADOS COMPLETAR CON EL ID EMPRESA PARA NO ERRRAR 
+                    
+                    $resultadoEliminado = DB::affectingStatement('
+                            DELETE r1 FROM proveedors r1
+                            INNER JOIN proveedors r2
+                            WHERE
+                                r1.empresa_id = '. $idEmpresa .' AND
+                                r1.empresa_id = r2.empresa_id AND
+                                r1.nombre = r2.nombre AND
+                                r1.id > r2.id
+                        ');
+                        
+    
+                    dump('Cantidad de eliminados proveedores : '.$resultadoEliminado);
+    
+    
+                    $resultadoEliminado = DB::affectingStatement('
+                            DELETE r1 FROM rubros r1
+                            INNER JOIN rubros r2
+                            WHERE
+                                r1.empresa_id = '. $idEmpresa .' AND
+                                r1.empresa_id = r2.empresa_id AND
+                                r1.nombre = r2.nombre AND
+                                r1.id > r2.id
+                        ');
+                        
+    
+                    dump('Cantidad de eliminados rubros : '.$resultadoEliminado);
+
+                    $resultadoEliminado = DB::affectingStatement('
+                            DELETE r1 FROM marcas r1
+                            INNER JOIN marcas r2
+                            WHERE
+                                r1.empresa_id = '. $idEmpresa .' AND
+                                r1.empresa_id = r2.empresa_id AND
+                                r1.nombre = r2.nombre AND
+                                r1.id > r2.id
+                        ');
+                        
+
+                    dump('Cantidad de eliminados marcas : '.$resultadoEliminado);
+                }
+
+
+
+                                
             });
 
 
@@ -303,6 +437,19 @@ use Illuminate\Http\Request;
                 // dump('Cantidad de eliminados: '.$resultadoEliminado);
                 
             });
+        
+
+        });
+
+        // DEJA ENTRAR A LOS ADMIN PLUS 4 Y SUPER 3
+        Route::middleware([ControlDeRolAdminPlus::class])->group(function () {
+            Route::get('/adminPlus', function () {
+               
+                return Auth::user();
+            });
+            
+            Route::get('/usuarios', Usuarios::class)->name('usuarios');
+            Route::get('/updateUsuario/{id}', Update::class)->name('updateUsuario');
         
 
         });

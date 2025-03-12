@@ -42,23 +42,28 @@
                         name="email"
                         placeholder="Ingrese Correo"
                         autocomplete="email"
+                        @readonly(Auth::User()->role_id == 4)
                     />
                 </label>
-            <label for="">
-                Empresa
-                <select  wire:model="empresa_id" wire:change="buscarDepositos"  name="empresa_id" aria-label="" required>
+
+                @if (Auth::User()->role_id != 4)
                     
-                    @foreach ($empresas as $em)
-                    @if ($em->id == $empresa_id)
-                    <option value="{{$em->id}}" selected>{{$em->razonSocial}}</option>
-                    @else
-                    <option value="{{$em->id}}">{{$em->razonSocial}}</option>
-                    @endif                       
-                    
-                    @endforeach
-                    
-                </select>
-            </label>
+                    <label for="">
+                        Empresa
+                        <select  wire:model="empresa_id" wire:change="buscarDepositos"  name="empresa_id" aria-label="" required>
+                            
+                            @foreach ($empresas as $em)
+                                @if ($em->id == $empresa_id)
+                                <option value="{{$em->id}}" selected>{{$em->razonSocial}} ({{$em->id}})</option>
+                                @else
+                                <option value="{{$em->id}}">{{$em->razonSocial}} ({{$em->id}})</option>
+                                @endif                       
+                            
+                            @endforeach
+                            
+                        </select>
+                    </label>
+                @endif
 
             <label for="">
                 Punto de venta

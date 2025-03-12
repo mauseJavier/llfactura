@@ -52,5 +52,22 @@ docker cp /llfactura.sql mariadb:/llfactura.sql
 docker exec -it mariadb bash
 3
 mysql -u mause -p --default-character-set=utf8 llfacturaPrueba < /llfactura.sql
+---
+mariadb -u root -p --default-character-set=utf8 llfactura < /llfactura.sql
+
+
+
+BORRAR BASE DE DATOS DE CONTENEDOR MARIA DB 
+
+mariadb -u root -p -e "DROP DATABASE llfactura;"
+mariadb -u root -p -e "SHOW DATABASES;"
+mariadb -u root -p -e "CREATE DATABASE llfactura;"
+mariadb -u root -p -e "SHOW DATABASES;"
+
+CONSULTA SQL EN MARIA DB 
+mariadb -u root -p -e "USE llfactura; UPDATE empresas SET fe = 'no';"
+
+
+
 
 

@@ -41,31 +41,66 @@ class Usuarios extends Component
 
     public function render()
     {
+
+        if (Auth()->user()->role_id == 4) {
+
+            $usuarios = DB::select("SELECT
+                a.id AS usuarioId,
+                c.nombre AS rol,
+                a.*,
+                b.*,
+                c.*,
+                d.nombre as nombreDeposito
+            FROM
+                users a,
+                empresas b,
+                roles c,
+                depositos d
+            WHERE
+                a.empresa_id = b.id AND a.role_id = c.id  AND d.id = a.deposito_id AND
+                (
+                    a.name LIKE '%$this->buscarUsuario%' OR
+                    a.email LIKE '%$this->buscarUsuario%' OR 
+                    b.razonSocial LIKE '%$this->buscarUsuario%' OR
+                    c.nombre LIKE '%$this->buscarUsuario%'
+                )
+            AND b.id = ".Auth::user()->empresa_id." 
+            
+            AND a.id != 1
+            AND a.id != 2
+            
+            ORDER BY a.last_login DESC"
+            );
+
+        } else {
+            $usuarios = DB::select("SELECT
+                a.id AS usuarioId,
+                c.nombre AS rol,
+                a.*,
+                b.*,
+                c.*,
+                d.nombre as nombreDeposito
+            FROM
+                users a,
+                empresas b,
+                roles c,
+                depositos d
+            WHERE
+                a.empresa_id = b.id AND a.role_id = c.id  AND d.id = a.deposito_id AND
+                (
+                    a.name LIKE '%$this->buscarUsuario%' OR
+                    a.email LIKE '%$this->buscarUsuario%' OR 
+                    b.razonSocial LIKE '%$this->buscarUsuario%' OR
+                    c.nombre LIKE '%$this->buscarUsuario%'
+                )
+            ORDER BY a.last_login DESC"
+            );
+        }
+        
         return view('livewire.usuarios.usuarios',
             [
     
-            'usuarios'=> DB::select("SELECT
-                                        a.id AS usuarioId,
-                                        c.nombre AS rol,
-                                        a.*,
-                                        b.*,
-                                        c.*,
-                                        d.nombre as nombreDeposito
-                                    FROM
-                                        users a,
-                                        empresas b,
-                                        roles c,
-                                        depositos d
-                                    WHERE
-                                        a.empresa_id = b.id AND a.role_id = c.id  AND d.id = a.deposito_id AND
-                                        (
-                                            a.name LIKE '%$this->buscarUsuario%' OR
-                                            a.email LIKE '%$this->buscarUsuario%' OR 
-                                            b.razonSocial LIKE '%$this->buscarUsuario%' OR
-                                            c.nombre LIKE '%$this->buscarUsuario%'
-                                        )
-                                    ORDER BY a.last_login DESC"
-                                    ),
+            'usuarios'=> $usuarios,
 
             
             ])        

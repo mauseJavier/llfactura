@@ -10,8 +10,6 @@
         <h1>Inventario</h1>
         <article>
 
-
-            
             <div class="grid">
 
                 <div class="col">
@@ -398,9 +396,16 @@
                     </div>
                     <div class="col">
                         <label for="algo">Iva
-                            <input type="text" wire:model.blur="iva" wire:keydown="calcularPrecios" name="" id=""
-                                @error('iva') aria-invalid="true" @enderror
+
+                            <select name="iva" id="iva" wire:model.blur="iva" wire:change="calcularPrecios"                                
+                                 @error('iva') aria-invalid="true" @enderror
                             >
+                                <option value="21">21</option>
+                                <option value="10.5">10.5</option>
+                                <option value="27">27</option>
+
+
+                            </select>
                             @error('iva') 
                                 <small id="invalid-helper">
                                     {{ $message }} 
@@ -824,22 +829,41 @@
             @endif
           <form wire:submit="guardarRubro">
             <fieldset>
-              <label>
-                Rubro
-                <input
-                  wire:model="nuevoRubro"
-                  name="rubro"
-                  placeholder="Nombre Rubro"
-                  autocomplete="rubro"
-                  @error('nuevoRubro') aria-invalid="true" @enderror
-                />
-                    @error('nuevoRubro') 
-                    <small id="invalid-helper">
-                        {{ $message }} 
-                      </small>
-                    @enderror
+
+
+              <div x-data="{
+                        
+                    nuevoRubro: @entangle('nuevoRubro'),
+                    rubros: @js($listaRubros->pluck('nombre')),
+                    filteredTipos: [],
+                    showSuggestions: false,
+                    get filteredTipos() {
+                        return this.rubros.filter(nuevoRubro => nuevoRubro.toLowerCase().includes(this.nuevoRubro.toLowerCase()));
+                    }
+                }">
+                    <label for="">
+                        Rubros
                 
-              </label>
+                        <input type="text" name="nuevoRubro" x-model="nuevoRubro" @input="showSuggestions = true" @blur="setTimeout(() => showSuggestions = false, 100)" 
+                            placeholder="Nombre Rubro"
+                            autocomplete="rubro"
+                            @error('nuevoRubro') aria-invalid="true" @enderror
+                        />
+                            @error('nuevoRubro') 
+                            <small id="invalid-helper">
+                                {{ $message }} 
+                                </small>
+                            @enderror
+                
+                        <ul x-show="showSuggestions && nuevoRubro.length > 0">
+                            <template x-for="suggestion in filteredTipos" :key="suggestion">
+                                <li @click="nuevoRubro = suggestion; showSuggestions = false">
+                                    <span style="color: red;" x-text="suggestion"></span>
+                                </li>
+                            </template>
+                        </ul>
+                    </label>
+                </div>
 
             </fieldset>
           
@@ -867,22 +891,42 @@
             @endif
             <form wire:submit="guardarProveedor">
             <fieldset>
-                <label>
-                Proveedor
-                <input
-                    wire:model="nuevoProveedor"
-                    name="proveedor"
-                    placeholder="Nombre Proveedor"
-                    autocomplete="proveedor"
-                    @error('nuevoProveedor') aria-invalid="true" @enderror
-                />
-                    @error('nuevoProveedor') 
-                    <small id="invalid-helper">
-                        {{ $message }} 
-                        </small>
-                    @enderror
+
+
+                <div x-data="{
+                            
+                    nuevoProveedor: @entangle('nuevoProveedor'),
+                    proveedores: @js($listaProveedores->pluck('nombre')),
+                    filteredTipos: [],
+                    showSuggestions: false,
+                    get filteredTipos() {
+                        return this.proveedores.filter(nuevoProveedor => nuevoProveedor.toLowerCase().includes(this.nuevoProveedor.toLowerCase()));
+                    }
+                }">
+                    <label for="">
+                        Proveedor
                 
-                </label>
+                        <input type="text" name="nuevoProveedor" x-model="nuevoProveedor" @input="showSuggestions = true" @blur="setTimeout(() => showSuggestions = false, 100)" 
+                            placeholder="Nombre Proveedor"
+                            autocomplete="proveedor"
+                            @error('nuevoProveedor') aria-invalid="true" @enderror
+                        />
+                            @error('nuevoProveedor') 
+                            <small id="invalid-helper">
+                                {{ $message }} 
+                                </small>
+                            @enderror
+                
+                        <ul x-show="showSuggestions && nuevoProveedor.length > 0">
+                            <template x-for="suggestion in filteredTipos" :key="suggestion">
+                                <li @click="nuevoProveedor = suggestion; showSuggestions = false">
+                                    <span style="color: red;" x-text="suggestion"></span>
+                                </li>
+                            </template>
+                        </ul>
+                    </label>
+                </div>
+                
 
             </fieldset>
             
@@ -976,22 +1020,43 @@
             @endif
             <form wire:submit="guardarMarca">
             <fieldset>
-                <label>
-                Marca
-                <input
-                    wire:model.live="nuevaMarca"
-                    name="marca"
-                    placeholder="Nombre Marca"
-                    autocomplete="marca"
-                    @error('nuevaMarca') aria-invalid="true" @enderror
-                />
-                    @error('nuevaMarca') 
-                    <small id="invalid-helper">
-                        {{ $message }} 
-                        </small>
-                    @enderror
+
+
+                <div x-data="{
+                            
+                    nuevaMarca: @entangle('nuevaMarca'),
+                    marcas: @js($listaMarcas->pluck('nombre')),
+                    filteredTipos: [],
+                    showSuggestions: false,
+                    get filteredTipos() {
+                        return this.marcas.filter(nuevaMarca => nuevaMarca.toLowerCase().includes(this.nuevaMarca.toLowerCase()));
+                    }
+                }">
+                    <label for="">
+                        Marca
                 
-                </label>
+                        <input type="text" name="nuevaMarca" x-model="nuevaMarca" @input="showSuggestions = true" @blur="setTimeout(() => showSuggestions = false, 100)" 
+                            placeholder="Nombre Marca"
+                            autocomplete="marca"
+                            @error('nuevaMarca') aria-invalid="true" @enderror
+                        />
+                            @error('nuevaMarca') 
+                            <small id="invalid-helper">
+                                {{ $message }} 
+                                </small>
+                            @enderror
+                
+                        <ul x-show="showSuggestions && nuevaMarca.length > 0">
+                            <template x-for="suggestion in filteredTipos" :key="suggestion">
+                                <li @click="nuevaMarca = suggestion; showSuggestions = false">
+                                    <span style="color: red;" x-text="suggestion"></span>
+                                </li>
+                            </template>
+                        </ul>
+                    </label>
+                </div>
+
+                
 
             </fieldset>
             
@@ -1020,7 +1085,7 @@
             @endif
             <form wire:submit="guardarLista">
             <fieldset>
-                <label>
+                {{-- <label>
                 Nombre Lista
                 <input
                     wire:model.live="nuevaLista"
@@ -1035,7 +1100,42 @@
                         </small>
                     @enderror
                 
-                </label>
+                </label> --}}
+
+                <div x-data="{
+                            
+                    nuevaLista: @entangle('nuevaLista'),
+                    listas: @js($listaPrecios->pluck('nombre')),
+                    filteredTipos: [],
+                    showSuggestions: false,
+                    get filteredTipos() {
+                        return this.listas.filter(nuevaLista => nuevaLista.toLowerCase().includes(this.nuevaLista.toLowerCase()));
+                    }
+                }">
+                    <label for="">
+                        Nombre Lista
+                
+                        <input type="text" name="nuevaLista" x-model="nuevaLista" @input="showSuggestions = true" @blur="setTimeout(() => showSuggestions = false, 100)" 
+                            placeholder="Nombre Lista"
+                            autocomplete="lista"
+                            @error('nuevaLista') aria-invalid="true" @enderror
+                        />
+                            @error('nuevaLista') 
+                            <small id="invalid-helper">
+                                {{ $message }} 
+                                </small>
+                            @enderror
+                
+                        <ul x-show="showSuggestions && nuevaLista.length > 0">
+                            <template x-for="suggestion in filteredTipos" :key="suggestion">
+                                <li @click="nuevaLista = suggestion; showSuggestions = false">
+                                    <span style="color: red;" x-text="suggestion"></span>
+                                </li>
+                            </template>
+                        </ul>
+                    </label>
+                </div>
+                
 
                 <label>
                     Porcentaje Lista %

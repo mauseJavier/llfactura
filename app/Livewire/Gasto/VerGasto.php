@@ -27,7 +27,7 @@ class VerGasto extends Component
     public $idGasto='';
     public $tipo='Gasto';
     public $importe;
-    public $idProveedor='';
+    public $idProveedor;
     public $comentario;
     public $diaNotificacion;
     public $formaPago='';

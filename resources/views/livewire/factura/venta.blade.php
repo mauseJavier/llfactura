@@ -91,7 +91,7 @@
 
                                 </th>  
 
-                                @if (Auth::user()->role_id == 1)
+                                @if (Auth::user()->role_id == 1 AND strtolower($articulo['codigo']) != 'varios')
 
                                   <th>
                                     <p>

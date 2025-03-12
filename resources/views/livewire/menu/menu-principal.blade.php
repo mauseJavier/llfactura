@@ -155,6 +155,17 @@
                 {{-- TODOS LOS USUARIOS --}}
                 <li><a wire:navigate href="{{route('comprobante')}}">Comprobantes</a></li>
 
+                {{-- SUPER USURAIO Y ADMIN PLUS PARA LOS USUARIOS --}}
+                @if (Auth::user()->role_id == 3 || Auth::User()->role_id == 4)
+
+
+                  <li>
+                    <a wire:navigate href="{{route('usuarios')}}">Usuarios</a>
+                  </li>
+
+                    
+                @endif
+
                 {{-- SUPER USURAIO --}}
                 @if (Auth::user()->role_id == 3)
 
@@ -162,10 +173,6 @@
                     <a wire:navigate href="{{route('gasto')}}">Gastos</a>
                   </li>
 
-
-                  <li>
-                    <a wire:navigate href="{{route('usuarios')}}">Usuarios</a>
-                  </li>
                   <li>
                     <a wire:navigate href="{{route('empresa')}}">Empresas</a>
                   </li>
