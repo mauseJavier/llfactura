@@ -11,43 +11,92 @@
             </article>
         @endif
 
-        <article>
-            <label for="">Importe de Cierre
-                $<input type="text" wire:model.live="importeCierre" placeholder="Importe de Cierre de Caja"
-                @error('importeCierre') 
-                    aria-invalid="true"
-                    aria-describedby="invalid-helper"
-                @enderror
-                >
-                @error('importeCierre') 
-                    <small id="invalid-helper">
-                        {{ $message }} 
-                    </small>
-                @enderror
-            </label>
+        <article>   
+            
+            
+            <div class="grid">
+
+                <div class="col">
+
+                    <fieldset role="group">
+
+                        <input type="text" wire:model.live="importeInicio" placeholder="Importe de Inicio de Caja"
+                        @error('importeInicio') 
+                            aria-invalid="true"
+                            aria-describedby="invalid-helper"
+                        @enderror
+                        >
+                        <input type="button" value="Iniciar Caja" wire:click="inicioCaja" wire:confirm="Esta seguro de Iniciar?">
+                      </fieldset>
+
+                </div>  
+
+                <div class="col">
+
+                    <fieldset role="group">
+
+                        <input type="text" wire:model.live="importeCierre" placeholder="Importe de Cierre de Caja"
+                        @error('importeCierre') 
+                            aria-invalid="true"
+                            aria-describedby="invalid-helper"
+                        @enderror
+                        >
+                        <input type="button" value="Cerrar Caja" wire:click="cerrarCaja" wire:confirm="Esta seguro de Cerrar?" style="background-color: red">
+                      </fieldset>
+
+                </div>                    
+
+            </div>
 
 
-            {{-- <input
-            type="text"
-            name="invalid"
-            value="Invalid"
-            aria-invalid="true"
-            aria-describedby="invalid-helper"
+            
+                    
+                    
+            <form 
+                    {{-- PARA EL TOMI QUE ES 44 EL REPORTE  --}}
+                @if (Auth::user()->empresa_id != 44)
+                    action="{{ route('reporteVentaUsuarioCompleto') }}" method="POST"
+                @else
+                    action="{{ route('reporteVentaUsuario') }}" method="POST"
+
+                @endif 
             >
-            <small id="invalid-helper">
-            Please provide a valid value!
-            </small> --}}
+                @csrf
+                <div class="grid">
+                    
+                    <div class="col">
+                        <label for="">
+                            Inicio Turno
+                            <input type="datetime-local" name="inicioTurno" aria-label="Datetime local" wire:model.live="inicioTurno">
+                            
+                        </label>
+            
+                        
+                    </div>
+                    
+                    <div class="col">
+                                    
+                        <label for="">
+                            Fin Turno
+                            <input type="datetime-local" name="finTurno" aria-label="Datetime local" wire:model.live="finTurno">
+                            
+                        </label>
+                        
+                    </div>
+                    
+                </div>
+                <div class="grid">
+                    <div class="col">
+    
+                        <button type="submit">Generar Reporte</button>
+    
+                    </div>
+
+                </div>
+            </form>
 
 
-
-            <hr>
-            <button wire:click="cerrarCaja" wire:confirm="Esta seguro?">Cerrar Caja</button>
-            {{-- PARA EL TOMI QUE ES 44 EL REPORTE  --}}
-            @if (Auth::User()->empresa_id != 44)                 
-                <a href="{{route('reportes',['ruta'=>'reporteVentaUsuarioCompleto'])}}" style="cursor: pointer;" role="button">ReporteDiario C.</a>
-            @else                
-                <a href="{{route('reportes',['ruta'=>'reporteVentaUsuario'])}}" style="cursor: pointer;" role="button">Reporte Diario</a>
-            @endif
+            
 
 
         </article>
@@ -59,15 +108,19 @@
         <article>
             <table>
                 <tbody>
-                    @forelse ($cierreDia as $item)
+
+                    @forelse ($cierres as $c)
                         <tr>
                             <td>
-                                Fecha: {{$item->created_at}}
+                                {{$c->created_at}}
+                            </td>
+                            <td>
+                                {{$c->descripcion}}
                             </td>
                             <td style="text-align: right;">
-                                ${{number_format($item->importe, 2, ',', '.')}}
+                                ${{number_format($c->importe, 2, ',', '.')}}
                             </td>
-                        </tr>                
+                        </tr>                                        
                     @empty
                         <h6>No existes Cierres del dia.</h6>
                     @endforelse
@@ -77,7 +130,7 @@
                         <td>
                             Total:
                         </td>
-                        <td style="text-align: right;">
+                        <td style="text-align: right;" colspan="2">
                             ${{number_format($sumaCierre, 2, ',', '.')}}
                         </td>
                     </tr>
@@ -92,8 +145,6 @@
                 <hr>
                 <div class="grid">
                     <h3>Cierre de Usuarios</h3>
-                    <input type="date" name="" id="" wire:model.live="fechaCierre">        
-
                 </div>
 
 
@@ -143,7 +194,7 @@
                                             Venta en Efectivo:
                                         </td>
                                         <td style="text-align:right;">
-                                            ${{$item['totalSoloEfectivo']}}
+                                            $-{{$item['totalSoloEfectivo']}}
                                         </td>
                                     </tr>
                                     <tr>
@@ -151,18 +202,28 @@
                                             Cobro CC en Efectivo:
                                         </td>
                                         <td style="text-align:right;">
-                                            ${{$item['cobroCuentasCorrientes']}}
+                                            $-{{$item['cobroCuentasCorrientes']}}
                                         </td>
                                     </tr>
-                                    
-                                    <tr>
+                                    @foreach ($item['cierres'] as $c)
+
+                                        <tr>
+                                            <td>
+                                                {{$c->descripcion}}
+                                            </td>
+                                            <td style="text-align:right;">
+                                                ${{$c->importe}}
+                                            </td>
+                                        </tr>                                        
+                                    @endforeach
+                                    {{-- <tr>
                                         <td>
                                             Total Cierre Efectivo:
                                         </td>
                                         <td style="text-align:right;">
                                             ${{$item['sumaCierre']}}
                                         </td>
-                                    </tr>
+                                    </tr> --}}
                                 </tbody>
                                 <tfoot>
         

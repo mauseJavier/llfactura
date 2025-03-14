@@ -27,9 +27,14 @@ class VerCierreCaja extends Component
     public $empresa;
     public $usuario;
 
-    public $fechaCierre;
+    public $inicioTurno;
+    public $finTurno;   
+    // public $fechaCierre;
+
 
     public $importeCierre=0;
+    public $importeInicio=0;
+
 
 
     public function mount(){
@@ -37,11 +42,42 @@ class VerCierreCaja extends Component
         $this->empresa = Empresa::find(Auth()->User()->empresa_id);
         $this->usuario = Auth()->User();
 
-        $this->fechaCierre = Carbon::now()->format('Y-m-d');
+        // $this->inicioTurno = Carbon::now()->format('Y-m-d H:i:s');
+        // Fecha y hora de inicio del día actual
+        $this->inicioTurno = Carbon::now()->startOfDay()->format('Y-m-d H:i');
+
+        // Fecha y hora de fin del día actual
+        $this->finTurno = Carbon::now()->endOfDay()->format('Y-m-d H:i');
+
+        // dd();
 
 
     }
 
+
+
+    public function inicioCaja(){
+
+        $validated = $this->validate([ 
+            'importeInicio' => 'required|min:1|numeric',
+        ]);
+
+        $inicio = CierreCaja::create([
+            'descripcion'=>'Inicio de caja',
+
+            'usuario_id'=>$this->usuario->id,
+            'nombreUsuario'=>$this->usuario->name,
+            'importe'=>$this->importeInicio * -1,
+            'empresa_id'=>$this->usuario->empresa_id,
+        ]);
+
+        $this->importeInicio=0;
+
+        session()->flash('mensaje', 'Inicio con Exito.');
+
+
+
+    }
 
 
     public function cerrarCaja(){
@@ -51,6 +87,9 @@ class VerCierreCaja extends Component
         ]);
 
         $cierre = CierreCaja::create([
+
+            'descripcion'=>'Cierre de caja',
+
             'usuario_id'=>$this->usuario->id,
             'nombreUsuario'=>$this->usuario->name,
             'importe'=>$this->importeCierre,
@@ -65,11 +104,28 @@ class VerCierreCaja extends Component
 
     }
 
+    // public function submit()
+    // {
+    //     $this->validate([
+    //         'inicioTurno' => 'required|date',
+    //         'finTurno' => 'required|date|after:inicioTurno',
+    //     ]);
+
+    //     // {{-- PARA EL TOMI QUE ES 44 EL REPORTE  --}}
+
+    //     // Lógica para manejar el envío del formulario
+    //     if (Auth::user()->empresa_id != 44) {
+    //         return redirect()->route('reportes', ['ruta' => 'reporteVentaUsuarioCompleto', 'inicio' => $this->inicioTurno, 'fin' => $this->finTurno]);
+    //     } else {
+    //         return redirect()->route('reportes', ['ruta' => 'reporteVentaUsuario', 'inicio' => $this->inicioTurno, 'fin' => $this->finTurno]);
+    //     }
+    // }
+
 
     public function render()
     {
 
-        $usuarios = User::where('empresa_id',$this->usuario->empresa_id)->get();
+        $usuarios = User::where('empresa_id',$this->usuario->empresa_id)->orderBy('created_at','desc')->get();
         $cierreTodosUsuarios=[];
 
         foreach ($usuarios as $key => $us) {
@@ -78,7 +134,9 @@ class VerCierreCaja extends Component
             $collection = Comprobante::select('comprobantes.idFormaPago as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeUno) as totalImporte'))
             ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
             ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
-            ->whereBetween('comprobantes.created_at', [Carbon::createFromFormat('Y-m-d', $this->fechaCierre)->startOfDay(), Carbon::createFromFormat('Y-m-d',  $this->fechaCierre)->endOfDay()])
+            // ->whereBetween('comprobantes.created_at', [Carbon::createFromFormat('Y-m-d', $this->fechaCierre)->startOfDay(), Carbon::createFromFormat('Y-m-d',  $this->fechaCierre)->endOfDay()])
+            ->whereBetween('comprobantes.created_at', [$this->inicioTurno, $this->finTurno])
+
             ->where('comprobantes.usuario', 'like', '%' . $us->name . '%')
             // ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
             // ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
@@ -90,7 +148,8 @@ class VerCierreCaja extends Component
                 Comprobante::select('comprobantes.idFormaPago2 as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeDos) as totalImporte'))
                     ->join('forma_pagos', 'comprobantes.idFormaPago2', '=', 'forma_pagos.id')
                     ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
-                    ->whereBetween('comprobantes.created_at', [Carbon::createFromFormat('Y-m-d', $this->fechaCierre)->startOfDay(), Carbon::createFromFormat('Y-m-d',  $this->fechaCierre)->endOfDay()])
+                    // ->whereBetween('comprobantes.created_at', [Carbon::createFromFormat('Y-m-d', $this->fechaCierre)->startOfDay(), Carbon::createFromFormat('Y-m-d',  $this->fechaCierre)->endOfDay()])
+                    ->whereBetween('comprobantes.created_at', [$this->inicioTurno, $this->finTurno])
                     ->where('comprobantes.usuario', 'like', '%' . $us->name . '%')
                     // ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
                     // ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
@@ -138,7 +197,10 @@ class VerCierreCaja extends Component
                 // SUMAR EL COMBRO DE CUENTAS CORRIENTES 
 
                 $cobroCuentasCorrientes=0;
-                $cobroCC = CuentaCorriente::where('usuario',$us->name)->whereDate('created_at', $this->fechaCierre)->get();
+                $cobroCC = CuentaCorriente::where('usuario',$us->name)
+                // ->whereDate('created_at', $this->fechaCierre)
+                ->whereBetween('created_at', [$this->inicioTurno, $this->finTurno])
+                ->get();
 
                 foreach ($cobroCC as $key => $value) {
                    # code...
@@ -152,9 +214,15 @@ class VerCierreCaja extends Component
             // dd($totalSoloEfectivo);
 
             $sumaCierre = CierreCaja::where('usuario_id',$us->id)
-            ->whereBetween('created_at', [Carbon::createFromFormat('Y-m-d', $this->fechaCierre)->startOfDay(), Carbon::createFromFormat('Y-m-d',  $this->fechaCierre)->endOfDay()])
-                // ->where('created_at',Carbon::now()->format('Y-m-d'))
+            // ->whereBetween('created_at', [Carbon::createFromFormat('Y-m-d', $this->fechaCierre)->startOfDay(), Carbon::createFromFormat('Y-m-d',  $this->fechaCierre)->endOfDay()])
+                ->whereBetween('created_at', [$this->inicioTurno, $this->finTurno])
                 ->sum('importe');
+
+            $cierres = CierreCaja::where('usuario_id',$us->id)
+                // ->whereBetween('created_at', [Carbon::createFromFormat('Y-m-d', $this->fechaCierre)->startOfDay(), Carbon::createFromFormat('Y-m-d',  $this->fechaCierre)->endOfDay()])
+                    ->whereBetween('created_at', [$this->inicioTurno, $this->finTurno])
+                    ->get();
+
 
 
             $info=['titulo'=>'Reporte Diario:'. $us->name,
@@ -162,6 +230,7 @@ class VerCierreCaja extends Component
                     'fechayhora'=>Carbon::now()->format('Y-m-d:H:i:s'),
                     'totales'=>$totales,
                     'sumaTotal'=>number_format($sumaTotal, 2, ',', '.'),
+                    'cierres'=>$cierres,
                     'sumaCierre'=>number_format($sumaCierre, 2, ',', '.'),
                     'totalSoloEfectivo'=>number_format($totalSoloEfectivo, 2, ',', '.'),
                     'cobroCuentasCorrientes'=>number_format($cobroCuentasCorrientes, 2, ',', '.'),
@@ -175,11 +244,13 @@ class VerCierreCaja extends Component
             
         }
 
+        // dd( $cierreTodosUsuarios);
+
         return view('livewire.caja.ver-cierre-caja',[
-                'cierreDia'=>CierreCaja::where('usuario_id',$this->usuario->id)
-                                    ->whereBetween('created_at', [Carbon::now()->startOfDay() ,  Carbon::now()->endOfDay()])
-                                        // ->where('created_at',Carbon::now()->format('Y-m-d'))
-                                        ->get(),
+                'cierres'=> CierreCaja::where('usuario_id',$this->usuario->id)
+                    // ->whereBetween('created_at', [Carbon::createFromFormat('Y-m-d', $this->fechaCierre)->startOfDay(), Carbon::createFromFormat('Y-m-d',  $this->fechaCierre)->endOfDay()])
+                        ->whereBetween('created_at', [$this->inicioTurno, $this->finTurno])
+                        ->get(),
                 'sumaCierre'=>CierreCaja::where('usuario_id',$this->usuario->id)
                 ->whereBetween('created_at', [Carbon::now()->startOfDay() ,  Carbon::now()->endOfDay()])
                     // ->where('created_at',Carbon::now()->format('Y-m-d'))

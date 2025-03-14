@@ -68,8 +68,8 @@
 <body>
 	<table class="bill-container">
 		<tr>
-			<td class="padding-b-3">
-				<p>{{$fechayhora}}</p>
+			<td class="padding-b-3" colspan="3">
+				<p>Fecha:{{$fechayhora}}</p>
 				{{-- <P>{{$empresaIva}}</P>
 				<p>{{$direccionEmpresa}}</p>
                 <P>DE: {{$titularEmpresa}}</P>
@@ -80,7 +80,24 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="border-top padding-t-3 padding-b-3">
+			<td class="padding-b-3" colspan="3">
+				<p>IT:{{$inicioTurno}}</p>
+
+			</td>
+		</tr>
+		<tr>
+			<td class="padding-b-3" colspan="3">
+				<p>FT:{{$finTurno}}</p>
+
+			</td>
+		</tr>
+		<tr>
+			<td colspan="3">
+				<hr>
+			</td>
+		</tr>
+		<tr>
+			<td class=" padding-t-3 padding-b-3" colspan="3">
 				<p class="text-center text-lg">{{$usuario}}</p>
 				{{-- <p class="text-center">Codigo {{$codigoFactura}}</p>
 				<p>NRO: {{$numeroFactura}}</p>
@@ -90,36 +107,19 @@
 			</td>
 		</tr>
 		<tr>
-			
-				{{-- <p>A sdfsdfsdf</p>
-				<p style="word-break: keep-all; width: 80%;">R.SOCIAL {{$nombreCliente}}</p>
-				<p>CUIT {{$cuitCliente}}</p> --}}
-			
+			<td colspan="3">
+				<hr>
+			</td>
 		</tr>
-		<tr>
 
-			
-			
-		</tr>
-		<tr>
 
-			
-			
-		</tr>
-        <tr>
-
-		</tr>
-		<tr>
-			<td class="border-top padding-t-3 padding-b-3">
-				<div>
-					<table>
-					
 
 
                         @foreach ($cierreDia as $item)
 
 							<tr>
-								<th scope="row">{{$item['created_at']}}</th>
+
+								<th scope="row">{{$item['descripcion']}}</th>
 								<td colspan="2">${{number_format($item['importe'], 2, ',', '.')}}</td>
 							</tr>
 
@@ -128,17 +128,15 @@
                         
 
 
-					</table>
-				</div>
-			</td>
-		</tr>
-
-		<tr>
-			<hr>
-		</tr>
 
 			<tr>
-				<td>Total: ${{$sumaCierre}}</td>
+				<td colspan="3">
+					<hr>
+				</td>
+			</tr>
+
+			<tr>
+				<td colspan="3">Total: ${{$sumaCierre}}</td>
 			</tr>
 
 	</table>

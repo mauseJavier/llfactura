@@ -508,8 +508,15 @@ use Illuminate\Http\Request;
         Route::get('/reciboPdf/{recibo_id?}', [ReciboPdfController::class, 'imprimir'])->name('reciboPdf');
         Route::get('/codigoBarraPdf', [CodigoDeBarraController::class, 'imprimir'])->name('codigoBarraPdf');
         
+
+
+        // RUTAS DE LOS REPORTES 
         Route::get('/reporteVentaUsuario', [ReporteVentaUsuarioController::class, 'imprimir'])->name('reporteVentaUsuario');
         Route::get('/reporteVentaUsuarioCompleto', [ReporteVentaUsuarioController::class, 'reporteCompleto'])->name('reporteVentaUsuarioCompleto');
+        // ESTA ES LA MISMA RUTA CON POST
+        Route::post('/reporteVentaUsuario', [ReporteVentaUsuarioController::class, 'imprimir'])->name('reporteVentaUsuario');
+        Route::post('/reporteVentaUsuarioCompleto', [ReporteVentaUsuarioController::class, 'reporteCompleto'])->name('reporteVentaUsuarioCompleto');
+
 
 
 

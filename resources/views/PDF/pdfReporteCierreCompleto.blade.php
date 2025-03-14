@@ -68,8 +68,8 @@
 <body>
 	<table class="bill-container">
 		<tr>
-			<td class="padding-b-3">
-				<p>{{$fechayhora}}</p>
+			<td class="padding-b-3" colspan="3">
+				<p>Fecha:{{$fechayhora}}</p>
 				{{-- <P>{{$empresaIva}}</P>
 				<p>{{$direccionEmpresa}}</p>
                 <P>DE: {{$titularEmpresa}}</P>
@@ -78,9 +78,22 @@
 				<p>IIBB: {{$cuitEmpresa}}</p>
 				<p>Inicio de actividad: {{$inicioActividades}}</p> --}}
 			</td>
+			
 		</tr>
 		<tr>
-			<td class="border-top padding-t-3 padding-b-3">
+			<td class="padding-b-3" colspan="3">
+				<p>IT:{{$inicioTurno}}</p>
+
+			</td>
+		</tr>
+		<tr>
+			<td class="padding-b-3" colspan="3">
+				<p>FT:{{$finTurno}}</p>
+
+			</td>
+		</tr>
+		<tr>
+			<td class="border-top padding-t-3 padding-b-3 " colspan="3">
 				<p class="text-center text-lg">{{$usuario}}</p>
 				{{-- <p class="text-center">Codigo {{$codigoFactura}}</p>
 				<p>NRO: {{$numeroFactura}}</p>
@@ -89,37 +102,16 @@
 				<p>Concepto: Productos</p> --}}
 			</td>
 		</tr>
-		<tr>
-			
-				{{-- <p>A sdfsdfsdf</p>
-				<p style="word-break: keep-all; width: 80%;">R.SOCIAL {{$nombreCliente}}</p>
-				<p>CUIT {{$cuitCliente}}</p> --}}
-			
-		</tr>
-		<tr>
 
-			
-			
-		</tr>
-		<tr>
-
-			
-			
-		</tr>
-        <tr>
-
-		</tr>
-		<tr>
-			<td class="border-top padding-t-3 padding-b-3">
-				<div>
-					<table>
+				
+				
 					
 {{-- @dd($totales) --}}
 
                         @foreach ($totales as $item)
 
 							<tr>
-								<th scope="row">{{$item['nombre']}}</th>
+								<th scope="row" >{{$item['nombre']}}</th>
 								<td colspan="2">${{number_format($item['total'], 2, ',', '.')}}</td>
 							</tr>
 
@@ -128,17 +120,61 @@
                         
 
 
-					</table>
-				</div>
+				
+				
+			
+
+		<tr>
+			<td colspan="3">
+
+				<hr>
 			</td>
 		</tr>
 
-		<tr>
-			<hr>
-		</tr>
+			<tr>
+				<td colspan="3">Total Ventas: ${{$sumaTotal}}</td>
+			</tr>
 
 			<tr>
-				<td>Total: ${{$sumaTotal}}</td>
+				<td colspan="3">
+
+					<hr>
+				</td>
+			</tr>
+
+
+			<tr>
+				<td scope="row" >Venta Efe</td>
+				<td colspan="2" style="text-align:right;">$-{{$totalSoloEfectivo}}</td>
+			</tr>
+			<tr>
+				<td scope="row" >Cobro CC.</td>
+				<td colspan="2" style="text-align:right;">$-{{$cobroCuentasCorrientes}}</td>
+			</tr>
+			@foreach ($cierres as $c)
+
+				<tr>
+					<td>
+						{{$c->descripcion}}
+					</td>
+					<td style="text-align:right;" colspan="2">
+						${{$c->importe}}
+					</td>
+				</tr>                                        
+			@endforeach
+			<tr>
+				<td scope="row" >Cierre</td>
+				<td colspan="2" style="text-align:right;">${{$sumaCierre}}</td>
+			</tr>
+			<tr>
+				<td colspan="3">
+
+					<hr>
+				</td>
+			</tr>
+			<tr>
+				<td scope="row" >Diferecia</td>
+				<td colspan="2" style="text-align:right;">${{$diferencia}}</td>
 			</tr>
 
 	</table>

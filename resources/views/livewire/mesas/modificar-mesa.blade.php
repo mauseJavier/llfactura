@@ -417,13 +417,13 @@
                 wire:model.live="datoBuscado"
                 />
     
-                {{-- <select name="select" aria-label="Select" required wire:model.live="seleccionPrecio" style="font-size: 15px; ">
+                <select name="select" aria-label="Select" required wire:model.live="seleccionPrecio" style="font-size: 15px; ">
     
                     <option value="precio1">Precio 1</option>
                     <option value="precio2">Precio 2</option>
                     <option value="precio3">Precio 3</option>
     
-                </select> --}}
+                </select>
 
                 
                 <label id="plus-icon" class="labelIcon"

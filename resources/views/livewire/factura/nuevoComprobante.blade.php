@@ -226,7 +226,7 @@
                         x-on:blur="event.target.value = formatCurrency(event.target.value)"
                         placeholder="$0,00"
                         wire:model="total"
-                        wire:keydown.enter="facturar"
+                        {{-- wire:keydown.enter="facturar" ESTA FUNCION LA SACAMOS DE AK Y LA PUSIMOS CON UN SCRIPT ABAJO USANDO EL ID DEL INPUT  --}}
                         wire:keyup="igualarTotalImporteUno"
 
                         {{$modificarImporte}}
@@ -381,7 +381,7 @@
 
                                         type="texto"                                   
                                         id="importeDos" 
-                                        x-model.number="'{{$this->funcionImporteDos()}}'" 
+                                        x-model.number="{{$this->funcionImporteDos()}}" 
                                         x-ref="inputText2"
                                         x-on:focus="$refs.inputText2.select()"   
                                         x-on:blur="event.target.value = formatCurrency(event.target.value)"
@@ -714,7 +714,13 @@
     @endif
 
 
-
+    <script>
+        document.getElementById('total').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                document.getElementById('btnFacturar').click();
+            }
+        });
+    </script>
 
  
 </div>

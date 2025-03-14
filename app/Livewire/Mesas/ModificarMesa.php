@@ -629,7 +629,7 @@ class ModificarMesa extends Component
 
     public function restarCantidad(){
 
-        $this->cantidad --;
+        $this->cantidad -= .5;
 
         if($this->cantidad <= 0){
 
@@ -642,7 +642,7 @@ class ModificarMesa extends Component
 
     public function sumarCantidad(){
 
-        $this->cantidad ++;
+        $this->cantidad +=.5;
 
     }
     
