@@ -89,7 +89,7 @@ class VerVentasArticulos extends Component
             END) as total_costo
         '))
         ->where('empresa_id', Auth::user()->empresa_id)
-        ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+        ->whereBetween('producto_comprobantes.created_at', [Carbon::parse($this->fechaDesde) , Carbon::parse($this->fechaHasta)])
         ->when($codigo, function ($query) use ($codigo) {
             return $query->where('codigo', 'like', '%' . $codigo . '%');
         })
@@ -179,7 +179,7 @@ class VerVentasArticulos extends Component
 
                 ->selectRaw(DB::raw('round(precio/(iva/100+1),2) as precioSINiva'))
                 ->where('empresa_id',Auth::user()->empresa_id)
-                ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+                ->whereBetween('producto_comprobantes.created_at', [Carbon::parse($this->fechaDesde) , Carbon::parse($this->fechaHasta)])
 
                 ->when($codigo, function ($query) use ($codigo) {
                     return $query->where('codigo', 'like', '%' . $codigo . '%');
@@ -312,7 +312,7 @@ class VerVentasArticulos extends Component
 
             ->selectRaw(DB::raw('round(precio/(iva/100+1),2) as precioSINiva'))
             ->where('empresa_id',Auth::user()->empresa_id)
-            ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+            ->whereBetween('producto_comprobantes.created_at', [Carbon::parse($this->fechaDesde) , Carbon::parse($this->fechaHasta)])
 
             ->when($codigo, function ($query) use ($codigo) {
                 return $query->where('codigo', 'like', '%' . $codigo . '%');
@@ -365,7 +365,7 @@ class VerVentasArticulos extends Component
                     $iva= productoComprobante::                        
                     select(DB::raw('SUM(round( precio - (precio / (iva / 100 + 1)), 3)) as totalSINiva'))
                     ->where('empresa_id',Auth::user()->empresa_id)
-                    ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+                    ->whereBetween('producto_comprobantes.created_at', [Carbon::parse($this->fechaDesde) , Carbon::parse($this->fechaHasta)])
             
                     ->when($codigo, function ($query) use ($codigo) {
                         return $query->where('codigo', 'like', '%' . $codigo . '%');
@@ -434,7 +434,7 @@ class VerVentasArticulos extends Component
 
                         ->selectRaw(DB::raw('round(precio/(iva/100+1),2) as precioSINiva'))
                         ->where('empresa_id',Auth::user()->empresa_id)
-                        ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+                        ->whereBetween('producto_comprobantes.created_at', [Carbon::parse($this->fechaDesde) , Carbon::parse($this->fechaHasta)])
 
                         ->when($codigo, function ($query) use ($codigo) {
                             return $query->where('codigo', 'like', '%' . $codigo . '%');

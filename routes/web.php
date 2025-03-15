@@ -449,16 +449,16 @@ use Illuminate\Http\Request;
 
                 foreach ($articulos as $key => $value) {
 
-                    dump('id: '.$value->id .' creado: '. $value->created_at .' updated '.$value->updated_at);
+                    // dump('id: '.$value->id .' creado: '. $value->created_at .' updated '.$value->updated_at);
 
-                    $res = DB::table('producto_comprobantes')
+                    DB::table('producto_comprobantes')
                     ->where('comprobante_id', $value->id)
                     ->update(['created_at' => $value->created_at,
                                 'updated_At'=> $value->updated_at
                 
                     ]);
 
-                    dump($res);
+                    // dump($res);
 
                     // $p = Proveedor::updateOrCreate(
                     //     ['nombre' => $value->proveedor, ],
