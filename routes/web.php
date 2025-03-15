@@ -437,6 +437,39 @@ use Illuminate\Http\Request;
                 // dump('Cantidad de eliminados: '.$resultadoEliminado);
                 
             });
+
+            Route::get('/pasarFechaHoraProductosComprobantes', function () {
+
+                $articulos= DB::table('comprobantes')
+                            
+                            ->get();
+
+
+                // dd($articulos);
+
+                foreach ($articulos as $key => $value) {
+
+                    dump('id: '.$value->id .' creado: '. $value->created_at .' updated '.$value->updated_at);
+
+                    $res = DB::table('producto_comprobantes')
+                    ->where('comprobante_id', $value->id)
+                    ->update(['created_at' => $value->created_at,
+                                'updated_At'=> $value->updated_at
+                
+                    ]);
+
+                    dump($res);
+
+                    // $p = Proveedor::updateOrCreate(
+                    //     ['nombre' => $value->proveedor, ],
+                    //     ['empresa_id' => Auth::user()->empresa_id,]
+                    // );
+
+
+                }
+
+                
+            });
         
 
         });
@@ -466,7 +499,6 @@ use Illuminate\Http\Request;
             Route::get('/reporteEdicionMultiple', [InventarioController::class, 'remporteEdicionMultiple'])->name('reporteEdicionMultiple');
             Route::get('/proveedor', VerProveedor::class)->name('proveedor');
 
-            Route::get('/ventasArticulos', VerVentasArticulos::class)->name('ventasArticulos');
 
             Route::get('/configuracion/basico', Basico::class)->name('configuracionbasico');
 
@@ -538,6 +570,10 @@ use Illuminate\Http\Request;
         Route::get('/comandas', Comandas::class)->name('comandas');
         Route::get('/imprimirComanda/{comanda}', [ImprimirComandaController::class, 'imprimir'])->name('imprimirComanda');
         Route::get('/imprimirMesa/{mesa}', [ImprimirMesaController::class, 'imprimir'])->name('imprimirMesa');
+
+
+        Route::get('/ventasArticulos', VerVentasArticulos::class)->name('ventasArticulos');
+
 
 
 

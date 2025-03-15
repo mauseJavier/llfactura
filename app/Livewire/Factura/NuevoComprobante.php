@@ -502,6 +502,8 @@ class NuevoComprobante extends Component
 
 
         //PARA CARGAR EL CLIENTE EN EL CASO DE QUE SE CARGUE UN PRESUPUESTO 
+        // dd($this->cliente);
+
         if(isset($this->cliente['razonSocial'])){
 
             $this->cuit = $this->cliente['cuitCliente'];

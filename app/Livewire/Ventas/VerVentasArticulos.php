@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Response;
 
 use Livewire\WithPagination;
 
-// use App\Models\User;
+use App\Models\User;
 // use App\Models\Empresa;
 use App\Models\productoComprobante;
 
@@ -31,14 +31,36 @@ class VerVentasArticulos extends Component
     $marca,
     $colorRojo='red';
 
+    public $nombreUsuario='';
+
 
     public function mount(){
 
-        $this->fechaDesde = Carbon::now();
-        // $this->fechaDesde->setTime(0, 0);
-        $this->fechaDesde = $this->fechaDesde->format('Y-m-d');
-        
-        $this->fechaHasta = Carbon::now()->addDay()->format('Y-m-d');
+        // $this->fechaDesde = Carbon::now();
+        // // $this->fechaDesde->setTime(0, 0);
+        // $this->fechaDesde = $this->fechaDesde->format('Y-m-d');        
+        // $this->fechaHasta = Carbon::now()->addDay()->format('Y-m-d');
+
+        // Obtener la fecha y hora actual
+        $now = Carbon::now();
+
+        // Obtener el inicio del día
+        $this->fechaDesde = $now->startOfDay()->format('Y-m-d\TH:i');
+
+        // Obtener el fin del día
+        $this->fechaHasta = $now->endOfDay()->format('Y-m-d\TH:i');
+
+        // echo "Inicio del día: " . $startOfDay->toDateTimeString() . "\n";
+        // echo "Fin del día: " . $endOfDay->toDateTimeString() . "\n";
+
+
+        if(Auth::user()->role_id== 1){
+
+            $this->nombreUsuario=Auth::user()->name;
+
+        }
+
+
 
         $this->calcularVenta();
     }
@@ -142,7 +164,7 @@ class VerVentasArticulos extends Component
                             'Costo','PLista','Descuento',
                             'PVenta','Rubro',
                             'Proveedor','Marca','FP Uno','FP Dos',
-                            'TipoComp','PtoVenta','Usuario',]);
+                            'TipoComp','PtoVenta','Usuario','Creado'],";");
 
         // Ejecutar la consulta para obtener los datos
         $articulos= productoComprobante::                        
@@ -173,6 +195,10 @@ class VerVentasArticulos extends Component
                 })
                 ->when($marca, function ($query) use ($marca) {
                     return $query->where('marca', 'like', '%' . $marca . '%');
+                })
+
+                ->when($this->nombreUsuario, function ($query, $nombreUsuario) {
+                    return $query->where('usuario', $nombreUsuario);
                 })
 
                 ->orderByDesc('producto_comprobantes.id')
@@ -241,10 +267,12 @@ class VerVentasArticulos extends Component
                 $tipoComp,
                 $item->ptoVta,
                 $item->usuario,
+                $item->created_at,
 
 
 
-            ]);
+
+            ],";");
         }
 
         // Cerrar el archivo CSV
@@ -268,10 +296,7 @@ class VerVentasArticulos extends Component
         // $fechas= array('fdesde'=>date('d/m/y',strtotime($this->fechaFiltroDesde)),'fhasta'=>date('d/m/y',strtotime($this->fechaFiltroHasta)));
 
         $fechas= array('fdesde'=>$this->fechaDesde,'fhasta'=>$this->fechaHasta);
-        $totales=array('precioVenta'=>$this->precioVenta,
-                        'costoVenta'=>$this->costoVenta,
-                        'resultadoVenta'=>$this->resultadoVenta,
-                        'resultadoPorcentaje'=>$this->resultadoPorcentaje);
+
 
 
         // Ejecutar la consulta para obtener los datos
@@ -305,39 +330,68 @@ class VerVentasArticulos extends Component
                 return $query->where('marca', 'like', '%' . $marca . '%');
             })
 
+            ->when($this->nombreUsuario, function ($query, $nombreUsuario) {
+                return $query->where('usuario', $nombreUsuario);
+            })
+
             ->orderByDesc('producto_comprobantes.id')
 
             
             ->get();
-
-        $iva= productoComprobante::                        
-        select(DB::raw('SUM(round( precio - (precio / (iva / 100 + 1)), 3)) as totalSINiva'))
-        ->where('empresa_id',Auth::user()->empresa_id)
-        ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
-
-        ->when($codigo, function ($query) use ($codigo) {
-            return $query->where('codigo', 'like', '%' . $codigo . '%');
-        })
-        ->when($detalle, function ($query) use ($detalle) {
-            return $query->where('detalle', 'like', '%' . $detalle . '%');
-        })
-        ->when($rubro, function ($query) use ($rubro) {
-            return $query->where('rubro', 'like', '%' . $rubro . '%');
-        })
-        ->when($proveedor, function ($query) use ($proveedor) {
-            return $query->where('proveedor', 'like', '%' . $proveedor . '%');
-        })
-        ->when($marca, function ($query) use ($marca) {
-            return $query->where('marca', 'like', '%' . $marca . '%');
-        })        
-        ->value('totalSINiva'); // Aquí se usa value en lugar de sum
 
 
 
         // Nombre del archivo
         $nombreArchivo = 'ventaXarticulos'.Carbon::now().'.pdf';
 
-        $pdf = Pdf::loadView('PDF.pdfReporteVentaXarticulos',compact('fechas','articulos','totales','iva'));    
+        if(Auth::user()->role_id == 1){
+
+                    $totales=array('precioVenta'=>0,
+                        'costoVenta'=>0,
+                        'resultadoVenta'=>0,
+                        'resultadoPorcentaje'=>0);
+
+                        $iva=0;
+
+                    $pdf = Pdf::loadView('PDF.pdfReporteVentaXarticulos',compact('fechas','articulos','totales','iva'));    
+
+        }else{
+
+                    $totales=array('precioVenta'=>$this->precioVenta,
+                    'costoVenta'=>$this->costoVenta,
+                    'resultadoVenta'=>$this->resultadoVenta,
+                    'resultadoPorcentaje'=>$this->resultadoPorcentaje);
+
+                    $iva= productoComprobante::                        
+                    select(DB::raw('SUM(round( precio - (precio / (iva / 100 + 1)), 3)) as totalSINiva'))
+                    ->where('empresa_id',Auth::user()->empresa_id)
+                    ->whereBetween('fecha', [$this->fechaDesde, $this->fechaHasta])
+            
+                    ->when($codigo, function ($query) use ($codigo) {
+                        return $query->where('codigo', 'like', '%' . $codigo . '%');
+                    })
+                    ->when($detalle, function ($query) use ($detalle) {
+                        return $query->where('detalle', 'like', '%' . $detalle . '%');
+                    })
+                    ->when($rubro, function ($query) use ($rubro) {
+                        return $query->where('rubro', 'like', '%' . $rubro . '%');
+                    })
+                    ->when($proveedor, function ($query) use ($proveedor) {
+                        return $query->where('proveedor', 'like', '%' . $proveedor . '%');
+                    })
+                    ->when($marca, function ($query) use ($marca) {
+                        return $query->where('marca', 'like', '%' . $marca . '%');
+                    })    
+                    ->when($this->nombreUsuario, function ($query, $nombreUsuario) {
+                        return $query->where('usuario', $nombreUsuario);
+                    })    
+                    ->value('totalSINiva'); // Aquí se usa value en lugar de sum
+                
+                
+                
+
+            $pdf = Pdf::loadView('PDF.pdfReporteVentaXarticulos',compact('fechas','articulos','totales','iva'));    
+        }
 
         // Guardar el PDF en el almacenamiento en 'public'
         $rutaArchivo = 'public/pdf/' . $nombreArchivo;
@@ -364,6 +418,8 @@ class VerVentasArticulos extends Component
         $marca = $this->marca;
 
 
+        // dd(productoComprobante::all());
+        
         return view('livewire.ventas.ver-ventas-articulos',[
 
             'articulos'=> productoComprobante::                        
@@ -396,10 +452,16 @@ class VerVentasArticulos extends Component
                             return $query->where('marca', 'like', '%' . $marca . '%');
                         })
 
+                        ->when($this->nombreUsuario, function ($query, $nombreUsuario) {
+                            return $query->where('usuario', $nombreUsuario);
+                        })
+
                         ->orderByDesc('producto_comprobantes.id')
 
                         
                         ->paginate(50),
+
+                        'usuariosEmpresa'=> User::where('empresa_id',Auth::user()->empresa_id)->get(),
 
                        
 

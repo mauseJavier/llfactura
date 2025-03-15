@@ -81,11 +81,15 @@
                 <label for="">Fecha Desde: {{$fechas['fdesde']}}</label>
                 <label for="">Fecha Hasta: {{$fechas['fhasta']}}</label>
 
+                @if (Auth::user()->role_id != 1)
+                    
+                    <h3>Suma de Venta: ${{$totales['precioVenta']}}</h3>
+                    <h4>IVA: ${{$iva}}</h4>
+                    <h4>Suma de Costo: ${{$totales['costoVenta']}}</h4>
+                    <h4>Resultado: ${{$totales['resultadoVenta']}} (%{{$totales['resultadoPorcentaje']}})</h4>
+                    
+                @endif
         
-                  <h3>Suma de Venta: ${{$totales['precioVenta']}}</h3>
-                  <h4>IVA: ${{$iva}}</h4>
-                  <h4>Suma de Costo: ${{$totales['costoVenta']}}</h4>
-                  <h4>Resultado: ${{$totales['resultadoVenta']}} (%{{$totales['resultadoPorcentaje']}})</h4>
 
                   <hr>
 

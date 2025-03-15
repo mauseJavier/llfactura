@@ -162,10 +162,10 @@
 					</td>
 				</tr>                                        
 			@endforeach
-			<tr>
+			{{-- <tr>
 				<td scope="row" >Cierre</td>
 				<td colspan="2" style="text-align:right;">${{$sumaCierre}}</td>
-			</tr>
+			</tr> --}}
 			<tr>
 				<td colspan="3">
 

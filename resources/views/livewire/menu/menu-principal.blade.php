@@ -139,9 +139,7 @@
                   <li>
                     <a wire:navigate href="{{route('inventario')}}">Inventario</a>
                   </li>
-                  <li>
-                    <a wire:navigate href="{{route('ventasArticulos')}}">Ventas por Art</a>
-                  </li>
+
                   <li>
                     <a wire:navigate href="{{route('configuracionbasico')}}">Configuracion Basico</a>
                   </li>
@@ -154,6 +152,9 @@
 
                 {{-- TODOS LOS USUARIOS --}}
                 <li><a wire:navigate href="{{route('comprobante')}}">Comprobantes</a></li>
+                <li>
+                  <a wire:navigate href="{{route('ventasArticulos')}}">Ventas por Art</a>
+                </li>
 
                 {{-- SUPER USURAIO Y ADMIN PLUS PARA LOS USUARIOS --}}
                 @if (Auth::user()->role_id == 3 || Auth::User()->role_id == 4)

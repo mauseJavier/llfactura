@@ -10,43 +10,62 @@
             <fieldset class="grid">
                 <label for="">
                     Desde
-                    <input type="date" name="date" aria-label="Date" wire:model.live="fechaDesde" wire:change="calcularVenta()">
+                    <input type="datetime-local" name="fechaDesde" aria-label="Date" wire:model.live="fechaDesde" wire:change="calcularVenta()">
                 </label>
                 <label for="">
                     Hasta
-                    <input type="date" name="date" aria-label="Date" wire:model.live="fechaHasta" wire:change="calcularVenta()">
+                    <input type="datetime-local" name="fechaHasta" aria-label="Date" wire:model.live="fechaHasta" wire:change="calcularVenta()">
                 </label>
 
             </fieldset>
 
-            <fieldset class="grid">
-                <label for="">
-                    Codigo
-                    <input type="text" wire:model.live="codigo" placeholder="Codigo" wire:keyup="calcularVenta()">
-                </label>
-                <label for="">
-                    Detalle
-                    <input type="text" wire:model.live="detalle" placeholder="Detalle" wire:keyup="calcularVenta()">
-                </label>
-                <label for="">
-                    Rubro
-                    <input type="text" wire:model.live="rubro" placeholder="Rubro" wire:keyup="calcularVenta()">
-                </label>
-                <label for="">
-                    Proveedor
-                    <input type="text" wire:model.live="proveedor" placeholder="Proveedor" wire:keyup="calcularVenta()">
-                </label>
-                <label for="">
-                    Marca
-                    <input type="text" wire:model.live="marca" placeholder="Marca" wire:keyup="calcularVenta()">
-                </label>
+            @if (Auth::user()->role_id != 1)
+                <fieldset class="grid">
+                    <label for="">
+                        Usuario
+                        <select name="usuario" id="usuario" wire:model.live="nombreUsuario">
+                            <option value="">Todos</option>
+                            @foreach ($usuariosEmpresa as $item)
+                                <option value="{{$item->name}}">{{$item->name}}</option>
 
-            </fieldset>
+                            @endforeach
+                        </select>
+
+
+                    </label>
+                    
+                    <label for="">
+                        Codigo
+                        <input type="text" wire:model.live="codigo" placeholder="Codigo" wire:keyup="calcularVenta()">
+                    </label>
+                    <label for="">
+                        Detalle
+                        <input type="text" wire:model.live="detalle" placeholder="Detalle" wire:keyup="calcularVenta()">
+                    </label>
+                    <label for="">
+                        Rubro
+                        <input type="text" wire:model.live="rubro" placeholder="Rubro" wire:keyup="calcularVenta()">
+                    </label>
+                    <label for="">
+                        Proveedor
+                        <input type="text" wire:model.live="proveedor" placeholder="Proveedor" wire:keyup="calcularVenta()">
+                    </label>
+                    <label for="">
+                        Marca
+                        <input type="text" wire:model.live="marca" placeholder="Marca" wire:keyup="calcularVenta()">
+                    </label>
+    
+                </fieldset>
+            @endif
           </form>
 
-          <h3>Suma de Venta: ${{$precioVenta}}</h3>
-          <h4>Suma de Costo: ${{$costoVenta}}</h4>
-          <h4>Resultado: ${{$resultadoVenta}} (%{{$resultadoPorcentaje}})</h4>
+            @if (Auth::user()->role_id != 1)
+                
+                <h3>Suma de Venta: ${{$precioVenta}}</h3>
+                <h4>Suma de Costo: ${{$costoVenta}}</h4>
+                <h4>Resultado: ${{$resultadoVenta}} (%{{$resultadoPorcentaje}})</h4>
+            @endif
+
 
 
           <hr>
@@ -78,6 +97,12 @@
                 <th scope="col">Fecha</th>
                 <th scope="col">FP Uno</th>
                 <th scope="col">FP Dos</th>
+
+                <th scope="col">Usuario</th>
+
+                <th scope="col">Creado</th>
+                <th scope="col">Modificado</th>
+
 
 
 
@@ -120,6 +145,12 @@
 
                             <td>{{$a->nombreFormaPago1}}</td>
                             <td>{{$a->nombreFormaPago2}}</td>
+
+                            <td>{{$a->usuario}}</td>
+
+                            <td>{{$a->created_at}}</td>
+                            <td>{{$a->updated_at}}</td>
+
 
                         </tr>
                     @endif

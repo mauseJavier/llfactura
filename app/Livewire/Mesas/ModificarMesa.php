@@ -215,6 +215,8 @@ class ModificarMesa extends Component
                 'idFormaPago'=> 1,
             );
 
+            // dd($this->cliente);
+
             foreach ($this->data['mesaCarrito'] as $key => $value) {
 
                 // dump($value);
