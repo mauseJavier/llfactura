@@ -507,9 +507,6 @@ use Illuminate\Http\Request;
 
             Route::get('/stock', VerStock::class)->name('stock');
 
-            Route::get('/gasto', VerGasto::class)->name('gasto');
-
-
 
         });
 
@@ -573,6 +570,9 @@ use Illuminate\Http\Request;
 
 
         Route::get('/ventasArticulos', VerVentasArticulos::class)->name('ventasArticulos');
+
+        Route::get('/gasto', VerGasto::class)->name('gasto');
+
 
 
 

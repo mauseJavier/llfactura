@@ -155,6 +155,9 @@
                 <li>
                   <a wire:navigate href="{{route('ventasArticulos')}}">Ventas por Art</a>
                 </li>
+                <li>
+                  <a wire:navigate href="{{route('gasto')}}">Gastos</a>
+                </li>
 
                 {{-- SUPER USURAIO Y ADMIN PLUS PARA LOS USUARIOS --}}
                 @if (Auth::user()->role_id == 3 || Auth::User()->role_id == 4)
@@ -170,9 +173,7 @@
                 {{-- SUPER USURAIO --}}
                 @if (Auth::user()->role_id == 3)
 
-                  <li>
-                    <a wire:navigate href="{{route('gasto')}}">Gastos</a>
-                  </li>
+
 
                   <li>
                     <a wire:navigate href="{{route('empresa')}}">Empresas</a>

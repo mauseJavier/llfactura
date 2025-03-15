@@ -28,6 +28,11 @@
                         >
                         <input type="button" value="Iniciar Caja" wire:click="inicioCaja" wire:confirm="Esta seguro de Iniciar?">
                       </fieldset>
+                        @error('importeInicio') 
+                         <small id="invalid-helper">
+                            {{ $message }} 
+                          </small>
+                        @enderror
 
                 </div>  
 
@@ -43,6 +48,11 @@
                         >
                         <input type="button" value="Cerrar Caja" wire:click="cerrarCaja" wire:confirm="Esta seguro de Cerrar?" style="background-color: red">
                       </fieldset>
+                        @error('importeCierre') 
+                         <small id="invalid-helper">
+                            {{ $message }} 
+                          </small>
+                        @enderror
 
                 </div>                    
 
@@ -52,7 +62,7 @@
             
                     
                     
-            <form 
+            <form target="_blank"
                     {{-- PARA EL TOMI QUE ES 44 EL REPORTE  --}}
                 @if (Auth::user()->empresa_id != 44)
                     action="{{ route('reporteVentaUsuarioCompleto') }}" method="POST"
@@ -194,7 +204,7 @@
                                             Venta en Efectivo:
                                         </td>
                                         <td style="text-align:right;">
-                                            $-{{$item['totalSoloEfectivo']}}
+                                            -${{$item['totalSoloEfectivo']}}
                                         </td>
                                     </tr>
                                     <tr>
@@ -202,7 +212,15 @@
                                             Cobro CC en Efectivo:
                                         </td>
                                         <td style="text-align:right;">
-                                            $-{{$item['cobroCuentasCorrientes']}}
+                                            -${{$item['cobroCuentasCorrientes']}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Gastos Pagados en Efe.:
+                                        </td>
+                                        <td style="text-align:right;">
+                                            ${{$item['sumaGastos']}}
                                         </td>
                                     </tr>
                                     @foreach ($item['cierres'] as $c)

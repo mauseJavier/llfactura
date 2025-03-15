@@ -144,12 +144,16 @@
 
 
 			<tr>
-				<td scope="row" >Venta Efe</td>
+				<td scope="row" >Venta Efe:</td>
 				<td colspan="2" style="text-align:right;">$-{{$totalSoloEfectivo}}</td>
 			</tr>
 			<tr>
 				<td scope="row" >Cobro CC.</td>
 				<td colspan="2" style="text-align:right;">$-{{$cobroCuentasCorrientes}}</td>
+			</tr>
+			<tr>
+				<td scope="row" >Suma Gastos:</td>
+				<td colspan="2" style="text-align:right;">${{$sumaGastos}}</td>
 			</tr>
 			@foreach ($cierres as $c)
 

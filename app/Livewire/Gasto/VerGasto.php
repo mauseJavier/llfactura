@@ -39,6 +39,8 @@ class VerGasto extends Component
     public $filtroTipo='';
     public $filtroRepetir='';
 
+    public $nombreUsuario='';
+
 
 
     public function cancelar(){
@@ -176,6 +178,11 @@ class VerGasto extends Component
 
     public function mount(){
 
+        if (Auth::user()->role_id == 1 ) {
+            $this->nombreUsuario = Auth::user()->name;
+        }
+
+        // dd($this->nombreUsuario);
     }
 
 
@@ -207,6 +214,9 @@ class VerGasto extends Component
                         })
                         ->when($this->filtroRepetir, function ($query, $filtroRepetir) {
                             return $query->where('repetir', $filtroRepetir);
+                        })
+                        ->when($this->nombreUsuario, function ($query, $nombreUsuario) {
+                            return $query->where('usuario', $nombreUsuario);
                         })
 
                         ->when($this->fechaCreado, function ($query, $fechaCreado) {
@@ -266,6 +276,9 @@ class VerGasto extends Component
                         })
                         ->when($this->filtroRepetir, function ($query, $filtroRepetir) {
                             return $query->where('repetir', $filtroRepetir);
+                        })
+                        ->when($this->nombreUsuario, function ($query, $nombreUsuario) {
+                            return $query->where('usuario', $nombreUsuario);
                         })
 
                         ->when($this->fechaCreado, function ($query, $fechaCreado) {

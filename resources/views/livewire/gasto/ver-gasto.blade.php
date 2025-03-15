@@ -392,53 +392,57 @@
                             >
                         </textarea>
                     </label>
-    
-                    <label for="">
-                        Proveedor 
-                        <input name="terms" type="checkbox" role="switch"  @click="showSelectProveedor = !showSelectProveedor" />
-                    
-                        <select name="proveedor" wire:model="idProveedor" x-show="showSelectProveedor">
-                            <option selected value="">No</option>
-                            @foreach ($Proveedor as $item)
-                                <option value="{{ $item->id }}">{{ $item->nombre }}</option>
-                            @endforeach
-                        </select>
-                    </label>
-                    <label for="">
-                        Dia Notificacion 
-                        <input name="terms" type="checkbox" role="switch"  @click="showSelectNotifi = !showSelectNotifi" />
+
+                    @if (Auth::user()->role_id != 1)
                         
-                        <select name="dia_mes" wire:model="diaNotificacion" x-show="showSelectNotifi">
-                            @for ($i = 1; $i <= 31; $i++)
-                                <option value="{{ $i }}">Dia: {{ $i }}</option>
-                            @endfor
-                        </select>
+                        <label for="">
+                            Proveedor 
+                            <input name="terms" type="checkbox" role="switch"  @click="showSelectProveedor = !showSelectProveedor" />
                         
+                            <select name="proveedor" wire:model="idProveedor" x-show="showSelectProveedor">
+                                <option selected value="">No</option>
+                                @foreach ($Proveedor as $item)
+                                    <option value="{{ $item->id }}">{{ $item->nombre }}</option>
+                                @endforeach
+                            </select>
+                        </label>
+                        <label for="">
+                            Dia Notificacion 
+                            <input name="terms" type="checkbox" role="switch"  @click="showSelectNotifi = !showSelectNotifi" />
+                            
+                            <select name="dia_mes" wire:model="diaNotificacion" x-show="showSelectNotifi">
+                                @for ($i = 1; $i <= 31; $i++)
+                                    <option value="{{ $i }}">Dia: {{ $i }}</option>
+                                @endfor
+                            </select>
+                            
 
 
-                    </label>
-                    <label for="">
-                        Repetir  
-                        <input name="terms" type="checkbox" role="switch"  @click="showSelectRepe = !showSelectRepe" />
-                        
-                        <select name="repetir" wire:model="repetir" x-show="showSelectRepe">
-                            @if ($idGasto == '')
-                                <option selected value="No">No</option>
-                                <option selected value="Mes">Mes</option>
-                                @if (Auth()->user()->role_id == 3)
-                                
-                                    <option selected value="Minuto">Minuto (Super)</option>
+                        </label>
+                        <label for="">
+                            Repetir  
+                            <input name="terms" type="checkbox" role="switch"  @click="showSelectRepe = !showSelectRepe" />
+                            
+                            <select name="repetir" wire:model="repetir" x-show="showSelectRepe">
+                                @if ($idGasto == '')
+                                    <option selected value="No">No</option>
+                                    <option selected value="Mes">Mes</option>
+                                    @if (Auth()->user()->role_id == 3)
                                     
+                                        <option selected value="Minuto">Minuto (Super)</option>
+                                        
+                                    @endif
+                                    
+                                @else
+                                    <option selected value="No">No (Edicion)</option>
+
                                 @endif
-                                
-                            @else
-                                <option selected value="No">No (Edicion)</option>
-
-                            @endif
 
 
-                        </select>
-                    </label>
+                            </select>
+                        </label>
+                    @endif
+    
     
     
     

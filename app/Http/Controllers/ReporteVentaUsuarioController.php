@@ -13,6 +13,8 @@ use Illuminate\Support\Carbon;
 use App\Models\Comprobante;
 use App\Models\CierreCaja;
 use App\Models\CuentaCorriente;
+use App\Models\Gasto;
+
 
 
 
@@ -148,6 +150,14 @@ class ReporteVentaUsuarioController extends Controller
                 ->whereBetween('created_at', [$request->inicioTurno , $request->finTurno])
                 ->get();
 
+            $sumaGastos = Gasto::
+                where('usuario',Auth()->user()->name)
+                ->where('formaPago','Efectivo')
+                ->where('estado','Pago')
+                ->where('empresa_id',Auth::user()->empresa_id)
+                ->whereBetween('created_at', [$request->inicioTurno , $request->finTurno])
+                ->sum('importe');
+
 
         $info=['titulo'=>'Reporte Diario:'. Auth()->user()->name,
                 'usuario'=> Auth()->user()->name,
@@ -159,10 +169,14 @@ class ReporteVentaUsuarioController extends Controller
 
                 'sumaTotal'=>number_format($sumaTotal, 2, ',', '.'),
 
+                'sumaGastos'=>number_format($sumaGastos, 2, ',', '.'),
+
+
                 'sumaCierre'=>number_format($sumaCierre, 2, ',', '.'),
                 'totalSoloEfectivo'=>number_format($totalSoloEfectivo, 2, ',', '.'),
                 'cobroCuentasCorrientes'=>number_format($cobroCuentasCorrientes, 2, ',', '.'),
-                'diferencia'=>number_format($sumaCierre -( $totalSoloEfectivo + $cobroCuentasCorrientes), 2, ',', '.'),
+                'diferencia'=>number_format(($sumaCierre  + $sumaGastos) - ( $totalSoloEfectivo + $cobroCuentasCorrientes), 2, ',', '.'),
+
             ];
 
             
