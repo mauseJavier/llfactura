@@ -143,10 +143,10 @@ class VerGasto extends Component
                     'formaPago' => $this->formaPago,
                     'estado' => $this->estado,
                     'idProveedor' => $this->idProveedor,
-                    'comentario' => $this->comentario,
+                    'comentario' => $this->comentario . 'Editado por: '. Auth()->user()->name,
                     'diaNotificacion' => $this->diaNotificacion,
-                    'usuario' => Auth()->user()->name,
-                    'empresa_id' => Auth()->user()->empresa_id,
+                    // 'usuario' => Auth()->user()->name, LO SACO PARA QUE SALGA EL USUARIO ORIGINAL
+                    // 'empresa_id' => Auth()->user()->empresa_id,
                     'repetir' => 'No',
                 ]);
 

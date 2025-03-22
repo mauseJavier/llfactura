@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 use App\Models\Empresa;
+use App\Models\FormaPago;
+
 
 
 use App\Models\Cliente;
@@ -29,6 +31,8 @@ class CuentaCorriente extends Component
 
     public $comentario;
     public $importePagado;
+
+    public $formaPago = 'Efectivo';
 
 
     public $fechaDesde;
@@ -72,6 +76,8 @@ class CuentaCorriente extends Component
         'cliente_id'=>$this->cliente->id,
         'comprobante_id'=>0,
         'tipo'=>'pago',
+        'formaPago'=>$this->formaPago,
+
         'comentario'=>$this->comentario,
         'debe'=>0,
         'haber'=>round($this->importePagado,2),
@@ -83,12 +89,16 @@ class CuentaCorriente extends Component
         $this->comentario='';
         $this->importePagado=0;
 
+        session()->flash('mensajePago', 'Pago Correcto.');
+
+
 
     }
 
 
     public function getSaldo()
     {
+
         // Obtener el saldo de la cuenta corriente o devolver 0 si no se encuentra el registro.
         $saldo = DB::table('cuenta_corrientes')
             ->select('saldo')
@@ -109,12 +119,15 @@ class CuentaCorriente extends Component
 
     public function render()
     {
+
         return view('livewire.cliente.cuenta-corriente',[
             'movimientos'=> DB::table('cuenta_corrientes')
                 ->where('cliente_id',$this->cliente->id)
                 ->where('created_at','>=',$this->fechaDesde)
                 ->orderBy('created_at','DESC')->paginate(20),
             'saldo' => $this->getSaldo(),
+            'formaPagoLista' => FormaPago::all(),
+
         ])
         ->extends('layouts.app')
         ->section('main');

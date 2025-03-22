@@ -8,6 +8,10 @@ use Afip;
 use Carbon\Carbon;
 
 
+use App\Events\SaldoCuentaCorriente;
+
+
+
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,6 +22,8 @@ use App\Models\productoComprobante;
 use App\Models\FormaPago;
 use App\Models\Deposito;
 use App\Models\Empresa;
+use App\Models\Cliente;
+
 
 
 
@@ -30,6 +36,8 @@ class NotaCredito extends Component
     public $empresa;
     public $comprobante;
     public $formaPago;
+    public $formaPago2;
+
     public $deposito;
     public $productos;
     public $comentario;
@@ -38,8 +46,12 @@ class NotaCredito extends Component
 
     public function mount(Comprobante $comprobante){
 
+
+
         $this->comprobante = $comprobante;
         $this->formaPago = FormaPago::find($comprobante->idFormaPago);
+        $this->formaPago2 = FormaPago::find($comprobante->idFormaPago2);
+
         $this->deposito = Deposito::find($comprobante->deposito_id);
         $this->productos = productoComprobante::where('comprobante_id',$comprobante->id)->get();
 
@@ -220,6 +232,35 @@ class NotaCredito extends Component
                     'usuario'=> Auth::user()->name,
                     'remito'=>'no', //no (se entrega en el momento ) si (se entrega posterior)
                 ]);
+
+                // "idFormaPago" => 0
+                // "importeUno" => 10000.0
+                // "idFormaPago2" => 0
+                // "importeDos" => 0.0
+                        //AK APLICA EL SALDO AL CLIENTE
+                
+                if($this->comprobante->idFormaPago == 0){ //IGUAL A CUENTA CORRIENTE 
+
+                    // "cuitCliente" => 87987978
+                    $cliente = Cliente::where('numeroDocumento',$this->comprobante->cuitCliente)->where('empresa_id',Auth::user()->empresa_id)->pluck('id');
+
+                    // dd($cliente[0]);
+
+                    SaldoCuentaCorriente::dispatch([
+                        'empresa_id'=>Auth::user()->empresa_id,
+                        'cliente_id'=>$cliente[0],
+                        'comprobante_id'=>$notaGuardada->id,
+                        'tipo'=>'pago',
+                        'formaPago'=>'Nada',
+                
+                        'comentario'=>'Devolucion '.$descripcionTipoComp.' N-'.$notaGuardada->numero,
+                        'debe'=>0,
+                        'haber'=>round($this->comprobante->importeUno,2),
+                        'usuario'=> Auth::user()->name,
+                        // 'saldo'=>round($this->total,2), el saldo se calcula en listener 
+                
+                        ]);
+                }
 
                 foreach ($this->productos as $key => $value) {
 

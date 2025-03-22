@@ -75,6 +75,7 @@
                                 @foreach ($FormaPago as $item)                        
                                     <option selected value="{{$item->nombre}}">{{$item->nombre}}</option>
                                 @endforeach
+                                <option value="Otros">Otros</option>
                             </select>
                         </label>
 
@@ -236,15 +237,21 @@
                             <td 
                             x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
                             >
+
+                            @if (Auth::user()->role_id == 3 || Auth::user()->role_id == 4)
+                                
                                 @switch($item->repetir)
                                     @case('No')
+                                        <a role="button" wire:click="editarGasto({{ $item->id }})" @click="modal = !modal" >Editar</a>
+
                                         @break
                                     @case('Repetido')
-                                         <a role="button" wire:click="editarGasto({{ $item->id }})" @click="modal = !modal" >Editar</a>
+                                        <a role="button" wire:click="editarGasto({{ $item->id }})" @click="modal = !modal" >Editar</a>
                                         @break
                                     @default
-                                         <a role="button" wire:click="quitarRepetir({{ $item->id }})">Quitar Repetir</a>
+                                        <a role="button" wire:click="quitarRepetir({{ $item->id }})">Quitar Repetir</a>
                                 @endswitch
+                            @endif
                             </td>
                         </tr>
                     @endforeach
@@ -283,10 +290,20 @@
                     <strong>Datos del Gasto</strong>
                 </p>
                 </header>
-                
-                
-                
+                                
                 <fieldset>
+
+                    <label for="">
+                        Proveedor 
+                        <input name="terms" type="checkbox" role="switch"  @click="showSelectProveedor = !showSelectProveedor" />
+                    
+                        <select name="proveedor" wire:model="idProveedor" x-show="showSelectProveedor">
+                            <option selected value="">No</option>
+                            @foreach ($Proveedor as $item)
+                                <option value="{{ $item->id }}">{{ $item->nombre }}</option>
+                            @endforeach
+                        </select>
+                    </label>
     
                     <div x-data="{
                         
@@ -300,9 +317,12 @@
                     }">
                         <label for="">
                             Tipo de Gasto
-                            <input name="terms" type="checkbox" role="switch" @click="isChecked = !isChecked" />
+                            {{-- <input name="terms" type="checkbox" role="switch" @click="isChecked = !isChecked" /> --}}
                     
-                            <input type="text" name="tipo" x-model="tipo" x-bind:disabled="!isChecked" @input="showSuggestions = true" @blur="setTimeout(() => showSuggestions = false, 100)" />
+                            <input type="text" name="tipo" x-model="tipo" 
+                                {{-- x-bind:disabled="!isChecked"  --}}
+                                @input="showSuggestions = true" @blur="setTimeout(() => showSuggestions = false, 100)" 
+                            />
                     
                             <ul x-show="showSuggestions && tipo.length > 0">
                                 <template x-for="suggestion in filteredTipos" :key="suggestion">
@@ -329,6 +349,8 @@
                             @foreach ($FormaPago as $item)                        
                                 <option selected value="{{$item->nombre}}">{{$item->nombre}}</option>
                             @endforeach
+
+                            <option value="Otros">Otros</option>
         
                         </select>
                         @error('formaPago') 
@@ -393,19 +415,9 @@
                         </textarea>
                     </label>
 
-                    @if (Auth::user()->role_id != 1)
+                    @if (Auth::user()->role_id != 1 AND $idGasto == '')
                         
-                        <label for="">
-                            Proveedor 
-                            <input name="terms" type="checkbox" role="switch"  @click="showSelectProveedor = !showSelectProveedor" />
-                        
-                            <select name="proveedor" wire:model="idProveedor" x-show="showSelectProveedor">
-                                <option selected value="">No</option>
-                                @foreach ($Proveedor as $item)
-                                    <option value="{{ $item->id }}">{{ $item->nombre }}</option>
-                                @endforeach
-                            </select>
-                        </label>
+
                         <label for="">
                             Dia Notificacion 
                             <input name="terms" type="checkbox" role="switch"  @click="showSelectNotifi = !showSelectNotifi" />

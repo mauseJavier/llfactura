@@ -48,7 +48,16 @@
 
                         <label for="">Ven. CAE: {{$comprobante->fechaVencimiento}}</label>
                         <label for="">Pto. Venta: {{$comprobante->ptoVta}}</label>
-                        <label for="">Forma Pago: {{$formaPago->nombre}}</label>
+                        <label for="">Forma Pago 1: {{$formaPago->nombre}}</label>
+
+                        <label for="">Importe 1: ${{$comprobante->importeUno}}</label>
+
+
+                        <label for="">Forma Pago 2: {{$formaPago2->nombre}}</label>
+
+                        <label for="">Importe 2: ${{$comprobante->importeDos}}</label>
+
+
 
 
 
@@ -100,6 +109,9 @@
                         </div>
                         <div class="col">
                             <p style="color: red;">Esta Nota de credito ingresara los stocks de los articulos vendidos en el deposito {{$deposito->nombre}}.</p>
+                            <p style="color: red;">Si la venta es en Cuenta Corriente realiza la devolucion.</p>
+
+                            <p></p>
                         </div>
                     </div>
                 </footer>

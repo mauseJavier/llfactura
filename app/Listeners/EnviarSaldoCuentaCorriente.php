@@ -41,6 +41,8 @@ class EnviarSaldoCuentaCorriente
             'cliente_id'=> $event->cliente_id,
             'comprobante_id'=> $event->comprobante_id,
             'tipo'=> $event->tipo,
+            'formaPago'=> $event->formaPago,
+
             'comentario'=> $event->comentario,
             'debe'=> $event->debe,
             'haber'=> $event->haber,

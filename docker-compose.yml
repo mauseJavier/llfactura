@@ -73,6 +73,20 @@ services:
       - redPrincipal
     restart: always
 
+# QUITAR EL SERVICIO DE PHPMYADMIN
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mariadb  # Nombre del servicio de MariaDB
+      PMA_USER: root  # Usuario de la base de datos
+      PMA_PASSWORD: root  # Contraseña del usuario
+    ports:
+      - "8088:80"  # Puerto para acceder a phpMyAdmin
+    networks:
+      - redPrincipal
+    restart: always
+
 volumes:
   mariadb_data:
 

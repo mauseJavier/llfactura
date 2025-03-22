@@ -91,16 +91,45 @@
 
 
       <header class="container">
-        <hgroup>
-          <h1 style="color: rgb(255, 255, 255);">Las Lajas Factura</h1>
-          <h2 style="color: rgb(250, 247, 247);">Para organizar tu empresa de servicioss.</h2>
-        </hgroup>
-        <p><a href="#" role="button" onclick="event.preventDefault()">Solicite una prueba</a></p>
+        <div class="grid">
+          <div class="col">
+              <hgroup>
+                <h1 style="color: rgb(255, 255, 255);">Las Lajas Factura</h1>
+                <h2 style="color: rgb(250, 247, 247);">Para organizar tu empresa de servicioss.</h2>
+              </hgroup>
+
+
+        <details name="example">
+          <summary style="background-color: rgba(0, 0, 0, 0.7); color: white; padding: 20px; border-radius: 10px;">Solicite una Demo</summary>
+
+  
+          <iframe src="https://n8n.llservicios.ar/form/bee23ae9-594c-4fdf-8e4f-2910102cb5e8" width="100%" height="800px" frameborder="0"></iframe>
+
+
+        </details>
+
+
+          </div>
+          <div class="col">
+            <div class="container contact-info" style="background-color: rgba(0, 0, 0, 0.7); color: white; padding: 20px; border-radius: 10px;">
+              <h2>Información de Contacto</h2>
+              <p><strong>Teléfono:</strong> 299-4562062 - 2942-506803</p>
+
+              <p><strong>Correo Electrónico:</strong> marce_nqn_19@hotmail.com - mause.javi@gmail.com</p>
+
+          </div>
+
+          </div>
+        </div>
+
+
       </header>
 
       
     </div>
     <!-- ./ Hero -->
+
+
 
     
     <div class="container">

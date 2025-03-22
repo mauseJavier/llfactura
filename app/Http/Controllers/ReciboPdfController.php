@@ -28,6 +28,8 @@ class ReciboPdfController extends Controller
         // "created_at" => "2024-08-04 12:56:56"
         // "updated_at" => "2024-08-04 12:56:56"
 
+        // dd($recibo_id);
+
         $cliente = Cliente::find($recibo_id->cliente_id);
 
         $pdf = Pdf::loadView('PDF.pdfReciboPdf',compact('recibo_id','cliente'));

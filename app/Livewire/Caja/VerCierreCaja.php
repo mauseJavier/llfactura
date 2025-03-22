@@ -198,6 +198,7 @@ class VerCierreCaja extends Component
                 $cobroCC = CuentaCorriente::where('usuario',$us->name)
                 // ->whereDate('created_at', $this->fechaCierre)
                 ->whereBetween('created_at', [$this->inicioTurno, $this->finTurno])
+                ->where('formaPago','Efectivo')
                 ->get();
 
                 foreach ($cobroCC as $key => $value) {

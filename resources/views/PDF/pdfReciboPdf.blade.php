@@ -73,6 +73,8 @@
             <p><strong>Usuario:</strong> {{$recibo_id->usuario}}</p>
             <p><strong>Número de Recibo:</strong> {{$recibo_id->id}}</p>
             <p><strong>Comentario:</strong> {{$recibo_id->comentario}}</p>
+            <p><strong>Forma de Pago:</strong> {{$recibo_id->formaPago}}</p>
+
 
         </div>
         <div class="content">

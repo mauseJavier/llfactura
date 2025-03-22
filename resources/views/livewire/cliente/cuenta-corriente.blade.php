@@ -55,8 +55,9 @@
                   <tr>
 
                     <th scope="col">Acciones</th>
-
                     <th scope="col">Fecha</th>
+
+                    <th scope="col">Comentario</th>
                     <th scope="col">Debe(-)</th>
                     <th scope="col">Haber(+)</th>
    
@@ -91,6 +92,8 @@
                               </details>    
                             </td>
                             <td>{{$c->created_at}}</td>
+                            <td>{{$c->comentario}}</td>
+
                             <td>{{number_format($c->debe, 2, ',', '.')}}</td>
                             <td>{{number_format($c->haber, 2, ',', '.')}}</td>
    
@@ -119,6 +122,14 @@
               <strong>Realizar un Pago Saldo:</strong>(${{$saldo}})
             </p>
           </header>
+
+        @if (session('mensajePago'))
+            <div class="alert alert-success">
+                {{ session('mensajePago') }}
+            </div>
+            <button @click="modalPago = !modalPago">Cerrar</button>
+        @else
+
             <form wire:submit="pagar">
                 <fieldset>
                 <label>
@@ -139,10 +150,30 @@
                         {{ $message }}
                     </small>
                 @enderror
-
-
-
                 </label>
+
+
+                <label>
+                    Forma de Pago 
+
+                    <select    wire:model="formaPago"   name="formaPago"    placeholder="Ingrese una Forma de Pago">
+
+                        @foreach ($formaPagoLista as $item)
+
+                        <option value="{{$item->nombre}}">{{$item->nombre}}</option>
+                            
+                        @endforeach
+
+                    </select>
+                @error('formaPago') 
+                    <small id="invalid-helper">
+                        {{ $message }}
+                    </small>
+                @enderror
+                </label>
+
+
+
                 <label>
                     Importe Pagado
                     <input
@@ -175,6 +206,12 @@
                 value="Realizar Pago"
                 />
             </form>
+
+        @endif
+
+
+
+
         </article>
 
     </dialog>

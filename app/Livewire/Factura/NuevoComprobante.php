@@ -2001,7 +2001,9 @@ class NuevoComprobante extends Component
                         'cliente_id'=>$cliente->id,
                         'comprobante_id'=>$comprobante->id,
                         'tipo'=>'venta',
-                        'comentario'=>'un comentario',
+                        'comentario'=>'Comprobante N '. $comprobante->numero,
+                        'formaPago'=>'Nada',
+
                         'debe'=>round($this->importeUno,2),
                         'haber'=>0,
                         'usuario'=>$this->usuario->name,
