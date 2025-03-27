@@ -41,7 +41,7 @@
       @endif --}}
 
       <fieldset>
-        <legend>Formato Imprecion:</legend>
+        <legend>Formato Impresiòn:</legend>
         <label>
           <input type="radio" name="language" value="T" x-model="selectedOption" />
           Tiket

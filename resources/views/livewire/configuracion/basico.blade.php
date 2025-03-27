@@ -96,7 +96,7 @@
                   <div class="grid">
 
                       <label>
-                        Formato Imprecion
+                        Formato Impresiòn
                         <select  wire:model="formatoImprecion">                       
                             <option value="T">Ticket</option>                          
     

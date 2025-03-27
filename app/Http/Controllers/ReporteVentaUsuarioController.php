@@ -59,17 +59,32 @@ class ReporteVentaUsuarioController extends Controller
     //ESTE REPORTE AHORA SALE POR CIERRE DE CAJA 
     public function reporteCompleto(Request $request){
 
-        // dd($request->inicioTurno);
+        // dd($request->finTurno);
+
+
+        if (Auth()->user()->role_id == 3 OR Auth()->user()->role_id == 4) {
+            $inicioDeTurnoNuevo = $request->inicioTurno; //para los super y los plus trae el fin de turno que configuraron 
+            $finDeTurnoNuevo = $request->finTurno; //para los super y los plus trae el fin de turno que configuraron 
+
+        } else {
+            
+            $inicioDeTurnoNuevo= Carbon::parse(Auth()->User()->last_login)->format('Y-m-d H:i:s'); // para los usuarios comunes configura con la fecha actural 
+            $finDeTurnoNuevo= Carbon::now()->format('Y-m-d H:i:s'); // para los usuarios comunes configura con la fecha actural 
+
+            
+        }
+        // dd( $finDeTurnoNuevo);
 
 
         $collection = Comprobante::select('comprobantes.idFormaPago as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeUno) as totalImporte'))
         ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
         ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
-        ->whereBetween('comprobantes.created_at', [$request->inicioTurno, $request->finTurno])
+        ->whereBetween('comprobantes.created_at', [$inicioDeTurnoNuevo, $finDeTurnoNuevo])
+            // ->where('comprobantes.created_at','=>', $request->inicioTurno)
+            // ->where('comprobantes.created_at','=<', $finDeTurnoNuevo)
+
         ->where('comprobantes.usuario', 'like', '%' . Auth()->user()->name . '%')
-        // ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
-        // ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
-        // ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+
         ->groupBy('comprobantes.idFormaPago', 'forma_pagos.nombre')
         
         // Unir la segunda colección
@@ -77,11 +92,12 @@ class ReporteVentaUsuarioController extends Controller
             Comprobante::select('comprobantes.idFormaPago2 as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeDos) as totalImporte'))
                 ->join('forma_pagos', 'comprobantes.idFormaPago2', '=', 'forma_pagos.id')
                 ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
-                ->whereBetween('comprobantes.created_at', [$request->inicioTurno, $request->finTurno])
+                ->whereBetween('comprobantes.created_at', [$inicioDeTurnoNuevo, $finDeTurnoNuevo])
+            // ->where('comprobantes.created_at','=>', $request->inicioTurno)
+            // ->where('comprobantes.created_at','=<', $finDeTurnoNuevo)
+
                 ->where('comprobantes.usuario', 'like', '%' . Auth()->user()->name . '%')
-                // ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
-                // ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
-                // ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
+
                 ->groupBy('comprobantes.idFormaPago2', 'forma_pagos.nombre')
         )
         ->get();
@@ -129,7 +145,7 @@ class ReporteVentaUsuarioController extends Controller
         $cobroCuentasCorrientes=0;
         $cobroCC = CuentaCorriente::where('usuario',Auth()->user()->name)
         // ->whereDate('created_at', $this->fechaCierre)
-        ->whereBetween('created_at', [$request->inicioTurno, $request->finTurno])
+        ->whereBetween('created_at', [$inicioDeTurnoNuevo, $finDeTurnoNuevo])
         ->get();
 
         foreach ($cobroCC as $key => $value) {
@@ -140,14 +156,14 @@ class ReporteVentaUsuarioController extends Controller
 
         $sumaCierre = CierreCaja::where('usuario_id',Auth()->user()->id)
         // ->whereBetween('created_at', [Carbon::createFromFormat('Y-m-d', $this->fechaCierre)->startOfDay(), Carbon::createFromFormat('Y-m-d',  $this->fechaCierre)->endOfDay()])
-        ->whereBetween('created_at', [$request->inicioTurno , $request->finTurno])
+        ->whereBetween('created_at', [$inicioDeTurnoNuevo , $finDeTurnoNuevo])
 
             // ->where('created_at',Carbon::now()->format('Y-m-d'))
             ->sum('importe');
 
             $cierres = CierreCaja::where('usuario_id',Auth()->user()->id)
             // ->whereBetween('created_at', [Carbon::createFromFormat('Y-m-d', $this->fechaCierre)->startOfDay(), Carbon::createFromFormat('Y-m-d',  $this->fechaCierre)->endOfDay()])
-                ->whereBetween('created_at', [$request->inicioTurno , $request->finTurno])
+                ->whereBetween('created_at', [$inicioDeTurnoNuevo , $finDeTurnoNuevo])
                 ->get();
 
             $sumaGastos = Gasto::
@@ -155,15 +171,15 @@ class ReporteVentaUsuarioController extends Controller
                 ->where('formaPago','Efectivo')
                 ->where('estado','Pago')
                 ->where('empresa_id',Auth::user()->empresa_id)
-                ->whereBetween('created_at', [$request->inicioTurno , $request->finTurno])
+                ->whereBetween('created_at', [$inicioDeTurnoNuevo , $finDeTurnoNuevo])
                 ->sum('importe');
 
 
         $info=['titulo'=>'Reporte Diario:'. Auth()->user()->name,
                 'usuario'=> Auth()->user()->name,
                 'fechayhora'=>Carbon::now()->format('d-m-Y H:i'),
-                'inicioTurno'=>Carbon::parse($request->inicioTurno)->format('d-m-Y H:i'),
-                'finTurno'=>Carbon::parse($request->finTurno)->format('d-m-Y H:i'),
+                'inicioTurno'=>Carbon::parse($inicioDeTurnoNuevo)->format('d-m-Y H:i:s'),
+                'finTurno'=>Carbon::parse($finDeTurnoNuevo)->format('d-m-Y H:i:s'),
                 'totales'=>$totales,
                 'cierres'=>$cierres,
 

@@ -26,7 +26,7 @@
                     <input
                         type="search"
                         name="Buscar"
-                        placeholder="Buscar (Proveedor/Usuario)"
+                        placeholder="Buscar"
                         aria-label="Buscar"
                         wire:model.live="buscar"
                     />
@@ -316,7 +316,7 @@
                         }
                     }">
                         <label for="">
-                            Tipo de Gasto
+                            Detalle de Gasto
                             {{-- <input name="terms" type="checkbox" role="switch" @click="isChecked = !isChecked" /> --}}
                     
                             <input type="text" name="tipo" x-model="tipo" 

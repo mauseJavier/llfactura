@@ -40,14 +40,31 @@ class VerCierreCaja extends Component
         $this->empresa = Empresa::find(Auth()->User()->empresa_id);
         $this->usuario = Auth()->User();
 
-        // $this->inicioTurno = Carbon::now()->format('Y-m-d H:i:s');
-        // Fecha y hora de inicio del día actual
-        $this->inicioTurno = Carbon::now()->startOfDay()->format('Y-m-d H:i');
 
-        // Fecha y hora de fin del día actual
-        $this->finTurno = Carbon::now()->endOfDay()->format('Y-m-d H:i');
 
-        // dd();
+        if(Auth()->User()->role_id == 3 OR Auth()->User()->role_id == 4){
+            // $this->inicioTurno = Carbon::now()->format('Y-m-d H:i:s');
+            // Fecha y hora de inicio del día actual
+            $this->inicioTurno = Carbon::now()->startOfDay()->format('Y-m-d H:i:s');
+    
+            // Fecha y hora de fin del día actual
+            $this->finTurno = Carbon::now()->endOfDay()->format('Y-m-d H:i:s');
+    
+            // dd($this->inicioTurno);
+
+
+        }else {
+            # code...
+            // dd( Auth()->User()->last_login . ' '. Carbon::parse(Auth()->User()->last_login)->format('Y-m-d H:i'));
+
+            $this->inicioTurno = Carbon::parse(Auth()->User()->last_login)->format('Y-m-d H:i:s');
+    
+            // Fecha y hora de fin del día actual
+            $this->finTurno = Carbon::now()->format('Y-m-d H:i:s');
+
+        }
+
+
 
 
     }

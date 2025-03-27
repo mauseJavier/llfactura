@@ -73,26 +73,37 @@
             >
                 @csrf
                 <div class="grid">
-                    
-                    <div class="col">
-                        <label for="">
-                            Inicio Turno
-                            <input type="datetime-local" name="inicioTurno" aria-label="Datetime local" wire:model.live="inicioTurno">
+
+
+                        <div class="col">
+                            <label for="">
+                                Inicio Turno
+                                <input type="datetime-local" name="inicioTurno" aria-label="Datetime local" wire:model.live="inicioTurno"
+                                    @if (Auth()->user()->role_id == 1 OR Auth()->user()->role_id == 2)
+                                        disabled
+                                    @endif
+                                >
+                                
+                            </label>
+                
                             
-                        </label>
-            
+                        </div>
                         
-                    </div>
-                    
-                    <div class="col">
-                                    
-                        <label for="">
-                            Fin Turno
-                            <input type="datetime-local" name="finTurno" aria-label="Datetime local" wire:model.live="finTurno">
+                        <div class="col">
+                                        
+                            <label for="">
+                                Fin Turno
+                                <input type="datetime-local" name="finTurno" aria-label="Datetime local" wire:model.live="finTurno"
+                                    @if (Auth()->user()->role_id == 1 OR Auth()->user()->role_id == 2)
+                                        disabled
+                                    @endif
+                                >
+                                
+                            </label>
                             
-                        </label>
-                        
-                    </div>
+                        </div>
+                                       
+
                     
                 </div>
                 <div class="grid">
@@ -227,7 +238,7 @@
 
                                         <tr>
                                             <td>
-                                                {{$c->descripcion}}
+                                                {{$c->descripcion}} - ({{$c->created_at}})
                                             </td>
                                             <td style="text-align:right;">
                                                 ${{$c->importe}}

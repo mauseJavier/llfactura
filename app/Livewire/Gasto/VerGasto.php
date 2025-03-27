@@ -198,6 +198,7 @@ class VerGasto extends Component
                         ->whereAny([
                             'proveedors.nombre',
                             'gastos.usuario',
+                            'gastos.tipo',
                             
                         ], 'like', '%'.$this->buscar.'%')
 
@@ -260,6 +261,7 @@ class VerGasto extends Component
                         ->whereAny([
                             'proveedors.nombre',
                             'gastos.usuario',
+                            'gastos.tipo',
                             
                         ], 'like', '%'.$this->buscar.'%')
 
