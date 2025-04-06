@@ -62,6 +62,12 @@ use App\Livewire\Mesas\Comandas;
 use App\Livewire\Reportes\Reportes;
 use App\Livewire\Backup\BackupManager;
 
+//ORDEN DE COMPRA 
+// app/Livewire/VerOrdenCompra/VerOrdenCompra.php
+use App\Livewire\VerOrdenCompra\VerOrdenCompra;
+use App\Livewire\VerOrdenCompra\HistorialOrdenCompra;
+
+
 
 
 
@@ -77,6 +83,9 @@ use App\Http\Controllers\CodigoDeBarraController;
 use App\Http\Controllers\ReporteVentaUsuarioController;
 use App\Http\Controllers\ImprimirComandaController;
 use App\Http\Controllers\ImprimirMesaController;
+
+use App\Http\Controllers\ImprimirOrdenCompra;
+
 
 
 use App\Http\Controllers\CartaInventarioController;
@@ -483,6 +492,17 @@ use Illuminate\Http\Request;
             
             Route::get('/usuarios', Usuarios::class)->name('usuarios');
             Route::get('/updateUsuario/{id}', Update::class)->name('updateUsuario');
+            Route::get('/ordenCompra', VerOrdenCompra::class)->name('ordenCompra');
+            Route::get('/imprimirOrdenCompra',[ImprimirOrdenCompra::class,'imprimirOrdenCompra'])->name('imprimirOrdenCompra');
+            Route::get('/reImprimirOrdenCompra/{id}',[ImprimirOrdenCompra::class,'reImprimirOrdenCompra'])->name('reImprimirOrdenCompra');
+
+
+            Route::get('/historialOrdenCompra',HistorialOrdenCompra::class)->name('historialOrdenCompra');
+
+
+            
+
+
         
 
         });

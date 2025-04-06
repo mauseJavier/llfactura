@@ -173,6 +173,8 @@ class VerGasto extends Component
 
         session()->flash('creado', 'Creado / Editado.');
 
+        $this->redirect(route('gasto'));
+
 
     }
 

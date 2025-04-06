@@ -6,6 +6,12 @@
         </div>
     @endif
 
+    @if(session('creado'))
+        <div class="container" style="color: green;">
+            {{ session('creado') }}
+        </div>
+    @endif
+
 
     <div class="container">
         <h3>Gastos</h3>
@@ -274,15 +280,6 @@
     <dialog x-bind:open="modal" x-data="{ showSelectProveedor: false,showSelectNotifi: false, showSelectRepe: false, isChecked: false }">
         <article>
 
-            @if (session('creado'))
-                <h3>
-                    {{ session('creado') }}
-                </h3>
-
-                <a href="{{route('gasto')}}" role="button">Cerrar</a>
-
-                
-            @else
                 
                 <header>
                 <button aria-label="Close" wire:click="cancelar()" @click="modal = false" rel="prev"></button>
@@ -463,7 +460,7 @@
                 
                 <button wire:click="guardarGasto">Guardar</button>
                 
-            @endif
+            
 
 
         </article>

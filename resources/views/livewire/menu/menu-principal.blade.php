@@ -166,6 +166,9 @@
                   <li>
                     <a wire:navigate href="{{route('usuarios')}}">Usuarios</a>
                   </li>
+                  <li>
+                    <a wire:navigate href="{{route('historialOrdenCompra')}}">Orden de Compra</a>
+                  </li>
 
                     
                 @endif

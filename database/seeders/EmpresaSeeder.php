@@ -22,6 +22,7 @@ class EmpresaSeeder extends Seeder
             'fe'=>'no',
             'titular'=>'Titular Prueba',
             'telefono'=> 2942506803,
+            'pagoServicio'=> 'si',
         ]);
 
         DB::table('empresas')->insert([
@@ -31,6 +32,7 @@ class EmpresaSeeder extends Seeder
             'fe'=>'si',
             'titular'=>'Gimenez Teodoro',
             'telefono'=> 2994562062,
+            'pagoServicio'=> 'si',
         ]);
     }
 }
