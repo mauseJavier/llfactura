@@ -41,6 +41,8 @@ class VerGasto extends Component
 
     public $nombreUsuario='';
 
+    public $VerGastoObjeto;
+
 
 
     public function cancelar(){
@@ -79,6 +81,29 @@ class VerGasto extends Component
 
     }
 
+    public function verGasto(Gasto $gasto){
+
+        $this->VerGastoObjeto=$gasto;
+    }
+
+    public function cambiarEstadoImpago(Gasto $gasto){
+
+        if($gasto->importe == 0){
+            session()->flash('error', 'El gasto no tiene importe.');
+            return;
+        }else{
+            $gasto->estado = 'Pago';
+            $gasto->save();
+        }
+
+
+        $this->redirect(route('gasto'));
+        // $this->render();
+
+    }
+
+    
+    
     public function quitarRepetir(Gasto $gasto){
 
         $gasto->repetir = 'No';
@@ -184,135 +209,77 @@ class VerGasto extends Component
             $this->nombreUsuario = Auth::user()->name;
         }
 
+        $this->filtroFecha('Este Mes'); // Filtro por defecto donde configuramos el faecha de este mes 
+
+        // $this->verGasto(1); // Cargamos el gasto por defecto para que no salga vacio el modal
+
         // dd($this->nombreUsuario);
     }
+
+    private function baseQuery()
+    {
+        return DB::table('gastos')
+            ->leftJoin('proveedors', 'gastos.idProveedor', '=', 'proveedors.id')
+            ->where('gastos.empresa_id', auth()->user()->empresa_id)
+            ->when($this->buscar, function ($query) {
+                $query->where(function ($subquery) {
+                    $subquery->where('proveedors.nombre', 'like', '%' . $this->buscar . '%')
+                            ->orWhere('gastos.usuario', 'like', '%' . $this->buscar . '%')
+                            ->orWhere('gastos.tipo', 'like', '%' . $this->buscar . '%');
+                });
+            })
+            ->when($this->filtroTipo, fn($query, $filtroTipo) => $query->where('tipo', $filtroTipo))
+            ->when($this->formaPago, fn($query, $formaPago) => $query->where('formaPago', $formaPago))
+            ->when($this->estado, fn($query, $estado) => $query->where('estado', $estado))
+            ->when($this->filtroRepetir, fn($query, $filtroRepetir) => $query->where('repetir', $filtroRepetir))
+            ->when($this->nombreUsuario, fn($query, $nombreUsuario) => $query->where('usuario', $nombreUsuario))
+            ->when($this->fechaCreado, function ($query, $fechaCreado) {
+                switch ($fechaCreado) {
+                    case 'Hoy':
+                        return $query->whereDate('gastos.created_at', today());
+                    case 'Esta Semana':
+                        return $query->whereBetween('gastos.created_at', [now()->startOfWeek(), now()->endOfWeek()]);
+                    case 'Este Mes':
+                        return $query->whereBetween('gastos.created_at', [now()->startOfMonth(), now()->endOfMonth()]);
+                    case 'Mes Pasado':
+                        return $query->whereBetween('gastos.created_at', [
+                            now()->subMonth()->startOfMonth(),
+                            now()->subMonth()->endOfMonth()
+                        ]);
+                    default:
+                        return $query->whereYear('gastos.created_at', Carbon::parse($fechaCreado)->format('Y'))
+                                    ->whereMonth('gastos.created_at', Carbon::parse($fechaCreado)->format('m'));
+                }
+            });
+    }
+
 
 
     public function render()
     {
+
+        $baseQuery = $this->baseQuery();
+
+
         return view('livewire.gasto.ver-gasto',[
             'FormaPago'=>FormaPago::all(),            
             'Proveedor'=>Proveedor::where('empresa_id',Auth()->user()->empresa_id)->get(),
 
-            'Gasto'=>DB::table('gastos')
-                        ->leftJoin('proveedors', 'gastos.idProveedor', '=', 'proveedors.id')
-                        ->where('gastos.empresa_id', Auth()->user()->empresa_id)
-                        ->whereAny([
-                            'proveedors.nombre',
-                            'gastos.usuario',
-                            'gastos.tipo',
-                            
-                        ], 'like', '%'.$this->buscar.'%')
 
-                        ->when($this->filtroTipo, function ($query, $filtroTipo) {
-                            return $query->where('tipo', $filtroTipo);
-                        })
+            'Gasto'=> (Clone $baseQuery)                        
+                ->select(
+                    'gastos.*', // Selecciona todas las columnas de tabla1
+                    'proveedors.nombre as nombreProveedor', // Renombra columna_compartida de tabla2
+                    'proveedors.id as proveedor_id' // Renombra otra columna de tabla2
+                )
+                ->OrderBy('created_at','Desc')
+                ->paginate(10),
 
-                        ->when($this->formaPago, function ($query, $formaPago) {
-                            return $query->where('formaPago', $formaPago);
-                        })
+            'sumaImporte' => (clone $baseQuery)->sum('gastos.importe'),
+            'sumaImportePagado' => (clone $baseQuery)->where('estado', 'Pago')->sum('gastos.importe'),
+            'sumaImporteImpago' => (clone $baseQuery)->where('estado', 'Impago')->sum('gastos.importe'),
 
-                        ->when($this->estado, function ($query, $estado) {
-                            return $query->where('estado', $estado);
-                        })
-                        ->when($this->filtroRepetir, function ($query, $filtroRepetir) {
-                            return $query->where('repetir', $filtroRepetir);
-                        })
-                        ->when($this->nombreUsuario, function ($query, $nombreUsuario) {
-                            return $query->where('usuario', $nombreUsuario);
-                        })
-
-                        ->when($this->fechaCreado, function ($query, $fechaCreado) {
-                            switch ($fechaCreado) {
-                                case 'Hoy':
-                                    return $query->whereDate('gastos.created_at', today());
-                                    break;
-                                case 'Esta Semana':
-                                    return $query->whereBetween('gastos.created_at', [now()->startOfWeek(), now()->endOfWeek()]);
-                                    break;
-                                case 'Este Mes':
-                                    return $query->whereBetween('gastos.created_at', [now()->startOfMonth(), now()->endOfMonth()]);
-                                    break;
-                                case 'Mes Pasado':
-                                    return $query->whereBetween('gastos.created_at', [
-                                        now()->subMonth()->startOfMonth(),
-                                        now()->subMonth()->endOfMonth()
-                                    ]);
-                                    break;                                        
-                                default:
-                                    # cuando es un mes especifico
-                                    
-                                    return $query->whereYear('gastos.created_at', '=', Carbon::parse($fechaCreado)->format('Y'))
-                                            ->whereMonth('gastos.created_at', '=', Carbon::parse($fechaCreado)->format('m'));
-
-                                    break;
-                            }
-                        })
-
-                        ->select(
-                            'gastos.*', // Selecciona todas las columnas de tabla1
-                            'proveedors.nombre as nombreProveedor', // Renombra columna_compartida de tabla2
-                            'proveedors.id as proveedor_id' // Renombra otra columna de tabla2
-                        )
-                        ->OrderBy('created_at','Desc')
-                        ->paginate(10),
-
-            'sumaImporte'=>DB::table('gastos')
-                        ->leftJoin('proveedors', 'gastos.idProveedor', '=', 'proveedors.id')
-                        ->where('gastos.empresa_id', Auth()->user()->empresa_id)
-                        ->whereAny([
-                            'proveedors.nombre',
-                            'gastos.usuario',
-                            'gastos.tipo',
-                            
-                        ], 'like', '%'.$this->buscar.'%')
-
-                        ->when($this->filtroTipo, function ($query, $filtroTipo) {
-                            return $query->where('tipo', $filtroTipo);
-                        })
-
-                        ->when($this->formaPago, function ($query, $formaPago) {
-                            return $query->where('formaPago', $formaPago);
-                        })
-
-                        ->when($this->estado, function ($query, $estado) {
-                            return $query->where('estado', $estado);
-                        })
-                        ->when($this->filtroRepetir, function ($query, $filtroRepetir) {
-                            return $query->where('repetir', $filtroRepetir);
-                        })
-                        ->when($this->nombreUsuario, function ($query, $nombreUsuario) {
-                            return $query->where('usuario', $nombreUsuario);
-                        })
-
-                        ->when($this->fechaCreado, function ($query, $fechaCreado) {
-                            switch ($fechaCreado) {
-                                case 'Hoy':
-                                    return $query->whereDate('gastos.created_at', today());
-                                    break;
-                                case 'Esta Semana':
-                                    return $query->whereBetween('gastos.created_at', [now()->startOfWeek(), now()->endOfWeek()]);
-                                    break;
-                                case 'Este Mes':
-                                    return $query->whereBetween('gastos.created_at', [now()->startOfMonth(), now()->endOfMonth()]);
-                                    break;
-                                case 'Mes Pasado':
-                                    return $query->whereBetween('gastos.created_at', [
-                                        now()->subMonth()->startOfMonth(),
-                                        now()->subMonth()->endOfMonth()
-                                    ]);
-                                    break;                                        
-                                default:
-                                    # cuando es un mes especifico
-
-                                    return $query->whereYear('gastos.created_at', '=', Carbon::parse($fechaCreado)->format('Y'))
-                                    ->whereMonth('gastos.created_at', '=', Carbon::parse($fechaCreado)->format('m'));
-                            
-                                    break;
-                            }
-                        })
-
-                        ->sum('gastos.importe'),
+            
                 
             'tiposUnicos' => Gasto::where('empresa_id', Auth::user()->empresa_id)
                         ->distinct()

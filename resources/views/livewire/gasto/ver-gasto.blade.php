@@ -1,4 +1,4 @@
-<div x-data="{  modal: false}">
+<div x-data="{  modal: false, modalVer: false }">
 
     @if (session('status'))
         <div class="container">
@@ -16,11 +16,16 @@
     <div class="container">
         <h3>Gastos</h3>
 
+
+
         <article>
             <div class="grid">
                 <div class="col">
                     Suma Importe.
                     <h3>${{number_format($sumaImporte, 2, ',', '.')}}</h3>
+
+                    <h6 style="color: green;"> Pagado: ${{number_format($sumaImportePagado, 2, ',', '.')}}</h6>
+                    <h6 style="color: red;"> Impago: ${{number_format($sumaImporteImpago, 2, ',', '.')}}</h6>
 
                 </div>
                 <div class="col">
@@ -160,105 +165,106 @@
     </div>
     
     <div class="container">
-        
+        {{-- mostra mensaje de error de session flash error  --}}
+        @if (session('error'))
+            <div class="container" style="color: red;">
+                {{ session('error') }}
+            </div>
+        @endif
+
+
         <div class="overflow-auto">
             <table class="striped">
                 <thead>
                   <tr>
+                      <th scope="col">Acciones</th>
                     <th scope="col">Fecha</th>
-                    <th scope="col">Tipo</th>
-                    <th scope="col">Importe</th>
+                    <th scope="col">Detalle</th>
                     <th scope="col">F.Pago</th>
-                    <th scope="col">Estado</th>
                     <th scope="col">Proveedor</th>
-                    <th scope="col">Comentario</th>
-                    <th scope="col">Dia Notif.</th>
-                    <th scope="col">Repetir</th>
-
+                    
                     <th scope="col">Usuario</th>
-                    <th scope="col">Accion</th>
+                    <th scope="col">Importe</th>
+                    <th scope="col">Pagar</th>
+
 
                   </tr>
                 </thead>
                 <tbody>
                     
                     @foreach ($Gasto as $item)
-                        <tr 
-                        
-                            x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'ackground-color': repetir === 'Repetido' ? 'yellow' : '' }"
+                        <tr >
 
-                        >
+                            <td>
+                                <!-- Dropdown -->
+                                <details class="dropdown">
+                                    <summary>Acciones</summary>
+                                    <ul>
+                                    <li><a wire:click="verGasto({{ $item->id }})" @click="modalVer = !modalVer" >Ver</a></li>
+                                    @if (Auth::user()->role_id == 3 || Auth::user()->role_id == 4)
+                                    
+                                        <li>
+                                            <a wire:click="editarGasto({{ $item->id }})" @click="modal = !modal" >Editar</a>
+                                        </li>        
+                                    @endif
+                                    </ul>
+                                </details>
+
+                            </td>
+
+
                             <td 
-                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                                 x-data="{ estado: '{{ $item->estado }}' }" :style="{ 'color': estado === 'Impago' ? 'red' : '' }"
                             >
                                 {{ $item->created_at }}</td>
                             <td 
-                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                                 x-data="{ estado: '{{ $item->estado }}' }" :style="{ 'color': estado === 'Impago' ? 'red' : '' }"
                             >
                                 {{ $item->tipo }}</td>
-                            <td 
-                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
-                            >
-                                ${{ number_format($item->importe, 2, ',', '.') }}</td>
-                            <td 
-                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
-                            >
+                                <td 
+                                x-data="{ estado: '{{ $item->estado }}' }" :style="{ 'color': estado === 'Impago' ? 'red' : '' }"
+                                >
                                 {{ $item->formaPago }}</td>
-                            <td 
-                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
-                            >
-                                {{ $item->estado }}</td>
-                            <td 
-                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
-                            >
+                                <td 
+                                x-data="{ estado: '{{ $item->estado }}' }" :style="{ 'color': estado === 'Impago' ? 'red' : '' }"
+                                >
                                 {{ $item->nombreProveedor }}</td>
-                            <td 
-                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
-                            >
-                                {{ $item->comentario }}</td>
-                            <td 
-                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
-                            >
-                                {{ $item->diaNotificacion }}</td>
-                            <td 
-                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
-                            >
-                                @switch($item->repetir)
-                                    @case('No')
-                                            {{ $item->repetir }}
-                                        @break
-                                    @case('Repetido')
-                                        {{ $item->repetir }} 
-                                        @break
-                                    @default
-                                        {{ $item->repetir }} 
-                                @endswitch
-                            </td>
-                            <td 
-                                 x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
-                            >
+                                
+                                <td 
+                                x-data="{ estado: '{{ $item->estado }}' }" :style="{ 'color': estado === 'Impago' ? 'red' : '' }"
+                                >
                                 {{ $item->usuario }}
                             </td>
-
+                            
                             <td 
-                            x-data="{ repetir: '{{ $item->repetir }}' }" :style="{ 'color': repetir === 'Repetido' ? 'yellow' : '' }"
+                                 x-data="{ estado: '{{ $item->estado }}' }" :style="{ 'color': estado === 'Impago' ? 'red' : '' }"
                             >
-
-                            @if (Auth::user()->role_id == 3 || Auth::user()->role_id == 4)
-                                
-                                @switch($item->repetir)
-                                    @case('No')
-                                        <a role="button" wire:click="editarGasto({{ $item->id }})" @click="modal = !modal" >Editar</a>
-
-                                        @break
-                                    @case('Repetido')
-                                        <a role="button" wire:click="editarGasto({{ $item->id }})" @click="modal = !modal" >Editar</a>
-                                        @break
-                                    @default
-                                        <a role="button" wire:click="quitarRepetir({{ $item->id }})">Quitar Repetir</a>
-                                @endswitch
-                            @endif
+                                ${{ number_format($item->importe, 2, ',', '.') }}
                             </td>
+
+                            <td>
+                                @if (Auth::user()->role_id == 3 || Auth::user()->role_id == 4)
+                                    
+                                    @switch($item->estado)
+
+                                        @case('Impago')
+
+                                            <a  role="button" wire:click="cambiarEstadoImpago({{ $item->id }})"  >Pagar</a>
+                                            @break
+                                            @default
+                                            <p style="text-align: center">
+
+                                                <!-- check icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                                                <svg xmlns="http://www.w3.org/2000/svg" height="2em" fill="currentColor" viewBox="0 0 512 512">
+                                                    <path
+                                                    d="M 501.7142857142857 83.42857142857143 Q 512 94.85714285714286 512 109.71428571428571 L 512 109.71428571428571 L 512 109.71428571428571 Q 512 124.57142857142857 501.7142857142857 136 L 209.14285714285714 428.57142857142856 L 209.14285714285714 428.57142857142856 Q 197.71428571428572 438.85714285714283 182.85714285714286 438.85714285714283 Q 168 438.85714285714283 156.57142857142858 428.57142857142856 L 10.285714285714286 282.2857142857143 L 10.285714285714286 282.2857142857143 Q 0 270.85714285714283 0 256 Q 0 241.14285714285714 10.285714285714286 229.71428571428572 Q 21.714285714285715 219.42857142857142 36.57142857142857 219.42857142857142 Q 51.42857142857143 219.42857142857142 62.857142857142854 229.71428571428572 L 182.85714285714286 350.85714285714283 L 182.85714285714286 350.85714285714283 L 449.14285714285717 83.42857142857143 L 449.14285714285717 83.42857142857143 Q 460.57142857142856 73.14285714285714 475.42857142857144 73.14285714285714 Q 490.2857142857143 73.14285714285714 501.7142857142857 83.42857142857143 L 501.7142857142857 83.42857142857143 Z"
+                                                    />
+                                                </svg>
+                                            </p>
+                                    @endswitch
+                                @endif
+                            </td>
+
                         </tr>
                     @endforeach
                 
@@ -416,19 +422,6 @@
                         
 
                         <label for="">
-                            Dia Notificacion 
-                            <input name="terms" type="checkbox" role="switch"  @click="showSelectNotifi = !showSelectNotifi" />
-                            
-                            <select name="dia_mes" wire:model="diaNotificacion" x-show="showSelectNotifi">
-                                @for ($i = 1; $i <= 31; $i++)
-                                    <option value="{{ $i }}">Dia: {{ $i }}</option>
-                                @endfor
-                            </select>
-                            
-
-
-                        </label>
-                        <label for="">
                             Repetir  
                             <input name="terms" type="checkbox" role="switch"  @click="showSelectRepe = !showSelectRepe" />
                             
@@ -450,7 +443,43 @@
 
                             </select>
                         </label>
+
+                        <label for="">
+                            Dia Notificacion 
+                            <input name="terms" type="checkbox" role="switch"  @click="showSelectNotifi = !showSelectNotifi" />
+                            
+                            <select name="dia_mes" wire:model="diaNotificacion" x-show="showSelectNotifi">
+                                @for ($i = 1; $i <= 31; $i++)
+                                    <option value="{{ $i }}">Dia: {{ $i }}</option>
+                                @endfor
+                            </select>                        
+
+                        </label>
+
+                    @else
+                        <label for="">
+                            <fieldset>
+                                <label>
+                                    Estado Repetir: {{$repetir}}
+                                <input 
+                                    @if ($repetir == 'No' || $repetir == 'Repetido')
+                                        disabled
+                                    @else
+                                        checked
+                                    @endif
+
+                                    wire:click="quitarRepetir({{$idGasto}})"
+
+                                    name="terms" type="checkbox" role="switch" />
+                                
+                                </label>
+
+                            </fieldset>
+
+
+                        </label>
                     @endif
+
     
     
     
@@ -465,6 +494,77 @@
 
         </article>
     </dialog>
+
+
+{{-- modal de ver gasto --}}
+    <dialog x-bind:open="modalVer" >
+        <article>
+          <header>
+            <button aria-label="Close" wire:click="cancelar()" @click="modalVer = false" rel="prev"></button>
+            <p>
+              <strong>{{$VerGastoObjeto ? $VerGastoObjeto->tipo : ''}}</strong>
+            </p>
+          </header>
+
+                <label for="">
+                    Proveedor
+                    <input type="text" name="proveedor" value="{{$VerGastoObjeto ? $VerGastoObjeto->nombreProveedor : ''}}" disabled>
+                </label>
+
+                <label for="">
+                    Forma Pago
+                    <input type="text" name="formaPago" value="{{$VerGastoObjeto ? $VerGastoObjeto->formaPago : ''}}" disabled>
+                </label>
+
+                <label for="">
+                    Importe
+                    <input type="text" name="importe" value="{{$VerGastoObjeto ? $VerGastoObjeto->importe : ''}}" disabled>
+                </label>
+
+                <label for="">
+                    Estado
+                    <input type="text" name="estado" value="{{$VerGastoObjeto ? $VerGastoObjeto->estado : ''}}" disabled>
+                </label>
+
+                <label for="">
+                    Comentario
+                    <textarea name="comentario" id="" cols="30" rows="10" disabled>{{$VerGastoObjeto ? $VerGastoObjeto->comentario : ''}}</textarea>
+                </label>
+
+                <label for="">
+                    Usuario
+                    <input type="text" name="usuario" value="{{$VerGastoObjeto ? $VerGastoObjeto->usuario : ''}}" disabled>
+                </label>
+
+                <label for="">
+                    Fecha Creado
+                    <input type="text" name="created_at" value="{{$VerGastoObjeto ? $VerGastoObjeto->created_at : ''}}" disabled>
+                </label>
+
+                <label for="">
+                    Fecha Modificado
+                    <input type="text" name="updated_at" value="{{$VerGastoObjeto ? $VerGastoObjeto->updated_at : ''}}" disabled>
+                </label>
+
+          {{-- {
+            "id": 22,
+            "tipo": "Gasto sdfsdf",
+            "importe": 3423,
+            "formaPago": "Efectivo",
+            "estado": "Impago",
+            "idProveedor": null,
+            "comentario": null,
+            "diaNotificacion": null,
+            "usuario": "MAUSE LLFACTURA",
+            "repetir": "No",
+            "empresa_id": 1,
+            "created_at": "2025-04-08T02:14:55.000000Z",
+            "updated_at": "2025-04-08T02:22:45.000000Z"
+        } --}}
+
+
+        </article>
+      </dialog>
 </div>
 
 

@@ -9,6 +9,8 @@
             </label>
 
           </fieldset>
+
+
         <article>
             <div class="grid">
                 @if (!$precioFijo)
@@ -21,7 +23,7 @@
                         
                                 <input wire:keyup="actualizar" wire:model="porcentajePrecio3"  type="text" placeholder="% Precio 3" />
                             
-                                <button wire:click="modificarPrecio" wire:confirm="Serguro de Actualizar?">Porcentaje</button>
+                                <button wire:click="modificarPrecio" wire:confirm="Serguro de Actualizar?">Aplicar</button>
                         </fieldset>
                         @error('porcentajePrecio1') <p style="color: red;"> {{ $message }} </p><br> @enderror
                         @error('porcentajePrecio2') <p style="color: red;"> {{ $message }} </p> <br> @enderror
@@ -39,7 +41,7 @@
                         
                                 <input wire:keyup="actualizar" wire:model="fijo3"  type="text" placeholder="% Precio 3" />
                             
-                                <button wire:click="modificarPrecio" wire:confirm="Serguro de Actualizar?">PrecioFijo</button>
+                                <button wire:click="modificarPrecio" wire:confirm="Serguro de Actualizar?">Aplicar</button>
                         </fieldset>
                         @error('fijo1') <p style="color: red;"> {{ $message }} </p><br> @enderror
                         @error('fijo2') <p style="color: red;"> {{ $message }} </p> <br> @enderror
@@ -58,29 +60,50 @@
                 <div class="grid">
                     <div class="col">
                         
-                        <legend>Criterio de Filtro:</legend>
+                        <legend>Filtro Rubro:</legend>
 
-                        <select name="" id="" wire:model="criterioFiltro" wire:change="actualizarCriterio">
-                            <option value="rubro">Rubro</option>
-                            <option value="proveedor">Proveedor</option>
-                            <option value="marca">Marca</option>
+                        <select name="" id="" wire:model.live="filtroRubro" >
+                            <option value="">Todo</option>
+                            @foreach ($rubros as $r)
+                                <option value="{{$r->nombre}}">{{$r->nombre}}</option>
+                                
+                            @endforeach
+
                         </select>
                             
                           
                     </div>
                     <div class="col">
-                        <label for="">
-                            Dato Filtrado
-                            <select name="" id="" wire:model.live="datoFiltro" >
-                                
-                                @foreach ($opciones as $i)
-                                    <option value="{{$i->nombre}}" >{{$i->nombre}}</option>                                
-                                @endforeach
-                            </select>
-        
-                        </label>
+                        
+                        <legend>Filtro Proveedor:</legend>
 
+                        <select name="" id="" wire:model.live="filtroProveedor" >
+                            <option value="">Todo</option>
+                            @foreach ($proveedores as $r)
+                                <option value="{{$r->nombre}}">{{$r->nombre}}</option>
+                                
+                            @endforeach
+
+                        </select>
+                            
+                          
                     </div>
+                    <div class="col">
+                        
+                        <legend>Filtro Marcas:</legend>
+
+                        <select name="" id="" wire:model.live="filtroMarca" >
+                            <option value="">Todo</option>
+                            @foreach ($marcas as $r)
+                                <option value="{{$r->nombre}}">{{$r->nombre}}</option>
+                                
+                            @endforeach
+
+                        </select>
+                            
+                          
+                    </div>
+
                     <div class="col">
                         <fieldset>
                             <label>
@@ -111,18 +134,18 @@
 
                     @if (!$precioFijo)
                         
-                        <th scope="col">Precio 1</th>
+                        <th scope="col">Precio1</th>
                         <th scope="col">X {{$porcentaje1}}%</th>
-                        <th scope="col">Precio 2</th>
+                        <th scope="col">Precio2</th>
                         <th scope="col">X {{$porcentaje2}}%</th>
-                        <th scope="col">Precio 3</th>
+                        <th scope="col">Precio3</th>
                         <th scope="col">X {{$porcentaje3}}%</th>
                     @else
-                        <th scope="col">Precio 1</th>
+                        <th scope="col">Precio1</th>
                         <th scope="col">P.F. ${{$precioFijo1}}</th>
-                        <th scope="col">Precio 2</th>
+                        <th scope="col">Precio2</th>
                         <th scope="col">P.F. ${{$precioFijo2}}</th>
-                        <th scope="col">Precio 3</th>
+                        <th scope="col">Precio3</th>
                         <th scope="col">P.F. ${{$precioFijo3}}</th>
                     @endif
                     

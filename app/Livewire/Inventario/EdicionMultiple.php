@@ -15,6 +15,12 @@ use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
+use App\Models\Inventario;
+use App\Models\Rubro;
+use App\Models\Marca;
+use App\Models\Proveedor;
+
+
 class EdicionMultiple extends Component
 {
     use WithPagination;
@@ -50,23 +56,22 @@ class EdicionMultiple extends Component
 
 
 
+    public $filtroRubro;
+    public $filtroMarca;
+    public $filtroProveedor;
 
-    public $criterioFiltro='rubro';
-    public $opciones;
-    public $datoFiltro;
-
-    public function actualizarCriterio(){
-        // dd($this->criterioFiltro);
-        $this->opciones = DB::table('inventarios')
-        ->select($this->criterioFiltro.' as nombre')
-        ->where('empresa_id', Auth::user()->empresa_id)
-        ->groupBy($this->criterioFiltro)->get();
-    }
+    // public function actualizarCriterio(){
+    //     // dd($this->criterioFiltro);
+    //     $this->opciones = DB::table('inventarios')
+    //     ->select($this->criterioFiltro.' as nombre')
+    //     ->where('empresa_id', Auth::user()->empresa_id)
+    //     ->groupBy($this->criterioFiltro)->get();
+    // }
 
 
-    public function mount(){
-        $this->actualizarCriterio();
-    }
+    // public function mount(){
+    //     $this->actualizarCriterio();
+    // }
 
 
     public function modificarPrecio(){
@@ -105,8 +110,18 @@ class EdicionMultiple extends Component
 
                 $affected = DB::table('inventarios')
                     ->where('empresa_id', Auth::user()->empresa_id)
-                    ->where($this->criterioFiltro, $this->datoFiltro)
-                    // ->whereAny($this->arrayFiltros, 'LIKE', "%$this->datoBuscado%")
+
+                    ->when($this->filtroRubro, function ($query, $filtroRubro) {
+                        return $query->where('rubro', $filtroRubro);
+                    })
+                    ->when($this->filtroProveedor, function ($query, $filtroProveedor) {
+                        return $query->where('proveedor', $filtroProveedor);
+                    })
+                    ->when($this->filtroMarca, function ($query, $filtroMarca) {
+                        return $query->where('marca', $filtroMarca);
+                    })
+
+
                     ->update($updates);
             } else {
                 // Manejar el caso donde ninguno de los precios fijos es mayor a 0
@@ -119,7 +134,19 @@ class EdicionMultiple extends Component
 
             $affected = DB::table('inventarios')
                         ->where('empresa_id', Auth::user()->empresa_id)
-                        ->where($this->criterioFiltro,$this->datoFiltro)
+                        
+                        
+                        ->when($this->filtroRubro, function ($query, $filtroRubro) {
+                            return $query->where('rubro', $filtroRubro);
+                        })
+                        ->when($this->filtroProveedor, function ($query, $filtroProveedor) {
+                            return $query->where('proveedor', $filtroProveedor);
+                        })
+                        ->when($this->filtroMarca, function ($query, $filtroMarca) {
+                            return $query->where('marca', $filtroMarca);
+                        })
+
+
                         // ->whereAny($this->arrayFiltros, 'LIKE', "%$this->datoBuscado%")
                         ->update(['precio1' => DB::raw('round(precio1 + ( precio1 * '.$this->porcentaje1.'/100),2)'),
                                     'precio2' => DB::raw('round(precio2 + ( precio2 * '.$this->porcentaje2.'/100),2)'),
@@ -196,10 +223,23 @@ class EdicionMultiple extends Component
 
                                             )
                                     ->where('empresa_id', Auth::user()->empresa_id)
-                                    ->where($this->criterioFiltro,$this->datoFiltro)
-    
-                                    // ->whereAny($this->arrayFiltros, 'LIKE', "%$this->datoBuscado%")        
+
+
+                                    ->when($this->filtroRubro, function ($query, $filtroRubro) {
+                                        return $query->where('rubro', $filtroRubro);
+                                    })
+                                    ->when($this->filtroProveedor, function ($query, $filtroProveedor) {
+                                        return $query->where('proveedor', $filtroProveedor);
+                                    })
+                                    ->when($this->filtroMarca, function ($query, $filtroMarca) {
+                                        return $query->where('marca', $filtroMarca);
+                                    })
+                                    
+                                    
                                     ->paginate(30),
+                'rubros'=> Rubro::where('empresa_id', Auth::user()->empresa_id)->get(),
+                'marcas'=> Marca::where('empresa_id', Auth::user()->empresa_id)->get(),
+                'proveedores'=> Proveedor::where('empresa_id', Auth::user()->empresa_id)->get(),
             ])
             ->extends('layouts.app')
             ->section('main');
@@ -215,10 +255,23 @@ class EdicionMultiple extends Component
 
                                             )
                                     ->where('empresa_id', Auth::user()->empresa_id)
-                                    ->where($this->criterioFiltro,$this->datoFiltro)
-    
-                                    // ->whereAny($this->arrayFiltros, 'LIKE', "%$this->datoBuscado%")        
+
+                                    ->when($this->filtroRubro, function ($query, $filtroRubro) {
+                                        return $query->where('rubro', $filtroRubro);
+                                    })
+                                    ->when($this->filtroProveedor, function ($query, $filtroProveedor) {
+                                        return $query->where('proveedor', $filtroProveedor);
+                                    })
+                                    ->when($this->filtroMarca, function ($query, $filtroMarca) {
+                                        return $query->where('marca', $filtroMarca);
+                                    })
+     
                                     ->paginate(30),
+
+                                    
+                'rubros'=> Rubro::where('empresa_id', Auth::user()->empresa_id)->get(),
+                'marcas'=> Marca::where('empresa_id', Auth::user()->empresa_id)->get(),
+                'proveedores'=> Proveedor::where('empresa_id', Auth::user()->empresa_id)->get(),
             ])
             ->extends('layouts.app')
             ->section('main');
