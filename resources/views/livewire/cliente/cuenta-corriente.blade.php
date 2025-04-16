@@ -6,19 +6,37 @@
         <h3>Cuenta Corriente</h3>
         <h4>{{$cliente->razonSocial}}</h4>
 
+        @if (session('mensaje'))
+            <article>
+                <p>
+                    {{ session('mensaje') }}    
+                </p>     
+            </article>
+        @endif
+        @if (session('mensajePago'))
+            <article>
+                <p style="color: green;">
+                    {{-- <strong>Pago Realizado</strong> --}}
+                    {{ session('mensajePago') }}    
+                </p>     
+            </article>
+        @endif
+
+
         <article>
             <div class="grid">
-                <div class="col">
-                    <h3>Saldo</h3>
-                    <h1 style="color: red;">${{number_format($saldo, 2, ',', '.')}}</h1>
-                </div>
-
+                
                 <div class="col">                      
                     <label for="">
                         
+                        <a role="button" href="{{route('cliente')}}">Clientes</a>
                         <button @click="modalPago = !modalPago">Realizar Pago</button>
-
+                        
                     </label>
+                </div>
+                <div class="col" style="text-align: right;">
+                    <h3>Saldo</h3>
+                    <h1 style="color: red;">${{number_format($saldo, 2, ',', '.')}}</h1>
                 </div>
             </div>
 
@@ -39,14 +57,6 @@
         </article>
 
         {{-- @dump($movimientos) --}}
-
-        @if (session('mensaje'))
-            <article>
-                <p>
-                    {{ session('mensaje') }}    
-                </p>     
-            </article>
-        @endif
 
 
         <div class="overflow-auto">
@@ -123,78 +133,94 @@
             </p>
           </header>
 
-        @if (session('mensajePago'))
-            <div class="alert alert-success">
-                {{ session('mensajePago') }}
-            </div>
-            <button @click="modalPago = !modalPago">Cerrar</button>
-        @else
-
             <form wire:submit="pagar">
                 <fieldset>
-                <label>
-                    Comentario
-                    <input
-                    wire:model="comentario"
-                    name="comentario"
-                    placeholder="Ingrese un Comentario"
-                    
-                    @error('comentario') 
-                        aria-invalid="true"
-                        aria-describedby="invalid-helper"
+
+                    <label>
+                        Forma de Pago 
+
+                        <select    wire:model="formaPago"   name="formaPago"    placeholder="Ingrese una Forma de Pago">
+
+                            @foreach ($formaPagoLista as $item)
+
+                                @if ($item->nombre != 'Cuenta Corriente')
+                                    <option value="{{$item->nombre}}">{{$item->nombre}}</option>                                
+                                @endif
+                                
+                            @endforeach
+
+                        </select>
+                    @error('formaPago') 
+                        <small id="invalid-helper">
+                            {{ $message }}
+                        </small>
                     @enderror
-
-                    >
-                @error('comentario') 
-                    <small id="invalid-helper">
-                        {{ $message }}
-                    </small>
-                @enderror
-                </label>
-
-
-                <label>
-                    Forma de Pago 
-
-                    <select    wire:model="formaPago"   name="formaPago"    placeholder="Ingrese una Forma de Pago">
-
-                        @foreach ($formaPagoLista as $item)
-
-                        <option value="{{$item->nombre}}">{{$item->nombre}}</option>
-                            
-                        @endforeach
-
-                    </select>
-                @error('formaPago') 
-                    <small id="invalid-helper">
-                        {{ $message }}
-                    </small>
-                @enderror
-                </label>
+                    </label>
 
 
 
-                <label>
-                    Importe Pagado
-                    <input
-                    wire:model="importePagado"
-                    type="text"
-                    name="pago"
-                    placeholder="Ingrese un Importe"
-                    
+                    <label>
+                        Importe Pagado
+                        <input
+                        wire:model="importePagado"
+                        type="text"
+                        name="pago"
+                        placeholder="Ingrese un Importe"
+                        
+                        @error('importePagado') 
+                            aria-invalid="true"
+                            aria-describedby="invalid-helper"
+                        @enderror
+
+                        >
                     @error('importePagado') 
-                        aria-invalid="true"
-                        aria-describedby="invalid-helper"
+                        <small id="invalid-helper">
+                            {{ $message }}
+                        </small>
                     @enderror
+                    
+                    </label>
 
-                    >
-                @error('importePagado') 
-                    <small id="invalid-helper">
-                        {{ $message }}
-                    </small>
-                @enderror
-                
-                </label>
+                    <label>
+                        Comentario
+                        <input
+                        wire:model="comentario"
+                        name="comentario"
+                        placeholder="Ingrese un Comentario"
+                        
+                        @error('comentario') 
+                            aria-invalid="true"
+                            aria-describedby="invalid-helper"
+                        @enderror
+
+                        >
+                    @error('comentario') 
+                        <small id="invalid-helper">
+                            {{ $message }}
+                        </small>
+                    @enderror
+                    </label>
+
+                    <label>
+                        Telefono
+                        <input
+                            wire:model="telefono"
+                            name="telefono"
+                            placeholder="Ingrese un Telefono para el Recibo"
+                            
+                            @error('telefono') 
+                                aria-invalid="true"
+                                aria-describedby="invalid-helper"
+                            @enderror
+
+                        >
+                    @error('telefono') 
+                        <small id="invalid-helper">
+                            {{ $message }}
+                        </small>
+                    @enderror
+                    </label>
+
                 </fieldset>
                 
 
@@ -206,10 +232,6 @@
                 value="Realizar Pago"
                 />
             </form>
-
-        @endif
-
-
 
 
         </article>

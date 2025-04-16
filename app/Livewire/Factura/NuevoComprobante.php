@@ -249,7 +249,10 @@ class NuevoComprobante extends Component
                     'numeric',
                     function ($attribute, $value, $fail) {
                         if ($value == 0) {
-                            $fail('El número debe ser mayor a 0.');
+                            $fail('El Total debe ser mayor a 0.');
+                        }
+                        if ($value > 20000000) {
+                            $fail('El Total debe ser menor a $20.000.000,00');
                         }
                         // Validación para verificar que total >= (importeUno + importeDos)
                         if(is_numeric($this->importeUno) AND is_numeric($this->importeDos)){

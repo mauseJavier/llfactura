@@ -5,14 +5,53 @@
 
         <article>
             <div class="grid">
-                <div class="col">
-                    <button @click="modalNuevoCliente = !modalNuevoCliente">Nuevo Cliente</button>
 
-                </div>
-                <div class="col">
 
-                    <input wire:model.live="datoBuscado" type="search" name="" id="">
+                <div class="col">
+                        <fieldset role="group">
+                            <input wire:model.live="datoBuscado" type="search" name="" id="" placeholder="Buscar Cliente">
+
+                            <button @click="modalNuevoCliente = !modalNuevoCliente" data-tooltip="Nuevo Cliente" >
+                                    <!-- plus-large icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+                                    <path
+                                    d="M 264 8 Q 263 1 256 0 Q 249 1 248 8 L 248 248 L 248 248 L 8 248 L 8 248 Q 1 249 0 256 Q 1 263 8 264 L 248 264 L 248 264 L 248 504 L 248 504 Q 249 511 256 512 Q 263 511 264 504 L 264 264 L 264 264 L 504 264 L 504 264 Q 511 263 512 256 Q 511 249 504 248 L 264 248 L 264 248 L 264 8 L 264 8 Z"
+                                    />
+                                </svg>
+                            </button>
+
+
+                        </fieldset>
                 </div>
+                
+                {{-- <div class="col">
+                    
+                    <input wire:model.live="datoBuscado" type="search" name="" id="" placeholder="Buscar Cliente">
+                </div>
+                
+                <div class="col" style="display: flex; justify-content: flex-start; align-items: center;">
+                    <button @click="modalNuevoCliente = !modalNuevoCliente" data-tooltip="Nuevo Cliente" >
+                            <!-- plus-large icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+                            <path
+                            d="M 264 8 Q 263 1 256 0 Q 249 1 248 8 L 248 248 L 248 248 L 8 248 L 8 248 Q 1 249 0 256 Q 1 263 8 264 L 248 264 L 248 264 L 248 504 L 248 504 Q 249 511 256 512 Q 263 511 264 504 L 264 264 L 264 264 L 504 264 L 504 264 Q 511 263 512 256 Q 511 249 504 248 L 264 248 L 264 248 L 264 8 L 264 8 Z"
+                            />
+                        </svg>
+                    </button>
+                </div> --}}
+
+                @if ((Auth::user()->role_id == 3) OR (Auth::user()->role_id == 4))
+
+                    <div class="col" style="text-align: right;">
+                        Saldos Negativos.
+                        <h3 style="color: red;">${{number_format($sumaSaldoNegativo, 2, ',', '.')}}</h3>
+                    
+                        <h6 style="color: green;">Pagos Mes actual: ${{number_format($sumaPagosMesActual, 2, ',', '.')}}</h6>
+                    
+                    </div>
+                    
+                @endif
+
             </div>
         </article>
 
@@ -23,6 +62,30 @@
                 </p>     
             </article>
         @endif
+        @if (session('guardado'))
+            <article>
+                <p style="color: green;">
+                    {{-- <strong>Pago Realizado</strong> --}}
+                    {{ session('guardado') }}    
+                </p>     
+            </article>
+        @endif
+
+        @if (session('error'))
+            <article>
+                <p style="color: red;">
+                    {{-- <strong>Pago Realizado</strong> --}}
+                    {{ session('error') }}    
+                </p>     
+            </article>
+        @endif
+
+
+        <article>
+            Ordenado Por: {{$ordenarPor}} <br>
+            Orden: {{$ordenarDireccion == 'asc'? 'Ascendente' : 'Descendente' }} <br>
+        </article>
+
         {{-- "id" => 1
         "tipoDocumento" => 99
         "tipoContribuyente" => 5
@@ -39,14 +102,16 @@
         <table class="striped">
             <thead>
               <tr>
-                <th scope="col">Razon Social</th>
+                <th>Acciones</th>
+                <th scope="col"><button  class="outline secondary" wire:click="ordenar('razonSocial')">Razon Social</button></th>
                 <th scope="col">Tipo Doc</th>
                 <th scope="col">Numero</th>
                 <th scope="col">Tipo Contr.</th>
+                <th scope="col">Telefono.</th>
                 <th scope="col">Correo</th>
                 <th scope="col">Domicilio</th>
 
-                <th scope="col">Saldo</th>
+                <th scope="col"><button  class="outline secondary" wire:click="ordenar('saldo')">Saldo</button></th>
 
 
 
@@ -56,9 +121,28 @@
                 @foreach ($clientes as $c)
                     <tr>
                         <td>
-                            <button wire:click="editarCliente({{$c->id}})" @click="modalNuevoCliente = !modalNuevoCliente">
-                                {{$c->razonSocial}}
-                            </button>
+                            <details class="dropdown">
+                                <summary>Acciones</summary>
+                                <ul>
+                                    <li>
+                                        <a wire:click="editarCliente({{$c->id}})" @click="modalNuevoCliente = !modalNuevoCliente" >
+                                            Editar
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('cuentaCorriente',['cliente'=>$c->id])}}">Ver Cuenta Corriente</a>
+                                    </li>
+                                    <li>
+                                        <a wire:click="eliminarCliente({{$c->id}})" onclick="confirm('¿Estas seguro de eliminar el cliente? Esto tambien borra los mobimientos de CC.') || event.stopImmediatePropagation()" >
+                                            Eliminar
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </details>
+                        </td>
+                        <td>
+                            {{$c->razonSocial}}
                         </td>
                         <td>{{$c->tipoDocumento}}</td>
                         <td>{{$c->numeroDocumento}}</td>
@@ -85,9 +169,11 @@
                             @endswitch
                             ({{$c->tipoContribuyente}})
                         </td>
+                        <td><a href="http://wa.me/{{$c->telefono}}" target="_blank" rel="noopener noreferrer">{{$c->telefono}}</a></td>
+
                         <td>{{$c->correo}}</td>
                         <td>{{$c->domicilio}}</td>
-                        <td><a href="{{route('cuentaCorriente',['cliente'=>$c->id])}}">${{($c->saldo) ? $c->saldo : 0}}</a></td>
+                        <td><a role="button" href="{{route('cuentaCorriente',['cliente'=>$c->id])}}">${{($c->saldo) ? number_format($c->saldo, 2, '.', ',') : '0.00'}}</a></td>
 
 
 
@@ -104,16 +190,6 @@
 
     <dialog x-bind:open="modalNuevoCliente">      
         <article>
-
-            @if (session('guardado'))
-
-                <p>
-                    {{ session('guardado') }}    
-                </p>  
-
-                <a href="{{route('cliente')}}" role="button">Listo</a>
-                
-            @else
                 
                 <header>
                 <button aria-label="Close" rel="prev" @click="modalNuevoCliente = !modalNuevoCliente"></button>
@@ -121,15 +197,7 @@
                     <strong>Nuevo Cliente</strong>
                 </p>
                 </header>
-    
-                @if (session('mensaje'))
-                    <article>
-                        <p>
-                            {{ session('mensaje') }}    
-                        </p>     
-                    </article>
-                @endif
-    
+        
                     <fieldset>
                         <label>
                             Razon Social
@@ -177,6 +245,19 @@
                                 </small>
                             @enderror
                         </label>
+
+                        <label>
+                            Telefono
+                            <input
+                            type="text"
+                            name=""
+                            placeholder="Telefono"
+                            wire:model="telefono"
+                            
+                            />
+                        </label>
+
+
                         <label>
                             Domicilio
                             <input
@@ -220,7 +301,6 @@
                 
                 @endif
                 <button wire:click="cancelar" @click="modalNuevoCliente = !modalNuevoCliente">Cancelar</button>
-            @endif
         </article>
     </dialog>
 

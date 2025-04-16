@@ -9,34 +9,78 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.green.min.css"
+      @if (env('APP_DEBUG') == 'true')
+        {{-- href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css" --}}
+        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.red.min.css"
+      
+      @else
+        href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.green.min.css"
+      
+      @endif
     />
     
-    <style>
-      .tarjetaMenu{
-        text-align: center;
-        color: rgb(71, 164, 23);
-      }
 
 
-        /* para las sombras */
-        .ponerSombras:hover {
-          -webkit-box-shadow: 0px 0px 18px 4px rgba(245,108,108,1);
-            -moz-box-shadow: 0px 0px 18px 4px rgba(245,108,108,1);
-            box-shadow: 0px 0px 18px 4px rgba(245,108,108,1);
-        }
+        @if (env('APP_DEBUG') == 'true')
 
-        .ponerSombras{
-
-          -webkit-box-shadow: 17px 20px 20px -15px rgba(146,227,134,1);
-          -moz-box-shadow: 17px 20px 20px -15px rgba(146,227,134,1);
-          box-shadow: 17px 20px 20px -15px rgba(146,227,134,1);
-
-        }
+        <style>
+          .tarjetaMenu{
+            text-align: center;
+            color: rgb(245, 108, 108); /* Changed from green to red */
+          }
 
 
+            /* para las sombras */
+            .ponerSombras:hover {
+              -webkit-box-shadow: 0px 0px 18px 4px rgba(71, 164, 23, 1); /* Changed from red to green */
+          -moz-box-shadow: 0px 0px 18px 4px rgba(71, 164, 23, 1); /* Changed from red to green */
+          box-shadow: 0px 0px 18px 4px rgba(71, 164, 23, 1); /* Changed from red to green */
+            }
 
-    </style>
+            .ponerSombras{
+
+              -webkit-box-shadow: 17px 20px 20px -15px rgba(245, 108, 108, 1); /* Changed from green to red */
+              -moz-box-shadow: 17px 20px 20px -15px rgba(245, 108, 108, 1); /* Changed from green to red */
+              box-shadow: 17px 20px 20px -15px rgba(245, 108, 108, 1); /* Changed from green to red */
+
+            }
+
+
+
+        </style>
+
+
+        @else
+
+        <style>
+          .tarjetaMenu{
+            text-align: center;
+            color: rgb(71, 164, 23);
+          }
+
+
+            /* para las sombras */
+            .ponerSombras:hover {
+              -webkit-box-shadow: 0px 0px 18px 4px rgba(245,108,108,1);
+                -moz-box-shadow: 0px 0px 18px 4px rgba(245,108,108,1);
+                box-shadow: 0px 0px 18px 4px rgba(245,108,108,1);
+            }
+
+            .ponerSombras{
+
+              -webkit-box-shadow: 17px 20px 20px -15px rgba(146,227,134,1);
+              -moz-box-shadow: 17px 20px 20px -15px rgba(146,227,134,1);
+              box-shadow: 17px 20px 20px -15px rgba(146,227,134,1);
+
+            }
+
+
+
+        </style>
+
+        @endif
+
+
   </head>
   <body>
     <div class="container-fluid">

@@ -127,11 +127,9 @@ class EstadoEmpresa extends Component
             
         '¡Hola '.$empresa->titular.'! 👋🏼
 
-            Soy Javier/Marcelo de LLFactura.com. Te escribo desde nuestro nuevo número de WhatsApp para estar más cerca de ti y brindarte un mejor servicio. 📲✨
-
-            Queremos agradecerte por tu confianza y recordarte que estamos aquí para ayudarte con la gestion de tu negocio. Si necesitas algo, no dudes en escribirnos.
-
-            📌 Guarda este número para seguir en contacto.
+            De LLFactura.com, Queremos acercarte ru recibo de pago.
+            
+            Si tienes alguna pregunta o necesitas más información, no dudes en contactarnos.
 
             ¡Gracias por ser parte de LLFactura.com! 😊🙌.
 

@@ -94,6 +94,7 @@
 				<p>A {{$tipoContribuyente}}</p>
 				<p style="word-break: keep-all; width: 80%;">R.SOCIAL {{$nombreCliente}}</p>
 				<p>CUIT {{$cuitCliente}}</p>
+				<p>Forma Pago: {{$nombreFormaPago == $nombreFormaPago2 ? $nombreFormaPago : $nombreFormaPago .'/'.$nombreFormaPago2}}</p>
 			
 		</tr>
 		<tr>

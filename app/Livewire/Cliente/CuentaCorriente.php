@@ -6,13 +6,18 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 use App\Events\SaldoCuentaCorriente;
+use App\Events\NotificarClientePorWhatsappEvent;
+
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
+
 use App\Models\Empresa;
 use App\Models\FormaPago;
+
+use Barryvdh\DomPDF\Facade\Pdf; 
 
 
 
@@ -34,12 +39,16 @@ class CuentaCorriente extends Component
 
     public $formaPago = 'Efectivo';
 
+    public $telefono;
+
 
     public $fechaDesde;
 
     public function mount(Cliente $cliente){
 
         $this->cliente = $cliente;
+
+        $this->telefono = $cliente->telefono;
 
         if($this->cliente->empresa_id != Auth::user()->empresa_id){
 
@@ -66,9 +75,14 @@ class CuentaCorriente extends Component
     public function pagar(){
 
         $validated = $this->validate([ 
-            'comentario' => 'required|min:1',
             'importePagado' => 'required|min:1|numeric',
         ]);
+
+
+        $this->cliente->telefono = $this->telefono;
+        $this->cliente->save();
+
+        
 
         //AK APLICA EL SALDO AL CLIENTE
         SaldoCuentaCorriente::dispatch([
@@ -86,10 +100,58 @@ class CuentaCorriente extends Component
 
         ]);
 
+
+        $mensaje = "Hola {$this->cliente->razonSocial}, ya agendamos tu pago. Desde la APP LLFactura.com ";
+        $instanciaWS= env('instanciaWhatsappLLFactura');
+        $apikey= env('apikeyLLFactura');
+        // $tokenTelegram = env('tokenTelegram');
+        // dd( $this->cliente->telefono);
+
+                    $cliente = $this->cliente;
+                    $recibo_id = DB::table('cuenta_corrientes')
+                    ->where('cliente_id', $this->cliente->id)
+                    ->where('empresa_id', Auth::user()->empresa_id)
+                    ->orderBy('created_at', 'DESC')
+                    ->first();
+
+
+                    $pdf = Pdf::loadView('PDF.pdfReciboPdf',compact('recibo_id','cliente'));
+                    $pdf->set_paper(array(0,0,250,300), 'portrait');
+
+            
+                    $nombreArchivo= 'Recibo de Pago '.$cliente->razonSocial.'.pdf';
+                    // return $pdf->download($nombreArchivo);
+                    // return $pdf->stream($nombreArchivo);   
+            
+                    // Obtener el contenido binario del PDF
+                    $pdfContent = $pdf->output();
+                    // return $pdf->stream($nombreArchivo);   
+                    // return $pdf->download($nombreArchivo);        
+            
+                    // Convertir a Base64
+                    $pdfBase64 = base64_encode($pdfContent);
+            
+                    // dd($pdfBase64);      
+                    
+                    NotificarClientePorWhatsappEvent::dispatch([
+                        'clienteNombre' => $this->cliente->razonSocial,
+                        'clienteTelefono' => $this->cliente->telefono,
+                        'mensaje' => $mensaje,
+                        'instanciaWS' => $instanciaWS,
+                        'apikey' => $apikey,
+                        // 'tokenTelegram' => $tokenTelegram,
+                        'Base64' => $pdfBase64,
+                    ]);
+            
+
+
+
         $this->comentario='';
         $this->importePagado=0;
 
         session()->flash('mensajePago', 'Pago Correcto.');
+
+        $this->redirectRoute('cuentaCorriente',['cliente'=>$this->cliente->id]);
 
 
 

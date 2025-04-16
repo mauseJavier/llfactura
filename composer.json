@@ -11,7 +11,7 @@
         "chillerlan/php-qrcode": "^5.0",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.9",
-        "livewire/livewire": "^3.4",
+        "livewire/livewire": "*",
         "livewire/volt": "^1.0",
         "nxp/math-executor": "^2.3",
         "spatie/laravel-backup": "^9.2"

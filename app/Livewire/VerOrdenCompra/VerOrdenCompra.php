@@ -351,7 +351,7 @@ class VerOrdenCompra extends Component
                 'codigo',
                 'detalle',
             ], 'like', '%'.$this->codigoDetalle.'%')
-            ->paginate(5),
+            ->paginate(15),
             
 
         ])

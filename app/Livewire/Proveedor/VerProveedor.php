@@ -37,14 +37,45 @@ class VerProveedor extends Component
 
 
 
-        $proveedor = Proveedor::updateOrCreate(
-            ['cuit'=>$this->cuit,'empresa_id'=> Auth::user()->empresa_id],
-            [            
-            'nombre'=>trim($this->nombre),
-            ]
-        );
+        // $proveedor = Proveedor::updateOrCreate(
+        //     ['cuit'=>$this->cuit,'empresa_id'=> Auth::user()->empresa_id],
+        //     [            
+        //     'nombre'=>trim($this->nombre),
+        //     ]
+        // );
 
-        session()->flash('mensaje', 'Proveedor '.$proveedor->nombre.' Guardado.');
+                // Verificar si ya existe un Proveedor con el mismo nombre y empresa_id
+                $existe = Proveedor::whereRaw('LOWER(nombre) = ?', [strtolower($this->nombre)])
+                ->where('empresa_id', Auth::user()->empresa_id)
+                ->exists();
+            
+        
+                if ($existe) {
+                // Si ya existe, puedes lanzar una excepción, retornar un mensaje de error, etc.
+                    // throw new \Exception('El Proveedor ya existe para esta empresa.');
+                    session()->flash('mensaje', 'Proveedor "'.$this->nombre.'" Ya Existe');
+        
+                } else {
+                        // Si no existe, crear el nuevo rubro
+                        $nuevoProveedor = Proveedor::create([
+                            'nombre'=> $this->nombre,
+                            'empresa_id'=>Auth::user()->empresa_id,
+                        ]);
+        
+                    if($nuevoProveedor){
+            
+                        session()->flash('mensaje', 'Proveedor "'.$this->nombre.'" Guardado.');
+                        $this->redirect('/proveedor');
+            
+                    }else{
+                        session()->flash('mensaje', 'Ocurrio un error');
+            
+                    }
+                }
+
+                $this->nombre = '';
+                $this->cuit = '';
+
 
     }
 

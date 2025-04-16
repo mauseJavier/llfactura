@@ -153,7 +153,9 @@
             <ul style="list-style-type: none;">
                 <li>Condicion IVA: <strong>{{$tipoContribuyente}}</strong></li>
                 <li>{{$leyenda}}</li>
-                <li>Forma de Pago: {{$nombreFormaPago}}/{{$nombreFormaPago2}}</li>
+                <li>				
+                    <p>Forma Pago: {{$nombreFormaPago == $nombreFormaPago2 ? $nombreFormaPago : $nombreFormaPago .'/'.$nombreFormaPago2}}</p>
+                </li>
                 
 
             </ul>
