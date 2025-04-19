@@ -7,6 +7,9 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 
+    // use Illuminate\Support\Facades\DB;
+// use Illuminate\Support\Carbon;
+
 use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Http;
@@ -277,97 +280,126 @@ class EstadoEmpresa extends Component
 
     }
 
+
+
+
     public function render()
     {
-
-
-
-        // Obtener todas las empresas
-        $empresas = DB::table('empresas')
-            ->where(function ($query) {
-                $query->where('razonSocial', 'like', '%' . $this->datoBuscado . '%')
-                    ->orWhere('titular', 'like', '%' . $this->datoBuscado . '%')
-                    ->orWhere('cuit', 'like', '%' . $this->datoBuscado . '%');
+        $inicioMes = Carbon::now()->startOfMonth()->toDateString();
+        $finMes = Carbon::now()->endOfMonth()->toDateString();
+    
+        // --- Construcción de consulta base con filtros ---
+        $baseQuery = DB::table('empresas')
+            ->when($this->datoBuscado, function ($query) {
+                $search = '%' . $this->datoBuscado . '%';
+                $query->where(function ($q) use ($search) {
+                    $q->where('empresas.razonSocial', 'like', $search)
+                      ->orWhere('empresas.titular', 'like', $search)
+                      ->orWhere('empresas.cuit', 'like', $search);
+                });
             })
-            // ->where('pagoServicio',$this->filtroPago)
-            ->when($this->filtroPago, function ($query, $filtroPago) {
-                $query->where('pagoServicio', $filtroPago);
+            ->when($this->filtroPago, function ($query) {
+                $query->where('pagoServicio', $this->filtroPago);
+            });
+    
+            // --- Consulta principal con LEFT JOIN y agrupación para total facturado ---
+            $empresas = $baseQuery
+            ->leftJoin('comprobantes', function ($join) use ($inicioMes, $finMes) {
+                $join->on('empresas.id', '=', 'comprobantes.empresa_id')
+                     ->whereBetween('comprobantes.fecha', [$inicioMes, $finMes]);
             })
-            ->get()
-            ->toArray();
-
-   
-        // Recorrer cada empresa para calcular el total facturado del mes actual
-        foreach ($empresas as $key => $empresa) {
-            $totalFacturado = DB::table('comprobantes')
-                ->where('empresa_id', $empresa->id)
-                ->whereBetween('fecha', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()])
-                ->sum('total');
-
-            $empresas[$key]->totalFacturado = $totalFacturado;
-        }
-
-
-        if ($this->ordenarPor != '' and $this->ordenarPor == 'updated_at') {
-
-            // Ordenar las empresas por total facturado de forma descendente
-            usort($empresas, function($a, $b) {
-                // return $b->totalFacturado <=> $a->totalFacturado;
-                return strtotime($b->updated_at) <=> strtotime($a->updated_at);
-            });
-
-        }else{
-
-            // Ordenar las empresas por total facturado de forma descendente
-            usort($empresas, function($a, $b) {
-                return $b->totalFacturado <=> $a->totalFacturado;
-            });
-
-        }
-
-        // Ahora $empresas está ordenado por totalFacturado en orden descendente
-
-        // dd($empresas);
-
-        $totalPorUsuario = DB::table('empresas')
-                ->select('usuarioPago', DB::raw('SUM(pagoMes) as totalPagos'), DB::raw('count(pagoMes) as cantidad'),)
-                ->where(function ($query) {
-                    $query->where('razonSocial', 'like', '%' . $this->datoBuscado . '%')
-                        ->orWhere('titular', 'like', '%' . $this->datoBuscado . '%')
-                        ->orWhere('cuit', 'like', '%' . $this->datoBuscado . '%');
-                })
-                ->when($this->filtroPago, function ($query, $filtroPago) {
-                    $query->where('pagoServicio', $filtroPago);
-                })
-                ->groupBy('usuarioPago') // Agrupa por el campo usuarioPago
-                ->get()
-                ->toArray();
+            ->select(
+                'empresas.id',
+                'empresas.razonSocial',
+                'empresas.titular',
+                'empresas.cuit',
+                'empresas.pagoServicio',
+                'empresas.updated_at',
+                'empresas.usuarioPago',
+                'empresas.vencimientoPago',
+                'empresas.pagoMes',
+                'empresas.comentario',
+                'empresas.telefono',
+                DB::raw('COALESCE(SUM(comprobantes.total), 0) as totalFacturado')
+            )
+            ->groupBy(
+                'empresas.id',
+                'empresas.razonSocial',
+                'empresas.titular',
+                'empresas.cuit',
+                'empresas.pagoServicio',
+                'empresas.updated_at',
+                'empresas.vencimientoPago',
+                'empresas.pagoMes',
+                'empresas.comentario',
+                'empresas.telefono',
+                'empresas.usuarioPago'
+            )
+            ->when($this->ordenarPor === 'updated_at', function ($query) {
+                $query->orderByDesc('empresas.updated_at');
+            }, function ($query) {
+                $query->orderByDesc(DB::raw('COALESCE(SUM(comprobantes.total), 0)'));
+            })
+            ->get();
         
-        // dd($totalPorUsuario);
+    
+    
+            // --- Total por usuario ---
+            $totalPorUsuario = DB::table('empresas')
+            ->when($this->datoBuscado, function ($query) {
+                $search = '%' . $this->datoBuscado . '%';
+                $query->where(function ($q) use ($search) {
+                    $q->where('razonSocial', 'like', $search)
+                      ->orWhere('titular', 'like', $search)
+                      ->orWhere('cuit', 'like', $search);
+                });
+            })
+            ->when($this->filtroPago, function ($query) {
+                $query->where('pagoServicio', $this->filtroPago);
+            })
+            ->select(
+                DB::raw("IFNULL(usuarioPago, 'Sin usuario') as usuario"),
+                DB::raw("SUM(COALESCE(pagoMes, 0)) as totalPagos"),
+                DB::raw("COUNT(*) as cantidad")
+            )
+            ->groupBy(DB::raw("IFNULL(usuarioPago, 'Sin usuario')"))
+            ->get();
+        
 
-        $total = DB::table('empresas')
-        ->select(DB::raw('SUM(pagoMes) as total'),DB::raw('count(pagoMes) as totalCantidad'),)
-        ->where(function ($query) {
-            $query->where('razonSocial', 'like', '%' . $this->datoBuscado . '%')
-                ->orWhere('titular', 'like', '%' . $this->datoBuscado . '%')
-                ->orWhere('cuit', 'like', '%' . $this->datoBuscado . '%');
-        })
-        ->when($this->filtroPago, function ($query, $filtroPago) {
-            $query->where('pagoServicio', $filtroPago);
-        })
-        ->get()
-        ->toArray();
+            // dd($totalPorUsuario);
+    
 
-        // dd($total);
-
-        return view('livewire.facturacion-empresas.estado-empresa',[
-            'empresas'=>$empresas,
-            'totalPorUsuario'=>$totalPorUsuario,
-            'total'=>$total,
-
-
+    
+            // --- Total general ---
+            $total = DB::table('empresas')
+            ->when($this->datoBuscado, function ($query) {
+                $search = '%' . $this->datoBuscado . '%';
+                $query->where(function ($q) use ($search) {
+                    $q->where('razonSocial', 'like', $search)
+                    ->orWhere('titular', 'like', $search)
+                    ->orWhere('cuit', 'like', $search);
+                });
+            })
+            ->when($this->filtroPago, function ($query) {
+                $query->where('pagoServicio', $this->filtroPago);
+            })
+            ->whereBetween('vencimientoPago', [
+                Carbon::now()->startOfMonth()->toDateString(),
+                Carbon::now()->endOfMonth()->toDateString()
+            ])
+            ->select(DB::raw('SUM(COALESCE(pagoMes, 0)) as total'),
+                DB::raw('COUNT(*) as totalCantidad')
+            )
+            ->first();
+    
+        
+        return view('livewire.facturacion-empresas.estado-empresa', [
+            'empresas' => $empresas,
+            'totalPorUsuario' => $totalPorUsuario,
+            'total' => $total,
         ])
         ->extends('layouts.app')
         ->section('main');
     }
+    
 }

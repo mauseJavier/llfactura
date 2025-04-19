@@ -102,8 +102,8 @@
 		</tr>
 		<tr>
 			
-				{{-- <p>A sdfsdfsdf</p>
-				<p style="word-break: keep-all; width: 80%;">R.SOCIAL {{$nombreCliente}}</p>
+				<p>{{ $comanda->mesa->comentario ?? 'Sin Comentarios' }}</p>
+				{{-- <p style="word-break: keep-all; width: 80%;">R.SOCIAL {{$nombreCliente}}</p>
 				<p>CUIT {{$cuitCliente}}</p> --}}
 			
 		</tr>

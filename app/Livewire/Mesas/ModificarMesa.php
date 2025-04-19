@@ -4,6 +4,9 @@ namespace App\Livewire\Mesas;
 
 use Livewire\Component;
 
+use Livewire\Attributes\On;
+
+
 use Livewire\WithPagination;
 use Livewire\Attributes\Session;
 
@@ -14,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Mesa;
 use App\Models\Inventario;
 use App\Models\Comanda;
+// modelo rubro 
+use App\Models\Rubro;
 
 
 class ModificarMesa extends Component
@@ -47,30 +52,171 @@ class ModificarMesa extends Component
             $data,
             $total;
 
-    public $estadoModalEdicion = '';
     public $modificarDetalle;
     public $modificarPrecio;
     public $modificarCantidad;
     public $modificarPorcentaje=0;
-
+    
     public $modificarKey;
     public $cantidadComenzales=1;
-
-    public $modalImprimir='close';
-
-
-    public function imprimirMesa(){
+    
 
 
-        return redirect(route('imprimirMesa',['mesa'=>$this->mesa->id]));
+    public $modificarDataModal=false;
+    public $estadoModalEdicion = '';
 
-        
-        // ESTO NO FUNCIONO POR ESO LA REDIRIJO A LA RUTA DEL CONTROLADOR Y LISTO 
-        // $this->modalImprimir == 'open' ? $this->modalImprimir = 'close' : $this->modalImprimir = 'open';
-        
+    public $filtroRubro;
 
+
+    #[On('filtroRubro')] 
+    public function filtroRubro($rubro)
+    {
+        $this->filtroRubro = $rubro;
+        $this->datoBuscado = null;
+    }
+
+
+    public function eliminarItemData($index){
+        // dump($index);
+        // dump($this->data['mesaCarrito'][$index]);
+        // dump($this->data['mesaCarrito'][$index]['detalle']);
+        // dump($this->data['mesaCarrito'][$index]['precio']);
+        // dump($this->data['mesaCarrito'][$index]['cantidad']);
+
+        unset($this->data['mesaCarrito'][$index]);
+
+
+
+
+        if(count($this->data['mesaCarrito']) == 0 ){
+
+            $this->data = null;
+            // $this->data['total']= 0;
+            // $this->data['articulos']= 0;
+            // $this->data['mesaCarrito']=[];
+
+            
+            $this->mesa->data = null;
+            $this->mesa->total = 0;
+
+            $this->mesa->save();
+            
+            $this->total = 0;
+
+
+
+        }else{
+
+            $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
+            $cantidadArticulos = 0 ;
+    
+            foreach ($this->data['mesaCarrito'] as $item) {
+    
+                // dd($this->data['mesaCarrito']);
+                $totalSubtotal += $item['subtotal'];
+                $cantidadArticulos += $item['cantidad'];
+            }
+    
+            $this->data['total']= round($totalSubtotal,2);
+            $this->data['articulos']=  $cantidadArticulos;
+    
+            $this->mesa->data = $this->data;
+            
+            $this->total = $this->data['total'];
+            $this->mesa->total = $this->data['total'];
+            
+            $this->mesa->save();
+
+
+        }
+
+
+        session()->flash('mensaje', 'Artículo eliminado: ');
 
     }
+
+    public function modificarData(){
+
+
+        $this->data['mesaCarrito'][$this->modificarKey]['detalle']= $this->modificarDetalle;
+        $this->data['mesaCarrito'][$this->modificarKey]['precio']= $this->modificarPrecio;
+        $this->data['mesaCarrito'][$this->modificarKey]['cantidad']= $this->modificarCantidad;
+        $this->data['mesaCarrito'][$this->modificarKey]['subtotal']= round($this->modificarPrecio * $this->modificarCantidad,2);
+        // $this->data['mesaCarrito'][$index]['descuento']= $this->modificarPorcentaje < 0 ? round(($this->modificarPrecio * $this->modificarPorcentaje /100),2) : 0;
+
+
+        
+        // dd($this->mesa);
+
+        $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
+        // $cantidadArticulos = 0 ; no la tocamos solo editamos
+        foreach ($this->data['mesaCarrito'] as $item) {
+
+            // dd($this->data['mesaCarrito']);
+            $totalSubtotal += $item['subtotal'];
+            // $cantidadArticulos += $item['cantidad'];
+        }
+        
+        $this->data['total']= round($totalSubtotal,2);
+        // $this->data['articulos']=  $cantidadArticulos;
+        $this->total = $this->data['total'];
+        
+        $this->mesa->data = $this->data;
+        $this->mesa->total = round($totalSubtotal,2);
+
+        $this->mesa->save();
+
+        $this->modificarDataModal = false;
+        $this->reset(['modificarDetalle', 'modificarPrecio', 'modificarCantidad', 'modificarKey']);
+
+        session()->flash('mensaje', 'Artículo modificado');
+
+    }
+
+    public function cerrarModalEdicionData()
+    {
+        $this->modificarDataModal = false;
+        $this->reset(['modificarDetalle', 'modificarPrecio', 'modificarCantidad', 'modificarKey']);
+    }
+
+    public function abrirModalEdicionData($index)    
+    {
+        $item = $this->data['mesaCarrito'][$index];
+        
+        // dump($index);
+        // dump($item);
+        // dump($item['detalle']);
+        // dump($item['precio']);
+        // dump($item['cantidad']);
+
+        // array:14 [▼ // app/Livewire/Mesas/ModificarMesa.php:83
+        // "codigo" => "7622201818654"
+        // "detalle" => "CHOCOLATES YOGURT FRUTILLA CADTURY 29g"
+        // "porcentaje" => 0
+        // "precioLista" => 1694
+        // "descuento" => 0
+        // "precio" => 1694
+        // "costo" => 1000
+        // "iva" => 21
+        // "cantidad" => 1
+        // "rubro" => "General"
+        // "proveedor" => "General"
+        // "marca" => "General"
+        // "controlStock" => "no"
+        // "subtotal" => 1694
+        // ]
+
+
+        $this->modificarKey = $index;
+        $this->modificarDetalle = $item['detalle'];
+        $this->modificarPrecio = $item['precio'];
+        $this->modificarCantidad = $item['cantidad'];
+
+        $this->modificarDataModal = true;
+    }
+
+
+
 
     public function modificarMesaCarrito(){
 
@@ -327,7 +473,7 @@ class ModificarMesa extends Component
 
             'nombreCliente' => $this->mesa->razonSocial, 
 
-            'numeroMesa' => $this->mesa->numero,
+            'numeroMesa' => $this->mesa->id, //SE TUVO QEU COMBIAR NUMERO MESA POR ID MESA POR QUE ES UNICO
             'nombreMesa' => $this->mesa->nombre, 
             'nombreMesero' => Auth()->user()->name,
             'comanda' => json_encode($this->mesaCarrito['mesaCarrito']),
@@ -540,6 +686,7 @@ class ModificarMesa extends Component
 
         // dd(json_decode($mesa->data,true));
 
+
         
     }
 
@@ -655,6 +802,7 @@ class ModificarMesa extends Component
         
         if($this->datoBuscado != ''){
             $this->resetPage();
+            $this->filtroRubro = null;
         }
 
         
@@ -669,9 +817,13 @@ class ModificarMesa extends Component
                 'detalle',
                 'rubro',
                 'proveedor'
-            ], 'LIKE', "%{$this->datoBuscado}%")     
+            ], 'LIKE', "%{$this->datoBuscado}%")   
+            ->when($this->filtroRubro, function ($query) {
+                return $query->where('rubro', $this->filtroRubro);
+            })  
             ->orderBy('created_at','DESC')                           
             ->paginate(5),
+            'rubros'=> Rubro::where('empresa_id', Auth::user()->empresa_id)->get(),
 
         ])
         ->extends('layouts.app')

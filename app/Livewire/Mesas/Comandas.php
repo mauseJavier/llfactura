@@ -11,13 +11,11 @@ use App\Models\Comanda;
 class Comandas extends Component
 {
 
-    public $modalImprimir = 'close';
     public $id=0;
 
-    public function imprimir(Comanda $comanda){
+    public function cambioEstado(Comanda $comanda){
 
-        $this->id = $comanda->id;
-        $this->modalImprimir = 'open'; 
+
 
         $comanda->estado = 'Impreso';
         $comanda->save();
@@ -37,19 +35,23 @@ class Comandas extends Component
 
     }
 
-    public function cerrarModal(){
-
-        $this->modalImprimir = 'close'; 
-
-
-    }
 
     public function render()
     {
-        return view('livewire.mesas.comandas',[
-            'comandas'=>Comanda::where('empresa_id',Auth()->user()->empresa_id)->orderBy('created_at','DESC')->get()
+        $empresaId = auth()->user()->empresa_id;
+    
+        $comandas = Comanda::with('mesa')
+                           ->where('empresa_id', $empresaId)
+                           ->orderBy('created_at', 'DESC')
+                           ->get();
+
+        // dd($comandas->first());
+    
+        return view('livewire.mesas.comandas', [
+            'comandas' => $comandas,
         ])
         ->extends('layouts.app')
         ->section('main');
     }
+    
 }

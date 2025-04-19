@@ -14,16 +14,34 @@
                     <tr>
                         <td>{{$item->cantidad}}</td>
 
-                        <td>{{$item->usuarioPago}}</td>
-                        <td>${{$item->totalPagos}}</td>
+                        <td>{{$item->usuario}}</td>
+                        <td>${{ number_format($item->totalPagos, 2, ',', '.') }}</td>
                     </tr>
                     @endforeach
-                    <tr>
+                    {{-- <tr>
                         <td>{{$total[0]->totalCantidad}}</td>
 
                         <td style="text-align:right;">TOTAL:</td>
                         <td>${{$total[0]->total}}</td>
-                    </tr>
+                    </tr> --}}
+
+                    {{-- Corregir acceso a $total --}}
+                    @if ($total) {{-- Comprobar si $total no es null --}}
+                        <tr>
+                            <td>{{ $total->totalCantidad }}</td> {{-- Acceso directo a la propiedad --}}
+                            <td style="text-align:right;">TOTAL:</td>
+                            <td>${{ number_format($total->total, 2, ',', '.') }}</td> {{-- Acceso directo y formato --}}
+                        </tr>
+                    @else
+                        {{-- Opcional: Mostrar una fila indicando que no hay totales si $total es null --}}
+                        <tr>
+                        <td>0</td>
+                        <td style="text-align:right;">TOTAL:</td>
+                        <td>$0.00</td>
+                        </tr>
+                    @endif
+
+
                 </tbody>
             </table>
 

@@ -9,4 +9,10 @@ class Comanda extends Model
     //
     protected $guarded = [];
 
+    public function mesa()
+    {
+        return $this->belongsTo(Mesa::class, 'numeroMesa', 'id');
+    }
+
+
 }

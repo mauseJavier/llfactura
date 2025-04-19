@@ -53,15 +53,23 @@
 
     {{-- @dd($mesas) --}}
 
-    <div style="justify-content: center; align-items: center; ">
+    <div ">
         @if (session()->has('mensaje'))
-            <div style="color: red; text-align: center;">
+            <div style="color:green;">
             {{ session('mensaje') }}
             </div>
         @endif
     </div>
 
-        <div class="div" >
+    <div >
+        @if (session()->has('error'))
+            <div style="color: red;">
+            {{ session('error') }}
+            </div>
+        @endif
+    </div>
+
+        {{-- <div class="div" id="tarjetas" >
 
 
           <h1 style="color: rgb(141, 88, 88)"></h1>
@@ -101,7 +109,7 @@
 
                           </div>
                           
-                          {{-- {{ isset($item->data) ? ($item->data) : 0}} --}}
+                          {{-- {{ isset($item->data) ? ($item->data) : 0}}  no va-}}
       
                           @php $count++; @endphp
                       @endif
@@ -115,8 +123,54 @@
           @endforeach
 
 
-        </div>
+        </div> 
+        --}}
           
+
+        <div>
+          @foreach ($sector as $s)
+              <details open>
+                  <summary><h4>{{ $s->nombre }} (Ocultar)</h4></summary>
+                  {{-- @php $count = 0; @endphp --}}
+
+
+                  <livewire:mesas.tarjeta-mesas :mesas="$mesas" :idSector="$s->id"  />
+                  
+                  {{-- <div class="grid"
+                      wire:poll.5s
+                    >
+                      @foreach ($mesas as $item)
+                          @if ($item->sector == $s->id)
+                              @if ($count > 0 && $count % 4 == 0)
+                                  </div><div class="grid">
+                              @endif
+
+
+                              <div class="col">
+                                  <article 
+      
+                                      wire:poll.5s
+      
+                                      wire:key="mesa-{{ $item->id }}"
+                                      x-data="{ numero: '{{ $item->numero }}' }"
+                                      :style="'' == '{{ $item->data }}' ? 'background-color: rgb(56, 56, 171); text-align: center; cursor:pointer;' : 'background-color: green; text-align: center; cursor:pointer;'"
+                                      wire:click="modificarMesa('{{ $item->id }}')"
+                                  >
+                                      {{ $item->nombre }} - {{ $item->numero }} ({{ $item->razonSocial }} - ${{ number_format($item->total, 2, ',', '.') }})
+                                  </article>
+                              </div>
+
+
+                              @php $count++; @endphp
+                          @endif
+                      @endforeach
+                  </div> --}}
+
+
+              </details>
+          @endforeach
+      </div>
+
 
 
 
@@ -229,11 +283,7 @@
                   </fieldset>
 
 
-                  @if (session()->has('btnGuardar'))
 
-                  <p style="color: green;">{{ session('btnGuardar') }}</p>
-                      
-                  @else
                   
                     <input
                       type="submit"
@@ -242,7 +292,7 @@
     
                     />
                       
-                  @endif
+                
 
     
     
@@ -373,11 +423,7 @@
             </fieldset>
 
 
-            @if (session()->has('btnGuardar'))
 
-            <p style="color: green;">{{ session('btnGuardar') }}</p>
-                
-            @else
             
               <input
                 type="submit"
@@ -386,7 +432,6 @@
 
               />
                 
-            @endif
 
 
 

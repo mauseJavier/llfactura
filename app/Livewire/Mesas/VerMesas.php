@@ -4,6 +4,9 @@ namespace App\Livewire\Mesas;
 
 use Livewire\Component;
 
+use Livewire\Attributes\On;
+
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth; 
 
@@ -44,6 +47,8 @@ class VerMesas extends Component
 
     }
 
+
+    #[On('modificarMesa')] 
     public function modificarMesa($mesa){
 
         
@@ -102,7 +107,9 @@ class VerMesas extends Component
 
         }
 
-        session()->flash('btnGuardar', 'Guardado!!');
+        session()->flash('mensaje', 'Guardado!!');
+
+        $this->redirectRoute('verMesas');
 
 
     }
@@ -145,7 +152,10 @@ class VerMesas extends Component
 
         $this->redirectRoute('verMesas');
 
-        session()->flash('btnGuardar', 'Guardado!!');
+        session()->flash('mensaje', 'Guardado!!');
+
+        $this->redirectRoute('verMesas');
+
 
 
     }
