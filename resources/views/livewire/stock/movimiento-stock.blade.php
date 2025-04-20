@@ -59,7 +59,9 @@
                     <th scope="col">Codigo</th>
                     <th scope="col">Detalle</th>
                     <th scope="col">Deposito</th>
-                    <th scope="col">stock</th>
+                    <th scope="col">Movimiento</th>
+                    <th scope="col">Stock</th>
+
                     <th scope="col">Comentario</th>
                     <th scope="col">Usuario</th>
                     <th scope="col">Fecha</th>
@@ -73,6 +75,8 @@
                         <td>{{$item->detalle}}</td>
                         <td>{{$item->nombreDeposito}}</td>
                         <td>{{$item->stock}}</td>
+                        <td>{{$item->saldo}}</td>
+
                         <td>{{$item->comentario}}</td>
                         <td>{{$item->usuario}}</td>
                         <td>{{$item->created_at}}</td>

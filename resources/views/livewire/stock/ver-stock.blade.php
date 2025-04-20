@@ -86,7 +86,8 @@
                           <th scope="col">Codigo</th>
                           <th scope="col">Detalle</th>
                           <th scope="col">Deposito</th>
-                          <th scope="col">stock</th>
+                          <th scope="col">Stock</th>
+
                           @if ($usuario->role_id == 2 || $usuario->role_id == 3 || $usuario->role_id == 4 )  
                             <th scope="col">Modificar</th>
                           @endif
@@ -107,6 +108,7 @@
                               <td>{{$item->detalle}}</td>
                               <td>{{$item->nombreDeposito}}</td>
                               <td>{{$item->sumStock}}</td>
+
 
                               {{-- PARA EL AUMENTO DE STOCK --}}
                               @if ($usuario->role_id == 2 || $usuario->role_id == 3 || $usuario->role_id == 4 )  

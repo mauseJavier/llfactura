@@ -36,7 +36,7 @@
                 </div>
                 <div class="col" style="text-align: right;">
                     <h3>Saldo</h3>
-                    <h1 style="color: red;">${{number_format($saldo, 2, ',', '.')}}</h1>
+                    <h1 style="color: {{ $saldo >= 0 ? 'green' : 'red' }};">${{ number_format($saldo, 2, ',', '.') }}</h1>
                 </div>
             </div>
 

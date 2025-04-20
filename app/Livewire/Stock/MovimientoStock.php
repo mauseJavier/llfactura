@@ -44,6 +44,7 @@ class MovimientoStock extends Component
                 return $query->where('a.deposito_id', $this->depositoId);
             })
             ->where('a.codigo', $this->codigo)
+            ->orderBy('a.created_at', 'desc')
             ->paginate(50);
 
         // Si no hay resultados, buscar con LIKE
@@ -56,6 +57,7 @@ class MovimientoStock extends Component
                     return $query->where('a.deposito_id', $this->depositoId);
                 })
                 ->where('a.codigo', 'like', '%' . $this->codigo . '%')
+                ->orderBy('a.created_at', 'desc')
                 ->paginate(50); // Asegúrate de paginar aquí
         }
 

@@ -161,8 +161,7 @@ class VerStock extends Component
         }
         
 
-        // $this->stock();
-        
+        // $this->stock();        
 
         
     }
@@ -284,10 +283,41 @@ class VerStock extends Component
 
     public function render()
     {
+
+
+        // $subquery = DB::table('stocks')
+        // ->select(DB::raw('MAX(id) as id'))
+        // ->where('empresa_id', $this->empresa->id)
+        // ->groupBy('codigo', 'deposito_id');
+    
+        //     $stocks = DB::table('stocks as s')
+        //         ->join('depositos as d', 's.deposito_id', '=', 'd.id')
+        //         ->select(
+        //             's.id',
+        //             's.codigo',
+        //             's.detalle',
+        //             's.stock as sumStock',
+        //             's.saldo',
+        //             's.deposito_id as depositoId',
+        //             'd.nombre as nombreDeposito'
+        //         )
+        //         ->whereIn('s.id', $subquery)
+        //         ->where(function($query) {
+        //             $query->where('s.codigo', 'like', '%' . $this->datoBuscado . '%')
+        //                 ->orWhere('s.detalle', 'like', '%' . $this->datoBuscado . '%');
+        //         })
+        //         ->when($this->idDepositoUsuario, function ($query, $idDeposito) {
+        //             return $query->where('s.deposito_id', $idDeposito);
+        //         })
+        //         ->orderBy('s.id', 'desc')
+        //         ->paginate(10);
+    
+      
+
         return view('livewire.stock.ver-stock',[     
 
                 'stock'=>  DB::table('stocks as a')
-                ->select('a.id','a.codigo', 'a.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
+                ->select('a.saldo','a.id','a.codigo', 'a.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')
                 ->join('depositos as b', 'a.deposito_id', '=', 'b.id')
                 
                 ->where('a.empresa_id', $this->empresa->id)
@@ -302,8 +332,10 @@ class VerStock extends Component
                 })
 
 
-                ->groupBy('a.codigo', 'a.detalle', 'b.nombre', 'a.deposito_id', 'a.empresa_id')
+                ->groupBy( 'a.deposito_id','a.codigo','a.detalle',)
                 ->orderBy('sumStock')
+                // ->orderBy('a.created_at', 'desc')
+
                 ->paginate(10) ,
 
 
