@@ -264,46 +264,104 @@ class Venta extends Component
 
     }
 
-    public function aplicarPorcentaje(){
+    // public function aplicarPorcentaje(){ //VIEJO
 
-        $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
-        $cantidadArticulos = 0 ;
+        //     $totalSubtotal = 0; // Inicializamos la variable para acumular los subtotales
+        //     $cantidadArticulos = 0 ;
+        //     foreach ($this->carrito['carrito'] as $key => $item) {
+
+        //         $precio = $this->carrito['carrito'][$key]['precio'];
+        //         $cantidad = $this->carrito['carrito'][$key]['cantidad'];
+
+        //         $this->carrito['carrito'][$key]['porcentaje']= $this->porcentaje;
+        //         $this->carrito['carrito'][$key]['precioLista']= $this->porcentaje < 0 ? $precio : round($precio+($precio * $this->porcentaje /100),2);
+        //         $this->carrito['carrito'][$key]['descuento']= $this->porcentaje < 0 ? round(($precio * $this->porcentaje /100),2) : 0;
+
+
+
+        //         $precio =round($precio+($precio * $this->porcentaje /100),2);
+
+
+
+
+        //         $this->carrito['carrito'][$key]['precio'] = $precio ;
+        //         $this->carrito['carrito'][$key]['subtotal'] = round($precio * $cantidad,2);
+
+        //         // dd($this->carrito['carrito']);
+        //         $totalSubtotal += round($precio * $cantidad,2);
+        //         $cantidadArticulos += $item['cantidad'];
+        //     }
+
+        //     $this->carrito['total']= round($totalSubtotal,2);
+        //     $this->carrito['articulos']=  $cantidadArticulos;
+
+        //     $this->porcentaje=0;
+
+
+        //     dd($this->carrito);
+
+        //     $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
+
+
+        //     session()->flash('mensaje', '% aplicado: '. $this->porcentaje);
+
+    // }
+
+    public function aplicarPorcentaje()
+    {
+        $totalSubtotal = 0;
+        $cantidadArticulos = 0;
+    
         foreach ($this->carrito['carrito'] as $key => $item) {
-
-            $precio = $this->carrito['carrito'][$key]['precio'];
-            $cantidad = $this->carrito['carrito'][$key]['cantidad'];
-
-            $this->carrito['carrito'][$key]['porcentaje']= $this->porcentaje;
-            $this->carrito['carrito'][$key]['precioLista']= $this->porcentaje < 0 ? $precio : round($precio+($precio * $this->porcentaje /100),2);
-            $this->carrito['carrito'][$key]['descuento']= $this->porcentaje < 0 ? round(($precio * $this->porcentaje /100),2) : 0;
-
-
-
-            $precio =round($precio+($precio * $this->porcentaje /100),2);
-
-
-
-
-            $this->carrito['carrito'][$key]['precio'] = $precio ;
-            $this->carrito['carrito'][$key]['subtotal'] = round($precio * $cantidad,2);
-
-            // dd($this->carrito['carrito']);
-            $totalSubtotal += round($precio * $cantidad,2);
-            $cantidadArticulos += $item['cantidad'];
+            $cantidad = $item['cantidad'];
+    
+            // Si no tiene precioLista, se lo asignamos desde el precio actual
+            if (!isset($item['precioLista'])) {
+                $item['precioLista'] = $item['precio'];
+            }
+    
+            $precioBase = $item['precioLista'];
+            $this->carrito['carrito'][$key]['porcentaje'] = $this->porcentaje;
+    
+            if ($this->porcentaje == 0) {
+                // Restaurar el precio original
+                $precioFinal = $precioBase;
+                $descuento = 0;
+    
+            } elseif ($this->porcentaje < 0) {
+                // Descuento
+                $precioFinal = round($precioBase + ($precioBase * $this->porcentaje / 100), 2);
+                $descuento = round(($precioBase * $this->porcentaje / 100), 2);
+    
+            } else {
+                // Incremento: también actualiza el precioLista
+                $precioFinal = round($precioBase + ($precioBase * $this->porcentaje / 100), 2);
+                $descuento = 0;
+                $this->carrito['carrito'][$key]['precioLista'] = $precioFinal; // Nuevo precio base
+            }
+    
+            $this->carrito['carrito'][$key]['precio'] = $precioFinal;
+            $this->carrito['carrito'][$key]['descuento'] = $descuento;
+            $this->carrito['carrito'][$key]['subtotal'] = round($precioFinal * $cantidad, 2);
+    
+            $totalSubtotal += $this->carrito['carrito'][$key]['subtotal'];
+            $cantidadArticulos += $cantidad;
         }
-
-        $this->carrito['total']= round($totalSubtotal,2);
-        $this->carrito['articulos']=  $cantidadArticulos;
-
-        $this->porcentaje=0;
-
-
-        $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
-
-
-        session()->flash('mensaje', '% aplicado: '. $this->porcentaje);
-
+    
+        $this->carrito['total'] = round($totalSubtotal, 2);
+        $this->carrito['articulos'] = $cantidadArticulos;
+    
+        
+        // dump($this->carrito);
+        
+        
+        $this->dispatch('actualizarCarrito', total: $this->carrito['total'], articulos: $this->carrito['articulos']);
+        session()->flash('mensaje', 'Porcentaje aplicado y actualizado: ' . $this->porcentaje);
+        
+        $this->porcentaje = 0;
     }
+    
+
 
     public function quitarPorcentaje(){
 

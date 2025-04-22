@@ -154,7 +154,8 @@
 
     </div>
 
-    <div class="grid"  >
+    <div class="grid"  x-data="navegacionGrilla()" x-init="inicializar">
+
 
       <div >
             
@@ -179,8 +180,12 @@
               </fieldset>        
               @if (session('mensaje'))
                 <div class="alert alert-success">
-              {{ session('mensaje') }}
-              </div>
+                {{ session('mensaje') }}
+                </div>
+              @else
+                <div>
+                    Si se aplica %0, se quita el -Descuento.
+                </div>
               @endif
 
             </div>
@@ -201,14 +206,30 @@
                 style="font-size: 15px;"
               
               >
-              <input wire:model.live="datoBuscado" name="search" type="search" placeholder="Buscar en Inventario" class="seleccionarTodo"
+              {{-- <input wire:model.live="datoBuscado" name="search" type="search" placeholder="Buscar en Inventario" class="seleccionarTodo"
                   wire:keydown.down="restarCantidad"
                   wire:keydown.up="sumarCantidad"
                   autocomplete="off"
                   style="font-size: 15px;"
                   autofocus
                   x-ref="inputField"
-               />
+               /> --}}
+                <input
+                  wire:model.live="datoBuscado"
+                  name="search"
+                  type="search"
+                  placeholder="Buscar en Inventario"
+                  class="seleccionarTodo"
+                  @keydown.arrow-down.prevent="moverFocoAbajo()"
+                  @keydown.arrow-up.prevent="moverFocoArriba()"
+                  @focus="reiniciarIndice()"
+                  autocomplete="off"
+                  style="font-size: 15px;"
+                  autofocus
+                  x-ref="inputField"
+                />
+             
+
               
               <button type="submit" >
                 <!-- magnifying-glass icon by Free Icons (https://free-icons.github.io/free-icons/) -->
@@ -281,7 +302,7 @@
                     @foreach ($inventario as $i)
                       <tr x-data="{ isFocused: false }">
                         <th scope="row">
-                            <button 
+                            {{-- <button 
                             @click="focusInput()"
                               :class="{ 'bg-default': !isFocused, 'bg-focus': isFocused }" 
                               @focus="isFocused = true" 
@@ -292,7 +313,22 @@
                               wire:click="cargar({{$i->id}})" style="font-size: 15px;"
                               >
                                 {{$i->codigo}}                              
-                            </button> 
+                            </button>  --}}
+                            <button 
+                              class="bg-default boton-grilla"
+                              :class="{ 'bg-focus': isFocused }"
+                              @focus="isFocused = true" 
+                              @blur="isFocused = false"
+                              @click="focusInput()"
+                              wire:click="cargar({{$i->id}})"
+                              @keydown.arrow-down.prevent="moverFocoAbajo()"
+                              @keydown.arrow-up.prevent="moverFocoArriba()"
+                              style="font-size: 15px;"
+                            >
+                              {{$i->codigo}}
+                            </button>
+                          
+
                         </th>
                         <td >{{$i->detalle}}</td>
                         <td style="text-align: right;">${{$i->precio}}</td>
@@ -382,6 +418,58 @@
         </footer>
       </article>
     </dialog>
+
+
+
+
+      <script>
+        function navegacionGrilla() {
+            return {
+                botones: [],
+                indice: -1,
+                isFocused: false,
+        
+                inicializar() {
+                    this.botones = Array.from(document.querySelectorAll('.boton-grilla'));
+                },
+        
+                moverFocoAbajo() {
+                    this.botones = Array.from(document.querySelectorAll('.boton-grilla'));
+        
+                    if (this.indice < this.botones.length - 1) {
+                        this.indice++;
+                    } else {
+                        this.indice = 0;
+                    }
+        
+                    this.botones[this.indice].focus();
+                },
+        
+                moverFocoArriba() {
+                    this.botones = Array.from(document.querySelectorAll('.boton-grilla'));
+        
+                    if (this.indice > 0) {
+                        this.indice--;
+                    } else {
+                        this.indice = this.botones.length - 1;
+                    }
+        
+                    this.botones[this.indice].focus();
+                },
+        
+                reiniciarIndice() {
+                    this.indice = -1;
+                },
+        
+                focusInput() {
+                    this.$refs.inputField.focus();
+                }
+            };
+        }
+      </script>
+      
+      
+      
 
 
 </div>

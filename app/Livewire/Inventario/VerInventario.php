@@ -940,6 +940,14 @@ class VerInventario extends Component
         ]);
 
 
+        
+        if($this->nuevoStock > 0){
+            
+            $this->controlStock = 'si';
+            
+        }
+
+
         $articulo = Inventario::find($this->idArticulo);
  
 

@@ -285,6 +285,7 @@ class VerStock extends Component
     {
 
 
+        // CONSULTA stock nueva
         // $subquery = DB::table('stocks')
         // ->select(DB::raw('MAX(id) as id'))
         // ->where('empresa_id', $this->empresa->id)
@@ -296,8 +297,8 @@ class VerStock extends Component
         //             's.id',
         //             's.codigo',
         //             's.detalle',
-        //             's.stock as sumStock',
-        //             's.saldo',
+        //             's.stock',
+        //             's.saldo as sumStock',
         //             's.deposito_id as depositoId',
         //             'd.nombre as nombreDeposito'
         //         )
@@ -309,12 +310,14 @@ class VerStock extends Component
         //         ->when($this->idDepositoUsuario, function ($query, $idDeposito) {
         //             return $query->where('s.deposito_id', $idDeposito);
         //         })
-        //         ->orderBy('s.id', 'desc')
+        //         ->orderBy('s.saldo')
         //         ->paginate(10);
     
       
 
         return view('livewire.stock.ver-stock',[     
+
+                // 'stock'=> $stocks,
 
                 'stock'=>  DB::table('stocks as a')
                 ->select('a.saldo','a.id','a.codigo', 'a.detalle', DB::raw('SUM(a.stock) as sumStock'), 'b.nombre as nombreDeposito', 'a.deposito_id as depositoId', 'a.empresa_id')

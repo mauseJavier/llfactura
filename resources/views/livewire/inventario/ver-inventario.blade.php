@@ -662,14 +662,17 @@
                     </div>
                     <div class="col">
                         <label for="algo">Iva
-                            <input type="text" wire:model.blur="iva" wire:keydown="calcularPrecios" name="" id=""
-                                @error('iva') aria-invalid="true" @enderror
+
+                            <select name="iva" id="iva" wire:model.blur="iva" wire:change="calcularPrecios"                                
+                                    @error('iva') aria-invalid="true" @enderror
                             >
-                            @error('iva') 
-                                <small id="invalid-helper">
-                                    {{ $message }} 
-                                </small>                               
-                            @enderror
+                                <option value="21">21</option>
+                                <option value="10.5">10.5</option>
+                                <option value="27">27</option>
+
+
+                            </select>
+
                         </label>
                     </div>
                 </div>
@@ -771,14 +774,36 @@
 
             <hr>
 
-            <label for="">
+            {{-- <label for="">
                 Control de Stock?
                 <select name="controlStock" id="controlStock" 
                     wire:model.live="controlStock">
                     <option value="si">Activado</option>
                     <option value="no">Desactivado</option>
                 </select>
-            </label>
+            </label> --}}
+
+            <div class="col">
+    
+                <label>
+                Agregar Stock
+                <input
+                    wire:model.live="nuevoStock"
+                    name="nuevoStock"
+                    placeholder="Stock"
+                    autocomplete="nuevoStock"
+                    @error('nuevoStock') aria-invalid="true" @enderror
+                />
+                    @error('nuevoStock') 
+                    <small id="invalid-helper">
+                        {{ $message }} 
+                        </small>
+                    @enderror
+                
+                </label>
+            </div>
+
+
 
             <details >
                 <summary>Mas:</summary>

@@ -108,8 +108,7 @@
                 <th scope="col">Numero</th>
                 <th scope="col">Tipo Contr.</th>
                 <th scope="col">Telefono.</th>
-                <th scope="col">Correo</th>
-                <th scope="col">Domicilio</th>
+
 
                 <th scope="col"><button  class="outline secondary" wire:click="ordenar('saldo')">Saldo</button></th>
 
@@ -142,7 +141,17 @@
                             </details>
                         </td>
                         <td>
-                            {{$c->razonSocial}}
+                            
+                            <!-- Dropdown -->
+                            <details class="dropdown">
+                                <summary>{{$c->razonSocial}}</summary>
+                                <ul>
+                                    <li>Correo: {{$c->correo}}</li>
+                                    <li>Domicilio: {{$c->domicilio}}</li>
+
+                                </ul>
+                            </details>
+
                         </td>
                         <td>{{$c->tipoDocumento}}</td>
                         <td>{{$c->numeroDocumento}}</td>
@@ -171,8 +180,6 @@
                         </td>
                         <td><a href="http://wa.me/{{$c->telefono}}" target="_blank" rel="noopener noreferrer">{{$c->telefono}}</a></td>
 
-                        <td>{{$c->correo}}</td>
-                        <td>{{$c->domicilio}}</td>
                         <td><a role="button" href="{{route('cuentaCorriente',['cliente'=>$c->id])}}">${{($c->saldo) ? number_format($c->saldo, 2, '.', ',') : '0.00'}}</a></td>
 
 
