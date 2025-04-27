@@ -125,5 +125,10 @@ return [
 
     'memory_limit' => env('PHP_MEMORY_LIMIT', '512M'),
 
+    // 'providers' => [
+    //     // Otros proveedores de servicios...
+
+    //     App\Providers\NovedadesServiceProvider::class,
+    // ],
 
 ];

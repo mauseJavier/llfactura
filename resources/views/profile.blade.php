@@ -20,6 +20,12 @@
 
 {{-- <livewire:profile.delete-user-form /> --}}
 
+<div class="container">
+
+    <livewire:crear-ver-token />
+</div>
+
+
 
 
 

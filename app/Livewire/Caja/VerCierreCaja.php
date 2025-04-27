@@ -42,13 +42,13 @@ class VerCierreCaja extends Component
 
 
 
-        if(Auth()->User()->role_id == 3 OR Auth()->User()->role_id == 4){
+        if(Auth()->User()->role_id == 3 OR Auth()->User()->role_id == 4 OR Auth()->User()->role_id == 2){
             // $this->inicioTurno = Carbon::now()->format('Y-m-d H:i:s');
             // Fecha y hora de inicio del día actual
-            $this->inicioTurno = Carbon::now()->startOfDay()->format('Y-m-d H:i:s');
+            $this->inicioTurno = Carbon::now()->startOfDay()->format('Y-m-d H:i');
     
             // Fecha y hora de fin del día actual
-            $this->finTurno = Carbon::now()->endOfDay()->format('Y-m-d H:i:s');
+            $this->finTurno = Carbon::now()->endOfDay()->format('Y-m-d H:i');
     
             // dd($this->inicioTurno);
 

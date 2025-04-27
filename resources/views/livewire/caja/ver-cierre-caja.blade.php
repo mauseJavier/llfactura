@@ -79,7 +79,7 @@
                             <label for="">
                                 Inicio Turno
                                 <input type="datetime-local" name="inicioTurno" aria-label="Datetime local" wire:model.live="inicioTurno"
-                                    @if (Auth()->user()->role_id == 1 OR Auth()->user()->role_id == 2)
+                                    @if (Auth()->user()->role_id == 1)
                                         disabled
                                     @endif
                                 >
@@ -94,7 +94,7 @@
                             <label for="">
                                 Fin Turno
                                 <input type="datetime-local" name="finTurno" aria-label="Datetime local" wire:model.live="finTurno"
-                                    @if (Auth()->user()->role_id == 1 OR Auth()->user()->role_id == 2)
+                                    @if (Auth()->user()->role_id == 1)
                                         disabled
                                     @endif
                                 >
@@ -160,7 +160,7 @@
         </article>
 
             {{-- ADMIN USUARIO --}}
-            @if ((Auth::user()->role_id == 2 || Auth::User()->role_id == 3 || Auth::User()->role_id == 4))
+            @if ( Auth::User()->role_id == 3 || Auth::User()->role_id == 4)
 
 
                 <hr>

@@ -62,7 +62,7 @@ class ReporteVentaUsuarioController extends Controller
         // dd($request->finTurno);
 
 
-        if (Auth()->user()->role_id == 3 OR Auth()->user()->role_id == 4) {
+        if (Auth()->user()->role_id == 3 OR Auth()->user()->role_id == 4 OR Auth()->user()->role_id == 2) {
             $inicioDeTurnoNuevo = $request->inicioTurno; //para los super y los plus trae el fin de turno que configuraron 
             $finDeTurnoNuevo = $request->finTurno; //para los super y los plus trae el fin de turno que configuraron 
 
