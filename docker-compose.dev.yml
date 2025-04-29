@@ -1,11 +1,11 @@
 
 # services:
-#   llfactura:
+#   localllfactura:
 #     #build:
 #     #  context: .
 #     #  dockerfile: Dockerfile
 #     image: shinsenter/laravel:latest
-#     container_name: llfactura
+#     container_name: localllfactura
 #     volumes:
 #       - .:/var/www/html
 #     networks:
@@ -17,11 +17,11 @@
 
 
 services:
-  llfactura:
+  localllfactura:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: llfactura
+    container_name: localllfactura
     volumes:
       - .:/var/www/html
     networks:
@@ -33,9 +33,9 @@ services:
     depends_on:
       - mariadb
 
-  llfactura-scheduler:
+  localllfactura-scheduler:
     image: shinsenter/laravel:latest
-    container_name: llfactura-scheduler
+    container_name: localllfactura-scheduler
     volumes:
       - .:/var/www/html
     entrypoint: ["/bin/sh", "-c", "chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache && while true; do php /var/www/html/artisan schedule:run --no-interaction & sleep 60; done"]
@@ -46,9 +46,9 @@ services:
     depends_on:
       - mariadb
 
-  llfactura-queue-worker:
+  localllfactura-queue-worker:
     image: shinsenter/laravel:latest
-    container_name: llfactura-queue-worker
+    container_name: localllfactura-queue-worker
     volumes:
       - .:/var/www/html
     entrypoint: ["/bin/sh", "-c", "chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache && php /var/www/html/artisan queue:work"]
@@ -64,7 +64,7 @@ services:
     container_name: mariadb
     environment:
       MYSQL_ROOT_PASSWORD: root  # Cambia esto a una contraseña segura
-      MYSQL_DATABASE: llfactura  # Nombre de la base de datos
+      MYSQL_DATABASE: localllfactura  # Nombre de la base de datos
       MYSQL_USER: root  # Usuario de la base de datos
       MYSQL_PASSWORD: root  # Contraseña del usuario
     volumes:
