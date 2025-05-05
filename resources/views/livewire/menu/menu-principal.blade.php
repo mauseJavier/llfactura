@@ -183,6 +183,9 @@
                   <li>
                     <a wire:navigate href="{{route('backup')}}">Backup</a>
                   </li>
+                  <li>
+                    <a wire:navigate href="{{route('verLogs')}}">Ver Logs</a>
+                  </li>
                     
                 @endif
 

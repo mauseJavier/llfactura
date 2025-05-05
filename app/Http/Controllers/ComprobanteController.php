@@ -331,6 +331,7 @@ class ComprobanteController extends Controller
                 'empresaNombre'=>$empresa->razonSocial,
                 'numeroFactura'=> sprintf("%04d", $comprobante[0]->ptoVta)  .'-'. sprintf("%08d", $comprobante[0]->numero),
                 'cuitEmpresa'=>$empresa->cuit,
+                'ingresosBrutos'=>$empresa->ingresosBrutos,
                 'empresaIva'=>$empresaIva,
                 'empresaCorreo'=>$empresa->correo,
 

@@ -63,6 +63,13 @@
 			padding-top: 3px;
 		}
 
+        body {
+            font-family: DejaVu Sans, sans-serif;
+            font-weight: bold;
+        }
+
+
+
 	</style>
 </head>
 <body>
@@ -75,7 +82,7 @@
                 <P>DE: {{$titularEmpresa}}</P>
 				<p>C.U.I.T.: {{$cuitEmpresa}}</p>
 			
-				<p>IIBB: {{$cuitEmpresa}}</p>
+				<p>IIBB: {{$ingresosBrutos}}</p>
 				<p>Inicio de actividad: {{$inicioActividades}}</p>
 			</td>
 		</tr>

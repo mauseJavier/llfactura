@@ -134,15 +134,28 @@
                       autocomplete="domicilio"
                     />
                   </label>
-                  <label>
-                    IVA por Defecto
-                    <input
-                      wire:model="ivaDefecto"
-                      name="ivaDefecto"
-                      placeholder="IVA Defecto"
-                      autocomplete="ivaDefecto"
-                    />
-                  </label>
+
+                  <div class="grid">
+
+                      <label>
+                          IVA por Defecto
+                          <input
+                          wire:model="ivaDefecto"
+                          name="ivaDefecto"
+                          placeholder="IVA Defecto"
+                          autocomplete="ivaDefecto"
+                          />
+                      </label>
+  
+                      <label>
+                          IVA Incluido
+                          <select wire:model="ivaIncluido">
+                              <option value="no">No</option>
+                              <option value="si">Sí</option>
+                          </select>
+                      </label>
+                  </div>
+                    
                 <div class="grid">
                     <label>
                         Porcentaje 2
@@ -174,7 +187,7 @@
                 <div class="grid">
 
                     <label for="">
-                        Telefono
+                        Telefono Empresa
                         <input
                             wire:model="telefono"
                             name="telefono"
@@ -182,6 +195,18 @@
                             autocomplete="telefono"
                         />
                     </label>
+
+                    <label>
+                        Teléfono de Notificación
+                        <input
+                            wire:model="telefonoNotificacion"
+                            name="telefonoNotificacion"
+                            placeholder="Teléfono de Notificación"
+                            autocomplete="telefonoNotificacion"
+                        />
+                    </label>
+
+
                     <label for="">
                         Correo
                         <input
@@ -193,19 +218,57 @@
                     </label>
                 </div>
 
-
                 <div class="grid">
-                    <label for="">
-                        Opcion para Restaurantes
-                        <select name="mesas" wire:model="mesas">
-          
-                            <option value="no">NO</option>
-                            <option value="si">SI</option>
-                            
-                          </select>
+
+                    <label>
+                        Ingresos Brutos
+                        <input
+                            wire:model="ingresosBrutos"
+                            name="ingresosBrutos"
+                            placeholder="Ingresos Brutos"
+                            autocomplete="ingresosBrutos"
+                        />
                     </label>
 
                 </div>
+
+                <div class="grid">
+
+                    <label>
+                        Instancia WhatsApp
+                        <input
+                            wire:model="instanciaWhatsapp"
+                            name="instanciaWhatsapp"
+                            placeholder="Instancia WhatsApp"
+                            autocomplete="instanciaWhatsapp"
+                        />
+                    </label>
+                    <label>
+                        Token WhatsApp
+                        <input
+                            wire:model="tokenWhatsapp"
+                            name="tokenWhatsapp"
+                            placeholder="Token WhatsApp"
+                            autocomplete="tokenWhatsapp"
+                        />
+                    </label>
+                </div>
+
+                <div class="grid">
+
+    
+                    <label for="">
+                        Opcion para Restaurantes
+                        <select name="mesas" wire:model="mesas">
+            
+                            <option value="no">NO</option>
+                            <option value="si">SI</option>
+                            
+                            </select>
+                    </label>
+                </div>
+
+
 
 
                 </fieldset>

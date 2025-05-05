@@ -120,7 +120,7 @@
               Cuit: {{$cuitEmpresa}}
             </li>
             <li>
-              Ingresos Brutos: {{$cuitEmpresa}}
+              Ingresos Brutos: {{$ingresosBrutos}}
             </li>
             <li>
               Inicio Actividades: {{$inicioActividades}}

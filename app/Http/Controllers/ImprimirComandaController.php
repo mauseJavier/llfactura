@@ -18,21 +18,32 @@ class ImprimirComandaController extends Controller
     {
         // Cargar la relación con la mesa
         $comanda->load('mesa');
-    
+
         $data = json_decode($comanda->comanda);
-    
-        // Verificamos que la mesa esté cargada
-        // dd($comanda->mesa);
-    
+
+        // Calcular la altura dinámica del papel en función de la cantidad de artículos
+        $alturaPorArticulo = 20; // Altura estimada por artículo en puntos (1 punto = 1/72 pulgadas)
+        $alturaBase = 150; // Altura base para encabezados y pies de página
+        $alturaTotal = $alturaBase + (count($data) * $alturaPorArticulo);
+
         $pdf = Pdf::loadView('PDF.pdfComanda', [
             'comanda' => $comanda,
             'data' => $data,
         ]);
-    
-        $pdf->set_paper([0, 0, 250, 300], 'portrait');
-    
+
+        // Ajustar el tamaño del papel a 80mm de ancho y altura dinámica
+        $pdf->setPaper([0, 0, 226.77, $alturaTotal], 'portrait') // 80mm = 226.77 puntos
+            ->setOptions([
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => true,
+                'margin-top' => 0,
+                'margin-bottom' => 0,
+                'margin-left' => 0,
+                'margin-right' => 0,
+            ]);
+
         $nombreArchivo = 'Comanda-' . auth()->user()->name . '-' . now()->format('Ymd') . '.pdf';
-    
+
         return $pdf->stream($nombreArchivo);
     }
     

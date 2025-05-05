@@ -160,7 +160,7 @@ class EstadoEmpresa extends Component
             $response = Http::withHeaders([
                 'apikey' => $apikey,
             ])->post('https://evo.llservicios.ar/message/sendText/'.$instanciaWS, [
-                'number' => '549'.$empresa->telefono,
+                'number' => '549'.$empresa->telefonoNotificacion,
                 'text' => $messajedeWA .' Importe: $'.$pagoMes,
     
             ]);
@@ -217,20 +217,24 @@ class EstadoEmpresa extends Component
                 'Content-Type'=> 'application/json',
     
             ])->post('https://evo.llservicios.ar/message/sendMedia/'.$instanciaWS, [ //https://localhost:8080/message/sendMedia/dfgdfg '{"media":"dsgergdfgdfg","mediatype":"image","number":"33333"}'
-                'number' => '549'.$empresa->telefono,
+                'number' => '549'.$empresa->telefonoNotificacion,
                 'media'=>$pdfBase64,
                 'mediatype'=>'document',//image
                 'fileName'=>'Pago Servicio:'. $empresa->razonSocial .'.pdf',//
     
     
             ]);
+
+            $respuesta = json_decode($response->body(), true);
+
+            $estado = $respuesta['status'] = 'PENDING' ? 'WHATSAPP ENVIADO CORRECTO ' : 'WHATSAPP NO ENVIADO ';
     
-            session()->flash('mensaje', 'Fecha Actualizada. '. $empresa->razonSocial .' Fecha: '. $fecha .':: '. $response->body());
+            session()->flash('mensaje', 'Fecha Actualizada. '. $empresa->razonSocial .' Fecha: '. $fecha .' :: '. $estado);
 
 
         }else{
 
-            session()->flash('mensaje', 'Fecha Actualizada. '. $empresa->razonSocial .' Fecha: '. $fecha .':: SIN ENVIO WHATSAPP ');
+            session()->flash('mensaje', 'Fecha Actualizada. '. $empresa->razonSocial .' Fecha: '. $fecha .' :: SIN ENVIO WHATSAPP ');
         }
 
 
@@ -320,6 +324,7 @@ class EstadoEmpresa extends Component
                 'empresas.pagoMes',
                 'empresas.comentario',
                 'empresas.telefono',
+                'empresas.telefonoNotificacion',
                 DB::raw('COALESCE(SUM(comprobantes.total), 0) as totalFacturado')
             )
             ->groupBy(
@@ -333,7 +338,8 @@ class EstadoEmpresa extends Component
                 'empresas.pagoMes',
                 'empresas.comentario',
                 'empresas.telefono',
-                'empresas.usuarioPago'
+                'empresas.usuarioPago',
+                'empresas.telefonoNotificacion',
             )
             ->when($this->ordenarPor === 'updated_at', function ($query) {
                 $query->orderByDesc('empresas.updated_at');
@@ -383,10 +389,10 @@ class EstadoEmpresa extends Component
             ->when($this->filtroPago, function ($query) {
                 $query->where('pagoServicio', $this->filtroPago);
             })
-            ->whereBetween('vencimientoPago', [
-                Carbon::now()->startOfMonth()->toDateString(),
-                Carbon::now()->endOfMonth()->toDateString()
-            ])
+            // ->whereBetween('vencimientoPago', [
+            //     Carbon::now()->startOfMonth()->toDateString(),
+            //     Carbon::now()->endOfMonth()->toDateString()
+            // ])
             ->select(DB::raw('SUM(COALESCE(pagoMes, 0)) as total'),
                 DB::raw('COUNT(*) as totalCantidad')
             )

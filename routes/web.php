@@ -385,6 +385,75 @@ use Illuminate\Http\Request;
                 
             });
 
+            // Crear una ruta para ver los logs del archivo storage/logs/laravel.log
+            Route::get('/verLogs', function () {
+                $logFile = storage_path('logs/laravel.log');
+                if (file_exists($logFile)) {
+                    $logs = file_get_contents($logFile);
+                    $formattedLogs = nl2br(e($logs)); // Convert newlines to <br> and escape HTML
+
+                    return response()->view('logs.view', ['logs' => $formattedLogs]);
+                } else {
+                    return response('El archivo de logs no existe.', 404);
+                }
+            })->name('verLogs');
+
+
+            Route::get('/configurarTelefono', function () {
+
+                $empresas= Empresa::all();
+
+
+                // dd($empresas);
+
+                $reporte = [
+                    'exitos' => [],
+                    'errores' => []
+                ];
+
+                foreach ($empresas as $key => $value) {
+
+                    // dump('KEY: '.$key .' ID:'.$value->id .' TELEFONO:'.$value->telefono .' TEL NOTIFI:'. $value->telefonoNotificacion);
+                    // Schema::table('empresas', function (Blueprint $table) {
+                    //     $table->string('ingresosBrutos')->nullable();
+                    //     $table->string('telefonoNotificacion')->nullable();
+                    //     $table->string('instanciaWhatsapp')->nullable();
+                    //     $table->string('tokenWhatsapp')->nullable();
+                    //     // $table->boolean('ivaIncluido')->default(false);
+                    //     $table->enum('ivaIncluido', ['si', 'no'])->default('no')->after('ivaDefecto');
+            
+                    // });
+
+                    foreach ($empresas as $key => $value) {
+                        try {
+                            $actualizado = Empresa::where('id', $value->id)
+                                ->update([
+                                    'telefonoNotificacion' => $value->telefono,
+                                    'ingresosBrutos' => $value->cuit,
+                                ]);
+                
+                            if ($actualizado) {
+                                $reporte['exitos'][] = "Empresa ID {$value->id} actualizada correctamente.";
+                            } else {
+                                $reporte['errores'][] = "No se pudo actualizar la Empresa ID {$value->id}.";
+                            }
+                        } catch (\Exception $e) {
+                            $reporte['errores'][] = "Error al actualizar la Empresa ID {$value->id}: " . $e->getMessage();
+                        }
+                    }
+                
+                    // Loguear el reporte
+                    // Log::info('Reporte de actualización de empresas:', $reporte);
+                
+                    // Mostrar el reporte en pantalla
+                    return response()->json($reporte);
+
+
+                }
+
+                
+            });
+
 
             Route::get('/pasarPrecioLista', function () {
 

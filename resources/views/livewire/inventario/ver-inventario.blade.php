@@ -326,6 +326,7 @@
     </div>
 
 
+    {{-- MODAL NUEVO ARTICULO --}}
     <dialog {{$modal}}>
         <article>
           <header>
@@ -585,6 +586,7 @@
         </article>
     </dialog>
 
+    {{-- MODAL EDITAR ARTICULO --}}
     <dialog {{$modalEditar}}>
         <article>
           <header>

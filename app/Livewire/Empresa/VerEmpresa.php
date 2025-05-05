@@ -69,6 +69,14 @@ class VerEmpresa extends Component
     public $domicilio='';
     #[Validate('numeric', message: 'Solo Numeros')]
     public $telefono;
+
+    public $ingresosBrutos;
+    public $telefonoNotificacion;
+    public $instanciaWhatsapp;
+    public $tokenWhatsapp;
+    public $ivaIncluido = 'no';
+
+
     public $correo='';
     public $logo='';
 
@@ -164,6 +172,12 @@ class VerEmpresa extends Component
                 'titular'=> $this->titular,
                 'logo'=> $this->logo,
                 'correo'=> $this->correo,
+
+                'ingresosBrutos'=> $this->ingresosBrutos,
+                'telefonoNotificacion'=> $this->telefonoNotificacion,
+                'instanciaWhatsapp'=> $this->instanciaWhatsapp,
+                'tokenWhatsapp'=> $this->tokenWhatsapp,
+                'ivaIncluido'=> $this->ivaIncluido,
             ]
         );
 
@@ -196,6 +210,13 @@ class VerEmpresa extends Component
         $this->logo='';
         $this->correo='';
         $this->id=null;
+        $this->ingresosBrutos= '';
+        $this->telefonoNotificacion= '';
+        $this->instanciaWhatsapp= '';
+        $this->tokenWhatsapp= '';
+        $this->ivaIncluido = 'no';
+
+        
 
 
         $this->datoBuscado= $nuevaEmpresa->razonSocial;
@@ -241,6 +262,14 @@ class VerEmpresa extends Component
         $this->logo= $empresa->logo;
         $this->correo= $empresa->correo;
 
+        $this->ingresosBrutos= $empresa->ingresosBrutos;
+        $this->telefonoNotificacion= $empresa->telefonoNotificacion;
+        $this->instanciaWhatsapp= $empresa->instanciaWhatsapp;
+        $this->tokenWhatsapp= $empresa->tokenWhatsapp;
+        $this->ivaIncluido= $empresa->ivaIncluido;
+
+
+
 
         $this->modal="open";
     }
@@ -267,6 +296,12 @@ class VerEmpresa extends Component
             $this->logo='';
             $this->correo='';
             $this->id=null;
+
+            $this->ingresosBrutos= '';
+            $this->telefonoNotificacion= '';
+            $this->instanciaWhatsapp= '';
+            $this->tokenWhatsapp= '';
+            $this->ivaIncluido = 'no';
 
             
         }

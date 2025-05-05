@@ -86,7 +86,7 @@
                     <th scope="col" style="color: red;">id</th>
                     <th scope="col" style="color: red;">RazonSocial</th>
                     <th scope="col" style="color: red;">Titular</th>
-                    <th scope="col" style="color: red;">TEL</th>
+                    <th scope="col" style="color: red;">TEL Notif</th>
                     <th scope="col" style="color: red;">TOTAL MES</th>
 
                     <th scope="col" style="color: red;">Comentario</th>
@@ -134,7 +134,7 @@
                 
                 
                             <th scope="row">
-                                <a href="https://wa.me/54{{$c->telefono}}" target="_blank" rel="noopener noreferrer">{{$c->telefono}}</a>
+                                <a href="https://wa.me/54{{$c->telefonoNotificacion}}" target="_blank" rel="noopener noreferrer">{{$c->telefonoNotificacion}}</a>
                             </th>
                 
                             <th scope="row">${{ number_format( $c->totalFacturado ,2 )}}</th>

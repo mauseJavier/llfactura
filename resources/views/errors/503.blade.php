@@ -23,13 +23,28 @@
             font-size: 36px;
             margin-bottom: 20px;
         }
+        .link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    <img src="{{asset('logosLLFactura/LLFACTURA.png')}}" alt="">
+    <img src="{{ asset('logosLLFactura/LLFACTURA.png') }}" alt="LLFactura Logo">
     <div class="content">
-        <div class="title">Estamos en mantenimiento</div>
-        <p>Volveremos pronto. Gracias por tu paciencia.</p>
+        <div class="title">Estamos trabajando en el servidor</div>
+        <p>Momentáneamente estamos realizando tareas de mantenimiento.</p>
+
+        {{-- <h1>
+            <p>Por favor, accede al servicio en: 
+                <a href="https://llf.llservicios.ar" class="link" target="_blank">llf.llservicios.ar</a>
+            </p>
+        </h1> --}}
+        <p>Gracias por tu paciencia.</p>
     </div>
 </body>
 </html>

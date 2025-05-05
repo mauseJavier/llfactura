@@ -163,6 +163,23 @@
                     </label>
                 </div>
             </div>
+
+            <div class="grid">
+                <div class="col">
+                    
+                    <label for="">Ingresos Brutos
+                        <input type="text" wire:model.blur="ingresosBrutos"  
+                            placeholder="Ingresos Brutos"
+                            @error('ingresosBrutos') aria-invalid="true" @enderror
+                        >
+                        @error('ingresosBrutos') 
+                            <small id="invalid-helper">
+                                {{ $message }} 
+                            </small>                               
+                        @enderror
+                    </label>
+                </div>
+            </div>
             <div class="grid">
                 <div class="col">
                     <label for="">Factura Eletronica
@@ -184,11 +201,13 @@
 
             </div>
             <div class="grid">
+
                 <div class="col">
                     <label for="">IVA por Defecto
-                        <input type="text" wire:model.blur="ivaDefecto"
-                        @error('ivaDefecto') aria-invalid="true" @enderror
-                        />
+                        <select wire:model.blur="ivaDefecto">
+                            <option value="21">21</option>
+                            <option value="10.5">10.5</option>
+                        </select>
                         @error('ivaDefecto') 
                             <small id="invalid-helper">
                                 {{ $message }} 
@@ -196,6 +215,19 @@
                         @enderror
                     </label>
                 </div>
+    
+                 
+                <div class="col">
+                    <label for="">IVA Incluido
+                        <select name="" wire:model.blur="ivaIncluido" >
+                            <option value="si">SI</option>
+                            <option value="no">NO</option>
+                           </select>
+                    </label>
+                </div>
+            </div>
+            <div class="grid">
+
                 <div class="col">
                     <label for="">Inicio Actividades
                         <input type="date" wire:model.blur="inicioActividades"
@@ -234,6 +266,38 @@
                     </label>
                 </div>
             </div>
+
+            <div class="grid">
+                
+                <div class="col">
+                    <label for="algo">Telefono Empresa
+                        <input type="text" wire:model.blur="telefono"  
+                            placeholder="Telefono"
+                            @error('telefono') aria-invalid="true" @enderror
+                        >
+                        @error('telefono') 
+                            <small id="invalid-helper">
+                                {{ $message }} 
+                            </small>                               
+                        @enderror
+                    </label>
+                </div>
+    
+                <div class="col">
+                    <label for="algo">Telefono Notificacion
+                        <input type="text" wire:model.blur="telefonoNotificacion"  
+                            placeholder="Telefono Notificacion"
+                            @error('telefonoNotificacion') aria-invalid="true" @enderror
+                        >                        
+                        @error('telefonoNotificacion') 
+                            <small id="invalid-helper">
+                                {{ $message }} 
+                            </small>                               
+                        @enderror
+                    </label>
+                </div>
+            </div>
+
             <div class="grid">
                 <div class="col">
                     <label for="algo">Domicilio
@@ -248,19 +312,8 @@
                         @enderror
                     </label>
                 </div>
-                <div class="col">
-                    <label for="algo">Telefono
-                        <input type="text" wire:model.blur="telefono"  
-                            placeholder="Telefono"
-                            @error('telefono') aria-invalid="true" @enderror
-                        >
-                        @error('telefono') 
-                            <small id="invalid-helper">
-                                {{ $message }} 
-                            </small>                               
-                        @enderror
-                    </label>
-                </div>
+
+
                 <div class="col">
                     <label for="algo">Logo
                         <input type="text" wire:model.blur="logo"  
@@ -293,20 +346,49 @@
 
                 </div>
 
-                <div class="col">
-                    <label for="algo">Generar Certificado
-                        <select name="" wire:model.blur="generarCertificado" >
-                            <option value="si">SI</option>
-                            <option value="no">NO</option>
-                        </select>
-                    </label>
-
-                </div>
-
+                
             </div>
 
+            <div class="grid">
+                <div class="col">
+                    <label for="instanciaWhatsapp">Instancia Whatsapp
+                        <input type="text" wire:model.blur="instanciaWhatsapp"  
+                            placeholder="Instancia Whatsapp"
+                            @error('instanciaWhatsapp') aria-invalid="true" @enderror
+                        >
+                        @error('instanciaWhatsapp') 
+                            <small id="invalid-helper">
+                                {{ $message }} 
+                            </small>                               
+                        @enderror
+                    </label>
+                </div>
+                <div class="col">
+                    <label for="tokenWhatsapp">Token Whatsapp
+                        <input type="text" wire:model.blur="tokenWhatsapp"  
+                            placeholder="Token Whatsapp"
+                            @error('tokenWhatsapp') aria-invalid="true" @enderror
+                        >
+                        @error('tokenWhatsapp') 
+                            <small id="invalid-helper">
+                                {{ $message }} 
+                            </small>                               
+                        @enderror
+                    </label>
+                </div>
+            </div>
+            
+            
+            
+            <div class="col">
+                <label for="algo">Generar Certificado
+                    <select name="" wire:model.blur="generarCertificado" >
+                        <option value="si">SI</option>
+                        <option value="no">NO</option>
+                    </select>
+                </label>
 
-
+            </div>
 
           
             <div role="group">

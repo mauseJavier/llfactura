@@ -669,7 +669,10 @@ class VerInventario extends Component
     {
         $this->usuario = Auth::user();
         $this->empresa = Empresa::find(Auth::user()->empresa_id);
-        $this->iva = $this->empresa->ivaDefecto;       
+        $this->iva = $this->empresa->ivaDefecto;  
+        
+        $this->ivaIncluido = $this->empresa->ivaIncluido == 'si' ? true : false;
+
         $this->depositos = Deposito::where('empresa_id',$this->empresa->id)->get();
 
         $this->idDeposito = ($this->depositos[0]->id);
@@ -887,7 +890,7 @@ class VerInventario extends Component
         $this->pesable = 'no';
         $this->controlStock = 'no';
         $this->imagen='';
-        $this->ivaIncluido=false;
+        $this->ivaIncluido= $this->empresa->ivaIncluido == 'si' ? true : false;;
 
         $this->datoBuscado= $nuevoArticulo->codigo;
         $this->modal='close';
@@ -993,7 +996,7 @@ class VerInventario extends Component
         $this->pesable = 'no';
         $this->controlStock = 'no';
         $this->imagen='';
-        $this->ivaIncluido=false;
+        $this->ivaIncluido= $this->empresa->ivaIncluido == 'si' ? true : false;;
 
         $this->datoBuscado= $articulo->codigo;
         $this->modalEditar='close';
@@ -1113,7 +1116,7 @@ class VerInventario extends Component
             $this->proveedor='General';
             $this->pesable = 'no';
             $this->imagen='';
-            $this->ivaIncluido= false;
+            $this->ivaIncluido=  $this->empresa->ivaIncluido == 'si' ? true : false;;
             
         }
     }
@@ -1137,7 +1140,7 @@ class VerInventario extends Component
             $this->proveedor='General';
             $this->pesable = 'no';
             $this->imagen='';
-            $this->ivaIncluido= false;
+            $this->ivaIncluido=  $this->empresa->ivaIncluido == 'si' ? true : false;;
             
         }
     }

@@ -40,6 +40,12 @@ class Basico extends Component
     public $activarPago2;
     public $facturaDefault;
 
+    public $ingresosBrutos;
+    public $telefonoNotificacion;
+    public $instanciaWhatsapp;
+    public $tokenWhatsapp;
+    public $ivaIncluido;
+
 
 
 
@@ -97,6 +103,12 @@ class Basico extends Component
 
         $this->mesas = $this->empresa->mesas;
 
+        $this->ingresosBrutos = $this->empresa->ingresosBrutos;
+        $this->telefonoNotificacion = $this->empresa->telefonoNotificacion;
+        $this->instanciaWhatsapp = $this->empresa->instanciaWhatsapp;
+        $this->tokenWhatsapp = $this->empresa->tokenWhatsapp;
+        $this->ivaIncluido = $this->empresa->ivaIncluido;
+
 
 
 
@@ -139,6 +151,11 @@ class Basico extends Component
 
         $this->empresa->mesas = $this->mesas;
 
+        $this->empresa->ingresosBrutos = $this->ingresosBrutos;
+        $this->empresa->telefonoNotificacion = $this->telefonoNotificacion;
+        $this->empresa->instanciaWhatsapp = $this->instanciaWhatsapp;
+        $this->empresa->tokenWhatsapp = $this->tokenWhatsapp;
+        $this->empresa->ivaIncluido = $this->ivaIncluido;
 
         $this->empresa->save();
 
