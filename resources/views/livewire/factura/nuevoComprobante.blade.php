@@ -640,6 +640,21 @@
                     </select>
                     
                 </label>
+
+                {{-- crear inpu para el numero de telefono del cliente  --}}
+                <label for="">
+
+                    Telefono
+                    <input 
+                    type="text"
+                    name="telefono"
+                    placeholder="Telefono"
+                    aria-label="Telefono"
+                    autocomplete="telefono"
+                    wire:model="telefonoCliente"                     
+                    />
+
+                </label>
                     
                 
 

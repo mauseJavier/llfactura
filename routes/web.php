@@ -688,9 +688,11 @@ use Illuminate\Http\Request;
 
 
 
-                //para pruebas
         Route::get('/imprimirComprobante/{comprobante_id?}/{formato?}', [ComprobanteController::class, 'imprimir'])->name('imprimirComprobante');
         Route::get('/imprimirPresupuesto/{presupuesto_id?}/{formato?}', [PresupuestoController::class, 'imprimir'])->name('imprimirPresupuesto');
+
+        // PARA TESTING
+        // Route::get('/obtenerPdfBase64/{comprobante_id?}/{formato?}', [ComprobanteController::class, 'obtenerPdfBase64'])->name('obtenerPdfBase64');
 
 
         //ruta para mejorar CARGA UN COMPROBANTE AL CARRITO

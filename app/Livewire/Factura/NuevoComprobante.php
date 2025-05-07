@@ -9,7 +9,11 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
+
 // use Illuminate\Support\Facades\DB;
+
+use App\Jobs\EnviarPdfComprobanteJob;
+
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
@@ -58,6 +62,8 @@ class NuevoComprobante extends Component
     public $domicilio;
     public $correoCliente;
     public $leyenda;
+
+    public $telefonoCliente;
 
     public $activarPago2;
 
@@ -158,6 +164,7 @@ class NuevoComprobante extends Component
         $this->razonSocial = $cliente->razonSocial;
         $this->tipoContribuyente = $cliente->tipoContribuyente;
         $this->cuit = $cliente->numeroDocumento;
+        $this->telefonoCliente = $cliente->telefono;
 
         $this->cambiarFactura();
 
@@ -383,6 +390,26 @@ class NuevoComprobante extends Component
             //borramos la session de carrito 
             $this->carrito=null;
             $this->cliente=null;
+
+            if($this->telefonoCliente != null){
+
+
+                $nombreCliente = $this->razonSocial == 'Consumidor Final' ? '' : $this->razonSocial;
+
+                EnviarPdfComprobanteJob::dispatch(
+                    $comprobanteId,
+                    'Ticket',
+                    $nombreCliente,
+                    $this->telefonoCliente,
+                    'Hola '. $nombreCliente .'! Te enviamos el comprobante de tu compra. Gracias por elegirnos!. Enviado con LLFactura.com',
+                    Auth::user()->id,
+                // )->delay(now()->addSeconds(5)
+                );
+
+
+
+
+            }
     
     
             if($this->imprimir){
@@ -817,12 +844,15 @@ class NuevoComprobante extends Component
             $this->razonSocial='Consumidor Final';
         });
 
+        // dd($clienteBuscado);
+
         if($clienteBuscado != null){
             $this->domicilio = $clienteBuscado->domicilio;
             $this->correoCliente = $clienteBuscado->correo;
             $this->tipoDocumento = $clienteBuscado->tipoDocumento;
             $this->razonSocial = $clienteBuscado->razonSocial;
             $this->tipoContribuyente = $clienteBuscado->tipoContribuyente;
+            $this->telefonoCliente = $clienteBuscado->telefono;
 
         }else{
 
@@ -1926,7 +1956,10 @@ class NuevoComprobante extends Component
                     'razonSocial'=>trim($this->razonSocial),
                     'domicilio'=>trim($this->domicilio),
                     'correo'=>trim($this->correoCliente),
-                    'tipoContribuyente'=>trim($this->tipoContribuyente)]
+                    'tipoContribuyente'=>trim($this->tipoContribuyente),
+                    'telefono'=>trim($this->telefonoCliente),
+
+                    ]
                 );
         
                 // dd($this->carrito['carrito']);
@@ -2066,7 +2099,10 @@ class NuevoComprobante extends Component
                 'razonSocial'=>trim($this->razonSocial),
                 'domicilio'=>trim($this->domicilio),
                 'correo'=>trim($this->correoCliente),
-                'tipoContribuyente'=>trim($this->tipoContribuyente)]
+                'tipoContribuyente'=>trim($this->tipoContribuyente),
+                'telefono'=>trim($this->telefonoCliente),
+
+                ]
             );
 
             // dd($this->carrito['carrito']);
