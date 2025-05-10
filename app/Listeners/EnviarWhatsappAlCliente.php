@@ -66,7 +66,7 @@ class EnviarWhatsappAlCliente
                     'number' => '549'.$clienteTelefono,
                     'media'=>$Base64,
                     'mediatype'=>'document',//image
-                    'fileName'=>'Comprobante: '. $clienteNombre .'.pdf',//
+                    'fileName'=> $clienteNombre .'Comprobante.pdf',//
         
         
                 ]);

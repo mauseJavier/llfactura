@@ -395,13 +395,15 @@ class NuevoComprobante extends Component
 
 
                 $nombreCliente = $this->razonSocial == 'Consumidor Final' ? '' : $this->razonSocial;
+                $formatoComprobante  = $this->empresa->formatoImprecion == 'T' ? 'Ticket' : 'A4';
+
 
                 EnviarPdfComprobanteJob::dispatch(
                     $comprobanteId,
-                    'Ticket',
+                    $formatoComprobante,
                     $nombreCliente,
                     $this->telefonoCliente,
-                    'Hola '. $nombreCliente .'! Te enviamos el comprobante de tu compra. Gracias por elegirnos!. Enviado con LLFactura.com',
+                    'Hola '. $nombreCliente .'! Te enviamos el comprobante de tu compra. Gracias por elegirnos!. Enviado con *https://llfactura.com*', 
                     Auth::user()->id,
                 // )->delay(now()->addSeconds(5)
                 );
@@ -495,6 +497,8 @@ class NuevoComprobante extends Component
         //datos de empresa
         // $titles = DB::table('users')->pluck('title');
         $this->empresa = Empresa::find(Auth::user()->empresa_id);
+
+
         $this->usuario = Auth::user();
 
         // if( $this->empresa->iva == 'ME' AND $this->empresa->fe == 'si'){

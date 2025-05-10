@@ -591,6 +591,4 @@ class Venta extends Component
     }
 
 
-
-
 }

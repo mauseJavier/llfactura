@@ -100,13 +100,29 @@
 
 
         <details name="example">
-          <summary style="background-color: rgba(0, 0, 0, 0.7); color: white; padding: 20px; border-radius: 10px;">Solicite una Demo</summary>
+          <summary style="background-color: rgba(255, 0, 0, 0.8); color: white; padding: 15px; border-radius: 8px; font-weight: bold; text-transform: uppercase; animation: pulse 2s infinite; font-size: 1.3rem; text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);">
+            ¡Solicite una Demo Ahora!
+          </summary>
 
-  
           <iframe src="https://n8n.llservicios.ar/form/bee23ae9-594c-4fdf-8e4f-2910102cb5e8" width="100%" height="800px" frameborder="0"></iframe>
-
-
         </details>
+
+        <style>
+          @keyframes pulse {
+            0% {
+              box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.6);
+              transform: scale(1);
+            }
+            50% {
+              box-shadow: 0 0 20px 10px rgba(255, 0, 0, 0.4);
+              transform: scale(1.03);
+            }
+            100% {
+              box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+              transform: scale(1);
+            }
+          }
+        </style>
 
 
           </div>

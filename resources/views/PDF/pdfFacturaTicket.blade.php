@@ -192,6 +192,38 @@
 				</div>
 			</td>
 		</tr>
+
+
+		TRANSPARENCIA FISCAL
+        @if ($codigoFactura == 6 )
+          <tr>
+            <td ></td>
+          </tr>
+          <tr>
+              <td style="text-align: center" >Régimen de Transparencia Fiscal al Consumidor (Ley 27.743)</td>
+          </tr>
+          <tr>
+            <td ><hr></td>
+          </tr>
+          @if ($iva105 > 0)
+            <tr>
+                <td style="text-align: center" >Iva 10.5 $ {{$iva105}}</td>
+            </tr>
+              
+          @endif
+          @if ($iva21 > 0)
+            <tr>
+              <td style="text-align: center" >Iva 21 $ {{$iva21}}</td>
+            </tr>
+              
+          @endif
+
+          <tr>
+            <td ><hr></td>
+          </tr>
+        @endif
+
+
 		<tr>
 			<td class="border-top padding-t-3">
 				<p>CAE: {{$cae}}</p>

@@ -172,7 +172,7 @@
               <fieldset role="group">
 
                 <a wire:navigate href="{{route('nuevoComprobante')}}" role="button" data-tooltip="Finalizar Venta"  >Finalizar</a>
-                <a  wire:click="borrarCarrito" role="button" data-tooltip="Borrar todo"  class="bg-focus">Cancelar</a>
+                <a  wire:click="borrarCarrito" role="button" data-tooltip="Borrar todo"  class="bg-focus" @click="document.getElementById('inputBusqueda').focus()">Cancelar</a>
                 {{-- <button wire:click="borrarCarrito"  class="contrast" data-tooltip="Borrar todo" style="font-size: 15px;">Cancelar</button> --}}
 
                 <input type="number" step=".5" wire:model="porcentaje" style="text-align: right; font-size: 15px; text-align: center;">
@@ -197,11 +197,17 @@
 
 
           <div class="div" style="transform: scale(0.9, 0.9);margin-bottom: -10px;">
-            <form role="search"  wire:submit="buscarCargar" >        
+            <form role="search"  wire:submit="buscarCargar" >       
+               
               <input style="text-align: center; width: 20%;" class="seleccionarTodo" 
+
+                id="inputCantidad"
+
                 wire:model.live="cantidad"
                 wire:keydown.down="restarCantidad"
                 wire:keydown.up="sumarCantidad"
+                @keydown.right.prevent="moverFocoDerecha()"
+                @keydown.left.prevent="moverFocoIzquierda()"
                 type="text"
                 style="font-size: 15px;"
               
@@ -215,6 +221,9 @@
                   x-ref="inputField"
                /> --}}
                 <input
+
+                  id="inputBusqueda"
+
                   wire:model.live="datoBuscado"
                   name="search"
                   type="search"
@@ -222,6 +231,8 @@
                   class="seleccionarTodo"
                   @keydown.arrow-down.prevent="moverFocoAbajo()"
                   @keydown.arrow-up.prevent="moverFocoArriba()"
+                  @keydown.right.prevent="moverFocoDerecha()"
+                  @keydown.left.prevent="moverFocoIzquierda()"
                   @focus="reiniciarIndice()"
                   autocomplete="off"
                   style="font-size: 15px;"
@@ -423,49 +434,56 @@
 
 
       <script>
-        function navegacionGrilla() {
-            return {
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('navegacionGrilla', () => ({
                 botones: [],
                 indice: -1,
-                isFocused: false,
-        
                 inicializar() {
                     this.botones = Array.from(document.querySelectorAll('.boton-grilla'));
                 },
-        
                 moverFocoAbajo() {
-                    this.botones = Array.from(document.querySelectorAll('.boton-grilla'));
-        
                     if (this.indice < this.botones.length - 1) {
                         this.indice++;
                     } else {
                         this.indice = 0;
                     }
-        
                     this.botones[this.indice].focus();
                 },
-        
                 moverFocoArriba() {
-                    this.botones = Array.from(document.querySelectorAll('.boton-grilla'));
-        
                     if (this.indice > 0) {
                         this.indice--;
                     } else {
                         this.indice = this.botones.length - 1;
                     }
-        
                     this.botones[this.indice].focus();
                 },
-        
+                moverFocoDerecha() {
+                    const inputBusqueda = document.getElementById('inputBusqueda');
+                    const inputCantidad = document.getElementById('inputCantidad');
+
+                    if (document.activeElement.id === 'inputCantidad' && inputBusqueda) {
+                        inputBusqueda.focus();
+                    }
+                    else if (document.activeElement.id === 'inputBusqueda' && inputCantidad) {
+                        inputCantidad.focus();
+                    }
+                },
+                moverFocoIzquierda() {
+                  const inputBusqueda = document.getElementById('inputBusqueda');
+                    const inputCantidad = document.getElementById('inputCantidad');
+
+                    if (document.activeElement.id === 'inputCantidad' && inputBusqueda) {
+                        inputBusqueda.focus();
+                    }
+                    else if (document.activeElement.id === 'inputBusqueda' && inputCantidad) {
+                        inputCantidad.focus();
+                    }
+                },
                 reiniciarIndice() {
                     this.indice = -1;
-                },
-        
-                focusInput() {
-                    this.$refs.inputField.focus();
                 }
-            };
-        }
+            }));
+        });
       </script>
       
       
