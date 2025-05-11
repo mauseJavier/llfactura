@@ -1,13 +1,21 @@
 <div >
   {{-- ESN ESTE COMPONENTE UTILIZO ALPINE JS PARA LOS MODALES ABRIR Y CERRAR  --}}
-    <div class="container" x-data="{ modalFiltro: false }">
+    <div class="container" x-data="{ acordeonFiltro: false }">
+
+        <div class="container" wire:loading >
+            <article>
+                <h3>Cargando...</h3>
+                      <progress />
+            </article>
+        </div>
+
 
         <h3>Ver Comprobantes</h3>
 
 
         @if (Auth()->user()->role_id == 2 OR Auth()->user()->role_id == 3 OR Auth()->user()->role_id == 4)
             
-          <div class="grid">
+          <div class="grid" wire:loading.remove>
             <div class="col">
               <article>
                 @foreach ($totales as $item)  
@@ -59,7 +67,7 @@
             </div>
           </div>
 
-          <article>
+          <article wire:loading.remove>
 
             <label for="">Total: ${{number_format($sumTotal, 2, ',', '.')}}</label>
             <label for="">Total IVA: ${{number_format($ivaPeriodo, 2, ',', '.')}}</label>
@@ -119,18 +127,13 @@
 
               <fieldset>
                 <label>
-                  <input name="terms" type="checkbox" role="switch" @click="modalFiltro = !modalFiltro" x-bind:checked="modalFiltro" />
+                  <input name="terms" type="checkbox" role="switch" @click="acordeonFiltro = !acordeonFiltro" x-bind:checked="acordeonFiltro" />
                   Filtros
                 </label>
                 
               </fieldset>
             </div>
 
-            <div class="col">
-
-              <a href="{{route('cierrecaja')}}" style="cursor: pointer;">Cierre Caja</a>
-
-            </div>
             <div class="col">              
               
               <input  style="width: 50%; height: 50%;" type="text"  wire:keyup="modificarFechas($event.target.value)" name="numeroComprobanteFiltro" placeholder="Filtro Numero o Cliente" />
@@ -138,6 +141,121 @@
             </div>
 
           </div>
+
+          <article>
+            {{-- ACORDEON FILTRO --}}
+
+            <details name="filtroComprobantes" x-bind:open="acordeonFiltro" x-data="fechaHandler()">
+                  <summary @click="acordeonFiltro = !acordeonFiltro" >Filtro Comprobantes</summary>
+
+              
+                  <fieldset>
+                      <legend>Fecha:</legend>
+                      <div class="grid">
+                          <label>
+                              <input type="radio" name="fecha"  value="hoy" @change="setFecha('hoy')" />
+                              HOY
+                          </label>
+                          <label>
+                              <input type="radio" name="fecha"  value="semana" @change="setFecha('semana')" />
+                              Esta Semana
+                          </label>
+                          <label>
+                              <input type="radio" name="fecha"  value="mes" @change="setFecha('mes')" />
+                              Este Mes
+                          </label>
+                          <label>
+                              <input type="radio" name="fecha"  value="mesPasado" @change="setFecha('mesPasado')" />
+                              Mes Pasado
+                          </label>
+                      </div>
+                  </fieldset>
+
+                  <div class="grid">
+                      <div class="col">
+                          <label for="">
+                              Fecha Desde
+                              <input wire:model.live="fechaFiltroDesde" type="datetime-local" x-model="fechaDesde" id="fechaDesde" />
+                          </label>
+                      </div>
+                      <div class="col">
+                          <label for="">
+                              Fecha Hasta
+                              <input wire:model.live="fechaFiltroHasta" type="datetime-local" x-model="fechaHasta" id="fechaHasta" />
+                          </label>
+                      </div>
+                  </div>
+                  
+                  <div class="grid">
+                      <div class="col">
+                          <label for="">
+                              Comp.
+                              <select name="tipoComp" wire:model.live="tipoComp">
+                                  <option value="">Todo</option>
+                                  @foreach ($tiposComprobantes as $key => $value)
+                                      <option value="{{$key}}">{{$value}}</option>
+                                  @endforeach
+                              </select>
+                          </label>                  
+                      </div>
+
+                      @if (Auth::user()->role_id == 3 OR Auth::user()->role_id == 4)
+                          
+                          <div class="col">
+                              <label for="">
+                                  Usuario
+                                  <select name="selectUsuario" id="selectUsuario" wire:model.live="usuarioFiltro">
+                                    <option value="">Todos</option>
+                                    @foreach ($usuariosEmpresa as $u)
+                                      <option value="{{$u->name}}">{{$u->name}}</option>
+                                        
+                                    @endforeach
+                                  </select>
+                              </label>
+                          </div>
+                          <div class="col">
+                            <label for="">
+                                Deposito
+
+                                <select name="selectDeposito" id="selectDeposito" wire:model.live="depositoFiltro">
+                                  <option value="">Todos</option>
+                                  @foreach ($depositosEmpresa as $d)
+                                    <option value="{{$d->id}}">{{$d->nombre}}</option>
+                                      
+                                  @endforeach
+                                </select>
+                            </label>
+                        </div>
+
+                        <div class="col">
+                            <label for="">
+                                F. Pago
+
+                                <select name="selectFormaPago" id="selectFormaPago" wire:model.live="formaPagoFiltroUno">
+                                  
+                                  {{-- NO SE POR QUE PERO PARA CUENTAS CORRIENTES 
+                                  EL VALOR ES NULL YA QUE EN LA DB EL ID ES 0  --}}
+
+                                  <option value="">Todo</option>
+                                  <option value="null">Cuneta Corriente</option> 
+
+                                  @foreach ($formaPagos as $d)
+                                    @if ($d->id != 0)
+                                      <option value="{{$d->id}}">{{$d->nombre}}</option>                                        
+                                    @endif                                      
+                                  @endforeach
+                                </select>
+                            </label>
+
+                        </div>
+
+                      @endif
+                      
+                  </div>
+
+            </details>
+          </article>
+
 
 
           <div class="overflow-auto">
@@ -153,74 +271,96 @@
                     <th scope="col">Cae</th>
                     <th scope="col">Cliente</th>
                     <th scope="col">CuitCliente</th>
+                    <th scope="col">Importe</th>
+                    <th>F. Pago</th>
                     <th scope="col">
                       Usuario
                     </th>
-                    <th scope="col">Importe</th>
                   </tr>
                 </thead>
                 <tbody>
-                    @foreach ($comprobantes as $item)
-                        <tr>
-                            <th scope="row"> 
-                              <!-- Dropdown -->
-                              <details class="dropdown">
-                                <summary>Acciones</summary>
-                                <ul>
-                                  <li><a wire:navigate href="{{route('productosComprobante',['idComprobante'=>$item->id])}}">Ver</a></li>
-                                  <li><a wire:navigate href="{{route('formatoPDF',['tipo'=>'factura','comprobante_id'=>$item->id])}}">Imprimir</a></li>
-                                  @if ($item->tipoComp == 1 OR $item->tipoComp == 6 OR $item->tipoComp == 11 OR $item->tipoComp == 'remito')
-                                    <li><a wire:navigate href="{{route('remitoscomprobante')}}">Remitos</a></li>
-                                    <li><a wire:navigate href="{{route('notacredito',['comprobante'=>$item->id])}}">Nota Credito</a></li>
-                                  @endif
-                                  @if ($item->tipoComp == 'remito')
-                                    <li><a wire:navigate href="{{route('facturarRemito',['idComprobante'=>$item->id])}}">Facturar</a></li>
-                                  @endif
-                                    <li><a wire:navigate href="{{route('cargarComprobante',['comp'=>$item->id])}}">Cargar</a></li>
+                  @forelse ($comprobantes as $item)
+                    <tr>
+                        <th scope="row"> 
+                          <!-- Dropdown -->
+                          <details class="dropdown">
+                            <summary>Acciones</summary>
+                            <ul>
+                              <li><a wire:navigate href="{{route('productosComprobante',['idComprobante'=>$item->id])}}">Ver</a></li>
+                              <li><a wire:navigate href="{{route('formatoPDF',['tipo'=>'factura','comprobante_id'=>$item->id])}}">Imprimir</a></li>
+                              @if ($item->tipoComp == 1 OR $item->tipoComp == 6 OR $item->tipoComp == 11 OR $item->tipoComp == 'remito')
+                                <li><a wire:navigate href="{{route('remitoscomprobante')}}">Remitos</a></li>
+                                <li><a wire:navigate href="{{route('notacredito',['comprobante'=>$item->id])}}">Nota Credito</a></li>
+                              @endif
+                              @if ($item->tipoComp == 'remito')
+                                <li><a wire:navigate href="{{route('facturarRemito',['idComprobante'=>$item->id])}}">Facturar</a></li>
+                              @endif
+                                <li><a wire:navigate href="{{route('cargarComprobante',['comp'=>$item->id])}}">Cargar</a></li>
 
-                                </ul>
-                              </details>                       
-                            </th>
-                            <td>{{$item->fecha}}</td>
-                            <td>
-                              @switch($item->tipoComp)
-                                  @case(11)
-                                      C
-                                      @break
-                                  @case(6)
-                                      B
-                                      @break
-                                  @case(1)
-                                      A
-                                      @break
-                                  @case(51)
-                                      M
-                                      @break
-                                  @case('remito')
-                                      R
-                                    @break
-                                  @case(3)
-                                    NC A
-                                    @break
-                                  @case(8)
-                                    NC B
-                                    @break
-                                  @case(13)
-                                    NC C
-                                    @break
-                                  @default
-                                  {{$item->tipoComp}}
-                              @endswitch
+                            </ul>
+                          </details>                       
+                        </th>
+                        <td>{{$item->fecha}}</td>
+                        <td>
+                          @switch($item->tipoComp)
+                              @case(11)
+                                  C
+                                  @break
+                              @case(6)
+                                  B
+                                  @break
+                              @case(1)
+                                  A
+                                  @break
+                              @case(51)
+                                  M
+                                  @break
+                              @case('remito')
+                                  R
+                                @break
+                              @case(3)
+                                NC A
+                                @break
+                              @case(8)
+                                NC B
+                                @break
+                              @case(13)
+                                NC C
+                                @break
+                              @default
+                              {{$item->tipoComp}}
+                          @endswitch
+                          
+                        </td>
+                        <td>{{$item->numero}}</td>
+                        <td>{{$item->cae}}</td>
+                        <td>{{$item->razonSocial}}</td>
+                        <td>{{$item->cuitCliente}}</td>
+                        <td>${{$item->total}}</td>
+                          @if ($item->nombreFormaPago1 == $item->nombreFormaPago2)
+                            <td>{{$item->nombreFormaPago1}}</td>
                               
-                            </td>
-                            <td>{{$item->numero}}</td>
-                            <td>{{$item->cae}}</td>
-                            <td>{{$item->razonSocial}}</td>
-                            <td>{{$item->cuitCliente}}</td>
-                            <td>{{$item->usuario}}</td>
-                            <td>${{$item->total}}</td>
-                          </tr>
-                    @endforeach
+                          @else
+                          <td>
+                            {{$item->nombreFormaPago1}} ($ {{$item->importeUno}})
+                            {{$item->nombreFormaPago2}} ($ {{$item->importeDos}})
+                          </td>
+                              
+                          @endif
+
+
+                        <td>{{$item->usuario}}</td>
+                      </tr>
+                      
+                  @empty
+
+                    <tr>
+                      <td colspan="10" style="text-align: center;">
+                        <h4>No hay resultados</h4>
+                      </td>
+                    </tr>
+                      
+                  @endforelse
 
                 
                 </tbody>
@@ -237,10 +377,10 @@
   
 
 
-          {{-- <dialog x-bind:open="modalFiltro">
+          {{-- <dialog x-bind:open="acordeonFiltro">
             <article>
               <header>
-                <button aria-label="Close" rel="prev" @click="modalFiltro = !modalFiltro"></button>
+                <button aria-label="Close" rel="prev" @click="acordeonFiltro = !acordeonFiltro"></button>
                 <p>
                   <strong>Filtro Comprobantes</strong>
                 </p>
@@ -316,16 +456,16 @@
 
               <label for="">
                 Cerrar
-                <input name="terms" type="checkbox" role="switch" @click="modalFiltro = !modalFiltro" x-bind:checked="modalFiltro" />
+                <input name="terms" type="checkbox" role="switch" @click="acordeonFiltro = !acordeonFiltro" x-bind:checked="acordeonFiltro" />
               </label>
 
             </article>
           </dialog> --}}
 
-          <dialog x-bind:open="modalFiltro">
+          {{-- <dialog x-bind:open="acordeonFiltro">
             <article x-data="fechaHandler()">
                 <header>
-                    <button aria-label="Close" rel="prev" @click="modalFiltro = !modalFiltro"></button>
+                    <button aria-label="Close" rel="prev" @click="acordeonFiltro = !acordeonFiltro"></button>
                     <p>
                         <strong>Filtro Comprobantes</strong>
                     </p>
@@ -414,7 +554,7 @@
         
                 <label for="">
                     Cerrar
-                    <input name="terms" type="checkbox" role="switch" @click="modalFiltro = !modalFiltro" x-bind:checked="modalFiltro" />
+                    <input name="terms" type="checkbox" role="switch" @click="acordeonFiltro = !acordeonFiltro" x-bind:checked="acordeonFiltro" />
                 </label>
         
             </article>
@@ -425,7 +565,7 @@
                   });
               </script>
 
-        </dialog>
+          </dialog> --}}
         
         <script>
             function fechaHandler() {
@@ -526,7 +666,7 @@
                         this.$dispatch('actualizar-fechas', { fechaDesde: this.fechaDesde, fechaHasta: this.fechaHasta });
 
                         // Deshabilita las demás opciones
-                        this.disableOthers(option);
+                        // this.disableOthers(option);
                     },
 
                     disableOthers(selected) {
@@ -536,9 +676,15 @@
                             element.disabled = option !== selected;
                         });
                     }
-                }
-            }
 
+                  }
+                }
+                
+                
+                // <!-- Manejar el evento de Alpine.js para actualizar las fechas en Livewire -->
+                document.addEventListener('actualizar-fechas', event => {
+                  @this.actualizarFechas(event.detail.fechaDesde, event.detail.fechaHasta);
+                });
 
         </script>
         

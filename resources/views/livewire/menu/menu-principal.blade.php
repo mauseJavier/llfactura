@@ -91,7 +91,7 @@
           @else
 
             <li>
-              <a wire:navigate href="{{route('venta')}}">
+              <a  href="{{route('venta')}}">
                 <!-- cart-shopping icon by Free Icons (https://free-icons.github.io/free-icons/) -->
                 <svg xmlns="http://www.w3.org/2000/svg" height="2em" fill="currentColor" viewBox="0 0 512 512">
                   <path

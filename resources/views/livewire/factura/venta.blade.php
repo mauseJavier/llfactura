@@ -1,4 +1,6 @@
-<div x-data="{ focusInput() { this.$nextTick(() => { this.$refs.inputField.focus(); }); } }">
+<div 
+    x-data="{ focusInput() { this.$nextTick(() => { this.$refs.inputBusqueda?.focus(); }); } }"
+>
 
     {{-- The whole world belongs to you. --}}
     <style>
@@ -196,7 +198,10 @@
           @endif
 
 
-          <div class="div" style="transform: scale(0.9, 0.9);margin-bottom: -10px;">
+          <div class="div" style="transform: scale(0.9, 0.9);margin-bottom: -10px;"
+          
+              x-data="{ focusInputInicio() { this.$refs.inputBusqueda.focus(); } }" x-init="focusInputInicio()"
+          >
             <form role="search"  wire:submit="buscarCargar" >       
                
               <input style="text-align: center; width: 20%;" class="seleccionarTodo" 
@@ -220,25 +225,25 @@
                   autofocus
                   x-ref="inputField"
                /> --}}
+              
                 <input
-
                   id="inputBusqueda"
-
                   wire:model.live="datoBuscado"
                   name="search"
                   type="search"
                   placeholder="Buscar en Inventario"
                   class="seleccionarTodo"
+                  x-ref="inputBusqueda"
                   @keydown.arrow-down.prevent="moverFocoAbajo()"
                   @keydown.arrow-up.prevent="moverFocoArriba()"
                   @keydown.right.prevent="moverFocoDerecha()"
                   @keydown.left.prevent="moverFocoIzquierda()"
                   @focus="reiniciarIndice()"
+                  @keydown="inicializar()"
                   autocomplete="off"
                   style="font-size: 15px;"
-                  autofocus
-                  x-ref="inputField"
                 />
+             
              
 
               
@@ -330,7 +335,8 @@
                               :class="{ 'bg-focus': isFocused }"
                               @focus="isFocused = true" 
                               @blur="isFocused = false"
-                              @click="focusInput()"
+                              {{-- @click="focusInput()" --}}
+                              @click="document.getElementById('inputBusqueda').focus()"
                               wire:click="cargar({{$i->id}})"
                               @keydown.arrow-down.prevent="moverFocoAbajo()"
                               @keydown.arrow-up.prevent="moverFocoArriba()"
@@ -482,8 +488,13 @@
                 reiniciarIndice() {
                     this.indice = -1;
                 }
-            }));
-        });
+
+                
+                
+              }));
+
+            });
+
       </script>
       
       

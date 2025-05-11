@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 
 
+use Illuminate\Support\Facades\Schema;
 
 
 use Carbon\Carbon;
@@ -23,6 +24,7 @@ use App\Models\productoComprobante;
 use App\Models\Empresa;
 use App\Models\User;
 use App\Models\Deposito;
+use App\Models\FormaPago;
 
 
 
@@ -41,6 +43,10 @@ class VerComprobante extends Component
     public $depositoFiltro;
     public $numeroComprobanteFiltro;
     public $clienteComprobanteFiltro;
+
+    
+    public $formaPagoFiltroUno = 0;
+    public $formaPagoFiltroDos;
 
 
     public function limpiarFiltro(){
@@ -79,6 +85,9 @@ class VerComprobante extends Component
             $this->fechaFiltroDesde = $this->fechaFiltroDesde->format('Y-m-d\TH:i');
             
             $this->fechaFiltroHasta = Carbon::now()->addDay()->format('Y-m-d\TH:i');
+
+            $this->numeroComprobanteFiltro= null;
+            $this->clienteComprobanteFiltro= null;
 
         }
     }
@@ -503,6 +512,53 @@ class VerComprobante extends Component
     {
 
 
+
+
+        // // Obtener la estructura de la tabla asociada al modelo
+        // $columns = Schema::getColumnListing((new FormaPago)->getTable());
+
+        // // Mostrar las columnas
+        // dd($columns);
+
+
+        // array:25 [▼ // app/Livewire/Comprobante/VerComprobante.php:511
+        //     0 => "id"
+        //     1 => "tipoComp"
+        //     2 => "numero"
+        //     3 => "total"
+        //     4 => "cae"
+        //     5 => "fechaVencimiento"
+        //     6 => "fecha"
+        //     7 => "ptoVta"
+        //     8 => "deposito_id"
+        //     9 => "DocTipo"
+        //     10 => "cuitCliente"
+        //     11 => "razonSocial"
+        //     12 => "tipoContribuyente"
+        //     13 => "domicilio"
+        //     14 => "leyenda"
+        //     15 => "idFormaPago"
+        //     16 => "importeUno"
+        //     17 => "idFormaPago2"
+        //     18 => "importeDos"
+        //     19 => "remito"
+        //     20 => "empresa_id"
+        //     21 => "usuario"
+        //     22 => "created_at"
+        //     23 => "updated_at"
+        //     24 => "cantidadComenzales"
+        //     ]
+
+        // array:5 [▼ // app/Livewire/Comprobante/VerComprobante.php:512
+        //     0 => "id"
+        //     1 => "nombre"
+        //     2 => "comentario"
+        //     3 => "created_at"
+        //     4 => "updated_at"
+        //     ]
+
+
+
             $collection = Comprobante::select('comprobantes.idFormaPago as idFormaPago', 'forma_pagos.nombre', DB::raw('SUM(comprobantes.importeUno) as totalImporte'))
                 ->join('forma_pagos', 'comprobantes.idFormaPago', '=', 'forma_pagos.id')
                 ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
@@ -511,9 +567,16 @@ class VerComprobante extends Component
                 ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
                 ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
                 ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
-                        ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
-            return $query->where('comprobantes.deposito_id', $depositoFiltro);
-        })
+                ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+                    return $query->where('comprobantes.deposito_id', $depositoFiltro);
+                })
+                        ->when($this->formaPagoFiltroUno, function ($query, $formaPagoFiltroUno) {
+                        return $query->where('comprobantes.idFormaPago', $formaPagoFiltroUno);
+                        })
+                        ->when($this->formaPagoFiltroDos, function ($query, $formaPagoFiltroDos) {
+                        return $query->where('comprobantes.idFormaPago2', $formaPagoFiltroDos);
+                        })
+
                 ->groupBy('comprobantes.idFormaPago', 'forma_pagos.nombre')
                 
                 // Unir la segunda colección
@@ -526,9 +589,16 @@ class VerComprobante extends Component
                         ->when($this->tipoComp, fn($query) => $query->where('comprobantes.tipoComp', $this->tipoComp))
                         ->when($this->numeroComprobanteFiltro, fn($query) => $query->where('numero', '=', $this->numeroComprobanteFiltro))
                         ->when($this->clienteComprobanteFiltro, fn($query) => $query->where('razonSocial', 'LIKE', '%' . $this->clienteComprobanteFiltro . '%'))
-                                ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
-            return $query->where('comprobantes.deposito_id', $depositoFiltro);
-        })
+                        ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+                            return $query->where('comprobantes.deposito_id', $depositoFiltro);
+                        })
+                        ->when($this->formaPagoFiltroUno, function ($query, $formaPagoFiltroUno) {
+                        return $query->where('comprobantes.idFormaPago', $formaPagoFiltroUno);
+                        })
+                        ->when($this->formaPagoFiltroDos, function ($query, $formaPagoFiltroDos) {
+                        return $query->where('comprobantes.idFormaPago2', $formaPagoFiltroDos);
+                        })
+
                         ->groupBy('comprobantes.idFormaPago2', 'forma_pagos.nombre')
                 )
                 ->get();
@@ -554,28 +624,72 @@ class VerComprobante extends Component
 
 
 
+            // $ivaPeriodo = productoComprobante::where('empresa_id', Auth::user()->empresa_id)
+            // ->where('fecha', '>=', $this->fechaFiltroDesde)
+            // ->where('fecha', '<=', $this->fechaFiltroHasta)
+            // ->whereNotIn('tipoComp', ['remito', 'notaRemito',]) // Excluir múltiples valores
+            // ->get()
+            // ->map(function ($item) {
+
+            //     if($item->tipoComp == 3 OR $item->tipoComp == 8 OR $item->tipoComp == 13 ){
+
+
+            //         // Calcular el precio con IVA incluido
+            //         $item->precioConIva = round( ($item->precio * $item->cantidad) - (($item->precio * $item->cantidad) / (1 + ($item->iva / 100))) ,2) * -1;
+
+            //     }else{
+
+            //         // Calcular el precio con IVA incluido
+            //         $item->precioConIva = round( ($item->precio * $item->cantidad) - (($item->precio * $item->cantidad) / (1 + ($item->iva / 100))),2);
+            //     }
+            //     // $item->precioConIva = round( ($item->precio * $item->cantidad) ,2);
+
+            //     return $item;
+            // });
+
+            // $sumaTotalConIva = $ivaPeriodo->sum('precioConIva'); // Sumar todos los precios con IVA incluidov
+
+
             $ivaPeriodo = productoComprobante::where('empresa_id', Auth::user()->empresa_id)
-            ->where('fecha', '>=', $this->fechaFiltroDesde)
-            ->where('fecha', '<=', $this->fechaFiltroHasta)
-            ->whereNotIn('tipoComp', ['remito', 'notaRemito',]) // Excluir múltiples valores
-            ->get()
-            ->map(function ($item) {
+                ->where('fecha', '>=', $this->fechaFiltroDesde)
+                ->where('fecha', '<=', $this->fechaFiltroHasta)
+                ->whereNotIn('tipoComp', ['remito', 'notaRemito']) // Excluir múltiples valores
+                ->when($this->tipoComp, function ($query, $tipoComp) {
+                    return $query->where('tipoComp', $tipoComp);
+                })
+                ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+                    return $query->where('numero', '=', $numeroComprobanteFiltro);
+                })
+                ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+                    return $query->where('razonSocial', 'LIKE', '%' . $clienteComprobanteFiltro . '%');
+                })
+                ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+                    return $query->where('deposito_id', $depositoFiltro);
+                })
+                ->when($this->formaPagoFiltroUno, function ($query, $formaPagoFiltroUno) {
+                    return $query->where('idFormaPago', $formaPagoFiltroUno);
+                })
+                ->when($this->formaPagoFiltroDos, function ($query, $formaPagoFiltroDos) {
+                    return $query->where('idFormaPago2', $formaPagoFiltroDos);
+                })
+                ->get()
+                ->map(function ($item) {
+                    if ($item->tipoComp == 3 || $item->tipoComp == 8 || $item->tipoComp == 13) {
+                        // Calcular el precio con IVA incluido
+                        $item->precioConIva = round(
+                            ($item->precio * $item->cantidad) - (($item->precio * $item->cantidad) / (1 + ($item->iva / 100))),
+                            2
+                        ) * -1;
+                    } else {
+                        // Calcular el precio con IVA incluido
+                        $item->precioConIva = round(
+                            ($item->precio * $item->cantidad) - (($item->precio * $item->cantidad) / (1 + ($item->iva / 100))),
+                            2
+                        );
+                    }
 
-                if($item->tipoComp == 3 OR $item->tipoComp == 8 OR $item->tipoComp == 13 ){
-
-
-                    // Calcular el precio con IVA incluido
-                    $item->precioConIva = round( ($item->precio * $item->cantidad) - (($item->precio * $item->cantidad) / (1 + ($item->iva / 100))) ,2) * -1;
-
-                }else{
-
-                    // Calcular el precio con IVA incluido
-                    $item->precioConIva = round( ($item->precio * $item->cantidad) - (($item->precio * $item->cantidad) / (1 + ($item->iva / 100))),2);
-                }
-                // $item->precioConIva = round( ($item->precio * $item->cantidad) ,2);
-
-                return $item;
-            });
+                    return $item;
+                });
 
             $sumaTotalConIva = $ivaPeriodo->sum('precioConIva'); // Sumar todos los precios con IVA incluido
         
@@ -588,25 +702,60 @@ class VerComprobante extends Component
 
             'ivaPeriodo'=> $sumaTotalConIva,
 
-            'comprobantes' => Comprobante::where('empresa_id', Auth::user()->empresa_id)
-                                ->where('created_at', '>=', $this->fechaFiltroDesde)
-                                ->where('created_at', '<=', $this->fechaFiltroHasta)
-                                ->when($this->tipoComp, function ($query, $tipoComp) {
-                                    return $query->where('tipoComp', $tipoComp);
-                                })
-                                ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-                                return $query->where('numero', '=',$numeroComprobanteFiltro);
-                                })
+            // 'comprobantes' => Comprobante::where('empresa_id', Auth::user()->empresa_id)
+            //                     ->where('created_at', '>=', $this->fechaFiltroDesde)
+            //                     ->where('created_at', '<=', $this->fechaFiltroHasta)
+            //                     ->when($this->tipoComp, function ($query, $tipoComp) {
+            //                         return $query->where('tipoComp', $tipoComp);
+            //                     })
+            //                     ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+            //                     return $query->where('numero', '=',$numeroComprobanteFiltro);
+            //                     })
 
-                                ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
-                                return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
-                                })
-                                ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
-                                    return $query->where('comprobantes.deposito_id', $depositoFiltro);
-                                })
-                                ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
-                                ->orderByDesc('created_at')
-                                ->paginate(15),
+            //                     ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+            //                     return $query->where('razonSocial', 'LIKE','%'.$clienteComprobanteFiltro.'%');
+            //                     })
+            //                     ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+            //                         return $query->where('comprobantes.deposito_id', $depositoFiltro);
+            //                     })
+            //                     ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
+            //                     ->orderByDesc('created_at')
+            //                     ->paginate(15),
+
+            
+            'comprobantes' => Comprobante::select(
+                    'comprobantes.*',
+                    'fp1.nombre as nombreFormaPago1',
+                    'fp2.nombre as nombreFormaPago2'
+                )
+                ->leftJoin('forma_pagos as fp1', 'comprobantes.idFormaPago', '=', 'fp1.id')
+                ->leftJoin('forma_pagos as fp2', 'comprobantes.idFormaPago2', '=', 'fp2.id')
+                ->where('comprobantes.empresa_id', Auth::user()->empresa_id)
+                ->where('comprobantes.created_at', '>=', $this->fechaFiltroDesde)
+                ->where('comprobantes.created_at', '<=', $this->fechaFiltroHasta)
+                ->when($this->tipoComp, function ($query, $tipoComp) {
+                    return $query->where('comprobantes.tipoComp', $tipoComp);
+                })
+                ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
+                    return $query->where('comprobantes.numero', '=', $numeroComprobanteFiltro);
+                })
+                ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
+                    return $query->where('comprobantes.razonSocial', 'LIKE', '%' . $clienteComprobanteFiltro . '%');
+                })
+                ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
+                    return $query->where('comprobantes.deposito_id', $depositoFiltro);
+                })
+                ->when($this->formaPagoFiltroUno , function ($query, $formaPagoFiltroUno) {
+                    return $query->where('comprobantes.idFormaPago', $formaPagoFiltroUno);
+                })
+                ->when($this->formaPagoFiltroDos, function ($query, $formaPagoFiltroDos) {
+                    return $query->where('comprobantes.idFormaPago2', $formaPagoFiltroDos);
+                })
+                ->where('comprobantes.usuario', 'like', '%' . $this->usuarioFiltro . '%')
+                ->orderByDesc('comprobantes.created_at')
+                ->paginate(15),
+
+
 
             'sumTotal' => Comprobante::where('empresa_id', Auth::user()->empresa_id)
                                         ->where('created_at', '>=', $this->fechaFiltroDesde)
@@ -623,6 +772,12 @@ class VerComprobante extends Component
                                 })
                                 ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
                                     return $query->where('comprobantes.deposito_id', $depositoFiltro);
+                                })
+                                ->when($this->formaPagoFiltroUno, function ($query, $formaPagoFiltroUno) {
+                                    return $query->where('comprobantes.idFormaPago', $formaPagoFiltroUno);
+                                })
+                                ->when($this->formaPagoFiltroDos, function ($query, $formaPagoFiltroDos) {
+                                    return $query->where('comprobantes.idFormaPago2', $formaPagoFiltroDos);
                                 })
 
 
@@ -647,6 +802,13 @@ class VerComprobante extends Component
                                     return $query->where('comprobantes.deposito_id', $depositoFiltro);
                                 })
 
+                                ->when($this->formaPagoFiltroUno, function ($query, $formaPagoFiltroUno) {
+                                    return $query->where('comprobantes.idFormaPago', $formaPagoFiltroUno);
+                                })
+                                ->when($this->formaPagoFiltroDos, function ($query, $formaPagoFiltroDos) {
+                                    return $query->where('comprobantes.idFormaPago2', $formaPagoFiltroDos);
+                                })
+
 
                                         ->where('usuario', 'like', '%' . $this->usuarioFiltro . '%')
                                         ->groupBy('tipoComp')
@@ -655,6 +817,7 @@ class VerComprobante extends Component
             'totales'=>$totales,
             'usuariosEmpresa'=> User::where('empresa_id',Auth::user()->empresa_id)->get(),
             'depositosEmpresa'=> Deposito::where('empresa_id',Auth::user()->empresa_id)->get(),
+            'formaPagos'=> FormaPago::all(),
 
 
             

@@ -124,7 +124,7 @@ use Illuminate\Http\Request;
 
     Route::get('/cartaInventario', [CartaInventarioController::class, 'empresas'])->name('cartaInventario');
 
-    Route::get('/cartaInventario/{empresa}', [CartaInventarioController::class, 'index'])->name('cartaInventario');
+    Route::get('/cartaInventario/{empresa}', [CartaInventarioController::class, 'index'])->name('cartaInventarioEmpresa');
 
 
 
@@ -629,8 +629,8 @@ use Illuminate\Http\Request;
 
 
         // RUTAS DE LOS REPORTES 
-        Route::get('/reporteVentaUsuario', [ReporteVentaUsuarioController::class, 'imprimir'])->name('reporteVentaUsuario');
-        Route::get('/reporteVentaUsuarioCompleto', [ReporteVentaUsuarioController::class, 'reporteCompleto'])->name('reporteVentaUsuarioCompleto');
+        // Route::get('/reporteVentaUsuario', [ReporteVentaUsuarioController::class, 'imprimir'])->name('reporteVentaUsuario');
+        // Route::get('/reporteVentaUsuarioCompleto', [ReporteVentaUsuarioController::class, 'reporteCompleto'])->name('reporteVentaUsuarioCompleto');
         // ESTA ES LA MISMA RUTA CON POST
         Route::post('/reporteVentaUsuario', [ReporteVentaUsuarioController::class, 'imprimir'])->name('reporteVentaUsuario');
         Route::post('/reporteVentaUsuarioCompleto', [ReporteVentaUsuarioController::class, 'reporteCompleto'])->name('reporteVentaUsuarioCompleto');

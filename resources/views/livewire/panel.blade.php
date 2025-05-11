@@ -12,7 +12,7 @@
 
         <div class="grid">
             <div class="col" style="text-align: center;">
-                <a href="/venta" wire:navigate>                    
+                <a href="/venta" >                    
                     <article class="ponerSombras">
                         <!-- tag icon by Free Icons (https://free-icons.github.io/free-icons/) -->
                         <svg xmlns="http://www.w3.org/2000/svg" height="6em" fill="currentColor" viewBox="0 0 512 512">
