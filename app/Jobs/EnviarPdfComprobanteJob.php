@@ -16,6 +16,7 @@ class EnviarPdfComprobanteJob implements ShouldQueue
 {
     use Queueable;
 
+    protected $tipoComprobante;
     protected $comprobante_id;
     protected $formato;
     protected $clienteNombre;
@@ -23,8 +24,9 @@ class EnviarPdfComprobanteJob implements ShouldQueue
     protected $mensaje;
     protected $usuarioId;
 
-    public function __construct($comprobante_id, $formato, $clienteNombre, $clienteTelefono, $mensaje, $usuarioId)
+    public function __construct($tipoComprobante,$comprobante_id, $formato, $clienteNombre, $clienteTelefono, $mensaje, $usuarioId)
     {
+        $this->tipoComprobante = $tipoComprobante;
         $this->comprobante_id = $comprobante_id;
         $this->formato = $formato;
         $this->clienteNombre = $clienteNombre;
@@ -60,8 +62,17 @@ class EnviarPdfComprobanteJob implements ShouldQueue
             $PdfComprobanteGenerar = new PdfComprobanteGenerar();
             // Log::info('Instancia de PdfComprobanteGenerar creada.');
     
-            $pdfBase64 = $PdfComprobanteGenerar->obtenerPdfBase64($this->comprobante_id, $this->formato, $this->usuarioId);
-            // Log::info('PDF generado en Base64.', ['pdfBase64' => substr($pdfBase64, 0, 100) . '...']); // Muestra solo los primeros 100 caracteres
+            if ($this->tipoComprobante == 'presupuesto'){
+
+                $pdfBase64 = $PdfComprobanteGenerar->obtenerPdfBase64Presupuesto($this->comprobante_id, 'A4', $this->usuarioId);
+
+                
+            }else{
+
+                $pdfBase64 = $PdfComprobanteGenerar->obtenerPdfBase64($this->comprobante_id, $this->formato, $this->usuarioId);
+                // Log::info('PDF generado en Base64.', ['pdfBase64' => substr($pdfBase64, 0, 100) . '...']); // Muestra solo los primeros 100 caracteres
+            }
+
     
             $instanciaWS = env('instanciaWhatsappLLFactura');
             $apikey = env('apikeyLLFactura');

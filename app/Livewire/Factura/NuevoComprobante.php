@@ -397,15 +397,21 @@ class NuevoComprobante extends Component
                 $nombreCliente = $this->razonSocial == 'Consumidor Final' ? '' : $this->razonSocial;
                 $formatoComprobante  = $this->empresa->formatoImprecion == 'T' ? 'Ticket' : 'A4';
 
+                if ($this->tipoComprobante == 'presupuesto'){
+                    $mensaje = 'Hola '. $nombreCliente .'! Te enviamos tu Presupuesto. Gracias por elegirnos!. Enviado con *https://llfactura.com*';
+                }else{
+                    $mensaje = 'Hola '. $nombreCliente .'! Te enviamos tu comprobante. Gracias por elegirnos!. Enviado con *https://llfactura.com*';
+                }
+
 
                 EnviarPdfComprobanteJob::dispatch(
+                    $this->tipoComprobante,
                     $comprobanteId,
                     $formatoComprobante,
                     $nombreCliente,
                     $this->telefonoCliente,
-                    'Hola '. $nombreCliente .'! Te enviamos el comprobante de tu compra. Gracias por elegirnos!. Enviado con *https://llfactura.com*', 
-                    Auth::user()->id,
-                // )->delay(now()->addSeconds(5)
+                    $mensaje, 
+                    Auth::user()->id
                 );
 
 

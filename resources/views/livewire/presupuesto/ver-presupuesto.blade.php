@@ -74,9 +74,29 @@
             <div class="col">{{-- LISTA DE PRODUCTOS --}}
                 <article>
                     <h6>Productos <small>Pto.Nº {{$numeroPresupuesto}}</small></h6>
-                    <button wire:click="cargarPresupuesto">Cargar</button>
-                    <button wire:click="imprimirPresupuesto">Imprimir</button>
-                    <button style="background-color: red;" wire:click="borrarPresupuesto({{$numeroPresupuesto}})" wire:confirm="Seguro de ELIMINAR?">Borrar</button>
+                        <button wire:click="cargarPresupuesto">Cargar</button>
+                        <button wire:click="imprimirPresupuesto">Imprimir</button>
+                        <button style="background-color: red;" wire:click="borrarPresupuesto({{$numeroPresupuesto}})" wire:confirm="Seguro de ELIMINAR?">Borrar</button>
+
+
+                        <hr>
+                        
+
+                        <form action="{{route('rutaEnviarPDF')}}" method="POST">
+                            @csrf
+    
+                                <input type="hidden" name="tipo" value="presupuesto" />
+                                <input type="hidden" name="comprobante_id" value="{{$presupuesto->id}}" />
+                                <input type="hidden" name="formato" value="T" />
+                                <input type="text" placeholder="Ingrese numero de telefono" class="input" name="telefono" required />
+    
+    
+                                
+                                <button type="submit" class="button">Enviar PDF WS</button>
+                                
+                        
+                        </form>
+
 
                 </article>
 

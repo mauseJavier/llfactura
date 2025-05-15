@@ -2,19 +2,15 @@
 
 namespace App\Services;
 
-
 use Carbon\Carbon;
-
 use Illuminate\Support\Facades\Log;
-
-
-
 use App\Models\Empresa;
 use App\Models\FormaPago;
+use App\Models\Presupuesto;
+use App\Models\ProductoPresupuesto;
 use App\Models\Comprobante;
 use App\Models\productoComprobante;
 use App\Models\User;
-
 use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\Storage; 
 use Barryvdh\DomPDF\Facade\Pdf; 
@@ -22,26 +18,14 @@ use chillerlan\QRCode\{QRCode, QROptions};
 
 class PdfComprobanteGenerar
 {
-    // public function encodeToBase64(string $filePath): string
-    // {
-    //     $pdfContent = Storage::get($filePath); // o file_get_contents si no usas Storage
-    //     return base64_encode($pdfContent);
-    // }
-
-
     public function imprimir($comprobante_id , $formato = 'Ticket'){
 
-  
-        // $empresa = Empresa::find(Auth::user()->empresa_id);  
         $empresa = Empresa::find(Comprobante::find($comprobante_id)->empresa_id);
-
 
         $comprobante = Comprobante::where('id',$comprobante_id)->where('empresa_id',$empresa->id)->get();
 
-
         if ($comprobante->count() == 0) {
             return redirect()->route('factura')->with('mensaje','Nada para Imprimir');
-    
         }
 
         $productos = productoComprobante::where('comprobante_id',$comprobante_id)->get();
@@ -62,18 +46,9 @@ class PdfComprobanteGenerar
 
     public function obtenerPdfBase64($comprobante_id, $formato = 'Ticket', $usuarioId) {
 
-
-        // Log::info('Generador de comprobante', [
-        //     'comprobante_id' => $comprobante_id,
-        //     'formato' => $formato,
-        //     'usuarioId' => $usuarioId,
-
-        // ]);
-
         $usuario = User::find($usuarioId);
 
         $empresa = Empresa::find(Comprobante::find($comprobante_id)->empresa_id);
-
 
         $comprobante = Comprobante::where('id', $comprobante_id)->where('empresa_id', $empresa->id)->get();
 
@@ -95,7 +70,6 @@ class PdfComprobanteGenerar
         $pdfContent = $pdf->output();
         $base64Pdf = base64_encode($pdfContent);
 
-        // return response()->json(['pdf_base64' => $base64Pdf]);
         return $base64Pdf;
     }
 
@@ -112,7 +86,6 @@ class PdfComprobanteGenerar
 
         if(count($productos)== 0){
             $productos = null;
-           
         }else{
             foreach ($productos as $key => $value) {     
 
@@ -299,7 +272,6 @@ class PdfComprobanteGenerar
                 $iva21 = 0;
                 $subtotal = 0;
                 break;
-           
         }
 
         if($empresa->iva == 'ME'){
@@ -315,25 +287,19 @@ class PdfComprobanteGenerar
         $info = [
             'logo'=>$path,
             'logoAgua'=>$logoAgua,
-
             'empresaNombre'=>$empresa->razonSocial,
             'numeroFactura'=> sprintf("%04d", $comprobante[0]->ptoVta)  .'-'. sprintf("%08d", $comprobante[0]->numero),
             'cuitEmpresa'=>$empresa->cuit,
             'ingresosBrutos'=>$empresa->ingresosBrutos,
             'empresaIva'=>$empresaIva,
             'empresaCorreo'=>$empresa->correo,
-
-
             'inicioActividades'=> date('d-m-Y', strtotime($empresa->inicioActividades)) ,
             'fechaFactura'=>date('d-m-Y', strtotime($comprobante[0]->fecha)),
-
             'direccionEmpresa'=> $usuario ? $usuario->domicilio : Auth::user()->domicilio,
-
             'telefonoEmpresa'=>$empresa->telefono,
             'titularEmpresa'=>$empresa->titular,
             'tipoFactura'=>$tipoComprobante,
             'abreviatura'=>$abreviatura,
-            
             'codigoFactura'=>$comprobante[0]->tipoComp,
             'nombreCliente'=>$comprobante[0]->razonSocial,
             'cuitCliente'=>$comprobante[0]->cuitCliente,
@@ -342,7 +308,6 @@ class PdfComprobanteGenerar
             'leyenda'=>$comprobante[0]->leyenda,
             'nombreFormaPago'=>$nombreFormaPago->nombre,
             'nombreFormaPago2'=>$nombreFormaPago2->nombre,
-
             'producto'=> $productos,
             'subtotal'=> number_format($subtotal,2),
             'subTotalPrecioLista'=>number_format($subTotalPrecioLista, 2) ,
@@ -357,5 +322,161 @@ class PdfComprobanteGenerar
         ];
 
         return $info;
+    }
+
+    private function generarDatosPresupuesto($presupuesto_id, $usuario = null) {
+        if ($usuario) {
+            $empresa = Empresa::find($usuario->empresa_id);
+        } else {
+            $empresa = Empresa::find(Auth::user()->empresa_id);
+        }
+
+        $presupuesto = Presupuesto::where('id', $presupuesto_id)->where('empresa_id', $empresa->id)->get();
+
+        if ($presupuesto->count() == 0) {
+            return null;
+        }
+
+        $productos = ProductoPresupuesto::where('presupuesto_id', $presupuesto_id)->get();
+
+        $totalRevisado = floatval(($presupuesto[0]->total) > 0 ? $presupuesto[0]->total : ($presupuesto[0]->total * -1));
+
+        $totalDescuento = 0;
+        $subTotalPrecioLista = 0;
+
+        foreach ($productos as $key => $value) {
+            $totalDescuento += round($value->descuento * $value->cantidad, 3);
+            $subTotalPrecioLista += round($value->precioLista * $value->cantidad, 3);
+        }
+
+        if (Storage::disk('local')->exists('public/' . $empresa->cuit . '/logo/logo.png')) {
+            $path = Storage::path('public/' . $empresa->cuit . '/logo/logo.png');
+        } else {
+            $path = 'sin Imagen';
+        }
+
+        $infoQR = 'llfactura.com';
+        $qrcode = (new QRCode)->render($infoQR);
+
+        switch ($presupuesto[0]->tipoContribuyente) {
+            case 4:
+                $tipoContribuyenteCliente = 'Exento';
+                break;
+            case 5:
+                $tipoContribuyenteCliente = 'Consumidor Final';
+                break;
+            case 6:
+                $tipoContribuyenteCliente = 'Responsable Inscripto';
+                break;
+            case 13:
+                $tipoContribuyenteCliente = 'Monotributista';
+                break;
+        }
+
+        $tipoComprobante = 'PRESUPUESTO';
+        $nombreFormaPago = FormaPago::find($presupuesto[0]->idFormaPago);
+
+        return [
+            'empresa' => $empresa,
+            'presupuesto' => $presupuesto[0],
+            'productos' => $productos,
+            'totalRevisado' => $totalRevisado,
+            'totalDescuento' => $totalDescuento,
+            'subTotalPrecioLista' => $subTotalPrecioLista,
+            'path' => $path,
+            'qrcode' => $qrcode,
+            'tipoContribuyenteCliente' => $tipoContribuyenteCliente,
+            'tipoComprobante' => $tipoComprobante,
+            'nombreFormaPago' => $nombreFormaPago
+        ];
+    }
+
+    public function imprimirPresupuesto($presupuesto_id, $formato = 'A4') {
+        $datos = $this->generarDatosPresupuesto($presupuesto_id, Auth::user());
+
+        if (!$datos) {
+            return redirect()->route('factura')->with('mensaje', 'Nada para Imprimir');
+        }
+
+        $info = [
+            'logo' => $datos['path'],
+            'empresaNombre' => $datos['empresa']->razonSocial,
+            'numeroPresupuesto' => $datos['presupuesto']->numero,
+            'cuitEmpresa' => $datos['empresa']->cuit,
+            'inicioActividades' => date('d-m-Y', strtotime($datos['empresa']->inicioActividades)),
+            'fechaPresupuesto' => date('d-m-Y', strtotime($datos['presupuesto']->fecha)),
+            'fechaVencimiento' => date('d-m-Y', strtotime($datos['presupuesto']->fechaVencimiento)),
+            'direccionEmpresa' => $datos['empresa']->domicilio,
+            'telefonoEmpresa' => $datos['empresa']->telefono,
+            'titularEmpresa' => $datos['empresa']->titular,
+            'tipoFactura' => $datos['tipoComprobante'],
+            'nombreCliente' => $datos['presupuesto']->razonSocial,
+            'cuitCliente' => $datos['presupuesto']->cuitCliente,
+            'domicilioCliente' => $datos['presupuesto']->domicilio,
+            'tipoContribuyente' => $datos['tipoContribuyenteCliente'],
+            'leyenda' => $datos['presupuesto']->leyenda,
+            'nombreFormaPago' => $datos['nombreFormaPago']->nombre,
+            'producto' => $datos['productos'],
+            'subTotalPrecioLista' => $datos['subTotalPrecioLista'],
+            'totalDescuento' => number_format($datos['totalDescuento'], 2),
+            'totalVenta' => number_format($datos['totalRevisado'], 2),
+            'qr' => $datos['qrcode'],
+            'titulo' => $datos['tipoComprobante'] . ' N ' . $datos['presupuesto']->numero . ' ' . date('dmY', strtotime($datos['presupuesto']->fecha)) . ' ' . $datos['presupuesto']->razonSocial
+        ];
+
+        if ($formato == 'Ticket') {
+            $pdf = Pdf::loadView('PDF.pdfPresupuestoTicket', $info);
+            $pdf->set_paper([0, 0, 250, (550 + (count($datos['productos']) * 25))], 'portrait');
+        } else {
+            $pdf = Pdf::loadView('PDF.pdfPresupuesto', $info);
+        }
+
+        return $pdf->stream();
+    }
+
+    public function obtenerPdfBase64Presupuesto($presupuesto_id, $formato = 'A4', $usuarioId) {
+        $usuario = User::find($usuarioId);
+
+        $datos = $this->generarDatosPresupuesto($presupuesto_id, $usuario);
+
+        if (!$datos) {
+            return response()->json(['error' => 'Nada para generar'], 404);
+        }
+
+        $info = [
+            'logo' => $datos['path'],
+            'empresaNombre' => $datos['empresa']->razonSocial,
+            'numeroPresupuesto' => $datos['presupuesto']->numero,
+            'cuitEmpresa' => $datos['empresa']->cuit,
+            'inicioActividades' => date('d-m-Y', strtotime($datos['empresa']->inicioActividades)),
+            'fechaPresupuesto' => date('d-m-Y', strtotime($datos['presupuesto']->fecha)),
+            'fechaVencimiento' => date('d-m-Y', strtotime($datos['presupuesto']->fechaVencimiento)),
+            'direccionEmpresa' => $datos['empresa']->domicilio,
+            'telefonoEmpresa' => $datos['empresa']->telefono,
+            'titularEmpresa' => $datos['empresa']->titular,
+            'tipoFactura' => $datos['tipoComprobante'],
+            'nombreCliente' => $datos['presupuesto']->razonSocial,
+            'cuitCliente' => $datos['presupuesto']->cuitCliente,
+            'domicilioCliente' => $datos['presupuesto']->domicilio,
+            'tipoContribuyente' => $datos['tipoContribuyenteCliente'],
+            'leyenda' => $datos['presupuesto']->leyenda,
+            'nombreFormaPago' => $datos['nombreFormaPago']->nombre,
+            'producto' => $datos['productos'],
+            'subTotalPrecioLista' => $datos['subTotalPrecioLista'],
+            'totalDescuento' => number_format($datos['totalDescuento'], 2),
+            'totalVenta' => number_format($datos['totalRevisado'], 2),
+            'qr' => $datos['qrcode'],
+            'titulo' => $datos['tipoComprobante'] . ' N ' . $datos['presupuesto']->numero . ' ' . date('dmY', strtotime($datos['presupuesto']->fecha)) . ' ' . $datos['presupuesto']->razonSocial
+        ];
+
+        if ($formato == 'Ticket') {
+            $pdf = Pdf::loadView('PDF.pdfPresupuestoTicket', $info);
+            $pdf->set_paper([0, 0, 250, (550 + (count($datos['productos']) * 25))], 'portrait');
+        } else {
+            $pdf = Pdf::loadView('PDF.pdfPresupuesto', $info);
+        }
+
+        $pdfContent = $pdf->output();
+        return base64_encode($pdfContent);
     }
 }

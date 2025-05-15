@@ -7,8 +7,40 @@
 
     <article>
       <header>Formato PDF</header>
-      <a href="{{route('nuevoComprobante')}}" role="button" wire:navigate>Nueva Factura</a>
-      <a href="{{route('comprobante')}}" role="button" wire:navigate>Comprobantes</a>
+
+      @if(session('mensaje'))
+        <div class="alert alert-success" style="text-align:right;">
+          {{ session('mensaje') }}
+        </div>
+      @endif
+
+
+      
+      <div class="grid">
+        <div class="col">
+          <a href="{{route('nuevoComprobante')}}" role="button" wire:navigate>Nueva Factura</a>
+          <a href="{{route('comprobante')}}" role="button" wire:navigate>Comprobantes</a>
+
+        </div>
+        <form action="{{route('rutaEnviarPDF')}}" method="POST">
+          @csrf
+          <div class="col">
+
+            <input type="hidden" name="tipo" value="{{$tipo}}" />
+            <input type="hidden" name="comprobante_id" value="{{$comprobante_id}}" />
+            <input type="hidden" name="formato" value="{{$formato}}" />
+            <input type="text" placeholder="Ingrese numero de telefono" class="input" name="telefono" required />
+
+          </div>
+
+          <div class="col">
+            
+            <button type="submit" class="button">Enviar PDF WS</button>
+            
+          </div>
+          
+        </form>
+      </div>
 
       <hr>
 

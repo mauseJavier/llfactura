@@ -650,27 +650,28 @@ class VerComprobante extends Component
             // $sumaTotalConIva = $ivaPeriodo->sum('precioConIva'); // Sumar todos los precios con IVA incluidov
 
 
-            $ivaPeriodo = productoComprobante::where('empresa_id', Auth::user()->empresa_id)
-                ->where('fecha', '>=', $this->fechaFiltroDesde)
-                ->where('fecha', '<=', $this->fechaFiltroHasta)
-                ->whereNotIn('tipoComp', ['remito', 'notaRemito']) // Excluir múltiples valores
+            $ivaPeriodo = productoComprobante::join('comprobantes', 'producto_comprobantes.comprobante_id', '=', 'comprobantes.id')
+                ->where('producto_comprobantes.empresa_id', Auth::user()->empresa_id)
+                ->where('producto_comprobantes.fecha', '>=', $this->fechaFiltroDesde)
+                ->where('producto_comprobantes.fecha', '<=', $this->fechaFiltroHasta)
+                ->whereNotIn('comprobantes.tipoComp', ['remito', 'notaRemito']) // Excluir múltiples valores
                 ->when($this->tipoComp, function ($query, $tipoComp) {
-                    return $query->where('tipoComp', $tipoComp);
+                    return $query->where('comprobantes.tipoComp', $tipoComp);
                 })
                 ->when($this->numeroComprobanteFiltro, function ($query, $numeroComprobanteFiltro) {
-                    return $query->where('numero', '=', $numeroComprobanteFiltro);
+                    return $query->where('comprobantes.numero', '=', $numeroComprobanteFiltro);
                 })
                 ->when($this->clienteComprobanteFiltro, function ($query, $clienteComprobanteFiltro) {
-                    return $query->where('razonSocial', 'LIKE', '%' . $clienteComprobanteFiltro . '%');
+                    return $query->where('comprobantes.razonSocial', 'LIKE', '%' . $clienteComprobanteFiltro . '%');
                 })
                 ->when($this->depositoFiltro, function ($query, $depositoFiltro) {
-                    return $query->where('deposito_id', $depositoFiltro);
+                    return $query->where('comprobantes.deposito_id', $depositoFiltro);
                 })
                 ->when($this->formaPagoFiltroUno, function ($query, $formaPagoFiltroUno) {
-                    return $query->where('idFormaPago', $formaPagoFiltroUno);
+                    return $query->where('comprobantes.idFormaPago', $formaPagoFiltroUno);
                 })
                 ->when($this->formaPagoFiltroDos, function ($query, $formaPagoFiltroDos) {
-                    return $query->where('idFormaPago2', $formaPagoFiltroDos);
+                    return $query->where('comprobantes.idFormaPago2', $formaPagoFiltroDos);
                 })
                 ->get()
                 ->map(function ($item) {
@@ -692,7 +693,6 @@ class VerComprobante extends Component
                 });
 
             $sumaTotalConIva = $ivaPeriodo->sum('precioConIva'); // Sumar todos los precios con IVA incluido
-        
         
             
             // $ivaIncluido = $precio - ($precio / (1 + ($ivaPorcentaje / 100)));

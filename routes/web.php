@@ -34,6 +34,9 @@ use App\Livewire\Cliente\CuentaCorriente;
 
 use App\Livewire\Gasto\VerGasto;
 
+use App\Jobs\EnviarPdfComprobanteJob;
+
+
 
 use App\Livewire\Caja\VerCierreCaja;
 
@@ -646,6 +649,8 @@ use Illuminate\Http\Request;
 
         Route::get('/presupuesto', VerPresupuesto::class)->name('presupuesto');
 
+        Route::get('/presupuesto/base64/{presupuesto_id}/{formato?}', [PresupuestoController::class, 'presupuestoBase64'])->name('presupuesto.base64');
+
         Route::get('/novedades', Novedades::class)->name('novedades');
 
         Route::get('/facturarRemito/{idComprobante}', FacturarRemito::class)->name('facturarRemito');
@@ -666,6 +671,40 @@ use Illuminate\Http\Request;
 
 
 
+
+        // crear una ruta metodo post con una funcion    
+        Route::post('/rutaEnviarPDF', function (Request $request) {
+            // Procesar los datos del formulario
+            $datos = $request->all();
+            // return response()->json($datos);
+            // Realizar alguna acción con los datos
+            // return response()->json(['mensaje' => 'Formulario procesado correctamente', 'datos' => $datos]);
+
+                $nombreCliente = '';
+                $formatoComprobante  = $datos['formato'];
+
+                if ($datos['tipo'] == 'presupuesto'){
+                    $mensaje = 'Hola '. $nombreCliente .'! Te enviamos tu Presupuesto. Gracias por elegirnos!. Enviado con *https://llfactura.com*';
+                }else{
+                    $mensaje = 'Hola '. $nombreCliente .'! Te enviamos tu comprobante. Gracias por elegirnos!. Enviado con *https://llfactura.com*';
+                }
+
+
+                EnviarPdfComprobanteJob::dispatch(
+                    $datos['tipo'],
+                    $datos['comprobante_id'],
+                    $formatoComprobante,
+                    $nombreCliente,
+                    $datos['telefono'],
+                    $mensaje, 
+                    Auth::user()->id
+                );
+
+                // redirigir ruta a la ruta de origen 
+                return redirect()->back()->with('mensaje', 'El comprobante se envio correctamente a: '. $datos['telefono']);
+
+
+        })->name('rutaEnviarPDF');
 
 
 

@@ -23,6 +23,36 @@
                     @endif
                     <a wire:navigate role="button" href="{{route('formatoPDF',['tipo'=>'factura','comprobante_id'=>$comp->id])}}">Imprimir</a>
                 </div>
+
+                <div class="col">
+
+                    @if(session('mensaje'))
+                        <div class="alert alert-success" style="text-align:right;">
+                        {{ session('mensaje') }}
+                        </div>
+                    @endif
+
+                    <form action="{{route('rutaEnviarPDF')}}" method="POST">
+                        @csrf
+                        <div class="col">
+
+                            <input type="hidden" name="tipo" value="{{$comp->tipoComp}}" />
+                            <input type="hidden" name="comprobante_id" value="{{$comp->id}}" />
+                            <input type="hidden" name="formato" value="T" />
+                            <input type="text" placeholder="Ingrese numero de telefono" class="input" name="telefono" required />
+
+                        </div>
+
+                        <div class="col">
+                            
+                            <button type="submit" class="button">Enviar PDF WS</button>
+                            
+                        </div>
+                    
+                    </form>
+
+
+                </div>
             </div>
                 
         </article>
