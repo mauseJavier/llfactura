@@ -124,13 +124,22 @@ class PdfComprobanteGenerar
             }
         }
 
-        if (Storage::disk('local')->exists( 'public/'.$empresa->cuit.'/logo/logo.png')) {
-            $url = Storage::url( 'public/'.$empresa->cuit.'/logo/logo.png');
-            $path = Storage::path('public/'.$empresa->cuit.'/logo/logo.png');
-        }else{
+            $logoPaths = [
+                'public/'.$empresa->cuit.'/' . $empresa->razonSocial . '/logo/logo.png',
+                'public/'.$empresa->cuit.'/logo/logo.png',
+            ];
+
             $url = 'sin Imagen';
-            $path ='sin Imagen';
-        }
+            $path = 'sin Imagen';
+
+            foreach ($logoPaths as $logoPath) {
+                if (Storage::disk('local')->exists($logoPath)) {
+                    $url = Storage::url($logoPath);
+                    $path = Storage::path($logoPath);
+                    break;
+                }
+            }
+
 
         if (Storage::disk('local')->exists( 'public/'.$empresa->cuit.'/logo/logoAgua.png')) {
             $urlAgua = Storage::url( 'public/'.$empresa->cuit.'/logo/logoAgua.png');
@@ -325,13 +334,12 @@ class PdfComprobanteGenerar
     }
 
     private function generarDatosPresupuesto($presupuesto_id, $usuario = null) {
-        if ($usuario) {
-            $empresa = Empresa::find($usuario->empresa_id);
-        } else {
-            $empresa = Empresa::find(Auth::user()->empresa_id);
-        }
 
-        $presupuesto = Presupuesto::where('id', $presupuesto_id)->where('empresa_id', $empresa->id)->get();
+        
+        $presupuesto = Presupuesto::where('id', $presupuesto_id)->get();
+        
+        $empresa = Empresa::find($presupuesto[0]->empresa_id);
+
 
         if ($presupuesto->count() == 0) {
             return null;
@@ -349,10 +357,20 @@ class PdfComprobanteGenerar
             $subTotalPrecioLista += round($value->precioLista * $value->cantidad, 3);
         }
 
-        if (Storage::disk('local')->exists('public/' . $empresa->cuit . '/logo/logo.png')) {
-            $path = Storage::path('public/' . $empresa->cuit . '/logo/logo.png');
-        } else {
-            $path = 'sin Imagen';
+        $logoPaths = [
+            'public/'.$empresa->cuit.'/' . $empresa->razonSocial . '/logo/logo.png',
+            'public/'.$empresa->cuit.'/logo/logo.png',
+        ];
+
+        $url = 'sin Imagen';
+        $path = 'sin Imagen';
+
+        foreach ($logoPaths as $logoPath) {
+            if (Storage::disk('local')->exists($logoPath)) {
+                $url = Storage::url($logoPath);
+                $path = Storage::path($logoPath);
+                break;
+            }
         }
 
         $infoQR = 'llfactura.com';

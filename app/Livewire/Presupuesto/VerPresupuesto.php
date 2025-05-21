@@ -3,6 +3,8 @@
 namespace App\Livewire\Presupuesto;
 
 use Livewire\Component;
+use Livewire\WithPagination;
+
 
 use Livewire\Attributes\Session;
 
@@ -17,6 +19,9 @@ use App\Models\ProductoPresupuesto;
 
 class VerPresupuesto extends Component
 {
+
+        use WithPagination;
+
 
     public $presupuesto;
     public $total;
@@ -160,7 +165,7 @@ class VerPresupuesto extends Component
                                             'numero',
                                             'razonSocial',
                                             'usuario'
-                                        ], 'LIKE', '%'.$this->datoBuscado.'%')->orderby('created_at','DESC')->get(),
+                                        ], 'LIKE', '%'.$this->datoBuscado.'%')->orderby('created_at','DESC')->paginate(10),
             'productos'=> ProductoPresupuesto::where('presupuesto_id',$this->presupuesto->id)->get(),
             'numeroPresupuesto'=>$this->presupuesto->id,
 

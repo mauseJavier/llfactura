@@ -77,9 +77,8 @@ class EnviarPdfComprobanteJob implements ShouldQueue
             $instanciaWS = env('instanciaWhatsappLLFactura');
             $apikey = env('apikeyLLFactura');
 
-            // Log::info('Credenciales de WhatsApp obtenidas.', [
-            //     'instanciaWS' => $instanciaWS,
-            //     'apikey' => $apikey,
+            // Log::info('Archivo base 64', [
+            //     'base64' => $pdfBase64
             // ]);
     
             NotificarClientePorWhatsappEvent::dispatch([

@@ -3,9 +3,11 @@
 namespace App\Livewire\Configuracion;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 use Illuminate\Support\Facades\Auth; 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Empresa;
 use App\Models\FormaPago;
@@ -16,11 +18,15 @@ use App\Models\User;
 
 class Basico extends Component
 {
+    use WithFileUploads;
 
     public $usuario;
     public $empresa;
     public $formaPago;
     public $buscarUsuario;
+
+    #[Validate('image|max:1024')] // 1MB Max
+    public $logo;
 
     //////////////valiables edicion//////////////
     public $idFormaPago;
@@ -131,6 +137,8 @@ class Basico extends Component
 
     }
 
+
+
     public function guardarEmpresa(){
 
         $this->empresa->idFormaPago = $this->idFormaPago;
@@ -157,9 +165,31 @@ class Basico extends Component
         $this->empresa->tokenWhatsapp = $this->tokenWhatsapp;
         $this->empresa->ivaIncluido = $this->ivaIncluido;
 
+
+
         $this->empresa->save();
 
-        session()->flash('mensaje', 'Guardado Correcto.');
+        if ($this->logo) {
+            $empresa = $this->empresa;
+            $folder = $empresa->cuit . '/' . $empresa->razonSocial . '/logo/';
+            $filename = 'logo.png';
+
+            if (Storage::disk('public')->exists($folder . $filename)) {
+                Storage::disk('public')->delete($folder . $filename);
+            }
+
+            // Guardar el archivo correctamente (sin named parameters)
+            $this->logo->storeAs($folder, $filename, 'public');
+
+            if (Storage::disk('public')->exists($folder . $filename)) {
+                session()->flash('mensaje', 'Guardado Correcto. El logo se subió exitosamente.');
+            } else {
+                session()->flash('mensaje', 'Error: El logo NO se guardó.');
+            }
+        } else {
+            session()->flash('mensaje', 'Guardado Correcto.');
+        }
+
 
         $this->render();
     }

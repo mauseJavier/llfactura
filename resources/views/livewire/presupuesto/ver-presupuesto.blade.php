@@ -63,6 +63,9 @@
                     </tbody>
 
                   </table>
+
+                  {{ $presupuestos->links('vendor.livewire.bootstrap') }}
+
               </div>
               
 
@@ -88,7 +91,7 @@
                                 <input type="hidden" name="tipo" value="presupuesto" />
                                 <input type="hidden" name="comprobante_id" value="{{$presupuesto->id}}" />
                                 <input type="hidden" name="formato" value="T" />
-                                <input type="text" placeholder="Ingrese numero de telefono" class="input" name="telefono" required />
+                                <input type="text" value="{{$presupuesto->telefonoCliente}}" placeholder="Ingrese numero de telefono" class="input" name="telefono" required />
     
     
                                 

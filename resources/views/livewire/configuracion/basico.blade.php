@@ -268,7 +268,14 @@
                     </label>
                 </div>
 
+                <div class="grid">
+                    <label>
+                        Logo (PNG)
+                        <input type="file" wire:model.live="logo" accept="image/png">
+                        @error('logo') <span class="error">{{ $message }}</span> @enderror
+                    </label>
 
+                </div>
 
 
                 </fieldset>

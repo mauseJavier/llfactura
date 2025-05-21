@@ -9,6 +9,8 @@ use App\Models\Presupuesto;
 use App\Models\ProductoPresupuesto;
 
 use App\Events\NovedadCreada;
+use App\Jobs\EnviarPdfComprobanteJob;
+
 
 
 
@@ -19,48 +21,48 @@ use App\Models\Cliente;
 
 
 // {
-//     "tipoComprobante": "Presupuesto",
-//     "total": 1500.50,
-//     "tipoDocumento": "DNI",
-//     "cuit": "20304050607",
-//     "razonSocial": "Juan Mause",
-//     "domicilio": "Calle Falsa 123",
-//     "correoCliente": "juan.perez@example.com",
-//     "tipoContribuyente": "Responsable Inscripto",
-//     "idEmpresa": 1,
-
-//     "carrito": [
-//         {
-//             "codigo": "001",
-//             "detalle": "Producto Mause",
-//             "porcentaje": 10,
-//             "precioLista": 100,
-//             "descuento": 5,
-//             "precio": 95,
-//             "costo": 80,
-//             "iva": 21,
-//             "cantidad": 2,
-//             "rubro": "Electrónica",
-//             "proveedor": "Proveedor A",
-//             "marca": "Marca A",
-//             "controlStock": true
-//         },
-//         {
-//             "codigo": "002",
-//             "detalle": "Producto B",
-//             "porcentaje": 15,
-//             "precioLista": 200,
-//             "descuento": 10,
-//             "precio": 180,
-//             "costo": 150,
-//             "iva": 21,
-//             "cantidad": 1,
-//             "rubro": "Hogar",
-//             "proveedor": "Proveedor B",
-//             "marca": "Marca B",
-//             "controlStock": false
-//         }
-//     ]
+//   "tipoComprobante": "Presupuesto",
+//   "total": 62507.99,
+//   "tipoDocumento": "99",
+//   "cuit": "1234",
+//   "razonSocial": "COSO",
+//   "domicilio": "123 las lajas",
+//   "correoCliente": "emy@correo.com",
+//   "tipoContribuyente": "5",
+//   "idEmpresa": 12,
+//   "telefonoCliente": "2942506803",
+//   "carrito": [
+//     {
+//       "codigo": "CGI10-100",
+//       "detalle": "Cemento Loma Negra (50kg)",
+//       "porcentaje": 0,
+//       "precioLista": 11755.71,
+//       "descuento": 0,
+//       "precio": 11755.71,
+//       "costo": 0,
+//       "iva": 21,
+//       "cantidad": 3,
+//       "rubro": "Construcción",
+//       "proveedor": "General",
+//       "marca": "General",
+//       "controlStock": false
+//     },
+//     {
+//       "codigo": "CGI10-200",
+//       "detalle": "Plasticord x 40kg",
+//       "porcentaje": 0,
+//       "precioLista": 13620.43,
+//       "descuento": 0,
+//       "precio": 13620.43,
+//       "costo": 0,
+//       "iva": 21,
+//       "cantidad": 2,
+//       "rubro": "Construcción",
+//       "proveedor": "General",
+//       "marca": "General",
+//       "controlStock": false
+//     }
+//   ]
 // }
 
 class ApiPresupuestoController extends Controller
@@ -80,6 +82,9 @@ class ApiPresupuestoController extends Controller
             'domicilio' => 'required|string',
             'correoCliente' => 'nullable|email',
             'tipoContribuyente' => 'required|string',
+
+            'telefonoCliente' => 'nullable|string',
+
             'carrito' => 'required|array',
             'idEmpresa' => 'required|integer',
         ]);
@@ -98,6 +103,9 @@ class ApiPresupuestoController extends Controller
             'cuitCliente' => $validated['cuit'],
             'razonSocial' => $validated['razonSocial'],
             'tipoContribuyente' => $validated['tipoContribuyente'],
+
+            'telefonoCliente' => $validated['telefonoCliente'] ?? null,
+
             'domicilio' => $validated['domicilio'],
             'empresa_id' => $validated['idEmpresa'],
             'fecha' => now()->format('Y-m-d H:i:s'),
@@ -116,6 +124,7 @@ class ApiPresupuestoController extends Controller
                 'domicilio' => trim($validated['domicilio']),
                 'correo' => trim($validated['correoCliente']),
                 'tipoContribuyente' => trim($validated['tipoContribuyente']),
+                'telefono' => trim($validated['telefonoCliente'] ?? ''),
             ]
         );
 
@@ -158,9 +167,29 @@ class ApiPresupuestoController extends Controller
                 $presupuestoGuardado->empresa_id ?? 1    // ID de la empresa
             );
 
+            $mensaje = 'Sin Mensaje';
+
+
+            if($presupuestoGuardado->telefonoCliente != null && $presupuestoGuardado->telefonoCliente != ''){
+
+                $mensaje = 'Hola '. $presupuestoGuardado->razonSocial .'! Te enviamos tu Presupuesto. Gracias por elegirnos!. Enviado con *https://llfactura.com*';
+    
+    
+                EnviarPdfComprobanteJob::dispatch(
+                    'presupuesto',
+                    $presupuestoGuardado->id,
+                    'A4',
+                    $presupuestoGuardado->razonSocial,
+                    $presupuestoGuardado->telefonoCliente,
+                    $mensaje, 
+                    Auth::user()->id
+                );
+            }
+
         return response()->json([
             'success' => true,
             'data' => $presupuestoGuardado,
+            'mensaje' => $mensaje,
         ]);
     }
 
