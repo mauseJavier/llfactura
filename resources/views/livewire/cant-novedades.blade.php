@@ -1,5 +1,7 @@
 <div>
-    <a wire:poll.5s="updateCantNovedades" wire:navigate href="/novedades">
+    <a 
+    wire:poll.60s="updateCantNovedades" 
+    wire:navigate href="/novedades">
         @if ($CantNovedades > 0)
             <span style="position: relative; display: inline-block;">
                 <svg xmlns="http://www.w3.org/2000/svg" height="2em" fill="currentColor" viewBox="0 0 512 512">

@@ -278,11 +278,11 @@ class Venta extends Component
     
     public function cargar($id){
         
-        $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+        $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
         ->where('id', $id)
         ->first();
         
-        $this->crearCarrito($articulo[0]);
+        $this->crearCarrito($articulo);
         $this->cantidad = 1;
         
         if(!$this->bloquearDetalle){
@@ -374,6 +374,9 @@ class Venta extends Component
                 $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
 
                 $this->dispatch('grilla-actualizada');
+
+                $this->datoBuscado= '';
+                $this->cantidad = 1;
 
                 
                 // dd($this->carrito['carrito']);

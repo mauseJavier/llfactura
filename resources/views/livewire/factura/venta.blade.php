@@ -201,11 +201,6 @@
 
 
           <div class="div" style="transform: scale(0.9, 0.9);margin-bottom: -10px;">
-
-            {{-- BORRAR  --}}
-            <label for="">
-              {{$datoBuscado}}
-            </label>
             
               <fieldset role="group">
 
