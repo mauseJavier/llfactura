@@ -11,6 +11,7 @@ use Livewire\Attributes\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 use App\Models\Inventario;
 
@@ -50,6 +51,7 @@ class Venta extends Component
 
     public function mount() 
     { 
+
 
         if(isset($this->carrito['total'])){
 
@@ -102,29 +104,33 @@ class Venta extends Component
     }
 
 
-    public function buscarCargar()
+    public function ViejobuscarCargar($data = null)
     {
 
-        if (strlen($this->datoBuscado) == 13 AND $this->datoBuscado[0] == '2') {
+        if ($data === null) {
+            $data = $this->datoBuscado;
+        }
+
+        if (strlen($data) == 13 AND $data[0] == '2') {
 
                 
     
 
                     // Asignamos el valor de las variables con peso codbar
                     // TOMA EL PLU
-                    $plu =ltrim(substr($this->datoBuscado, 2, 5), '0') ; // 5 CIFRAS CODIGO
+                    $plu =ltrim(substr($data, 2, 5), '0') ; // 5 CIFRAS CODIGO
 
                     // dd($plu);
                     // TOMA EL PESO
                     // Extraer los últimos 4 dígitos $numero = "2000110012250";
-                    $parteDecimal = substr($this->datoBuscado, 9,3);
-                    $parteEntera = substr($this->datoBuscado, 7,2);
+                    $parteDecimal = substr($data, 9,3);
+                    $parteEntera = substr($data, 7,2);
 
                     // Convertir a formato decimal 1.225
                     $this->cantidad = floatval($parteEntera .'.'.$parteDecimal);
 
 
-                    $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+                    $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
                     ->where('codigo', $plu)
                     ->where('pesable', 'si')
                     ->where('empresa_id', Auth::user()->empresa_id)
@@ -132,12 +138,12 @@ class Venta extends Component
 
                     // dd($parteEntera .'.'.$parteDecimal);
 
-                    // dd($articulo);
+                    // dd($articulo[0]);
                     
-                    if(count($articulo) == 0){
+                    if(count($articulo[0]) == 0){
 
-                        $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
-                        ->where('codigo', $this->datoBuscado)
+                        $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+                        ->where('codigo', $data)
                         ->where('empresa_id', Auth::user()->empresa_id)
                         ->get();
                         // dd('no pesable');
@@ -148,8 +154,8 @@ class Venta extends Component
             
         }else{
 
-            $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
-                            ->where('codigo', $this->datoBuscado)
+            $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+                            ->where('codigo', $data)
                             ->where('empresa_id', Auth::user()->empresa_id)
                             ->get();
             // dd('no pesable');
@@ -158,23 +164,125 @@ class Venta extends Component
 
 
 
-        // dd($articulo);
-        if(count($articulo) > 0){
+        // dd($articulo[0]);
+        if(count($articulo[0]) > 0){
 
-            $this->crearCarrito($articulo);
+            // Mostrar la info del artículo en el log de Laravel
+            Log::info('Artículo Encontrado:', (array) $articulo[0][0]);
+
+
+
+            $this->crearCarrito($articulo[0]);
             $this->datoBuscado= '';
             $this->cantidad = 1;
+
         }
         
+    }
+
+    public function buscarCargar($data)
+    {
+        Log::info('buscarCargar iniciado con valor: ' . $data);
+        if (empty(trim($data))) {
+            Log::warning('buscarCargar: valor vacío, no se hace nada.');
+            return; // O alguna otra lógica si el valor es vacío
+        }
+
+        try {
+            // Tu lógica para buscar el artículo
+        if (strlen($data) == 13 AND $data[0] == '2') {
+
+                    
+        
+
+                        // Asignamos el valor de las variables con peso codbar
+                        // TOMA EL PLU
+                        $plu =ltrim(substr($data, 2, 5), '0') ; // 5 CIFRAS CODIGO
+
+                        // dd($plu);
+                        // TOMA EL PESO
+                        // Extraer los últimos 4 dígitos $numero = "2000110012250";
+                        $parteDecimal = substr($data, 9,3);
+                        $parteEntera = substr($data, 7,2);
+
+                        // Convertir a formato decimal 1.225
+                        $this->cantidad = floatval($parteEntera .'.'.$parteDecimal);
+
+
+                        $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+                        ->where('codigo', $plu)
+                        ->where('pesable', 'si')
+                        ->where('empresa_id', Auth::user()->empresa_id)
+                        ->first();
+
+                        // dd($parteEntera .'.'.$parteDecimal);
+
+                        // dd($articulo[0]);
+                        
+                        // if(count($articulo[0]) == 0){
+
+                        if($articulo){
+
+                            $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+                            ->where('codigo', $data)
+                            ->where('empresa_id', Auth::user()->empresa_id)
+                            ->first();
+                            // dd('no pesable');
+                            $this->cantidad = 1;
+
+                        }
+                
+                
+            }else{
+
+                $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+                                ->where('codigo', $data)
+                                ->where('empresa_id', Auth::user()->empresa_id)
+                                ->first();
+                // dd('no pesable');
+
+            }
+
+
+
+            // dd($articulo[0]);
+            if($articulo){
+
+                // Mostrar la info del artículo en el log de Laravel
+                Log::info('Artículo Encontrado:', (array) $articulo);
+                $this->crearCarrito($articulo);
+                
+            }
+
+
+
+            $this->datoBuscado= '';
+            $this->cantidad = 1;
+
+            if ($articulo) {
+                // Tu lógica para cargar al carrito
+                Log::info('Artículo encontrado y cargado: ' . $articulo->codigo);
+            } else {
+                Log::warning('Artículo no encontrado para valor: ' . $data);
+                // Quizás emitir un mensaje al frontend
+                // $this->dispatch('mostrarError', 'Artículo no encontrado');
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Error en buscarCargar: ' . $e->getMessage());
+            // Quizás emitir un mensaje de error al frontend
+            // $this->dispatch('mostrarError', 'Error procesando la búsqueda.');
+        }
+        Log::info('buscarCargar finalizado.');
     }
     
     public function cargar($id){
         
-        $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+        $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
         ->where('id', $id)
-        ->get();
+        ->first();
         
-        $this->crearCarrito($articulo);
+        $this->crearCarrito($articulo[0]);
         $this->cantidad = 1;
         
         if(!$this->bloquearDetalle){
@@ -200,32 +308,38 @@ class Venta extends Component
             'porcentaje.numeric' => 'El campo porcentaje a enviar debe ser un número.',
         ]);
 
+        // dd($articulo->codigo);
 
 
             $nuevoArticulo = array(
-                'codigo'=>$articulo[0]->codigo,
-                'detalle'=>$articulo[0]->detalle,
+                'codigo'=>$articulo->codigo,
+                'detalle'=>$articulo->detalle,
 
                 'porcentaje'=> $this->porcentaje,
-                'precioLista'=> $this->porcentaje < 0 ? $articulo[0]->precio :  round(($articulo[0]->precio * $this->porcentaje / 100 + $articulo[0]->precio),2),
-                'descuento'=> $this->porcentaje < 0 ? round($articulo[0]->precio * $this->porcentaje / 100 ,2) : 0 ,
+                'precioLista'=> $this->porcentaje < 0 ? $articulo->precio :  round(($articulo->precio * $this->porcentaje / 100 + $articulo->precio),2),
+                'descuento'=> $this->porcentaje < 0 ? round($articulo->precio * $this->porcentaje / 100 ,2) : 0 ,
 
-                'precio'=> round(($articulo[0]->precio * $this->porcentaje / 100 + $articulo[0]->precio),2),
-                'costo'=>round($articulo[0]->costo,2),
-                'iva'=>$articulo[0]->iva,
+                'precio'=> round(($articulo->precio * $this->porcentaje / 100 + $articulo->precio),2),
+                'costo'=>round($articulo->costo,2),
+                'iva'=>$articulo->iva,
                 'cantidad'=>$this->cantidad,
-                'rubro'=>$articulo[0]->rubro,
-                'proveedor'=>$articulo[0]->proveedor,
-                'marca'=>$articulo[0]->marca,
+                'rubro'=>$articulo->rubro,
+                'proveedor'=>$articulo->proveedor,
+                'marca'=>$articulo->marca,
 
-                'controlStock'=>$articulo[0]->controlStock,
-                'subtotal'=> round(($articulo[0]->precio * $this->porcentaje / 100 + $articulo[0]->precio) * $this->cantidad,2) ,
+                'controlStock'=>$articulo->controlStock,
+                'subtotal'=> round(($articulo->precio * $this->porcentaje / 100 + $articulo->precio) * $this->cantidad,2) ,
 
                 ) ;
 
+
+                Log::info('Artículo Agregado:', (array) $nuevoArticulo);
+
                 if(!isset($this->carrito['carrito'])){
+
                     $this->carrito['carrito']=[];
                 }
+
 
                 array_unshift($this->carrito['carrito'], $nuevoArticulo);
 
@@ -258,6 +372,9 @@ class Venta extends Component
                 $this->tamañoGrillaVenta(count($this->carrito['carrito']));
                 
                 $this->dispatch('actualizarCarrito', total: $this->carrito['total'] , articulos: $this->carrito['articulos']);
+
+                $this->dispatch('grilla-actualizada');
+
                 
                 // dd($this->carrito['carrito']);
                 
@@ -528,8 +645,19 @@ class Venta extends Component
 
     }
 
+
+    // En tu componente Livewire
+    public function rendering($view, $data) // O al final del método render(), o después de actualizar $inventario
+    {
+        $this->dispatch('grilla-actualizada');
+    }
+
+
+
     public function render()
     {
+
+
         return view('livewire.factura.venta',
             [     
             'inventario'=> DB::table('inventarios')
@@ -545,6 +673,7 @@ class Venta extends Component
         ->extends('layouts.app')
         ->section('main'); 
     }
+
 
     public function sumarCantidad()
     {

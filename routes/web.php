@@ -402,6 +402,19 @@ use Illuminate\Http\Request;
             })->name('verLogs');
 
 
+            Route::post('/logs/clear', function () {
+                $logPath = storage_path('logs/laravel.log');
+                if (file_exists($logPath)) {
+                    file_put_contents($logPath, '');
+                }
+                // Borra todos los logs adicionales si existen
+                foreach (glob(storage_path('logs/*.log')) as $file) {
+                    file_put_contents($file, '');
+                }
+                return redirect()->back()->with('mensaje', 'Todos los logs han sido borrados.');
+            })->name('logs.clear');
+
+
             Route::get('/configurarTelefono', function () {
 
                 $empresas= Empresa::all();

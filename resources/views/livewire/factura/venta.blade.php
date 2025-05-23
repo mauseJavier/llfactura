@@ -1,6 +1,4 @@
-<div 
-    x-data="{ focusInput() { this.$nextTick(() => { this.$refs.inputBusqueda?.focus(); }); } }"
->
+<div x-data="{ focusInput() { this.$nextTick(() => { this.$refs.inputField.focus(); }); } }">
 
     {{-- The whole world belongs to you. --}}
     <style>
@@ -156,7 +154,11 @@
 
     </div>
 
-    <div class="grid"  x-data="navegacionGrilla()" x-init="inicializar">
+    <div class="grid"  
+     
+      x-data="navegacionGrilla()" x-init="inicializar"   @grilla-actualizada.window="inicializar()"
+    
+    >
 
 
       <div >
@@ -198,64 +200,81 @@
           @endif
 
 
-          <div class="div" style="transform: scale(0.9, 0.9);margin-bottom: -10px;"
-          
-              x-data="{ focusInputInicio() { this.$refs.inputBusqueda.focus(); } }" x-init="focusInputInicio()"
-          >
-            <form role="search"  wire:submit="buscarCargar" >       
-               
-              <input style="text-align: center; width: 20%;" class="seleccionarTodo" 
+          <div class="div" style="transform: scale(0.9, 0.9);margin-bottom: -10px;">
 
-                id="inputCantidad"
+            {{-- BORRAR  --}}
+            <label for="">
+              {{$datoBuscado}}
+            </label>
+            
+              <fieldset role="group">
 
-                wire:model.live="cantidad"
-                wire:keydown.down="restarCantidad"
-                wire:keydown.up="sumarCantidad"
-                @keydown.right.prevent="moverFocoDerecha()"
-                @keydown.left.prevent="moverFocoIzquierda()"
-                type="text"
-                style="font-size: 15px;"
+                
+                               
+                              <input style="text-align: center; width: 20%;" class="seleccionarTodo" 
+                
+                                id="inputCantidad"
+                
+                                wire:model.live="cantidad"
+                                wire:keydown.down="restarCantidad"
+                                wire:keydown.up="sumarCantidad"
+                                @keydown.right.prevent="moverFocoDerecha()"
+                                @keydown.left.prevent="moverFocoIzquierda()"
+                                type="text"
+                                style="font-size: 15px;"
+                              
+                              >
+                              {{-- <input wire:model.live="datoBuscado" name="search" type="search" placeholder="Buscar en Inventario" class="seleccionarTodo"
+                                  wire:keydown.down="restarCantidad"
+                                  wire:keydown.up="sumarCantidad"
+                                  autocomplete="off"
+                                  style="font-size: 15px;"
+                                  autofocus
+                                  x-ref="inputField"
+                               /> --}}
               
-              >
-              {{-- <input wire:model.live="datoBuscado" name="search" type="search" placeholder="Buscar en Inventario" class="seleccionarTodo"
-                  wire:keydown.down="restarCantidad"
-                  wire:keydown.up="sumarCantidad"
-                  autocomplete="off"
-                  style="font-size: 15px;"
-                  autofocus
-                  x-ref="inputField"
-               /> --}}
-              
-                <input
-                  id="inputBusqueda"
-                  wire:model.live="datoBuscado"
-                  name="search"
-                  type="search"
-                  placeholder="Buscar en Inventario"
-                  class="seleccionarTodo"
-                  x-ref="inputBusqueda"
-                  @keydown.arrow-down.prevent="moverFocoAbajo()"
-                  @keydown.arrow-up.prevent="moverFocoArriba()"
-                  @keydown.right.prevent="moverFocoDerecha()"
-                  @keydown.left.prevent="moverFocoIzquierda()"
-                  @focus="reiniciarIndice()"
-                  @keydown="inicializar()"
-                  autocomplete="off"
-                  style="font-size: 15px;"
-                />
-             
-             
+                
+                                <input
+                
+                                  id="inputBusqueda"
+                
+                                  wire:model.live="datoBuscado"
+                                  name="search"
+                                  type="search"
+                                  placeholder="Buscar en Inventario"
+                                  class="seleccionarTodo"
+                                  
+                                  wire:keydown.enter ="buscarCargar($event.target.value)"
+                                  
+                                  @keydown.arrow-down.prevent="moverFocoAbajo()"
+                                  @keydown.arrow-up.prevent="moverFocoArriba()"
+                                  @keydown.right.prevent="moverFocoDerecha()"
+                                  @keydown.left.prevent="moverFocoIzquierda()"
+                
+                                  @focus="reiniciarIndice()"
+                                  
+                
+                                  autocomplete="off"
+                                  style="font-size: 15px;"
+                                  autofocus
+                                  x-ref="inputField"
+                                />
+                             
+                
+                              
+                              <button type="submit" >
+                                <!-- magnifying-glass icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                                <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
+                                  <path
+                                    d="M 398.44357976653697 207.19066147859922 Q 398.44357976653697 155.3929961089494 372.54474708171205 111.56420233463035 L 372.54474708171205 111.56420233463035 L 372.54474708171205 111.56420233463035 Q 347.6420233463035 67.73540856031128 302.8171206225681 41.83657587548638 Q 257.9922178988327 15.937743190661479 207.19066147859922 15.937743190661479 Q 156.38910505836577 15.937743190661479 111.56420233463035 41.83657587548638 Q 66.73929961089495 67.73540856031128 41.83657587548638 111.56420233463035 Q 15.937743190661479 155.3929961089494 15.937743190661479 207.19066147859922 Q 15.937743190661479 258.988326848249 41.83657587548638 302.8171206225681 Q 66.73929961089495 346.6459143968872 111.56420233463035 372.54474708171205 Q 156.38910505836577 398.44357976653697 207.19066147859922 398.44357976653697 Q 257.9922178988327 398.44357976653697 302.8171206225681 372.54474708171205 Q 347.6420233463035 346.6459143968872 372.54474708171205 302.8171206225681 Q 398.44357976653697 258.988326848249 398.44357976653697 207.19066147859922 L 398.44357976653697 207.19066147859922 Z M 347.6420233463035 359.5953307392996 Q 290.863813229572 412.3891050583658 207.19066147859922 414.38132295719845 Q 119.53307392996109 412.3891050583658 60.762645914396884 353.61867704280155 Q 1.9922178988326849 294.84824902723733 0 207.19066147859922 Q 1.9922178988326849 119.53307392996109 60.762645914396884 60.762645914396884 Q 119.53307392996109 1.9922178988326849 207.19066147859922 0 Q 294.84824902723733 1.9922178988326849 353.61867704280155 60.762645914396884 Q 412.3891050583658 119.53307392996109 414.38132295719845 207.19066147859922 Q 412.3891050583658 290.863813229572 359.5953307392996 347.6420233463035 L 508.01556420233464 496.0622568093385 L 508.01556420233464 496.0622568093385 Q 512 502.03891050583655 508.01556420233464 508.01556420233464 Q 502.03891050583655 512 496.0622568093385 508.01556420233464 L 347.6420233463035 359.5953307392996 L 347.6420233463035 359.5953307392996 Z"
+                                  />
+                                </svg>
+                              </button>
+                
+                            
 
-              
-              <button type="submit" >
-                <!-- magnifying-glass icon by Free Icons (https://free-icons.github.io/free-icons/) -->
-                <svg xmlns="http://www.w3.org/2000/svg" height="1em" fill="currentColor" viewBox="0 0 512 512">
-                  <path
-                    d="M 398.44357976653697 207.19066147859922 Q 398.44357976653697 155.3929961089494 372.54474708171205 111.56420233463035 L 372.54474708171205 111.56420233463035 L 372.54474708171205 111.56420233463035 Q 347.6420233463035 67.73540856031128 302.8171206225681 41.83657587548638 Q 257.9922178988327 15.937743190661479 207.19066147859922 15.937743190661479 Q 156.38910505836577 15.937743190661479 111.56420233463035 41.83657587548638 Q 66.73929961089495 67.73540856031128 41.83657587548638 111.56420233463035 Q 15.937743190661479 155.3929961089494 15.937743190661479 207.19066147859922 Q 15.937743190661479 258.988326848249 41.83657587548638 302.8171206225681 Q 66.73929961089495 346.6459143968872 111.56420233463035 372.54474708171205 Q 156.38910505836577 398.44357976653697 207.19066147859922 398.44357976653697 Q 257.9922178988327 398.44357976653697 302.8171206225681 372.54474708171205 Q 347.6420233463035 346.6459143968872 372.54474708171205 302.8171206225681 Q 398.44357976653697 258.988326848249 398.44357976653697 207.19066147859922 L 398.44357976653697 207.19066147859922 Z M 347.6420233463035 359.5953307392996 Q 290.863813229572 412.3891050583658 207.19066147859922 414.38132295719845 Q 119.53307392996109 412.3891050583658 60.762645914396884 353.61867704280155 Q 1.9922178988326849 294.84824902723733 0 207.19066147859922 Q 1.9922178988326849 119.53307392996109 60.762645914396884 60.762645914396884 Q 119.53307392996109 1.9922178988326849 207.19066147859922 0 Q 294.84824902723733 1.9922178988326849 353.61867704280155 60.762645914396884 Q 412.3891050583658 119.53307392996109 414.38132295719845 207.19066147859922 Q 412.3891050583658 290.863813229572 359.5953307392996 347.6420233463035 L 508.01556420233464 496.0622568093385 L 508.01556420233464 496.0622568093385 Q 512 502.03891050583655 508.01556420233464 508.01556420233464 Q 502.03891050583655 512 496.0622568093385 508.01556420233464 L 347.6420233463035 359.5953307392996 L 347.6420233463035 359.5953307392996 Z"
-                  />
-                </svg>
-              </button>
-            </form>
+              </fieldset>
+
 
           </div>
 
@@ -318,28 +337,18 @@
                     @foreach ($inventario as $i)
                       <tr x-data="{ isFocused: false }">
                         <th scope="row">
-                            {{-- <button 
-                            @click="focusInput()"
-                              :class="{ 'bg-default': !isFocused, 'bg-focus': isFocused }" 
-                              @focus="isFocused = true" 
-                              @blur="isFocused = false"
-                              class="bg-default"
-                              wire:keydown.prevent.down="restarCantidad"
-                              wire:keydown.prevent.up="sumarCantidad"
-                              wire:click="cargar({{$i->id}})" style="font-size: 15px;"
-                              >
-                                {{$i->codigo}}                              
-                            </button>  --}}
+
                             <button 
                               class="bg-default boton-grilla"
                               :class="{ 'bg-focus': isFocused }"
                               @focus="isFocused = true" 
                               @blur="isFocused = false"
-                              {{-- @click="focusInput()" --}}
-                              @click="document.getElementById('inputBusqueda').focus()"
+                              @click="focusInput()"
                               wire:click="cargar({{$i->id}})"
+
                               @keydown.arrow-down.prevent="moverFocoAbajo()"
                               @keydown.arrow-up.prevent="moverFocoArriba()"
+
                               style="font-size: 15px;"
                             >
                               {{$i->codigo}}
@@ -488,13 +497,8 @@
                 reiniciarIndice() {
                     this.indice = -1;
                 }
-
-                
-                
-              }));
-
-            });
-
+            }));
+        });
       </script>
       
       
