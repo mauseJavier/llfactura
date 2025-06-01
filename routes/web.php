@@ -21,6 +21,7 @@ use App\Livewire\Inventario\VerInventario;
 use App\Livewire\Inventario\ImportarInventario;
 use App\Livewire\Inventario\EdicionMultiple;
 use App\Livewire\Inventario\CodigoBarra;
+use App\Livewire\Inventario\NuevoArticulo;
 
 use App\Livewire\Empresa\VerEmpresa;
 use App\Livewire\Stock\VerStock;
@@ -71,7 +72,7 @@ use App\Livewire\VerOrdenCompra\VerOrdenCompra;
 use App\Livewire\VerOrdenCompra\HistorialOrdenCompra;
 
 
-
+use App\Livewire\Cloudinary\CloudinaryListarImagenes;
 
 
 use App\Models\Empresa;
@@ -599,6 +600,7 @@ use Illuminate\Http\Request;
             });
 
             Route::get('/inventario', VerInventario::class)->name('inventario');
+            Route::get('/inventario/nuevo/{id?}', NuevoArticulo::class)->name('inventario.nuevo');
             Route::get('/importarInventario', ImportarInventario::class)->name('importarInventario');
             Route::get('/edicionMultiple', EdicionMultiple::class)->name('edicionMultiple');
             Route::get('/reporteEdicionMultiple', [InventarioController::class, 'remporteEdicionMultiple'])->name('reporteEdicionMultiple');
@@ -752,6 +754,9 @@ use Illuminate\Http\Request;
 
         //RUTA CIERRE DE CAJA
         Route::get('/cierrecaja', VerCierreCaja::class)->name('cierrecaja');
+
+        Route::get('/galeriaImagenes', CloudinaryListarImagenes::class)->name('galeriaImagenes');
+
 
 
 

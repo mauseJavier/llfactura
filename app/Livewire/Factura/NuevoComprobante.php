@@ -215,7 +215,7 @@ class NuevoComprobante extends Component
     
                             if ($value == 0) {
                                 return true;
-                            }elseif(strlen($value) == 11 OR strlen($value) == 8) {
+                            }elseif(strlen($value) == 11 OR strlen($value) == 8 OR strlen($value) == 7) {
                                 return true;
                             }else{
                                 $fail('El número debe tener 11 o 8 caracteres.');

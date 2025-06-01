@@ -29,7 +29,7 @@ services:
     restart: always
     #QUITAR LOS PUERTOS Y LA DEPENDENCIA DE MARIADB
     ports:
-      - "8080:80"
+      - "8765:80"
     depends_on:
       - mariadb
 

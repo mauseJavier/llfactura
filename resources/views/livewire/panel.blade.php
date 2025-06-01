@@ -10,6 +10,7 @@
 
     <div class="container">
 
+
         <div class="grid">
             <div class="col" style="text-align: center;">
                 <a href="/venta" >                    

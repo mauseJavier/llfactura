@@ -8,6 +8,7 @@
     {{-- @dump($listaMarcas) --}}
     <div class="container"   >
         <h1>Inventario</h1>
+
         <article>
 
             <div class="grid">
@@ -52,6 +53,7 @@
                             </details>
                         </div>
                         <div class="col">
+                            <a role="button" href="{{route('inventario.nuevo')}}">Nuevo</a>
                             <button wire:click="cambiarModal" data-tooltip="Nuevo Articulo">+</button>
                             <a wire:navigate role="button" href="{{route('stock')}}">Stock</a>
         

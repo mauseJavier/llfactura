@@ -247,6 +247,7 @@
                                   @keydown.left.prevent="moverFocoIzquierda()"
                 
                                   @focus="reiniciarIndice()"
+                                  @keyup="inicializar()"
                                   
                 
                                   autocomplete="off"

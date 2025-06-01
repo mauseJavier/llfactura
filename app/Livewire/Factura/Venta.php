@@ -168,7 +168,7 @@ class Venta extends Component
         if(count($articulo[0]) > 0){
 
             // Mostrar la info del artículo en el log de Laravel
-            Log::info('Artículo Encontrado:', (array) $articulo[0][0]);
+            // Log::info('Artículo Encontrado:', (array) $articulo[0][0]);
 
 
 
@@ -182,9 +182,10 @@ class Venta extends Component
 
     public function buscarCargar($data)
     {
-        Log::info('buscarCargar iniciado con valor: ' . $data);
+        // Log::info('buscarCargar iniciado con valor: ' . $data);
+
         if (empty(trim($data))) {
-            Log::warning('buscarCargar: valor vacío, no se hace nada.');
+            // Log::warning('buscarCargar: valor vacío, no se hace nada.');
             return; // O alguna otra lógica si el valor es vacío
         }
 
@@ -221,7 +222,7 @@ class Venta extends Component
                         
                         // if(count($articulo[0]) == 0){
 
-                        if($articulo){
+                        if(!$articulo){
 
                             $articulo = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
                             ->where('codigo', $data)
@@ -249,7 +250,8 @@ class Venta extends Component
             if($articulo){
 
                 // Mostrar la info del artículo en el log de Laravel
-                Log::info('Artículo Encontrado:', (array) $articulo);
+                // Log::info('Artículo Encontrado:', (array) $articulo);
+
                 $this->crearCarrito($articulo);
                 
             }
@@ -259,21 +261,21 @@ class Venta extends Component
             $this->datoBuscado= '';
             $this->cantidad = 1;
 
-            if ($articulo) {
-                // Tu lógica para cargar al carrito
-                Log::info('Artículo encontrado y cargado: ' . $articulo->codigo);
-            } else {
-                Log::warning('Artículo no encontrado para valor: ' . $data);
-                // Quizás emitir un mensaje al frontend
-                // $this->dispatch('mostrarError', 'Artículo no encontrado');
-            }
+            // if ($articulo) {
+            //     // Tu lógica para cargar al carrito
+            //     Log::info('Artículo encontrado y cargado: ' . $articulo->codigo);
+            // } else {
+            //     Log::warning('Artículo no encontrado para valor: ' . $data);
+            //     // Quizás emitir un mensaje al frontend
+            //     // $this->dispatch('mostrarError', 'Artículo no encontrado');
+            // }
 
         } catch (\Exception $e) {
             Log::error('Error en buscarCargar: ' . $e->getMessage());
             // Quizás emitir un mensaje de error al frontend
             // $this->dispatch('mostrarError', 'Error procesando la búsqueda.');
         }
-        Log::info('buscarCargar finalizado.');
+        // Log::info('buscarCargar finalizado.');
     }
     
     public function cargar($id){
@@ -333,7 +335,7 @@ class Venta extends Component
                 ) ;
 
 
-                Log::info('Artículo Agregado:', (array) $nuevoArticulo);
+                // Log::info('Artículo Agregado:', (array) $nuevoArticulo);
 
                 if(!isset($this->carrito['carrito'])){
 

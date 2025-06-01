@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('presupuestos', function (Blueprint $table) {
-            $table->string('telefonoCliente')->nullable()->after('cuitCliente');
+        Schema::table('inventarios', function (Blueprint $table) {
+            $table->text('imagen')->change();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('presupuestos', function (Blueprint $table) {
-            $table->dropColumn('telefonoCliente');
+        Schema::table('inventarios', function (Blueprint $table) {
+            $table->string('imagen', 255)->change();
         });
     }
 };
