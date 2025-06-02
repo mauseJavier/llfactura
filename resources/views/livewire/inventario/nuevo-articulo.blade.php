@@ -2,7 +2,7 @@
     
     <div class="container">
 
-        <a role="button" href="{{route('inventario')}}">Inventario</a>
+        <a wire:navigate role="button" href="{{route('inventario')}}">Inventario</a>
         <hr>
         <h2>@if($idArticulo) Editar Artículo ID:{{$idArticulo}} @else Nuevo Artículo @endif</h2>
 
@@ -108,7 +108,7 @@
 
 
                             <label>
-                                Stock Inicial (0=Sin Control)
+                                Agregar stock (0=Sin Control)
                                 <input
                                     wire:model.live="nuevoStock"
                                     name="nuevoStock"

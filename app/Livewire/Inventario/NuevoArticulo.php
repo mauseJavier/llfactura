@@ -195,6 +195,13 @@ class NuevoArticulo extends Component
         if ($this->idArticulo) {
             // $articulo = Inventario::find($this->idArticulo);
             $this->articulo->update($data);
+
+            //PARA ACTUALIZAR EL DETALLE DEL CODIGO EN LA TABLA STOCK Y NO SE GENERE MAL LA INFORMACION
+            Stock::where('codigo', $this->codigo)
+            ->where('empresa_id', Auth::user()->empresa_id)
+            ->update(['detalle' => $this->detalle]);
+
+
             session()->flash('mensaje', 'Artículo actualizado correctamente.');
         } else {
             Inventario::create($data);

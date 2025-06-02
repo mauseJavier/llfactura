@@ -53,8 +53,7 @@
                             </details>
                         </div>
                         <div class="col">
-                            <a role="button" href="{{route('inventario.nuevo')}}">Nuevo</a>
-                            <button wire:click="cambiarModal" data-tooltip="Nuevo Articulo">+</button>
+                            <a wire:navigate role="button" href="{{route('inventario.nuevo')}}">+</a>
                             <a wire:navigate role="button" href="{{route('stock')}}">Stock</a>
         
                         </div>
@@ -250,9 +249,8 @@
                         
                         <tr>
                         {{-- <th scope="row">{{$i->id}}</th> --}}
-                        <td> <button wire:click="editarId({{$i->id}})"> 
-
-                            {{$i->codigo}}</button> 
+                        <td> 
+                            <a wire:navigate role="button" href="{{route('inventario.nuevo',['id'=> $i->id])}}">{{$i->codigo}}</a>
                         </td>
                         <td>{{$i->detalle}}</td>
                         <td>
@@ -329,7 +327,7 @@
 
 
     {{-- MODAL NUEVO ARTICULO --}}
-    <dialog {{$modal}}>
+    {{-- <dialog {{$modal}}>
         <article>
           <header>
             <button aria-label="Close" rel="prev" wire:click="cambiarModal"></button>
@@ -515,7 +513,7 @@
 
             <hr>
 
-                {{-- NUEVO STOCK --}}
+                {{-- NUEVO STOCK --}
                 <div class="grid">                   
     
                         <div class="col">
@@ -586,10 +584,10 @@
           <button wire:click="cambiarModal" class="outline">Cancelar</button>
 
         </article>
-    </dialog>
+    </dialog> --}}
 
     {{-- MODAL EDITAR ARTICULO --}}
-    <dialog {{$modalEditar}}>
+    {{-- <dialog {{$modalEditar}}>
         <article>
           <header>
             <button aria-label="Close" rel="prev" wire:click="cambiarModalEditar"></button>
@@ -785,7 +783,7 @@
                     <option value="si">Activado</option>
                     <option value="no">Desactivado</option>
                 </select>
-            </label> --}}
+            </label> --}
 
             <div class="col">
     
@@ -841,7 +839,7 @@
           <button wire:click="cambiarModalEditar" class="outline">Cancelar</button>
 
         </article>
-    </dialog>
+    </dialog> --}}
 
     <dialog x-bind:open="isOpenRubro">
         <article>
