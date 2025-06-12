@@ -104,81 +104,81 @@ class Venta extends Component
     }
 
 
-    public function ViejobuscarCargar($data = null)
-    {
+    // public function ViejobuscarCargar($data = null)
+    // {
 
-        if ($data === null) {
-            $data = $this->datoBuscado;
-        }
+    //     if ($data === null) {
+    //         $data = $this->datoBuscado;
+    //     }
 
-        if (strlen($data) == 13 AND $data[0] == '2') {
+    //     if (strlen($data) == 13 AND $data[0] == '2') {
 
                 
     
 
-                    // Asignamos el valor de las variables con peso codbar
-                    // TOMA EL PLU
-                    $plu =ltrim(substr($data, 2, 5), '0') ; // 5 CIFRAS CODIGO
+    //                 // Asignamos el valor de las variables con peso codbar
+    //                 // TOMA EL PLU
+    //                 $plu =ltrim(substr($data, 2, 5), '0') ; // 5 CIFRAS CODIGO
 
-                    // dd($plu);
-                    // TOMA EL PESO
-                    // Extraer los últimos 4 dígitos $numero = "2000110012250";
-                    $parteDecimal = substr($data, 9,3);
-                    $parteEntera = substr($data, 7,2);
+    //                 // dd($plu);
+    //                 // TOMA EL PESO
+    //                 // Extraer los últimos 4 dígitos $numero = "2000110012250";
+    //                 $parteDecimal = substr($data, 9,3);
+    //                 $parteEntera = substr($data, 7,2);
 
-                    // Convertir a formato decimal 1.225
-                    $this->cantidad = floatval($parteEntera .'.'.$parteDecimal);
+    //                 // Convertir a formato decimal 1.225
+    //                 $this->cantidad = floatval($parteEntera .'.'.$parteDecimal);
 
 
-                    $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
-                    ->where('codigo', $plu)
-                    ->where('pesable', 'si')
-                    ->where('empresa_id', Auth::user()->empresa_id)
-                    ->get();
+    //                 $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+    //                 ->where('codigo', $plu)
+    //                 ->where('pesable', 'si')
+    //                 ->where('empresa_id', Auth::user()->empresa_id)
+    //                 ->get();
 
-                    // dd($parteEntera .'.'.$parteDecimal);
+    //                 // dd($parteEntera .'.'.$parteDecimal);
 
-                    // dd($articulo[0]);
+    //                 // dd($articulo[0]);
                     
-                    if(count($articulo[0]) == 0){
+    //                 if(count($articulo[0]) == 0){
 
-                        $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
-                        ->where('codigo', $data)
-                        ->where('empresa_id', Auth::user()->empresa_id)
-                        ->get();
-                        // dd('no pesable');
-                        $this->cantidad = 1;
+    //                     $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+    //                     ->where('codigo', $data)
+    //                     ->where('empresa_id', Auth::user()->empresa_id)
+    //                     ->get();
+    //                     // dd('no pesable');
+    //                     $this->cantidad = 1;
 
-                    }
+    //                 }
             
             
-        }else{
+    //     }else{
 
-            $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
-                            ->where('codigo', $data)
-                            ->where('empresa_id', Auth::user()->empresa_id)
-                            ->get();
-            // dd('no pesable');
+    //         $articulo[0] = DB::table('inventarios')->select('codigo','detalle',$this->seleccionPrecio.' as precio','iva','rubro','proveedor','controlStock','costo','marca')
+    //                         ->where('codigo', $data)
+    //                         ->where('empresa_id', Auth::user()->empresa_id)
+    //                         ->get();
+    //         // dd('no pesable');
 
-        }
-
-
-
-        // dd($articulo[0]);
-        if(count($articulo[0]) > 0){
-
-            // Mostrar la info del artículo en el log de Laravel
-            // Log::info('Artículo Encontrado:', (array) $articulo[0][0]);
+    //     }
 
 
 
-            $this->crearCarrito($articulo[0]);
-            $this->datoBuscado= '';
-            $this->cantidad = 1;
+    //     // dd($articulo[0]);
+    //     if(count($articulo[0]) > 0){
 
-        }
+    //         // Mostrar la info del artículo en el log de Laravel
+    //         // Log::info('Artículo Encontrado:', (array) $articulo[0][0]);
+
+
+
+    //         $this->crearCarrito($articulo[0]);
+    //         $this->datoBuscado= '';
+    //         $this->cantidad = 1;
+
+    //     }
         
-    }
+    // }
 
     public function buscarCargar($data)
     {
@@ -253,12 +253,12 @@ class Venta extends Component
                 // Log::info('Artículo Encontrado:', (array) $articulo);
 
                 $this->crearCarrito($articulo);
+
+                $this->datoBuscado= '';
+
                 
             }
-
-
-
-            $this->datoBuscado= '';
+            
             $this->cantidad = 1;
 
             // if ($articulo) {
@@ -377,12 +377,8 @@ class Venta extends Component
 
                 $this->dispatch('grilla-actualizada');
 
-                $this->datoBuscado= '';
-                $this->cantidad = 1;
 
-                
-                // dd($this->carrito['carrito']);
-                
+                            
 
     }
 

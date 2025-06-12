@@ -103,14 +103,18 @@
             <thead>
               <tr>
                 <th>Acciones</th>
-                <th scope="col"><button  class="outline secondary" wire:click="ordenar('razonSocial')">Razon Social</button></th>
+                <th scope="col"><button  class="outline secondary" wire:click="ordenar('razonSocial')"
+                    style="display: inline-block; min-width: 300px; text-align: center;">Razon Social</button>
+                </th>
                 <th scope="col">Tipo Doc</th>
                 <th scope="col">Numero</th>
                 <th scope="col">Tipo Contr.</th>
                 <th scope="col">Telefono.</th>
 
 
-                <th scope="col"><button  class="outline secondary" wire:click="ordenar('saldo')">Saldo</button></th>
+                <th scope="col"><button  class="outline secondary" wire:click="ordenar('saldo')" 
+                    style="display: inline-block; min-width: 300px; text-align: center;">Saldo</button>
+                </th>
 
 
 
@@ -180,7 +184,18 @@
                         </td>
                         <td><a href="http://wa.me/{{$c->telefono}}" target="_blank" rel="noopener noreferrer">{{$c->telefono}}</a></td>
 
-                        <td><a role="button" href="{{route('cuentaCorriente',['cliente'=>$c->id])}}">${{($c->saldo) ? number_format($c->saldo, 2, '.', ',') : '0.00'}}</a></td>
+                        <td>
+                            <a 
+                                role="button" 
+                                href="{{ route('cuentaCorriente', ['cliente' => $c->id]) }}"
+                                style="display: inline-block; min-width: 300px; text-align: center; 
+                                    @if($c->saldo < 0)
+                                        background-color: #b30000; color: #ffcccc;
+                                    @endif"
+                            >
+                                ${{ ($c->saldo) ? number_format($c->saldo, 2, '.', ',') : '0.00' }}
+                            </a>
+                        </td>
 
 
 

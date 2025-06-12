@@ -181,17 +181,17 @@
 
                             <label>
                                 Precio 1
-                                <input type="number" wire:keydown="calcularPrecios()" step="0.01" wire:model.live="precio1" required placeholder="Precio de venta">
+                                <input type="number" step="0.01" wire:model.live="precio1" required placeholder="Precio de venta">
                                 @error('precio1') <span class="error">{{ $message }}</span> @enderror
                             </label>
                             <label>
                                 Precio 2 ({{$empresa->precio2}}% de P1)
-                                <input type="number" wire:keydown="calcularPrecios()" step="0.01" wire:model.live="precio2" placeholder="Precio de venta 2">
+                                <input type="number" step="0.01" wire:model.live="precio2" placeholder="Precio de venta 2">
                                 @error('precio2') <span class="error">{{ $message }}</span> @enderror
                             </label>
                             <label>
                                 Precio 3 ({{$empresa->precio3}}% de P1)
-                                <input type="number" wire:keydown="calcularPrecios()" step="0.01" wire:model.live="precio3" placeholder="Precio de venta 3">
+                                <input type="number" step="0.01" wire:model.live="precio3" placeholder="Precio de venta 3">
                                 @error('precio3') <span class="error">{{ $message }}</span> @enderror
                             </label>
                         </article>

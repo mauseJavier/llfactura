@@ -67,10 +67,16 @@
             </div>
 
         </article>
-        
+
+    </div>
+
+
+
+
+        <div class="container">
         
         <article x-data="{ abierto: false }">
-              
+                
             <label>
                 <input 
                     {{-- NO BORRAR ESTE IMPUT ES IMPORTATNE --}}
@@ -86,7 +92,7 @@
                         </svg>
                     Datos Mesa
             </label>
-              <details x-bind:open="abierto">
+                <details x-bind:open="abierto">
 
                 
                 <summary style="color:red;">
@@ -96,54 +102,54 @@
                         <label for="">
                             Cliente
                             <input 
-                              name="razonSocial"
-                              placeholder="Cliente"
-                              wire:model.blur="razonSocial"
-                              @error('razonSocial') aria-invalid="true" @enderror
-                              />
-                              @error('razonSocial') 
-                                  <small id="invalid-helper">
-                                      {{ $message }}  
-                                  </small>
-                              @enderror
+                                name="razonSocial"
+                                placeholder="Cliente"
+                                wire:model.blur="razonSocial"
+                                @error('razonSocial') aria-invalid="true" @enderror
+                                />
+                                @error('razonSocial') 
+                                    <small id="invalid-helper">
+                                        {{ $message }}  
+                                    </small>
+                                @enderror
                         </label>
 
                         <label>
                             Comenzales
-      
+        
                             <select wire:model="cantidadComenzales" name="" id="" required
                                 @error('cantidadComenzales') 
-                                  required aria-invalid="true"
+                                    required aria-invalid="true"
                                 
                                 @enderror
                             >
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                              <option value="4">4</option>
-                              <option value="5">5</option>
-                              <option value="6">6</option>
-                              <option value="7">7</option>
-                              <option value="8">8</option>
-                              <option value="9">9</option>
-                              <option value="10">10</option>
-                              <option value="11">11</option>
-                              <option value="12">12</option>
-                              <option value="13">13</option>
-                              <option value="14">14</option>
-                              <option value="15">15</option>
-      
-      
-      
-                              
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                                <option value="13">13</option>
+                                <option value="14">14</option>
+                                <option value="15">15</option>
+        
+        
+        
+                                
                             </select>
                             
                             @error('cantidadComenzales') 
-                              <small id="invalid-helper">
+                                <small id="invalid-helper">
                                 {{ $message }} 
-                              </small>
+                                </small>
                             @enderror
-                          </label>
+                            </label>
 
 
                         <label for="">
@@ -161,10 +167,122 @@
 
                     <button wire:click="guardarrazonSocial" @click="abierto = !abierto">Guardar Cliente</button>
 
-              </details>
+                </details>
                 
+        </article>
+    </div>
 
-                @if ($mesaCarrito)
+
+
+    @if (session()->has('mensaje'))
+        <div style="color: green; text-align: center;">
+        {{ session('mensaje') }}
+        </div>
+        
+    @endif
+
+    @if ($data)
+        <div class="container">
+            <div class="article">
+        
+                
+                <h4>
+
+                    <!-- bell-concierge icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" fill="currentColor" viewBox="0 0 512 512">
+                        <path
+                        d="M 216 64 Q 194 66 192 88 Q 194 110 216 112 L 232 112 L 232 112 L 232 145 L 232 145 Q 146 156 90 218 Q 34 279 32 368 L 480 368 L 480 368 Q 478 279 422 218 Q 366 156 280 145 L 280 112 L 280 112 L 296 112 L 296 112 Q 318 110 320 88 Q 318 66 296 64 L 256 64 L 216 64 Z M 24 400 Q 2 402 0 424 Q 2 446 24 448 L 488 448 L 488 448 Q 510 446 512 424 Q 510 402 488 400 L 24 400 L 24 400 Z"
+                        />
+                    </svg>
+
+                        Pedido      
+                        @if ($data)
+                            - ${{$data['total']}}    
+                        @endif
+                </h4>
+        
+        
+                    <table class="striped">
+                    <thead>
+                        <tr>
+                        <th scope="col">Editar</th>
+                        <th scope="col">Cantidad</th>
+                        <th scope="col">Detalle</th>
+                        <th scope="col" style="text-align: right;">SubTotal</th>
+        
+        
+                        </tr>
+                    </thead>
+                    <tbody>
+        
+                        @foreach ($data['mesaCarrito'] as $key => $articulo)
+        
+                        {{-- @dump($articulo) --}}
+        
+                                <tr>    
+                                    <th scope="row" wire:click="abrirModalEdicionData({{$key}})" style="cursor: pointer;">
+                                        <p>
+                                            <!-- pen-to-square icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" fill="currentColor" viewBox="0 0 512 512">
+                                                <path
+                                                d="M 471.04 28.672 L 483.328 40.96 L 471.04 28.672 L 483.328 40.96 Q 495.616 53.248 495.616 69.632 Q 495.616 86.016 483.328 98.304 L 450.56 132.096 L 450.56 132.096 L 379.904 61.44 L 379.904 61.44 L 413.696 28.672 L 413.696 28.672 Q 425.984 16.384 442.368 16.384 Q 458.752 16.384 471.04 28.672 L 471.04 28.672 Z M 179.2 262.144 L 368.64 72.704 L 179.2 262.144 L 368.64 72.704 L 439.296 143.36 L 439.296 143.36 L 249.856 332.8 L 249.856 332.8 Q 241.664 340.992 230.4 343.04 L 150.528 361.472 L 150.528 361.472 L 168.96 281.6 L 168.96 281.6 Q 171.008 270.336 179.2 262.144 L 179.2 262.144 Z M 401.408 16.384 L 167.936 250.88 L 401.408 16.384 L 167.936 250.88 Q 156.672 262.144 152.576 278.528 L 131.072 370.688 L 131.072 370.688 Q 130.048 374.784 133.12 378.88 Q 136.192 381.952 141.312 380.928 L 233.472 359.424 L 233.472 359.424 Q 249.856 355.328 261.12 344.064 L 495.616 110.592 L 495.616 110.592 Q 512 92.16 512 69.632 Q 512 47.104 495.616 28.672 L 483.328 16.384 L 483.328 16.384 Q 464.896 0 442.368 0 Q 419.84 0 401.408 16.384 L 401.408 16.384 Z M 73.728 53.248 Q 41.984 54.272 21.504 74.752 L 21.504 74.752 L 21.504 74.752 Q 1.024 95.232 0 126.976 L 0 438.272 L 0 438.272 Q 1.024 470.016 21.504 490.496 Q 41.984 510.976 73.728 512 L 385.024 512 L 385.024 512 Q 416.768 510.976 437.248 490.496 Q 457.728 470.016 458.752 438.272 L 458.752 290.816 L 458.752 290.816 Q 457.728 283.648 450.56 282.624 Q 443.392 283.648 442.368 290.816 L 442.368 438.272 L 442.368 438.272 Q 441.344 462.848 425.984 479.232 Q 409.6 494.592 385.024 495.616 L 73.728 495.616 L 73.728 495.616 Q 49.152 494.592 32.768 479.232 Q 17.408 462.848 16.384 438.272 L 16.384 126.976 L 16.384 126.976 Q 17.408 102.4 32.768 86.016 Q 49.152 70.656 73.728 69.632 L 221.184 69.632 L 221.184 69.632 Q 228.352 68.608 229.376 61.44 Q 228.352 54.272 221.184 53.248 L 73.728 53.248 L 73.728 53.248 Z"
+                                                />
+                                            </svg>
+                                        </p>
+                                    </th>
+                                    
+                                    <th>
+
+                                        {{$articulo['cantidad']}}
+                                    </th>
+                                                                                   
+        
+                                    <th wire:click="eliminarItemData({{$key}})" style="cursor: pointer;">
+
+                                            <!-- trash icon by Free Icons (https://free-icons.github.io/free-icons/) -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" fill="currentColor" viewBox="0 0 512 512">
+                                                <path
+                                                d="M 210 16 L 302 16 L 210 16 L 302 16 Q 315 16 323 27 L 346 64 L 346 64 L 166 64 L 166 64 L 189 27 L 189 27 Q 197 16 210 16 L 210 16 Z M 176 19 L 148 64 L 176 19 L 148 64 L 40 64 L 40 64 Q 33 65 32 72 Q 33 79 40 80 L 472 80 L 472 80 Q 479 79 480 72 Q 479 65 472 64 L 364 64 L 364 64 L 336 19 L 336 19 Q 324 1 302 0 L 210 0 L 210 0 Q 188 1 176 19 L 176 19 Z M 80 119 Q 79 112 71 112 Q 64 113 64 121 L 92 461 L 92 461 Q 95 483 110 497 Q 126 512 148 512 L 364 512 L 364 512 Q 386 512 402 497 Q 417 483 420 461 L 448 121 L 448 121 Q 448 113 441 112 Q 433 112 432 119 L 404 459 L 404 459 Q 402 475 391 485 Q 380 496 364 496 L 148 496 L 148 496 Q 132 496 121 485 Q 110 475 108 459 L 80 119 L 80 119 Z"
+                                                />
+                                            </svg>
+        
+        
+                                            {{$articulo['detalle']}} {{$articulo['porcentaje'] < 0 ? '('.$articulo['porcentaje'].'%)' : ''}}
+        
+                            
+                                        
+                                    </th>
+            
+                                    <td style="text-align: right;"><strong>${{$articulo['subtotal']}}</strong></td>
+                                    
+                                </tr>  
+                        @endforeach
+        
+        
+                    </tbody>
+        
+                    </table>
+        
+                    
+        
+                
+                </div>
+                
+                
+            </div>
+        @endif
+
+
+    
+    
+
+
+        
+        @if ($mesaCarrito)
+        <div class="container">
+            
+        
+        <article>
 
                 <hr>
 
@@ -262,26 +380,38 @@
                   </details>
 
 
+                </article>
+        
+        
+            </div>
                 @endif
 
 
 
 
-        </article>
 
 
-    </div>
+
+
+
+
+
+
+
+
+
+
 
 
     <div class="container">
 
-        <div style="justify-content: center; align-items: center; ">
+        {{-- <div style="justify-content: center; align-items: center; ">
             @if (session()->has('mensaje'))
                 <div style="color: red; text-align: center;">
                 {{ session('mensaje') }}
                 </div>
             @endif
-        </div>
+        </div> --}}
 
         
         <article>
@@ -334,7 +464,7 @@
                             </svg>
                         </label>  
                         
-                        <label for="" 
+                        {{-- <label for="" 
                             style="            
                                 display: flex;
                                 justify-content: center; /* Alinea horizontalmente en el centro */
@@ -343,7 +473,17 @@
                                 cursor:pointer;
                                 font-size: 150%;">
                             {{$cantidad}}
-                        </label>   
+                        </label>    --}}
+
+                        <input type="number" wire:model.live="cantidad" 
+                            style="            
+                                display: flex;
+                                justify-content: center; /* Alinea horizontalmente en el centro */
+                                align-items: center; /* Alinea verticalmente en el centro */
+                                width: 12%; /* Ajusta el ancho según tus necesidades */
+                                font-size: 150%;
+                                text-align: center;
+                            ">
         
                         <label id="minus-icon" class="labelIcon"
                             style="            
@@ -496,107 +636,6 @@
         {{-- {{ $comprobantes->links('paginacion.paginacion') }} --}}
         {{ $inventario->links('vendor.livewire.bootstrap') }}
     </div>
-
-
-    <div class="container">
-        <div class="article">
-
-            @if (session()->has('mensaje'))
-                <div style="color: green; text-align: center;">
-                {{ session('mensaje') }}
-                </div>
-                
-            @endif
-
-            @if ($data)
-        
-                
-                <h4>
-
-                    <!-- bell-concierge icon by Free Icons (https://free-icons.github.io/free-icons/) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" fill="currentColor" viewBox="0 0 512 512">
-                        <path
-                        d="M 216 64 Q 194 66 192 88 Q 194 110 216 112 L 232 112 L 232 112 L 232 145 L 232 145 Q 146 156 90 218 Q 34 279 32 368 L 480 368 L 480 368 Q 478 279 422 218 Q 366 156 280 145 L 280 112 L 280 112 L 296 112 L 296 112 Q 318 110 320 88 Q 318 66 296 64 L 256 64 L 216 64 Z M 24 400 Q 2 402 0 424 Q 2 446 24 448 L 488 448 L 488 448 Q 510 446 512 424 Q 510 402 488 400 L 24 400 L 24 400 Z"
-                        />
-                    </svg>
-
-                        Pedido      
-                        @if ($data)
-                            - ${{$data['total']}}    
-                        @endif
-                </h4>
-        
-        
-                    <table class="striped">
-                    <thead>
-                        <tr>
-                        <th scope="col">Editar</th>
-                        <th scope="col">Cantidad</th>
-                        <th scope="col">Detalle</th>
-                        <th scope="col" style="text-align: right;">SubTotal</th>
-        
-        
-                        </tr>
-                    </thead>
-                    <tbody>
-        
-                        @foreach ($data['mesaCarrito'] as $key => $articulo)
-        
-                        {{-- @dump($articulo) --}}
-        
-                                <tr>    
-                                    <th scope="row" wire:click="abrirModalEdicionData({{$key}})" style="cursor: pointer;">
-                                        <p>
-                                            <!-- pen-to-square icon by Free Icons (https://free-icons.github.io/free-icons/) -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" fill="currentColor" viewBox="0 0 512 512">
-                                                <path
-                                                d="M 471.04 28.672 L 483.328 40.96 L 471.04 28.672 L 483.328 40.96 Q 495.616 53.248 495.616 69.632 Q 495.616 86.016 483.328 98.304 L 450.56 132.096 L 450.56 132.096 L 379.904 61.44 L 379.904 61.44 L 413.696 28.672 L 413.696 28.672 Q 425.984 16.384 442.368 16.384 Q 458.752 16.384 471.04 28.672 L 471.04 28.672 Z M 179.2 262.144 L 368.64 72.704 L 179.2 262.144 L 368.64 72.704 L 439.296 143.36 L 439.296 143.36 L 249.856 332.8 L 249.856 332.8 Q 241.664 340.992 230.4 343.04 L 150.528 361.472 L 150.528 361.472 L 168.96 281.6 L 168.96 281.6 Q 171.008 270.336 179.2 262.144 L 179.2 262.144 Z M 401.408 16.384 L 167.936 250.88 L 401.408 16.384 L 167.936 250.88 Q 156.672 262.144 152.576 278.528 L 131.072 370.688 L 131.072 370.688 Q 130.048 374.784 133.12 378.88 Q 136.192 381.952 141.312 380.928 L 233.472 359.424 L 233.472 359.424 Q 249.856 355.328 261.12 344.064 L 495.616 110.592 L 495.616 110.592 Q 512 92.16 512 69.632 Q 512 47.104 495.616 28.672 L 483.328 16.384 L 483.328 16.384 Q 464.896 0 442.368 0 Q 419.84 0 401.408 16.384 L 401.408 16.384 Z M 73.728 53.248 Q 41.984 54.272 21.504 74.752 L 21.504 74.752 L 21.504 74.752 Q 1.024 95.232 0 126.976 L 0 438.272 L 0 438.272 Q 1.024 470.016 21.504 490.496 Q 41.984 510.976 73.728 512 L 385.024 512 L 385.024 512 Q 416.768 510.976 437.248 490.496 Q 457.728 470.016 458.752 438.272 L 458.752 290.816 L 458.752 290.816 Q 457.728 283.648 450.56 282.624 Q 443.392 283.648 442.368 290.816 L 442.368 438.272 L 442.368 438.272 Q 441.344 462.848 425.984 479.232 Q 409.6 494.592 385.024 495.616 L 73.728 495.616 L 73.728 495.616 Q 49.152 494.592 32.768 479.232 Q 17.408 462.848 16.384 438.272 L 16.384 126.976 L 16.384 126.976 Q 17.408 102.4 32.768 86.016 Q 49.152 70.656 73.728 69.632 L 221.184 69.632 L 221.184 69.632 Q 228.352 68.608 229.376 61.44 Q 228.352 54.272 221.184 53.248 L 73.728 53.248 L 73.728 53.248 Z"
-                                                />
-                                            </svg>
-                                        </p>
-                                    </th>
-                                    
-                                    <th>
-
-                                        {{$articulo['cantidad']}}
-                                    </th>
-                                                                                   
-        
-                                    <th wire:click="eliminarItemData({{$key}})" style="cursor: pointer;">
-
-                                            <!-- trash icon by Free Icons (https://free-icons.github.io/free-icons/) -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" height="1.5em" fill="currentColor" viewBox="0 0 512 512">
-                                                <path
-                                                d="M 210 16 L 302 16 L 210 16 L 302 16 Q 315 16 323 27 L 346 64 L 346 64 L 166 64 L 166 64 L 189 27 L 189 27 Q 197 16 210 16 L 210 16 Z M 176 19 L 148 64 L 176 19 L 148 64 L 40 64 L 40 64 Q 33 65 32 72 Q 33 79 40 80 L 472 80 L 472 80 Q 479 79 480 72 Q 479 65 472 64 L 364 64 L 364 64 L 336 19 L 336 19 Q 324 1 302 0 L 210 0 L 210 0 Q 188 1 176 19 L 176 19 Z M 80 119 Q 79 112 71 112 Q 64 113 64 121 L 92 461 L 92 461 Q 95 483 110 497 Q 126 512 148 512 L 364 512 L 364 512 Q 386 512 402 497 Q 417 483 420 461 L 448 121 L 448 121 Q 448 113 441 112 Q 433 112 432 119 L 404 459 L 404 459 Q 402 475 391 485 Q 380 496 364 496 L 148 496 L 148 496 Q 132 496 121 485 Q 110 475 108 459 L 80 119 L 80 119 Z"
-                                                />
-                                            </svg>
-        
-        
-                                            {{$articulo['detalle']}} {{$articulo['porcentaje'] < 0 ? '('.$articulo['porcentaje'].'%)' : ''}}
-        
-                            
-                                        
-                                    </th>
-            
-                                    <td style="text-align: right;"><strong>${{$articulo['subtotal']}}</strong></td>
-                                    
-                                </tr>  
-                        @endforeach
-        
-        
-                    </tbody>
-        
-                    </table>
-        
-                    
-        
-                
-            @endif
-        </div>
-
-
-    </div>
-
 
 
 

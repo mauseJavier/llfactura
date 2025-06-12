@@ -1096,7 +1096,6 @@ class VerInventario extends Component
     }
 
 
-
     public function cambiarModal(){
 
         if($this->modal == 'close'){

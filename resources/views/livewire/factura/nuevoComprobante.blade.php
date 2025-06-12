@@ -625,7 +625,7 @@
             <div class="grid">
 
                 <label for="">
-                    Tipo de Docuemento
+                    Tipo de Documento
                     <select name="" aria-label=""  required wire:model="tipoDocumento">         
                         {{-- *
                         * 80 = CUIT 

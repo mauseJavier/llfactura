@@ -285,7 +285,19 @@
                                 <td>{{$i->controlStock}}</td>
                             @endif
                             <td>{{$i->pesable}}</td>
-                            <td>{{$i->imagen}}</td>
+                            <td>
+                                @if (json_decode($i->imagen, true))
+                                    @foreach (json_decode($i->imagen, true) as $img)
+
+                                        <a href="{{$img}}" target="_blank" rel="noopener noreferrer">
+                                            <img src="{{$img}}" alt="Imagen" style="width: 50px; height: 50px; object-fit: cover;">
+                                        </a>
+                                        
+                                    @endforeach
+                                    
+                                @endif
+                            </td>
+
                             <td>{{$i->created_at}}</td>
                             <td>{{$i->updated_at}}</td>
 

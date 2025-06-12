@@ -447,7 +447,7 @@ class NuevoComprobante extends Component
         } catch (\Exception $e) {
 
             // dd($e->getMessage());
-            $this->error = $e->getMessage();
+            $this->error = $e->getMessage(). ' $this->tipoDocumento: '.$this->tipoDocumento;
         }    
 
 

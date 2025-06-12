@@ -44,7 +44,7 @@ class ModificarMesa extends Component
 
 
     public $razonSocial,$comentario,
-            $tipoDocumento,
+            $tipoDocumento = 99,
             $numeroDocumento,
             $tipoContribuyente=13,
             $domicilio,
@@ -332,24 +332,28 @@ class ModificarMesa extends Component
 
     public function finalizarMesa(){
 
+        
         //BORRAMOS LAS SESSIONES POR LAS DUDAS 
         $this->carrito = null;
         $this->cliente = null;
-
+        
         // dd($this->presupuesto);
         if(isset($this->razonSocial)){
-
-
+            
+            
             // $productos = ProductoPresupuesto::where('presupuesto_id',$this->presupuesto->id)->get();
             // dump($this->presupuesto);
-
+            
             $this->mesa->razonSocial = $this->razonSocial;
-            $this->mesa->tipoDocumento =$this->tipoDocumento;
+            $this->mesa->tipoDocumento =$this->tipoDocumento == 0 ? 99 : $this->tipoDocumento;
             $this->mesa->numeroDocumento =$this->numeroDocumento;
             $this->mesa->tipoContribuyente =$this->tipoContribuyente;
             $this->mesa->domicilio =$this->domicilio;
             $this->mesa->correo =$this->correo;
             $this->mesa->comentario =$this->comentario;
+            
+            // dd($this->mesa);
+
 
             $this->cliente = array(
                 'DocTipo'=> $this->mesa->tipoDocumento,
@@ -735,7 +739,7 @@ class ModificarMesa extends Component
     public function cancelarMesa(){
 
         $this->mesa->razonSocial = null;
-        $this->mesa->tipoDocumento =0;
+        $this->mesa->tipoDocumento =99;
         $this->mesa->numeroDocumento =0;
         $this->mesa->tipoContribuyente =0;
         $this->mesa->domicilio =null;
@@ -756,7 +760,7 @@ class ModificarMesa extends Component
 
 
         $this->razonSocial = '';
-        $this->tipoDocumento ='';
+        $this->tipoDocumento =99;
         $this->numeroDocumento ='';
         $this->tipoContribuyente ='';
         $this->domicilio ='';
@@ -778,7 +782,7 @@ class ModificarMesa extends Component
 
     public function restarCantidad(){
 
-        $this->cantidad -= .5;
+        $this->cantidad -= 1;
 
         if($this->cantidad <= 0){
 
@@ -791,7 +795,7 @@ class ModificarMesa extends Component
 
     public function sumarCantidad(){
 
-        $this->cantidad +=.5;
+        $this->cantidad +=1;
 
     }
     
