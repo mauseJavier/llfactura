@@ -83,40 +83,71 @@ class PdfComprobanteGenerar
         $importe_iva_al105=0;
         $totalDescuento=0;
         $subTotalPrecioLista=0;
+        $importe_exento_iva = 0;
 
         if(count($productos)== 0){
             $productos = null;
         }else{
             foreach ($productos as $key => $value) {     
 
-                if($value->iva == 21){
-                    
-                    $importe_gravado_al21 += round($value->precio * $value->cantidad / 1.21,3);
-                    $importe_iva_al21 += round($value->precio * $value->cantidad - ($value->precio * $value->cantidad / 1.21),3);
 
-                    if($comprobante[0]->tipoComp == 1 OR $comprobante[0]->tipoComp == 51){
+                                // PARA LOS CIGARRILLOS 
 
-                        $productos[$key]->precio = round($value->precio / 1.21,3);
+                if ($value->rubro == 'Cigarrillos'){
 
-                        $productos[$key]->precioLista = round($value->precioLista / 1.21,3);
-                        $productos[$key]->descuento = round($value->descuento / 1.21,3);
+                    $cigarrilloExento = round( $value->precio  * $value->cantidad / 1.73 ,2);
 
+                    $cigarrillo_gravado_al21 = round(   $value->precio  * $value->cantidad  - $cigarrilloExento,2);
+
+                    $cigarrillo_iva_al21 = round($cigarrillo_gravado_al21 - ($cigarrillo_gravado_al21 / 1.21 ),2);
+
+                    // dump de estos cigarrilloExento
+                    // cigarrillo_gravado_al21
+                    // cigarrillo_iva_al21
+                    // dump($cigarrilloExento);
+                    // dump($cigarrillo_gravado_al21);
+                    // dump($cigarrillo_iva_al21);
+
+                    // dd();
+
+
+                    $importe_exento_iva += $cigarrilloExento;
+                    $importe_gravado_al21 += $cigarrillo_gravado_al21 - $cigarrillo_iva_al21;
+                    $importe_iva_al21 += $cigarrillo_iva_al21;
+                
+                }else{
+
+                    if($value->iva == 21){
+                        
+                        $importe_gravado_al21 += round($value->precio * $value->cantidad / 1.21,3);
+                        $importe_iva_al21 += round($value->precio * $value->cantidad - ($value->precio * $value->cantidad / 1.21),3);
+    
+                        if($comprobante[0]->tipoComp == 1 OR $comprobante[0]->tipoComp == 51){
+    
+                            $productos[$key]->precio = round($value->precio / 1.21,3);
+    
+                            $productos[$key]->precioLista = round($value->precioLista / 1.21,3);
+                            $productos[$key]->descuento = round($value->descuento / 1.21,3);
+    
+                        }
+                        
+                    }elseif($value->iva == 10.5){
+                        
+                        $importe_gravado_al105 += round($value->precio * $value->cantidad / 1.105,3);
+                        $importe_iva_al105 += round($value->precio * $value->cantidad -($value->precio * $value->cantidad / 1.105),3);
+    
+                        if($comprobante[0]->tipoComp == 1 OR $comprobante[0]->tipoComp == 51){
+    
+                            $productos[$key]->precio = round($value->precio / 1.105,3);
+    
+                            $productos[$key]->precioLista = round($value->precioLista / 1.105,3);
+                            $productos[$key]->descuento = round($value->descuento / 1.105,3);
+    
+                        }
                     }
-                    
-                }elseif($value->iva == 10.5){
-                    
-                    $importe_gravado_al105 += round($value->precio * $value->cantidad / 1.105,3);
-                    $importe_iva_al105 += round($value->precio * $value->cantidad -($value->precio * $value->cantidad / 1.105),3);
 
-                    if($comprobante[0]->tipoComp == 1 OR $comprobante[0]->tipoComp == 51){
-
-                        $productos[$key]->precio = round($value->precio / 1.105,3);
-
-                        $productos[$key]->precioLista = round($value->precioLista / 1.105,3);
-                        $productos[$key]->descuento = round($value->descuento / 1.105,3);
-
-                    }
                 }
+
 
                 $totalDescuento += round($productos[$key]->descuento * $value->cantidad,3);
                 $subTotalPrecioLista += round(($productos[$key]->precioLista * $value->cantidad),3);

@@ -71,6 +71,8 @@ use App\Livewire\Backup\BackupManager;
 use App\Livewire\VerOrdenCompra\VerOrdenCompra;
 use App\Livewire\VerOrdenCompra\HistorialOrdenCompra;
 
+use App\Livewire\CopiarInventario\CopiarInventario;
+
 
 use App\Livewire\Cloudinary\CloudinaryListarImagenes;
 
@@ -151,6 +153,8 @@ use Illuminate\Http\Request;
 
 
             Route::get('/backup', BackupManager::class)->name('backup');
+
+            Route::get('/copiarInventario', CopiarInventario::class)->name('copiarInventario');
 
 
 

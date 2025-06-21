@@ -204,8 +204,20 @@ class NuevoArticulo extends Component
 
             session()->flash('mensaje', 'Artículo actualizado correctamente.');
         } else {
-            Inventario::create($data);
-            session()->flash('mensaje', 'Artículo creado correctamente.');
+
+            // si el codigo ya existe no permitir crear el articulo
+            $existeCodigo = Inventario::where('codigo', $this->codigo)
+                ->where('empresa_id', Auth::user()->empresa_id)
+                ->exists();
+            if ($existeCodigo) {
+                session()->flash('mensaje', 'El código ya existe. Por favor, utiliza otro código.');
+                return;
+            }else{
+
+                // Crear un nuevo artículo
+                Inventario::create($data);
+                session()->flash('mensaje', 'Artículo creado correctamente.');
+            }
         }
 
         $this->nuevoStock > 0 ? $this->modificarStockArticulo() : '';
@@ -232,12 +244,12 @@ class NuevoArticulo extends Component
         // dirigir a ruta inventario.nuevo 
     }
 
-        public function modificarStockArticulo(){
+    public function modificarStockArticulo(){
 
-        // dump($this->codigo);
-        // dump($this->detalle);
-        // dump($this->idDeposito);
-        // dump($this->nuevoStock);
+            // dump($this->codigo);
+            // dump($this->detalle);
+            // dump($this->idDeposito);
+            // dump($this->nuevoStock);
 
                // Validaciones generales
                $this->validate([
@@ -256,28 +268,28 @@ class NuevoArticulo extends Component
                 'numeric' => 'Solo Números',
             ]);
 
-        if($this->nuevoStock > 0){
+            if($this->nuevoStock > 0){
 
-            $n = Stock::create([
-                'codigo'=>trim($this->codigo),
-                'detalle'=>$this->detalle,
-                'deposito_id'=>$this->idDeposito,
-                'stock'=>$this->nuevoStock,
-                'comentario'=>'Ingreso',
-                'usuario'=>Auth::user()->name,
-                'empresa_id'=> $this->empresa->id,
-            ]);
-    
-            $this->nuevoStock = 0;
-    
-            session()->flash('modificarStock', 'Stock Guardado. id-'. $n->id);
+                $n = Stock::create([
+                    'codigo'=>trim($this->codigo),
+                    'detalle'=>$this->detalle,
+                    'deposito_id'=>$this->idDeposito,
+                    'stock'=>$this->nuevoStock,
+                    'comentario'=>'Ingreso',
+                    'usuario'=>Auth::user()->name,
+                    'empresa_id'=> $this->empresa->id,
+                ]);
+        
+                $this->nuevoStock = 0;
+        
+                session()->flash('modificarStock', 'Stock Guardado. id-'. $n->id);
 
-        }else{
+            }else{
 
-            session()->flash('modificarStock', 'Stock NO puede ser 0.');
+                session()->flash('modificarStock', 'Stock NO puede ser 0.');
 
-            
-        }    
+                
+            }    
 
 
     }

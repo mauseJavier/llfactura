@@ -60,7 +60,7 @@
 
 
         <div class="overflow-auto">
-            <table>
+            <table wire:poll >
                 <thead>
                 <tr>
                     <th scope="col" style="color: red;">id</th>

@@ -129,14 +129,14 @@
                 {{-- ADMIN USUARIO --}}
                 @if ((Auth::user()->role_id == 2 || Auth::User()->role_id == 3 || Auth::User()->role_id == 4))
 
-                  <li>
+                  <li style="border: 1px solid #333;">
                     <a wire:navigate href="{{route('inventario')}}">Inventario</a>
                   </li>
 
-                  <li>
+                  <li style="border: 1px solid #333;">
                     <a wire:navigate href="{{route('configuracionbasico')}}">Configuracion Basico</a>
                   </li>
-                  <li>
+                  <li style="border: 1px solid #333;">
                     <a wire:navigate href="{{route('preciosPublico')}}">Precios al Publico</a>
                   </li>
 
@@ -162,10 +162,10 @@
                 @if (Auth::user()->role_id == 3 || Auth::User()->role_id == 4)
 
 
-                  <li>
+                  <li style="border: 1px solid #333;">
                     <a wire:navigate href="{{route('usuarios')}}">Usuarios</a>
                   </li>
-                  <li>
+                  <li style="border: 1px solid #333;">
                     <a wire:navigate href="{{route('historialOrdenCompra')}}">Orden de Compra</a>
                   </li>
 
@@ -176,22 +176,24 @@
                 @if (Auth::user()->role_id == 3)
 
 
-
-                  <li>
-                    <a wire:navigate href="{{route('empresa')}}">Empresas</a>
-                  </li>
-                  <li>
-                    <a wire:navigate href="{{route('facturacionempresas')}}">Facturacion Empresas</a>
-                  </li>
-                  <li>
-                    <a wire:navigate href="{{route('EstadoEmpresa')}}">Estado Empresas</a>
-                  </li>
-                  <li>
-                    <a wire:navigate href="{{route('backup')}}">Backup</a>
-                  </li>
-                  <li>
-                    <a wire:navigate href="{{route('verLogs')}}">Ver Logs</a>
-                  </li>
+                <li style="border: 1px solid red;">
+                  <a wire:navigate href="{{route('empresa')}}">Empresas</a>
+                </li>
+                <li style="border: 1px solid red;">
+                  <a wire:navigate href="{{route('copiarInventario')}}">Copiar Inv</a>
+                </li>
+                <li style="border: 1px solid red;">
+                  <a wire:navigate href="{{route('facturacionempresas')}}">Facturacion Empresas</a>
+                </li>
+                <li style="border: 1px solid red;">
+                  <a wire:navigate href="{{route('EstadoEmpresa')}}">Estado Empresas</a>
+                </li>
+                <li style="border: 1px solid red;">
+                  <a wire:navigate href="{{route('backup')}}">Backup</a>
+                </li>
+                <li style="border: 1px solid red;">
+                  <a wire:navigate href="{{route('verLogs')}}">Ver Logs</a>
+                </li>
                     
                 @endif
 

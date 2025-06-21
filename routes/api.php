@@ -16,5 +16,8 @@ Route::middleware(['auth:sanctum', CheckRole::class])->post('/guardarPresupuesto
 // Ruta pública para obtener inventarios por empresa_id (sin middleware)
 Route::get('/inventarios/{empresa_id?}', [ApiInventarioController::class, 'index']);
 
+// Ruta para buscar artículos por detalle o código (sin middleware)
+Route::get('/inventarios/{empresa_id}/buscar', [ApiInventarioController::class, 'buscar']);
+
 // 1|PoYVVmjf6vMifsDxcEAWljBWEer4CS4o4eyBhjWC20a76ac7
 

@@ -79,9 +79,11 @@
                             <label for="">
                                 Inicio Turno
                                 <input type="datetime-local" name="inicioTurno" aria-label="Datetime local" wire:model.live="inicioTurno"
+
+                                    {{-- VOLVEMOS A ACTIVAR LA MODIFICACION DEL CAMPO PARA QUE NO SEA SOLO DE LECTURA COMO ANTES
                                     @if (Auth()->user()->role_id == 1)
                                         disabled
-                                    @endif
+                                    @endif --}}
                                 >
                                 
                             </label>
@@ -94,9 +96,11 @@
                             <label for="">
                                 Fin Turno
                                 <input type="datetime-local" name="finTurno" aria-label="Datetime local" wire:model.live="finTurno"
+                                                                    
+                                    {{-- VOLVEMOS A ACTIVAR LA MODIFICACION DEL CAMPO PARA QUE NO SEA SOLO DE LECTURA COMO ANTES
                                     @if (Auth()->user()->role_id == 1)
                                         disabled
-                                    @endif
+                                    @endif --}}
                                 >
                                 
                             </label>

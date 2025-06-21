@@ -51,4 +51,40 @@ class ApiInventarioController extends Controller
             ]);
         }
     }
+
+    /**
+     * Buscar artículos por detalle o código para una empresa
+     * @param \Illuminate\Http\Request $request
+     * @param int $empresa_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function buscar(Request $request, $empresa_id)
+    {
+        $query = $request->input('q');
+        if (!$query) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debe enviar el parámetro q para buscar por detalle o código.'
+            ], 400);
+        }
+        $articulos = \App\Models\Inventario::where('empresa_id', $empresa_id)
+            ->where(function($q) use ($query) {
+                $q->where('detalle', 'like', "%$query%")
+                  ->orWhere('codigo', 'like', "%$query%")
+                  ;
+            })
+            ->orderByDesc('updated_at')
+            ->limit(30)
+            ->get();
+        // Decodificar campo imagen si existe
+        $articulos = $articulos->map(function($item) {
+            $itemArray = $item->toArray();
+            $itemArray['imagen'] = $item->imagen ? json_decode($item->imagen, true) : null;
+            return $itemArray;
+        });
+        return response()->json([
+            'success' => true,
+            'data' => $articulos
+        ]);
+    }
 }

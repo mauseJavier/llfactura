@@ -19,7 +19,7 @@
         </fieldset>
 
         @if (session('mensaje'))
-            <div class="alert alert-success">{{ session('mensaje') }}</div>
+            <div style="color: red;">{{ session('mensaje') }}</div>
         @endif
         
         <form wire:submit.prevent="guardar">

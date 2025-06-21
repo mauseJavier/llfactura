@@ -447,7 +447,7 @@ class NuevoComprobante extends Component
         } catch (\Exception $e) {
 
             // dd($e->getMessage());
-            $this->error = $e->getMessage(). ' $this->tipoDocumento: '.$this->tipoDocumento;
+            $this->error = $e->getMessage();
         }    
 
 
@@ -1250,6 +1250,9 @@ class NuevoComprobante extends Component
             $importe_gravado_al105=0;
             $importe_iva_al105=0;
 
+            $importe_exento_iva = 0;
+
+
             if( !isset($this->carrito['total'])){
 
                 $this->carrito['carrito'][] = array(
@@ -1284,21 +1287,55 @@ class NuevoComprobante extends Component
                 //     "cantidad" => 1
                 //     "subtotal" => 65.67
                 // ]
+
+                // PARA LOS CIGARRILLOS 
+
+                if ($value['rubro'] == 'Cigarrillos'){
+
+                    $cigarrilloExento = round($value['precio'] * $value['cantidad'] / 1.73 ,2);
+
+                    $cigarrillo_gravado_al21 = round(  $value['precio'] * $value['cantidad']  - $cigarrilloExento,2);
+
+                    $cigarrillo_iva_al21 = round($cigarrillo_gravado_al21 - ($cigarrillo_gravado_al21 / 1.21 ),2);
+
+                    // dump de estos cigarrilloExento
+                    // cigarrillo_gravado_al21
+                    // cigarrillo_iva_al21
+                    // dump($cigarrilloExento);
+                    // dump($cigarrillo_gravado_al21);
+                    // dump($cigarrillo_iva_al21);
+
+                    // dd();
+
+
+                    $importe_exento_iva += $cigarrilloExento;
+                    $importe_gravado_al21 += $cigarrillo_gravado_al21 - $cigarrillo_iva_al21;
+                    $importe_iva_al21 += $cigarrillo_iva_al21;
                 
-                if($value['iva'] == 21){
+                }else{
 
-                    $importe_gravado_al21 += round($value['precio'] * $value['cantidad'] / 1.21,2);
-                    $importe_iva_al21 += round($value['precio'] * $value['cantidad'] - ($value['precio'] * $value['cantidad'] / 1.21),2);
-
-                }elseif($value['iva'] == 10.5){
-
-                    $importe_gravado_al105 += round($value['precio'] * $value['cantidad'] / 1.105,2);
-                    $importe_iva_al105 += round($value['precio'] * $value['cantidad'] - ($value['precio'] * $value['cantidad'] / 1.105),2);
+                    if($value['iva'] == 21){
+    
+                        $importe_gravado_al21 += round($value['precio'] * $value['cantidad'] / 1.21,2);
+                        $importe_iva_al21 += round($value['precio'] * $value['cantidad'] - ($value['precio'] * $value['cantidad'] / 1.21),2);
+    
+                    }elseif($value['iva'] == 10.5){
+    
+                        $importe_gravado_al105 += round($value['precio'] * $value['cantidad'] / 1.105,2);
+                        $importe_iva_al105 += round($value['precio'] * $value['cantidad'] - ($value['precio'] * $value['cantidad'] / 1.105),2);
+                    }
                 }
 
-                // dump($importe_gravado);
-                // dump($importe_iva);
+                
+
+                // dump($importe_gravado_al21);
+                // dump($importe_iva_al21);
+
+                // dump($importe_iva_al105);
+                // dump($importe_exento_iva);
             }
+
+            // dd();
             
                 /** 
              * Importe sujeto al IVA (sin icluir IVA)
@@ -1308,7 +1345,7 @@ class NuevoComprobante extends Component
             /**
              * Importe exento al IVA
              **/
-            $importe_exento_iva = 0;
+            // $importe_exento_iva = 0;
 
             /**
              * Importe de IVA
@@ -1487,6 +1524,11 @@ class NuevoComprobante extends Component
             $importe_gravado_al105=0;
             $importe_iva_al105=0;
 
+                        /**
+             * Importe exento al IVA
+             **/
+            $importe_exento_iva = 0;
+
            
             if( !isset($this->carrito['total'])){
 
@@ -1523,17 +1565,47 @@ class NuevoComprobante extends Component
                 //     "cantidad" => 1
                 //     "subtotal" => 65.67
                 // ]
+
+                // PARA LOS CIGARRILLOS 
+
+                if ($value['rubro'] == 'Cigarrillos'){
+
+                    $cigarrilloExento = round($value['precio'] * $value['cantidad'] / 1.73 ,2);
+
+                    $cigarrillo_gravado_al21 = round(  $value['precio'] * $value['cantidad']  - $cigarrilloExento,2);
+
+                    $cigarrillo_iva_al21 = round($cigarrillo_gravado_al21 - ($cigarrillo_gravado_al21 / 1.21 ),2);
+
+                    // dump de estos cigarrilloExento
+                    // cigarrillo_gravado_al21
+                    // cigarrillo_iva_al21
+                    // dump($cigarrilloExento);
+                    // dump($cigarrillo_gravado_al21);
+                    // dump($cigarrillo_iva_al21);
+
+                    // dd();
+
+
+                    $importe_exento_iva += $cigarrilloExento;
+                    $importe_gravado_al21 += $cigarrillo_gravado_al21 - $cigarrillo_iva_al21;
+                    $importe_iva_al21 += $cigarrillo_iva_al21;
                 
-                if($value['iva'] == 21){
+                }else{
 
-                    $importe_gravado_al21 += round($value['precio'] * $value['cantidad'] / 1.21,2);
-                    $importe_iva_al21 += round($value['precio'] * $value['cantidad'] - ($value['precio'] * $value['cantidad'] / 1.21),2);
 
-                }elseif($value['iva'] == 10.5){
-
-                    $importe_gravado_al105 += round($value['precio'] * $value['cantidad'] / 1.105,2);
-                    $importe_iva_al105 += round($value['precio'] * $value['cantidad'] - ($value['precio'] * $value['cantidad'] / 1.105),2);
+                    if($value['iva'] == 21){
+    
+                        $importe_gravado_al21 += round($value['precio'] * $value['cantidad'] / 1.21,2);
+                        $importe_iva_al21 += round($value['precio'] * $value['cantidad'] - ($value['precio'] * $value['cantidad'] / 1.21),2);
+    
+                    }elseif($value['iva'] == 10.5){
+    
+                        $importe_gravado_al105 += round($value['precio'] * $value['cantidad'] / 1.105,2);
+                        $importe_iva_al105 += round($value['precio'] * $value['cantidad'] - ($value['precio'] * $value['cantidad'] / 1.105),2);
+                    }
                 }
+
+                
 
                 // dump($importe_gravado);
                 // dump($importe_iva);
@@ -1544,10 +1616,7 @@ class NuevoComprobante extends Component
              **/
             $importe_gravado = round($importe_gravado_al21 + $importe_gravado_al105,2); //  dato ejemplo 100;
 
-            /**
-             * Importe exento al IVA
-             **/
-            $importe_exento_iva = 0;
+
 
             /**
              * Importe de IVA
