@@ -155,42 +155,96 @@ class NuevoArticulo extends Component
         ]);
 
 
+        // if ($this->imagenFile) {
+        //     $idUnico = $this->idArticulo . '_' . time();
+        //     $nombre = $idUnico . '_' .$this->detalle. '.'. $this->imagenFile->extension();
+        //     $ruta = Auth::user()->empresa_id . '/'.$this->codigo ;
+        //     $resultado = Storage::disk('cloudinary')->putFileAs(
+        //         $ruta,
+        //         $this->imagenFile,
+        //         $nombre
+        //     );
+
+        //     $this->arrayImagen[] = "https://res.cloudinary.com/".env('CLOUDINARY_CLOUD_NAME') ."/image/upload/$resultado";
+
+        //     $this->imagen = json_encode($this->arrayImagen); // Guardar como JSON en formato string
+        // }
+
         if ($this->imagenFile) {
             $idUnico = $this->idArticulo . '_' . time();
-            $nombre = $idUnico . '_' .$this->detalle. '.'. $this->imagenFile->extension();
-            $ruta = Auth::user()->empresa_id . '/'.$this->codigo ;
+
+            // Limpiar el detalle: quitar espacios y reemplazar los internos por guiones bajos
+            $detalleLimpio = preg_replace('/\s+/', '_', trim($this->detalle));
+
+            // Construir nombre sin espacios
+            $nombre = $idUnico . '_' . $detalleLimpio . '.' . $this->imagenFile->extension();
+
+            $ruta = Auth::user()->empresa_id . '/' . $this->codigo;
+
             $resultado = Storage::disk('cloudinary')->putFileAs(
                 $ruta,
                 $this->imagenFile,
                 $nombre
             );
 
-            $this->arrayImagen[] = "https://res.cloudinary.com/".env('CLOUDINARY_CLOUD_NAME') ."/image/upload/$resultado";
+            $this->arrayImagen[] = "https://res.cloudinary.com/" . env('CLOUDINARY_CLOUD_NAME') . "/image/upload/$resultado";
 
-            $this->imagen = json_encode($this->arrayImagen); // Guardar como JSON en formato string
+            $this->imagen = json_encode($this->arrayImagen); // Guardar como JSON
         }
 
+
+
+
         
-        $this->controlStock = $this->nuevoStock > 0 ? 'si' : 'no';
+
+        if($this->nuevoStock != 0){
+
+            // si el stock es distinto de 0, se crea el stock 
+            $this->controlStock = 'si';
+
+            $data = [
+                'codigo' => trim($this->codigo),
+                'empresa_id' => Auth::user()->empresa_id,
+                'detalle' => $this->detalle,
+                'costo' => round($this->costo, 2),
+                'precio1' => round($this->precio1, 2),
+                'precio2' => round($this->precio2, 2),
+                'precio3' => round($this->precio3, 2),
+                'porcentaje' => round($this->porcentaje, 2),
+                'iva' => round($this->iva, 2),
+                'rubro' => $this->rubro,
+                'proveedor' => $this->proveedor,
+                'marca' => $this->marca,
+                'pesable' => $this->pesable,
+                'controlStock' => $this->controlStock,
+                'imagen' => $this->imagen ?? '',
+            ];
 
 
-        $data = [
-            'codigo' => trim($this->codigo),
-            'empresa_id' => Auth::user()->empresa_id,
-            'detalle' => $this->detalle,
-            'costo' => round($this->costo, 2),
-            'precio1' => round($this->precio1, 2),
-            'precio2' => round($this->precio2, 2),
-            'precio3' => round($this->precio3, 2),
-            'porcentaje' => round($this->porcentaje, 2),
-            'iva' => round($this->iva, 2),
-            'rubro' => $this->rubro,
-            'proveedor' => $this->proveedor,
-            'marca' => $this->marca,
-            'pesable' => $this->pesable,
-            'controlStock' => $this->controlStock,
-            'imagen' => $this->imagen ?? '',
-        ];
+        }else{
+
+            $data = [
+                'codigo' => trim($this->codigo),
+                'empresa_id' => Auth::user()->empresa_id,
+                'detalle' => $this->detalle,
+                'costo' => round($this->costo, 2),
+                'precio1' => round($this->precio1, 2),
+                'precio2' => round($this->precio2, 2),
+                'precio3' => round($this->precio3, 2),
+                'porcentaje' => round($this->porcentaje, 2),
+                'iva' => round($this->iva, 2),
+                'rubro' => $this->rubro,
+                'proveedor' => $this->proveedor,
+                'marca' => $this->marca,
+                'pesable' => $this->pesable,
+                // 'controlStock' => $this->controlStock, NO modificamos el control de stock si no se modifica el stock
+                'imagen' => $this->imagen ?? '',
+            ];
+            
+
+
+        }
+
 
         if ($this->idArticulo) {
             // $articulo = Inventario::find($this->idArticulo);
@@ -220,7 +274,7 @@ class NuevoArticulo extends Component
             }
         }
 
-        $this->nuevoStock > 0 ? $this->modificarStockArticulo() : '';
+        $this->nuevoStock != 0 ? $this->modificarStockArticulo() : '';
 
 
 
@@ -259,7 +313,7 @@ class NuevoArticulo extends Component
                     'max:250',
                 ],
                 'detalle' => 'required|min:1|max:250',
-                'nuevoStock' => 'required|numeric|min:0',
+                'nuevoStock' => 'required|numeric',
             ], [
                 // Mensajes personalizados
                 'required' => 'Requerido',
@@ -284,7 +338,24 @@ class NuevoArticulo extends Component
         
                 session()->flash('modificarStock', 'Stock Guardado. id-'. $n->id);
 
-            }else{
+            }elseif ($this->nuevoStock < 0) {
+               
+                $n = Stock::create([
+                    'codigo'=>trim($this->codigo),
+                    'detalle'=>$this->detalle,
+                    'deposito_id'=>$this->idDeposito,
+                    'stock'=>$this->nuevoStock,
+                    'comentario'=>'Descuento Ajuste',
+                    'usuario'=>Auth::user()->name,
+                    'empresa_id'=> $this->empresa->id,
+                ]);
+        
+                $this->nuevoStock = 0;
+        
+                session()->flash('modificarStock', 'Stock Guardado. id-'. $n->id);
+
+            }          
+            else{
 
                 session()->flash('modificarStock', 'Stock NO puede ser 0.');
 

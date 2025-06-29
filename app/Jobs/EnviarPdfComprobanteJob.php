@@ -10,6 +10,9 @@ use Illuminate\Foundation\Queue\Queueable;
 use App\Services\PdfComprobanteGenerar;
 use App\Events\NotificarClientePorWhatsappEvent;
 
+use App\Mail\EnviarComprobantePorCorreo;
+use Illuminate\Support\Facades\Mail;
+
 
 
 class EnviarPdfComprobanteJob implements ShouldQueue
@@ -23,8 +26,9 @@ class EnviarPdfComprobanteJob implements ShouldQueue
     protected $clienteTelefono;
     protected $mensaje;
     protected $usuarioId;
+    protected $correoCliente;
 
-    public function __construct($tipoComprobante,$comprobante_id, $formato, $clienteNombre, $clienteTelefono, $mensaje, $usuarioId)
+    public function __construct($tipoComprobante,$comprobante_id, $formato, $clienteNombre, $clienteTelefono, $mensaje, $usuarioId, $correoCliente = null)
     {
         $this->tipoComprobante = $tipoComprobante;
         $this->comprobante_id = $comprobante_id;
@@ -33,6 +37,7 @@ class EnviarPdfComprobanteJob implements ShouldQueue
         $this->clienteTelefono = $clienteTelefono;
         $this->mensaje = $mensaje;
         $this->usuarioId = $usuarioId;
+        $this->correoCliente = $correoCliente;
 
 
         // Log::info('Constructor el Job EnviarPdfComprobanteJob', [
@@ -90,6 +95,26 @@ class EnviarPdfComprobanteJob implements ShouldQueue
                 'Base64' => $pdfBase64,
             ]);
             // Log::info('Evento NotificarClientePorWhatsappEvent despachado.');
+
+            if ($this->correoCliente) {
+                // Log::info('Enviando correo al cliente.', ['correoCliente' => $this->correoCliente]);
+                // $cliente: objeto cliente con email
+                // $mensaje: texto del cuerpo
+                // $pdfContent: contenido binario del PDF (usa $pdf->output())
+                // $nombreArchivo: nombre del archivo PDF
+
+                $pdfBinary = base64_decode($pdfBase64);
+
+    
+                Mail::to($this->correoCliente) // Asumiendo que $this->clienteNombre es el email del cliente
+                    ->send(new EnviarComprobantePorCorreo($this->clienteNombre, $this->mensaje, $pdfBinary, 'Comprobante.pdf'));
+
+
+            } else {
+                Log::info('No se envió correo, correoCliente no está definido.');
+            }
+
+                
         } catch (\Exception $e) {
             Log::error('Error en EnviarPdfComprobanteJob.', [
                 'error' => $e->getMessage(),

@@ -81,9 +81,14 @@
         @endif
 
 
-        <article>
-            Ordenado Por: {{$ordenarPor}} <br>
-            Orden: {{$ordenarDireccion == 'asc'? 'Ascendente' : 'Descendente' }} <br>
+        <article class="grid" style="align-items: center; justify-content: space-between;">
+            <div class="alinear izquierda" style="justify-self: start;">
+                Ordenado Por: {{$ordenarPor}} <br>
+                Orden: {{$ordenarDireccion == 'asc'? 'Ascendente' : 'Descendente' }} <br>
+            </div>
+            <div class="alinear derecha" style="justify-self: end;">
+                <button wire:click="noficacionSaldosNegativos">Notificar Saldo Negativo (WS Y EMAIL)</button>
+            </div>
         </article>
 
         {{-- "id" => 1

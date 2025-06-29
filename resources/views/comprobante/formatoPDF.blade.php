@@ -30,6 +30,7 @@
             <input type="hidden" name="comprobante_id" value="{{$comprobante_id}}" />
             <input type="hidden" name="formato" value="{{$formato}}" />
             <input type="text" placeholder="Ingrese numero de telefono" class="input" name="telefono" required />
+            <input type="email" placeholder="Ingrese correo electronico" class="input" name="correoCliente" />
 
           </div>
 

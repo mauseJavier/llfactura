@@ -716,7 +716,8 @@ use Illuminate\Http\Request;
                     $nombreCliente,
                     $datos['telefono'],
                     $mensaje, 
-                    Auth::user()->id
+                    Auth::user()->id,
+                    $datos['correoCliente'] ?? null
                 );
 
                 // redirigir ruta a la ruta de origen 
@@ -766,7 +767,5 @@ use Illuminate\Http\Request;
 
     });
 
-
-    
 
 require __DIR__.'/auth.php';

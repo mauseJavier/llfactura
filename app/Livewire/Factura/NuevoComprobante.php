@@ -391,7 +391,7 @@ class NuevoComprobante extends Component
             $this->carrito=null;
             $this->cliente=null;
 
-            if($this->telefonoCliente != null){
+            if ($this->telefonoCliente || $this->correoCliente) {
 
 
                 $nombreCliente = $this->razonSocial == 'Consumidor Final' ? '' : $this->razonSocial;
@@ -411,7 +411,8 @@ class NuevoComprobante extends Component
                     $nombreCliente,
                     $this->telefonoCliente,
                     $mensaje, 
-                    Auth::user()->id
+                    Auth::user()->id,
+                    $this->correoCliente
                 );
 
 

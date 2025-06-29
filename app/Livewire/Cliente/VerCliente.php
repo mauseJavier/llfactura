@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon; // Asegúrate de importar Carbon para manejar fechas fácilmente       
 use App\Models\CuentaCorriente;
 
+use App\Jobs\EnviarWhatsappAlClienteJob;
+
+
 
 
 use App\Models\Empresa;
@@ -34,6 +37,15 @@ class VerCliente extends Component
     public $ordenarDireccion = 'asc';
 
 
+    public function noficacionSaldosNegativos()
+    {
+
+        // EnviarWhatsappAlClienteJob::dispatch();
+        EnviarWhatsappAlClienteJob::dispatch(Auth::user()->empresa_id);
+
+        session()->flash('guardado', 'Notificación de saldos negativos enviada a los clientes.');
+
+    }
     
 
     public function eliminarCliente(Cliente $cliente)
@@ -82,7 +94,7 @@ class VerCliente extends Component
         $this->razonSocial = $cliente->razonSocial;
         $this->tipoDocumento = $cliente->tipoDocumento;
         $this->domicilio = $cliente->domicilio;
-        $this->correoCliente = $cliente->correoCliente;
+        $this->correoCliente = $cliente->correo;
         $this->tipoContribuyente = $cliente->tipoContribuyente; 
         $this->telefono = $cliente->telefono;
 

@@ -639,23 +639,7 @@
                         <option value="86">CUIL</option>
                     </select>
                     
-                </label>
-
-                {{-- crear inpu para el numero de telefono del cliente  --}}
-                <label for="">
-
-                    Telefono
-                    <input 
-                    type="text"
-                    name="telefono"
-                    placeholder="Telefono"
-                    aria-label="Telefono"
-                    autocomplete="telefono"
-                    wire:model="telefonoCliente"                     
-                    />
-
-                </label>
-                    
+                </label>                 
                 
 
                 <label for="">
@@ -672,6 +656,38 @@
 
             </div>
 
+            <div class="grid">
+
+                {{-- crear inpu para el numero de telefono del cliente  --}}
+                <label for="">
+
+                    Telefono (Enviar Comprobante)
+                    <input 
+                    type="text"
+                    name="telefono"
+                    placeholder="Telefono"
+                    aria-label="Telefono"
+                    autocomplete="telefono"
+                    wire:model="telefonoCliente"                     
+                    />
+
+                </label>
+
+                <label for="">
+                    Correo (Enviar Comprobante)
+                    <input
+                    type="text"
+                    name="email"
+                    placeholder="Correo"
+                    aria-label="Correo"
+                    autocomplete="email"
+                    wire:model="correoCliente"
+                    />
+                </label>
+
+
+            </div>
+
         </article>
 
         
@@ -679,20 +695,6 @@
             <details>
                
                 <summary>Mas Datos</summary>
-                    <fieldset class="grid">
-
-                        <label for="">
-                            Correo
-                            <input
-                            type="text"
-                            name="email"
-                            placeholder="Correo"
-                            aria-label="Correo"
-                            autocomplete="email"
-                            wire:model="correoCliente"
-                            />
-                        </label>
-                    </fieldset>
 
                     <fieldset class="grid">
                         <label for="">
