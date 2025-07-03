@@ -137,17 +137,40 @@ class EnviarWhatsappAlClienteJob implements ShouldQueue
                     // debuguear el mensaje
                     logger()->info('Mensaje: ' . $mensaje);
                 }
-        
-                NotificarClientePorWhatsappEvent::dispatch([
-                    'clienteNombre' => $cliente->razonSocial,
-                    'clienteTelefono' => $cliente->telefono,
-                    'mensaje' => $mensaje,
-                    'instanciaWS' => $instanciaWS,
-                    'apikey' => $apikey,
-                    'Base64' => null,
-                ]);
 
-                event(new \App\Events\NotificarClientePorCorreoEvent($cliente,$razonSocial .' Saldo de Cuenta', $mensaje));
+                //comprobar si el telefono del cliente existe 
+                if (!empty($cliente->telefono)) {
+
+                    if(env('APP_ENV') == 'local') {
+                        // debuguear el mensaje
+                        logger()->info('Exite telefono enviamos ws');
+                    }
+
+                    // Si el teléfono está vacío, no hacemos nada
+                    NotificarClientePorWhatsappEvent::dispatch([
+                        'clienteNombre' => $cliente->razonSocial,
+                        'clienteTelefono' => $cliente->telefono,
+                        'mensaje' => $mensaje,
+                        'instanciaWS' => $instanciaWS,
+                        'apikey' => $apikey,
+                        'Base64' => null,
+                    ]);
+                }
+        
+                //comprobar si el correo del cliente existe
+                if (!empty($cliente->correo)) {
+
+                    if(env('APP_ENV') == 'local') {
+                        // debuguear el mensaje
+                        logger()->info('Exite correo enviamos correo');
+                    }
+
+                    // Si el correo está vacío, no hacemos nada
+
+                    event(new \App\Events\NotificarClientePorCorreoEvent($cliente,$razonSocial .' Saldo de Cuenta', $mensaje));
+
+                }
+
 
 
             }

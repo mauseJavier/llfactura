@@ -6,6 +6,11 @@
     {{-- @dump($listaProveedores) --}}
     {{-- @dump($empresa) --}}
     {{-- @dump($listaMarcas) --}}
+    {{-- @foreach ($listaRubros as $item)
+
+    [{{$item->nombre}}]
+        
+    @endforeach --}}
     <div class="container"   >
         <h1>Inventario</h1>
 
@@ -223,7 +228,10 @@
                     <th scope="col">Codigo</th>
                     <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('detalle')">Detalle</a></th>
                     <th scope="col"><a  data-tooltip="Ordenar Precio 1 Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('precio1')">Precio</a></th>
-                    @if ($masDatos)                        
+                    <th scope="col">Stock</th>
+
+                    @if ($masDatos)          
+              
                         <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('costo')">Costo</a></th>
                         <th scope="col">Iva</th>
                         <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('rubro')">Rubro</a></th>
@@ -236,16 +244,17 @@
                         <th scope="col"><a  data-tooltip="Ordenar Ascendente/Descendente" data-placement="bottom" wire:click="ordenarGrilla('updated_at')">Actualizado</a></th>
                         
                         <th scope="col">Favorito</th>
+                        <th scope="col">Eliminar</th>
                     @endif
                     
                     
-                    <th scope="col">Eliminar</th>
 
                   </tr>
                 </thead>
                 <tbody>
 
                     @foreach ($inventario as $i)
+
                         
                         <tr>
                         {{-- <th scope="row">{{$i->id}}</th> --}}
@@ -264,7 +273,25 @@
                                 </ul>
                             </details>
                         </td>
+                        
+                        <td style="min-width: 200px;">
+                            @if (!empty($i->stocks))
+                                @foreach($i->stocks->where('empresa_id', $i->empresa_id)->groupBy('deposito_id') as $depositoId => $stocksPorDeposito)
+                                    @php
+                                        $depositoNombre = optional($stocksPorDeposito->first()->deposito)->nombre ?? 'Depósito';
+                                        $saldoTotal = $stocksPorDeposito[0]->saldo;
+                                    @endphp
+                                    <p>
+                                        {{ $depositoNombre }}:  {{ $saldoTotal }}
+                                    </p>
+                                @endforeach
+                            @endif
+                        </td>
+                        
                         @if ($masDatos)                            
+                        
+
+
                             <td>{{$i->costo}}</td>
                             <td>{{$i->iva}}</td>
                             <td>{{$i->rubro}}</td>
@@ -308,7 +335,6 @@
                                 
                             </td>
 
-                        @endif
                             <td style="text-align: center;color: red; "  title="Eliminar">
                                 <!-- trash icon by Free Icons (https://free-icons.github.io/free-icons/) -->
                                 <svg xmlns="http://www.w3.org/2000/svg" height="2em" fill="currentColor" viewBox="0 0 512 512"
@@ -325,6 +351,8 @@
                                 </svg>
 
                             </td>
+
+                        @endif
                         </tr>
                     @endforeach
 
@@ -1124,22 +1152,6 @@
             @endif
             <form wire:submit="guardarLista">
             <fieldset>
-                {{-- <label>
-                Nombre Lista
-                <input
-                    wire:model.live="nuevaLista"
-                    name=""
-                    placeholder="Nombre Lista"
-                    
-                    @error('nuevaLista') aria-invalid="true" @enderror
-                />
-                    @error('nuevaLista') 
-                    <small id="invalid-helper">
-                        {{ $message }} 
-                        </small>
-                    @enderror
-                
-                </label> --}}
 
                 <div x-data="{
                             

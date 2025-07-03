@@ -140,6 +140,10 @@
                     <a wire:navigate href="{{route('preciosPublico')}}">Precios al Publico</a>
                   </li>
 
+                  <li style="border: 1px solid #333;">
+                    <a wire:navigate href="{{route('historialOrdenCompra')}}">Orden de Compra</a>
+                  </li>
+
                     
                 @endif
 
@@ -165,9 +169,7 @@
                   <li style="border: 1px solid #333;">
                     <a wire:navigate href="{{route('usuarios')}}">Usuarios</a>
                   </li>
-                  <li style="border: 1px solid #333;">
-                    <a wire:navigate href="{{route('historialOrdenCompra')}}">Orden de Compra</a>
-                  </li>
+
 
                     
                 @endif

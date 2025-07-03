@@ -46,6 +46,8 @@ class repetirGastoMinuto extends Command
                 $gastoRepetir = Gasto::where('repetir','Minuto')->get();
                 // Log::info("Gastos A Repetir " . $gastoRepetir[0]->tipo);
 
+                log::info("Gastos A Repetir " . $gastoRepetir->count());
+
                 // {
                 //     "id": 1,
                 //     "tipo": "Gasto",
@@ -64,19 +66,30 @@ class repetirGastoMinuto extends Command
 
                 if($gastoRepetir->count() > 0){
 
-                    $Gasto = Gasto::create([
-                        'tipo' => $gastoRepetir[0]->tipo,
-                        'importe' => 0,
-                        'formaPago' => $gastoRepetir[0]->formaPago,
-                        'estado' => 'Impago',
-                        'idProveedor' => $gastoRepetir[0]->idProveedor,
-                        'comentario' => $gastoRepetir[0]->comentario,
-                        'diaNotificacion' => $gastoRepetir[0]->diaNotificacion,
-                        'usuario' => $gastoRepetir[0]->usuario,
-                        'empresa_id' => $gastoRepetir[0]->empresa_id,
-                        'repetir' => 'Repetido',        
-            
-                    ]);
+                    foreach ($gastoRepetir as $gasto) {
+                        // Log::info("Gasto Repetir " . $gasto->tipo);
+                        // Crear un nuevo gasto con los datos del gasto a repetir
+                        $Gasto = Gasto::create([
+                            'tipo' => $gasto->tipo,
+                            'importe' => 0,
+                            'formaPago' => $gasto->formaPago,
+                            'estado' => 'Impago',
+                            'idProveedor' => $gasto->idProveedor,
+                            'comentario' => $gasto->comentario,
+                            'diaNotificacion' => $gasto->diaNotificacion,
+                            'usuario' => $gasto->usuario,
+                            'empresa_id' => $gasto->empresa_id,
+                            'repetir' => 'Repetido',        
+                        ]);
+
+                        if(env('APP_ENV') == 'local'){
+                            Log::info("Gasto Repetir " . $gasto);
+                        }
+    
+                        // Log::info("Correcto " . $Gasto);
+                        $this->info("Correcto " . $Gasto);
+                    }
+
     
                     // Log::info("Correcto " . $gastoRepetir->count());
                     $this->info("Correcto " . $Gasto);

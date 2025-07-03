@@ -667,6 +667,7 @@ class VerInventario extends Component
 
     public function mount()
     {
+
         $this->usuario = Auth::user();
         $this->empresa = Empresa::find(Auth::user()->empresa_id);
         $this->iva = $this->empresa->ivaDefecto;  
@@ -1036,60 +1037,67 @@ class VerInventario extends Component
 
     public function render()
     {
+
+
+
+
         // return view('livewire.inventario.ver-inventario');
         return view('livewire.inventario.ver-inventario',
         [     
-            'inventario'=> DB::table('inventarios')
-                                // ->select('id','codigo','detalle','precio1 as precio')
-                                ->where('empresa_id', Auth::user()->empresa_id)
-                                ->whereAny([
-                                    'codigo',
-                                    'detalle',
 
-                                ], 'LIKE', "%$this->datoBuscado%")     
 
-                                ->when($this->nombreRubro, function ($query, $nombreRubro) {
-                                    return $query->where('rubro', $nombreRubro);
-                                })
-                                ->when($this->nombreProveedor, function ($query, $nombreProveedor) {
-                                    return $query->where('proveedor', $nombreProveedor);
-                                })
-                                ->when($this->nombreMarca, function ($query, $nombreMarca) {
-                                    return $query->where('marca', $nombreMarca);
-                                })
 
-                                ->when($this->filtroModificado, function ($query, $filtroModificado) {
-                                    switch ($filtroModificado) {
-                                        case 'Hoy':
-                                            return $query->whereDate('updated_at', today());
-                                            break;
-                                        case 'Esta Semana':
-                                            return $query->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()]);
-                                            break;
-                                        case 'Este Mes':
-                                            return $query->whereBetween('updated_at', [now()->startOfMonth(), now()->endOfMonth()]);
-                                            break;
-                                        case 'Mes Pasado':
-                                            return $query->whereBetween('updated_at', [
-                                                now()->subMonth()->startOfMonth(),
-                                                now()->subMonth()->endOfMonth()
-                                            ]);
-                                            break;                                        
-                                        default:
-                                            # code...
-                                            break;
-                                    }
-                                })
+            'inventario' => Inventario::with('stocks')
+                ->where('empresa_id', Auth::user()->empresa_id)
+                ->where(function ($query) {
+                    $query->where('codigo', 'LIKE', "%$this->datoBuscado%")
+                        ->orWhere('detalle', 'LIKE', "%$this->datoBuscado%");
+                })
+                ->when($this->nombreRubro, fn($q, $r) => $q->where('rubro', $r))
+                ->when($this->nombreProveedor, fn($q, $p) => $q->where('proveedor', $p))
+                ->when($this->nombreMarca, fn($q, $m) => $q->where('marca', $m))
+                ->when($this->filtroModificado, function ($query, $filtroModificado) {
+                    return match ($filtroModificado) {
+                        'Hoy' => $query->whereDate('updated_at', today()),
+                        'Esta Semana' => $query->whereBetween('updated_at', [now()->startOfWeek(), now()->endOfWeek()]),
+                        'Este Mes' => $query->whereBetween('updated_at', [now()->startOfMonth(), now()->endOfMonth()]),
+                        'Mes Pasado' => $query->whereBetween('updated_at', [now()->subMonth()->startOfMonth(), now()->subMonth()->endOfMonth()]),
+                        default => $query,
+                    };
+                })
+                ->orderBy($this->ordenarPor, $this->acendenteDecendente)
+                ->paginate(30),
 
-                                ->orderBy($this->ordenarPor,$this->acendenteDecendente)                        
-                                ->paginate(30),
 
-            'listaPrecios' => ListaPrecio::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
-            'listaRubros' => Rubro::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
-            // 'rubrosUnicos' => Rubro::where('empresa_id', Auth::user()->empresa_id)
-            //                         ->pluck('nombre'), 
-            'listaProveedores' => Proveedor::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
-            'listaMarcas' => Marca::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
+
+            // 'listaPrecios' => ListaPrecio::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
+            // 'listaRubros' => Rubro::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
+            // // 'rubrosUnicos' => Rubro::where('empresa_id', Auth::user()->empresa_id)
+            // //                         ->pluck('nombre'), 
+            // 'listaProveedores' => Proveedor::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
+            // 'listaMarcas' => Marca::where('empresa_id', $this->empresa->id)->orderBy('nombre', 'asc')->get(),
+
+            'listaPrecios' => ListaPrecio::where('empresa_id', $this->empresa->id)
+                ->orderBy('nombre', 'asc')
+                ->groupBy('nombre')
+                ->select('nombre')
+                ->get(),
+            'listaRubros' => Rubro::where('empresa_id', $this->empresa->id)
+                ->orderBy('nombre', 'asc')
+                ->groupBy('nombre')
+                ->select('nombre')
+                ->get(),
+            'listaProveedores' => Proveedor::where('empresa_id', $this->empresa->id)
+                ->orderBy('nombre', 'asc')
+                ->groupBy('nombre')
+                ->select('nombre')
+                                ->get(),
+            'listaMarcas' => Marca::where('empresa_id', $this->empresa->id)
+                ->orderBy('nombre', 'asc')
+                ->groupBy('nombre')
+                ->select('nombre')
+                                ->get(),
+                
         ])        
         ->extends('layouts.app')
         ->section('main'); 

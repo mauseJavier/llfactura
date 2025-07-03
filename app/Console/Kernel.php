@@ -22,11 +22,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Aquí puedes añadir comandos programados
-        // Ejecutar el job EnviarWhatsappAlClienteJob el 1 y 4 de cada mes a las 10:00 AM
-        $schedule->job(new \App\Jobs\EnviarWhatsappAlClienteJob())
-            ->monthlyOn(1, '10:00');
-        $schedule->job(new \App\Jobs\EnviarWhatsappAlClienteJob())
-            ->monthlyOn(4, '10:00');
+
+
+    
+        
+
+
     }
 }

@@ -21,7 +21,8 @@ class ApiInventarioController extends Controller
         $perPage = $request->query('per_page');
         $page = $request->query('page');
 
-        $query = Inventario::where('empresa_id', $empresa_id);
+        $query = Inventario::where('empresa_id', $empresa_id)->where('publicarTienda', true)
+            ->orderByDesc('updated_at');
 
         $parseImagen = function ($item) {
             $itemArray = $item->toArray();
@@ -61,17 +62,24 @@ class ApiInventarioController extends Controller
     public function buscar(Request $request, $empresa_id)
     {
         $query = $request->input('q');
-        if (!$query) {
+        $rubro = $request->input('cat');
+
+        if (!$query AND !$rubro ) {
             return response()->json([
                 'success' => false,
-                'message' => 'Debe enviar el parámetro q para buscar por detalle o código.'
+                'message' => 'Debe enviar el parámetro q para buscar por detalle o código. Ejemplo: /api/inventarios/123/buscar?q=producto&cat=ropa'
             ], 400);
         }
-        $articulos = \App\Models\Inventario::where('empresa_id', $empresa_id)
-            ->where(function($q) use ($query) {
+        $articulos = Inventario::where('empresa_id', $empresa_id)
+            ->where('publicarTienda', true)
+
+            ->when($query, function($q) use ($query) {
                 $q->where('detalle', 'like', "%$query%")
                   ->orWhere('codigo', 'like', "%$query%")
                   ;
+            })
+            ->when($rubro, function($q) use ($rubro) {
+                $q->where('rubro', 'like', "%$rubro%");
             })
             ->orderByDesc('updated_at')
             ->limit(30)
@@ -85,6 +93,33 @@ class ApiInventarioController extends Controller
         return response()->json([
             'success' => true,
             'data' => $articulos
+        ]);
+    }
+
+    /**
+     * Devuelve los rubros únicos de una empresa
+     * @param int $empresa_id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function rubros($empresa_id = null)
+    {
+        if (!$empresa_id) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Debe indicar el parámetro empresa_id en la ruta. Ejemplo: /api/rubros/123'
+            ], 400);
+        }
+
+        $rubros = \App\Models\Rubro::where('empresa_id', $empresa_id)
+            ->select('nombre')
+            ->distinct()
+            ->orderBy('nombre', 'asc')
+            ->get()
+            ->pluck('nombre');
+
+        return response()->json([
+            'success' => true,
+            'data' => $rubros
         ]);
     }
 }

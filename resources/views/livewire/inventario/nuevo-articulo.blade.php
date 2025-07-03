@@ -96,9 +96,25 @@
                         <article>
                             <h4>Stocks</h4>
 
+                        @if($stock)
+                            <div class="stocks-list">
+                                <h5>Stocks disponibles:</h5>
+                                <ul>
+                                    @foreach($stock as $s)
+                                        <li>
+                                            <strong>Depósito:</strong> {{ $s->nombre }}<br>
+                                            <strong>Stock:</strong> {{ $s->saldo }}<br>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+
+
+
                             <label>
                                 Depósito
-                                <select wire:model.live="idDeposito" required>
+                                <select wire:model="idDeposito" required>
                                     @foreach($depositos as $depositoItem)
                                         <option value="{{ $depositoItem->id }}">{{ $depositoItem->nombre }}</option>
                                     @endforeach
@@ -110,7 +126,7 @@
                             <label>
                                 Agregar stock (0=Sin Control)
                                 <input
-                                    wire:model.live="nuevoStock"
+                                    wire:model="nuevoStock"
                                     name="nuevoStock"
                                     placeholder="Stock"
                                     autocomplete="nuevoStock"
@@ -195,6 +211,36 @@
                                 @error('precio3') <span class="error">{{ $message }}</span> @enderror
                             </label>
                         </article>
+
+                        <article>
+                            <h4>Tienda</h4>
+
+                            {{-- agregar 3 imput un texarea comentario un select publicar si o no y un checkbox para mostrar en la web --}}
+                            <label>
+                                <input name="publicarTienda" type="checkbox" role="switch" wire:model="publicarTienda" 
+                                    @if ($publicarTienda)
+                                        checked                                                                            
+                                    @endif />
+                                Publicar en Tienda
+                                @error('publicarTienda') <span class="error">{{ $message }}</span> @enderror
+                            </label>
+                            <label>
+                                <input name="articuloDestacado" type="checkbox" role="switch" wire:model="articuloDestacado" 
+                                    @if ($articuloDestacado)
+                                        checked                                  
+                                    @endif />
+                                Artículo Destacado
+                                @error('articuloDestacado') <span class="error">{{ $message }}</span> @enderror
+                            </label>
+                            <label>
+                                Comentario
+                                <textarea wire:model="comentarioTienda" placeholder="Comentario para Ecomerce"></textarea>
+                                @error('comentarioTienda') <span class="error">{{ $message }}</span> @enderror
+                            </label>
+
+                        </article>
+
+
                         <article>
                             <h4>Agregar Imagen</h4>
                             <label>

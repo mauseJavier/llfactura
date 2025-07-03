@@ -51,6 +51,11 @@ class Stock extends Model
             return $this->belongsTo(Deposito::class, 'deposito_id', 'id');
         }
 
+        
+        // public function deposito()
+        // {
+        //     return $this->belongsTo(Deposito::class);
+        // }
 
 
 }

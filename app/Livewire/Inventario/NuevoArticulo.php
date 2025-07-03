@@ -47,6 +47,12 @@ class NuevoArticulo extends Component
     public $imagenFile; // Para el archivo de imagen
     public $ivaIncluido = false;
 
+
+
+    public $articuloDestacado = false;
+    public $publicarTienda = false;
+    public $comentarioTienda = '';
+
     public $nuevoStock = 0;
     public $idDeposito = null;
 
@@ -55,6 +61,8 @@ class NuevoArticulo extends Component
 
 
     public $empresa;
+
+    public $stock = null;
 
     public function mount($id = null)
     {
@@ -94,7 +102,24 @@ class NuevoArticulo extends Component
             $this->arrayImagen = json_decode($this->articulo->imagen, true) ?? [];
             $this->imagen = $this->articulo->imagen; // Mantener la imagen como string JSON
 
+            $this->articuloDestacado = $this->articulo->articuloDestacado;
+            $this->publicarTienda = $this->articulo->publicarTienda;
+            $this->comentarioTienda = $this->articulo->comentarioTienda;
+
             // dd($articulo->imagen);
+
+            // Obtener el último registro de stock por cada depósito para el código del artículo
+            $this->stock = Stock::where('stocks.codigo', $this->codigo)
+                ->where('stocks.empresa_id', Auth::user()->empresa_id)
+                ->join('depositos', 'stocks.deposito_id', '=', 'depositos.id')
+                ->select('stocks.*', 'depositos.nombre')
+                ->orderBy('stocks.deposito_id')
+                ->orderByDesc('stocks.id')
+                ->get()
+                ->unique('deposito_id')
+                ->values();
+
+            // dd($this->stock);
 
         }
         
@@ -218,6 +243,10 @@ class NuevoArticulo extends Component
                 'pesable' => $this->pesable,
                 'controlStock' => $this->controlStock,
                 'imagen' => $this->imagen ?? '',
+
+                'articuloDestacado' => $this->articuloDestacado,
+                'publicarTienda' => $this->publicarTienda,
+                'comentarioTienda' => $this->comentarioTienda,
             ];
 
 
@@ -239,6 +268,11 @@ class NuevoArticulo extends Component
                 'pesable' => $this->pesable,
                 // 'controlStock' => $this->controlStock, NO modificamos el control de stock si no se modifica el stock
                 'imagen' => $this->imagen ?? '',
+
+                'articuloDestacado' => $this->articuloDestacado,
+                'publicarTienda' => $this->publicarTienda,
+                'comentarioTienda' => $this->comentarioTienda,
+
             ];
             
 
@@ -450,24 +484,28 @@ class NuevoArticulo extends Component
         return view('livewire.inventario.nuevo-articulo', [
             'listaPrecios' => ListaPrecio::where('empresa_id', Auth::user()->empresa_id)
                 ->select('*')
-                ->distinct()
                 ->orderBy('nombre', 'asc')
-                ->get(),
+                ->get()
+                ->unique('nombre')
+                ->values(),
             'listaRubros' => Rubro::where('empresa_id', Auth::user()->empresa_id)
                 ->select('nombre')
-                ->distinct()
                 ->orderBy('nombre', 'asc')
-                ->get(),
+                ->get()
+                ->unique('nombre')
+                ->values(),
             'listaProveedores' => Proveedor::where('empresa_id', Auth::user()->empresa_id)
                 ->select('nombre')
-                ->distinct()
                 ->orderBy('nombre', 'asc')
-                ->get(),
+                ->get()
+                ->unique('nombre')
+                ->values(),
             'listaMarcas' => Marca::where('empresa_id', Auth::user()->empresa_id)
                 ->select('nombre')
-                ->distinct()
                 ->orderBy('nombre', 'asc')
-                ->get(),
+                ->get()
+                ->unique('nombre')
+                ->values(),
         ])
                 ->extends('layouts.app')
         ->section('main'); 

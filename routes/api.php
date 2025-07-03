@@ -19,5 +19,8 @@ Route::get('/inventarios/{empresa_id?}', [ApiInventarioController::class, 'index
 // Ruta para buscar artículos por detalle o código (sin middleware)
 Route::get('/inventarios/{empresa_id}/buscar', [ApiInventarioController::class, 'buscar']);
 
+// Ruta para obtener los rubros únicos de una empresa
+Route::get('/rubros/{empresa_id?}', [ApiInventarioController::class, 'rubros']);
+
 // 1|PoYVVmjf6vMifsDxcEAWljBWEer4CS4o4eyBhjWC20a76ac7
 
