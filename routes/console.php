@@ -26,15 +26,15 @@ use App\Jobs\EnviarWhatsappAlClienteJob;
 
             // Dispatch the job to the "heartbeats" queue on the "sqs" connection...
 
-        if(env('APP_ENV') === 'local') {
-            // Solo para el entorno local, ejecuta el job cada minuto
-            // Schedule::job(new EnviarWhatsappAlClienteJob)->everyMinute();
-
-        } else {
+        if(env('APP_NAME') === 'LLFactura') {
+            
             // En producción, puedes ajustar la frecuencia según sea necesario
             Schedule::job(new EnviarWhatsappAlClienteJob)->monthlyOn(3, '10:00');
-            Schedule::job(new EnviarWhatsappAlClienteJob)->monthlyOn(5, '10:00');
-
+            Schedule::job(new EnviarWhatsappAlClienteJob)->monthlyOn(10, '10:00');
+        } else {
+            
+            // Solo para el entorno local, ejecuta el job cada minuto APP_NAME=LLFactura
+            // Schedule::job(new EnviarWhatsappAlClienteJob)->everyMinute();
         }
 
 

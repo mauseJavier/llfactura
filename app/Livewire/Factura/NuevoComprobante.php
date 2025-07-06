@@ -412,7 +412,9 @@ class NuevoComprobante extends Component
                     $this->telefonoCliente,
                     $mensaje, 
                     Auth::user()->id,
-                    $this->correoCliente
+                    $this->correoCliente,
+                    $this->empresa->instanciaWhatsapp,
+                    $this->empresa->tokenWhatsapp
                 );
 
 

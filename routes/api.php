@@ -22,5 +22,13 @@ Route::get('/inventarios/{empresa_id}/buscar', [ApiInventarioController::class, 
 // Ruta para obtener los rubros únicos de una empresa
 Route::get('/rubros/{empresa_id?}', [ApiInventarioController::class, 'rubros']);
 
-// 1|PoYVVmjf6vMifsDxcEAWljBWEer4CS4o4eyBhjWC20a76ac7
+// Ruta para obtener un artículo específico por empresa e id
+Route::get('/inventarios/{empresa_id}/articulo/{id}', [\App\Http\Controllers\Api\ApiInventarioController::class, 'verArticulo']);
+
+// Ruta para obtener artículos destacados con parámetros opcionales destacados y limit
+Route::get('/inventarios/{empresa_id}/articulos', [\App\Http\Controllers\Api\ApiInventarioController::class, 'articulos']);
+
+// Ruta para devolver los datos de la empresa por ID
+Route::get('/empresa/{id}', [\App\Http\Controllers\Api\ApiInventarioController::class, 'empresa']);
+
 

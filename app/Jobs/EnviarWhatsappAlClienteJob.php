@@ -99,9 +99,17 @@ class EnviarWhatsappAlClienteJob implements ShouldQueue
                     $empresa = Empresa::find($cliente->empresa_id);
 
                     $razonSocial = $empresa->razonSocial;
+
+                    $instanciaWS = $empresa->instanciaWhatsapp ?? env('instanciaWhatsappLLFactura');
+                    $apikey = $empresa->tokenWhatsapp ?? env('apikeyLLFactura');
+                    
                 }else{
 
                     $razonSocial = $this->empresa->razonSocial;
+
+                    $instanciaWS =$this->empresa->instanciaWhatsapp ?? env('instanciaWhatsappLLFactura');
+                    $apikey = $this->empresa->tokenWhatsapp ?? env('apikeyLLFactura');
+                    
 
                 }
 
@@ -117,9 +125,6 @@ class EnviarWhatsappAlClienteJob implements ShouldQueue
                 }
 
 
-
-                $instanciaWS = env('instanciaWhatsappLLFactura');
-                $apikey = env('apikeyLLFactura');
         
                 // Log::info('Archivo base 64', [
                 //     'base64' => $pdfBase64

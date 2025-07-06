@@ -28,7 +28,14 @@ class EnviarPdfComprobanteJob implements ShouldQueue
     protected $usuarioId;
     protected $correoCliente;
 
-    public function __construct($tipoComprobante,$comprobante_id, $formato, $clienteNombre, $clienteTelefono, $mensaje, $usuarioId, $correoCliente = null)
+    protected $instanciaWS;
+    protected $apikey;
+
+    public function __construct($tipoComprobante,$comprobante_id, $formato, $clienteNombre, $clienteTelefono, $mensaje, $usuarioId, 
+        $correoCliente = null,
+        $instanciaWS = null,
+        $apikey = null
+        )
     {
         $this->tipoComprobante = $tipoComprobante;
         $this->comprobante_id = $comprobante_id;
@@ -38,16 +45,24 @@ class EnviarPdfComprobanteJob implements ShouldQueue
         $this->mensaje = $mensaje;
         $this->usuarioId = $usuarioId;
         $this->correoCliente = $correoCliente;
+        $this->instanciaWS = $instanciaWS ?? env('instanciaWhatsappLLFactura');
+        $this->apikey = $apikey ?? env('apikeyLLFactura');
 
-
-        // Log::info('Constructor el Job EnviarPdfComprobanteJob', [
+        // logger()->info('Job EnviarPdfComprobanteJob creado.', [
+        //     'tipoComprobante' => $this->tipoComprobante,
         //     'comprobante_id' => $this->comprobante_id,
         //     'formato' => $this->formato,
         //     'clienteNombre' => $this->clienteNombre,
         //     'clienteTelefono' => $this->clienteTelefono,
         //     'mensaje' => $this->mensaje,
         //     'usuarioId' => $this->usuarioId,
+        //     'correoCliente' => $this->correoCliente,
+        //     'instanciaWS' => $this->instanciaWS,
+        //     'apikey' => $this->apikey,
         // ]);
+
+
+
 
     }
 
@@ -79,8 +94,8 @@ class EnviarPdfComprobanteJob implements ShouldQueue
             }
 
     
-            $instanciaWS = env('instanciaWhatsappLLFactura');
-            $apikey = env('apikeyLLFactura');
+            // $instanciaWS = env('instanciaWhatsappLLFactura');
+            // $apikey = env('apikeyLLFactura');
 
             // Log::info('Archivo base 64', [
             //     'base64' => $pdfBase64
@@ -90,8 +105,8 @@ class EnviarPdfComprobanteJob implements ShouldQueue
                 'clienteNombre' => $this->clienteNombre,
                 'clienteTelefono' => $this->clienteTelefono,
                 'mensaje' => $this->mensaje,
-                'instanciaWS' => $instanciaWS,
-                'apikey' => $apikey,
+                'instanciaWS' => $this->instanciaWS,
+                'apikey' => $this->apikey,
                 'Base64' => $pdfBase64,
             ]);
             // Log::info('Evento NotificarClientePorWhatsappEvent despachado.');

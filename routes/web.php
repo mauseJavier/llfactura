@@ -694,7 +694,6 @@ use Illuminate\Http\Request;
 
 
 
-
         // crear una ruta metodo post con una funcion    
         Route::post('/rutaEnviarPDF', function (Request $request) {
             // Procesar los datos del formulario
@@ -712,6 +711,8 @@ use Illuminate\Http\Request;
                     $mensaje = 'Hola '. $nombreCliente .'! Te enviamos tu comprobante. Gracias por elegirnos!. Enviado con *https://llfactura.com*';
                 }
 
+                $empresa = Empresa::find(Auth::user()->empresa_id);
+
 
                 EnviarPdfComprobanteJob::dispatch(
                     $datos['tipo'],
@@ -721,7 +722,9 @@ use Illuminate\Http\Request;
                     $datos['telefono'],
                     $mensaje, 
                     Auth::user()->id,
-                    $datos['correoCliente'] ?? null
+                    $datos['correoCliente'] ?? null,
+                    $empresa->instanciaWhatsapp,
+                    $empresa->tokenWhatsapp
                 );
 
                 // redirigir ruta a la ruta de origen 

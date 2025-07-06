@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 use App\Models\Presupuesto;
 use App\Models\ProductoPresupuesto;
+//empresa
+use App\Models\Empresa;
+use App\Models\Inventario;
+
 
 use App\Events\NovedadCreada;
 use App\Jobs\EnviarPdfComprobanteJob;
@@ -122,7 +126,7 @@ class ApiPresupuestoController extends Controller
                 'numeroDocumento' => trim($validated['cuit']),
                 'razonSocial' => trim($validated['razonSocial']),
                 'domicilio' => trim($validated['domicilio']),
-                'correo' => trim($validated['correoCliente']),
+                'correo' => trim($validated['correoCliente']) ?? '',
                 'tipoContribuyente' => trim($validated['tipoContribuyente']),
                 'telefono' => trim($validated['telefonoCliente'] ?? ''),
             ]
@@ -130,6 +134,11 @@ class ApiPresupuestoController extends Controller
 
         if (isset($validated['carrito'])) {
             foreach ($validated['carrito'] as $value) {
+
+                $costo = Inventario::where('codigo', $value['codigo'])
+                    ->where('empresa_id', $validated['idEmpresa'])
+                    ->value('costo');
+
                 ProductoPresupuesto::create([
                     'presupuesto_id' => $presupuestoGuardado->id,
                     'presupuesto_numero' => $presupuestoGuardado->numero,
@@ -139,7 +148,7 @@ class ApiPresupuestoController extends Controller
                     'precioLista' => $value['precioLista'],
                     'descuento' => $value['descuento'],
                     'precio' => $value['precio'],
-                    'costo' => $value['costo'],
+                    'costo' => $costo ?? 0, // Si no hay costo, se asigna 0
                     'iva' => $value['iva'],
                     'cantidad' => $value['cantidad'],
                     'rubro' => $value['rubro'],
@@ -172,6 +181,8 @@ class ApiPresupuestoController extends Controller
 
             if($presupuestoGuardado->telefonoCliente != null && $presupuestoGuardado->telefonoCliente != ''){
 
+                $empresa = Empresa::find($presupuestoGuardado->empresa_id);
+
                 $mensaje = 'Hola '. $presupuestoGuardado->razonSocial .'! Te enviamos tu Presupuesto. Gracias por elegirnos!. Enviado con *https://llfactura.com*';
     
     
@@ -182,7 +193,10 @@ class ApiPresupuestoController extends Controller
                     $presupuestoGuardado->razonSocial,
                     $presupuestoGuardado->telefonoCliente,
                     $mensaje, 
-                    Auth::user()->id
+                    Auth::user()->id,
+                    trim($validated['correoCliente']) ?? '',
+                    $empresa->instanciaWhatsapp, 
+                    $empresa->tokenWhatsapp
                 );
             }
 

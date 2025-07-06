@@ -46,7 +46,7 @@ class repetirGastoMinuto extends Command
                 $gastoRepetir = Gasto::where('repetir','Minuto')->get();
                 // Log::info("Gastos A Repetir " . $gastoRepetir[0]->tipo);
 
-                log::info("Gastos A Repetir " . $gastoRepetir->count());
+                // log::info("Gastos A Repetir " . $gastoRepetir->count());
 
                 // {
                 //     "id": 1,
